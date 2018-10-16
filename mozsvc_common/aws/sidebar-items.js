@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["get_ec2_instance_id","Fetch the EC2 instance-id"]]});

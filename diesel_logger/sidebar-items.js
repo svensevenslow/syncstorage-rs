@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["LoggingConnection","Wraps a diesel `Connection` to time and log each query using the configured logger for the `log` crate."]]});

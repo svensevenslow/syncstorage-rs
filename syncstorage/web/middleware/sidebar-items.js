@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["DefaultWeaveTimestamp","Default Timestamp used for WeaveTimestamp middleware."],["WeaveTimestamp","Middleware to set the X-Weave-Timestamp header on all responses."]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["MacType","The kind of MAC calcuation (corresponding to the first line of the message)"]],"struct":[["Mac","Mac represents a message authentication code, the signature in a Hawk transaction."]]});
