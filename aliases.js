@@ -179,7 +179,6 @@ ALIASES['syn'] = {};
 ALIASES['syn'] = {};
 ALIASES['syn'] = {};
 ALIASES['syncstorage'] = {};
-ALIASES['syncstorage'] = {};
 ALIASES['synom'] = {};
 ALIASES['synstructure'] = {};
 ALIASES['take'] = {};

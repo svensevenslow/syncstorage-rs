@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["_impl_query_id_for_lockinsharemode",""]],"struct":[["LockInShareMode",""]],"trait":[["LockInShareModeDsl","Emit MySQL <= 5.7's `LOCK IN SHARE MODE`"]]});

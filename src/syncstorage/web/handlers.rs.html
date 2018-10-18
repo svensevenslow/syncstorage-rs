@@ -172,28 +172,16 @@
 <span id="172">172</span>
 <span id="173">173</span>
 <span id="174">174</span>
-<span id="175">175</span>
-<span id="176">176</span>
-<span id="177">177</span>
-<span id="178">178</span>
-<span id="179">179</span>
-<span id="180">180</span>
-<span id="181">181</span>
-<span id="182">182</span>
-<span id="183">183</span>
-<span id="184">184</span>
-<span id="185">185</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! API Handlers</span>
 
-<span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">error</span>::<span class="ident">ResponseError</span>, <span class="ident">FutureResponse</span>, <span class="ident">HttpResponse</span>, <span class="ident">Json</span>, <span class="ident">Path</span>, <span class="ident">Query</span>, <span class="ident">State</span>};
+<span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">error</span>::<span class="ident">ResponseError</span>, <span class="ident">FutureResponse</span>, <span class="ident">HttpResponse</span>, <span class="ident">Json</span>, <span class="ident">Path</span>, <span class="ident">State</span>};
 <span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">future</span>::{<span class="self">self</span>, <span class="ident">Future</span>};
 
 <span class="kw">use</span> <span class="ident">db</span>::{<span class="ident">params</span>, <span class="ident">DbError</span>};
 <span class="kw">use</span> <span class="ident">server</span>::<span class="ident">ServerState</span>;
-<span class="kw">use</span> <span class="ident">web</span>::<span class="ident">auth</span>::<span class="ident">HawkPayload</span>;
 <span class="kw">use</span> <span class="ident">web</span>::<span class="ident">extractors</span>::{
-    <span class="ident">BsoBody</span>, <span class="ident">BsoParams</span>, <span class="ident">BsoQueryParams</span>, <span class="ident">CollectionParams</span>, <span class="ident">GetCollectionRequest</span>, <span class="ident">HawkIdentifier</span>,
+    <span class="ident">BsoBody</span>, <span class="ident">BsoParams</span>, <span class="ident">BsoRequest</span>, <span class="ident">CollectionParams</span>, <span class="ident">CollectionRequest</span>, <span class="ident">HawkIdentifier</span>,
     <span class="ident">MetaRequest</span>,
 };
 
@@ -252,21 +240,15 @@
     )
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">delete_collection</span>(
-    (<span class="ident">_params</span>, <span class="ident">auth</span>, <span class="ident">state</span>, <span class="ident">query</span>): (
-        <span class="ident">Path</span><span class="op">&lt;</span><span class="ident">CollectionParams</span><span class="op">&gt;</span>,
-        <span class="ident">HawkIdentifier</span>,
-        <span class="ident">State</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>,
-        <span class="ident">Query</span><span class="op">&lt;</span><span class="ident">BsoQueryParams</span><span class="op">&gt;</span>,
-    ),
-) <span class="op">-&gt;</span> <span class="ident">FutureResponse</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">delete_collection</span>(<span class="ident">coll</span>: <span class="ident">CollectionRequest</span>) <span class="op">-&gt;</span> <span class="ident">FutureResponse</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span> {
     <span class="ident">Box</span>::<span class="ident">new</span>(
-        <span class="ident">state</span>
+        <span class="ident">coll</span>.<span class="ident">state</span>
             .<span class="ident">db</span>
             .<span class="ident">delete_collection</span>(<span class="kw-2">&amp;</span><span class="ident">params</span>::<span class="ident">DeleteCollection</span> {
-                <span class="ident">user_id</span>: <span class="ident">auth</span>,
-                <span class="ident">collection</span>: <span class="string">&quot;tabs&quot;</span>.<span class="ident">to_owned</span>(),
-                <span class="ident">bso_ids</span>: <span class="ident">query</span>
+                <span class="ident">user_id</span>: <span class="ident">coll</span>.<span class="ident">user_id</span>,
+                <span class="ident">collection</span>: <span class="ident">coll</span>.<span class="ident">collection</span>,
+                <span class="ident">bso_ids</span>: <span class="ident">coll</span>
+                    .<span class="ident">query</span>
                     .<span class="ident">ids</span>
                     .<span class="ident">as_ref</span>()
                     .<span class="ident">map_or_else</span>(<span class="op">||</span> <span class="ident">Vec</span>::<span class="ident">new</span>(), <span class="op">|</span><span class="ident">ids</span><span class="op">|</span> <span class="ident">ids</span>.<span class="ident">clone</span>()),
@@ -275,15 +257,13 @@
     )
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_collection</span>(
-    (<span class="ident">_params</span>, <span class="ident">auth</span>, <span class="ident">state</span>): <span class="ident">GetCollectionRequest</span>,
-) <span class="op">-&gt;</span> <span class="ident">FutureResponse</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_collection</span>(<span class="ident">coll</span>: <span class="ident">CollectionRequest</span>) <span class="op">-&gt;</span> <span class="ident">FutureResponse</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span> {
     <span class="ident">Box</span>::<span class="ident">new</span>(
-        <span class="ident">state</span>
+        <span class="ident">coll</span>.<span class="ident">state</span>
             .<span class="ident">db</span>
             .<span class="ident">get_collection</span>(<span class="kw-2">&amp;</span><span class="ident">params</span>::<span class="ident">GetCollection</span> {
-                <span class="ident">user_id</span>: <span class="ident">auth</span>,
-                <span class="ident">collection</span>: <span class="string">&quot;tabs&quot;</span>.<span class="ident">to_owned</span>(),
+                <span class="ident">user_id</span>: <span class="ident">coll</span>.<span class="ident">user_id</span>,
+                <span class="ident">collection</span>: <span class="ident">coll</span>.<span class="ident">collection</span>,
             }).<span class="ident">map_err</span>(<span class="ident">From</span>::<span class="ident">from</span>)
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">result</span><span class="op">|</span> <span class="ident">HttpResponse</span>::<span class="prelude-val">Ok</span>().<span class="ident">json</span>(<span class="ident">result</span>)),
     )
@@ -309,31 +289,29 @@
     )
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">delete_bso</span>(
-    (<span class="ident">params</span>, <span class="ident">auth</span>, <span class="ident">state</span>): (<span class="ident">Path</span><span class="op">&lt;</span><span class="ident">BsoParams</span><span class="op">&gt;</span>, <span class="ident">HawkIdentifier</span>, <span class="ident">State</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>),
-) <span class="op">-&gt;</span> <span class="ident">FutureResponse</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">delete_bso</span>(<span class="ident">bso_req</span>: <span class="ident">BsoRequest</span>) <span class="op">-&gt;</span> <span class="ident">FutureResponse</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span> {
     <span class="ident">Box</span>::<span class="ident">new</span>(
-        <span class="ident">state</span>
+        <span class="ident">bso_req</span>
+            .<span class="ident">state</span>
             .<span class="ident">db</span>
             .<span class="ident">delete_bso</span>(<span class="kw-2">&amp;</span><span class="ident">params</span>::<span class="ident">DeleteBso</span> {
-                <span class="ident">user_id</span>: <span class="ident">auth</span>,
-                <span class="ident">collection</span>: <span class="string">&quot;tabs&quot;</span>.<span class="ident">to_owned</span>(),
-                <span class="ident">id</span>: <span class="ident">params</span>.<span class="ident">bso</span>.<span class="ident">clone</span>(),
+                <span class="ident">user_id</span>: <span class="ident">bso_req</span>.<span class="ident">user_id</span>,
+                <span class="ident">collection</span>: <span class="ident">bso_req</span>.<span class="ident">collection</span>,
+                <span class="ident">id</span>: <span class="ident">bso_req</span>.<span class="ident">bso</span>.<span class="ident">clone</span>(),
             }).<span class="ident">map_err</span>(<span class="ident">From</span>::<span class="ident">from</span>)
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">result</span><span class="op">|</span> <span class="ident">HttpResponse</span>::<span class="prelude-val">Ok</span>().<span class="ident">json</span>(<span class="ident">result</span>)),
     )
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_bso</span>(
-    (<span class="ident">params</span>, <span class="ident">auth</span>, <span class="ident">state</span>): (<span class="ident">Path</span><span class="op">&lt;</span><span class="ident">BsoParams</span><span class="op">&gt;</span>, <span class="ident">HawkIdentifier</span>, <span class="ident">State</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>),
-) <span class="op">-&gt;</span> <span class="ident">FutureResponse</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_bso</span>(<span class="ident">bso_req</span>: <span class="ident">BsoRequest</span>) <span class="op">-&gt;</span> <span class="ident">FutureResponse</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span> {
     <span class="ident">Box</span>::<span class="ident">new</span>(
-        <span class="ident">state</span>
+        <span class="ident">bso_req</span>
+            .<span class="ident">state</span>
             .<span class="ident">db</span>
             .<span class="ident">get_bso</span>(<span class="kw-2">&amp;</span><span class="ident">params</span>::<span class="ident">GetBso</span> {
-                <span class="ident">user_id</span>: <span class="ident">auth</span>,
-                <span class="ident">collection</span>: <span class="string">&quot;tabs&quot;</span>.<span class="ident">to_owned</span>(),
-                <span class="ident">id</span>: <span class="ident">params</span>.<span class="ident">bso</span>.<span class="ident">clone</span>(),
+                <span class="ident">user_id</span>: <span class="ident">bso_req</span>.<span class="ident">user_id</span>,
+                <span class="ident">collection</span>: <span class="ident">bso_req</span>.<span class="ident">collection</span>,
+                <span class="ident">id</span>: <span class="ident">bso_req</span>.<span class="ident">bso</span>.<span class="ident">clone</span>(),
             }).<span class="ident">map_err</span>(<span class="ident">From</span>::<span class="ident">from</span>)
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">result</span><span class="op">|</span> <span class="ident">HttpResponse</span>::<span class="prelude-val">Ok</span>().<span class="ident">json</span>(<span class="ident">result</span>)),
     )
@@ -363,7 +341,7 @@
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_configuration</span>(
-    (<span class="ident">_auth</span>, <span class="ident">state</span>): (<span class="ident">HawkPayload</span>, <span class="ident">State</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>),
+    (<span class="ident">_auth</span>, <span class="ident">state</span>): (<span class="ident">HawkIdentifier</span>, <span class="ident">State</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>),
 ) <span class="op">-&gt;</span> <span class="ident">FutureResponse</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span> {
     <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">future</span>::<span class="ident">result</span>(<span class="prelude-val">Ok</span>(<span class="ident">HttpResponse</span>::<span class="prelude-val">Ok</span>().<span class="ident">json</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">state</span>.<span class="ident">limits</span>))))
 }
