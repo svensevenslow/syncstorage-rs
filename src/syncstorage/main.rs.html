@@ -73,6 +73,8 @@
 <span id="73">73</span>
 <span id="74">74</span>
 <span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Sync Storage Server for Sync 1.6</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">actix</span>;
@@ -117,6 +119,8 @@
 
 <span class="kw">use</span> <span class="ident">docopt</span>::<span class="ident">Docopt</span>;
 
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">error</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">db</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">server</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">settings</span>;

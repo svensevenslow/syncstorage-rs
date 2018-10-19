@@ -512,65 +512,24 @@
 <span id="512">512</span>
 <span id="513">513</span>
 <span id="514">514</span>
-<span id="515">515</span>
-<span id="516">516</span>
-<span id="517">517</span>
-<span id="518">518</span>
-<span id="519">519</span>
-<span id="520">520</span>
-<span id="521">521</span>
-<span id="522">522</span>
-<span id="523">523</span>
-<span id="524">524</span>
-<span id="525">525</span>
-<span id="526">526</span>
-<span id="527">527</span>
-<span id="528">528</span>
-<span id="529">529</span>
-<span id="530">530</span>
-<span id="531">531</span>
-<span id="532">532</span>
-<span id="533">533</span>
-<span id="534">534</span>
-<span id="535">535</span>
-<span id="536">536</span>
-<span id="537">537</span>
-<span id="538">538</span>
-<span id="539">539</span>
-<span id="540">540</span>
-<span id="541">541</span>
-<span id="542">542</span>
-<span id="543">543</span>
-<span id="544">544</span>
-<span id="545">545</span>
-<span id="546">546</span>
-<span id="547">547</span>
-<span id="548">548</span>
-<span id="549">549</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Types for parsing and authenticating HAWK headers.</span>
 <span class="doccomment">//! Matches the [Python logic](https://github.com/mozilla-services/tokenlib).</span>
 <span class="doccomment">//! We may want to extract this to its own repo/crate in due course.</span>
 
-<span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">error</span>::<span class="ident">Error</span>,
-    <span class="ident">fmt</span>::{<span class="self">self</span>, <span class="ident">Display</span>, <span class="ident">Formatter</span>},
-};
-
-<span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">error</span>::<span class="ident">ResponseError</span>, <span class="ident">http</span>::<span class="ident">header</span>::<span class="ident">ToStrError</span>, <span class="ident">FromRequest</span>, <span class="ident">HttpRequest</span>};
-<span class="kw">use</span> <span class="ident">base64</span>::{<span class="self">self</span>, <span class="ident">DecodeError</span>};
+<span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">FromRequest</span>, <span class="ident">HttpRequest</span>};
+<span class="kw">use</span> <span class="ident">base64</span>;
 <span class="kw">use</span> <span class="ident">chrono</span>::<span class="ident">offset</span>::<span class="ident">Utc</span>;
-<span class="kw">use</span> <span class="ident">hawk</span>::{<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">HawkError</span>, <span class="ident">Header</span> <span class="kw">as</span> <span class="ident">HawkHeader</span>, <span class="ident">Key</span>, <span class="ident">RequestBuilder</span>};
+<span class="kw">use</span> <span class="ident">hawk</span>::{<span class="ident">Header</span> <span class="kw">as</span> <span class="ident">HawkHeader</span>, <span class="ident">Key</span>, <span class="ident">RequestBuilder</span>};
 <span class="kw">use</span> <span class="ident">hkdf</span>::<span class="ident">Hkdf</span>;
-<span class="kw">use</span> <span class="ident">hmac</span>::{
-    <span class="ident">crypto_mac</span>::{<span class="ident">InvalidKeyLength</span>, <span class="ident">MacError</span>},
-    <span class="ident">Hmac</span>, <span class="ident">Mac</span>,
-};
+<span class="kw">use</span> <span class="ident">hmac</span>::{<span class="ident">Hmac</span>, <span class="ident">Mac</span>};
 <span class="kw">use</span> <span class="ident">ring</span>;
-<span class="kw">use</span> <span class="ident">serde_json</span>::{<span class="self">self</span>, <span class="ident">Error</span> <span class="kw">as</span> <span class="ident">JsonError</span>};
+<span class="kw">use</span> <span class="ident">serde_json</span>;
 <span class="kw">use</span> <span class="ident">sha2</span>::<span class="ident">Sha256</span>;
 <span class="kw">use</span> <span class="ident">time</span>::<span class="ident">Duration</span>;
 
+<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">error</span>::<span class="ident">HawkErrorKind</span>;
+<span class="kw">use</span> <span class="ident">error</span>::<span class="ident">ApiResult</span>;
 <span class="kw">use</span> <span class="ident">server</span>::<span class="ident">ServerState</span>;
 <span class="kw">use</span> <span class="ident">settings</span>::{<span class="ident">Secrets</span>, <span class="ident">Settings</span>};
 
@@ -610,13 +569,13 @@
         <span class="ident">port</span>: <span class="ident">u16</span>,
         <span class="ident">secrets</span>: <span class="kw-2">&amp;</span><span class="ident">Secrets</span>,
         <span class="ident">expiry</span>: <span class="ident">u64</span>,
-    ) <span class="op">-&gt;</span> <span class="ident">AuthResult</span><span class="op">&lt;</span><span class="ident">HawkPayload</span><span class="op">&gt;</span> {
+    ) <span class="op">-&gt;</span> <span class="ident">ApiResult</span><span class="op">&lt;</span><span class="ident">HawkPayload</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw-2">&amp;</span><span class="ident">header</span>[<span class="number">0</span>..<span class="number">5</span>] <span class="op">!=</span> <span class="string">&quot;Hawk &quot;</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">AuthError</span>);
+            <span class="prelude-val">Err</span>(<span class="ident">HawkErrorKind</span>::<span class="ident">MissingPrefix</span>)<span class="question-mark">?</span>;
         }
 
         <span class="kw">let</span> <span class="ident">header</span>: <span class="ident">HawkHeader</span> <span class="op">=</span> <span class="ident">header</span>[<span class="number">5</span>..].<span class="ident">parse</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">header</span>.<span class="ident">id</span>.<span class="ident">as_ref</span>().<span class="ident">ok_or</span>(<span class="ident">AuthError</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">header</span>.<span class="ident">id</span>.<span class="ident">as_ref</span>().<span class="ident">ok_or</span>(<span class="ident">HawkErrorKind</span>::<span class="ident">MissingId</span>)<span class="question-mark">?</span>;
 
         <span class="kw">let</span> <span class="ident">payload</span> <span class="op">=</span> <span class="ident">HawkPayload</span>::<span class="ident">extract_and_validate</span>(<span class="ident">id</span>, <span class="ident">secrets</span>, <span class="ident">expiry</span>)<span class="question-mark">?</span>;
 
@@ -637,16 +596,16 @@
         ) {
             <span class="prelude-val">Ok</span>(<span class="ident">payload</span>)
         } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">AuthError</span>)
+            <span class="prelude-val">Err</span>(<span class="ident">HawkErrorKind</span>::<span class="ident">InvalidHeader</span>)<span class="question-mark">?</span>
         }
     }
 
     <span class="doccomment">/// Decode the `id` property of a Hawk header</span>
     <span class="doccomment">/// and verify the payload part against the signature part.</span>
-    <span class="kw">fn</span> <span class="ident">extract_and_validate</span>(<span class="ident">id</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">secrets</span>: <span class="kw-2">&amp;</span><span class="ident">Secrets</span>, <span class="ident">expiry</span>: <span class="ident">u64</span>) <span class="op">-&gt;</span> <span class="ident">AuthResult</span><span class="op">&lt;</span><span class="ident">HawkPayload</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">extract_and_validate</span>(<span class="ident">id</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">secrets</span>: <span class="kw-2">&amp;</span><span class="ident">Secrets</span>, <span class="ident">expiry</span>: <span class="ident">u64</span>) <span class="op">-&gt;</span> <span class="ident">ApiResult</span><span class="op">&lt;</span><span class="ident">HawkPayload</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">decoded_id</span> <span class="op">=</span> <span class="ident">base64</span>::<span class="ident">decode_config</span>(<span class="ident">id</span>, <span class="ident">base64</span>::<span class="ident">URL_SAFE</span>)<span class="question-mark">?</span>;
         <span class="kw">if</span> <span class="ident">decoded_id</span>.<span class="ident">len</span>() <span class="op">&lt;=</span> <span class="number">32</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">AuthError</span>);
+            <span class="prelude-val">Err</span>(<span class="ident">HawkErrorKind</span>::<span class="ident">TruncatedId</span>)<span class="question-mark">?</span>;
         }
 
         <span class="kw">let</span> <span class="ident">payload_length</span> <span class="op">=</span> <span class="ident">decoded_id</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">32</span>;
@@ -660,7 +619,7 @@
         <span class="kw">if</span> (<span class="ident">payload</span>.<span class="ident">expires</span>.<span class="ident">round</span>() <span class="kw">as</span> <span class="ident">u64</span>) <span class="op">&gt;</span> <span class="ident">expiry</span> {
             <span class="prelude-val">Ok</span>(<span class="ident">payload</span>)
         } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">AuthError</span>)
+            <span class="prelude-val">Err</span>(<span class="ident">HawkErrorKind</span>::<span class="ident">Expired</span>)<span class="question-mark">?</span>
         }
     }
 
@@ -683,7 +642,7 @@
     <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> <span class="ident">Settings</span>;
 
     <span class="doccomment">/// Result-wrapped `HawkPayload` instance.</span>
-    <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="ident">AuthResult</span><span class="op">&lt;</span><span class="ident">HawkPayload</span><span class="op">&gt;</span>;
+    <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="ident">ApiResult</span><span class="op">&lt;</span><span class="ident">HawkPayload</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// Parse and authenticate a Hawk payload</span>
     <span class="doccomment">/// from the `Authorization` header</span>
@@ -693,10 +652,14 @@
             <span class="ident">request</span>
                 .<span class="ident">headers</span>()
                 .<span class="ident">get</span>(<span class="string">&quot;authorization&quot;</span>)
-                .<span class="ident">ok_or</span>(<span class="ident">AuthError</span>)<span class="question-mark">?</span>
+                .<span class="ident">ok_or</span>(<span class="ident">HawkErrorKind</span>::<span class="ident">MissingHeader</span>)<span class="question-mark">?</span>
                 .<span class="ident">to_str</span>()<span class="question-mark">?</span>,
             <span class="ident">request</span>.<span class="ident">method</span>().<span class="ident">as_str</span>(),
-            <span class="ident">request</span>.<span class="ident">uri</span>().<span class="ident">path_and_query</span>().<span class="ident">ok_or</span>(<span class="ident">AuthError</span>)<span class="question-mark">?</span>.<span class="ident">as_str</span>(),
+            <span class="ident">request</span>
+                .<span class="ident">uri</span>()
+                .<span class="ident">path_and_query</span>()
+                .<span class="ident">ok_or</span>(<span class="ident">HawkErrorKind</span>::<span class="ident">MissingPath</span>)<span class="question-mark">?</span>
+                .<span class="ident">as_str</span>(),
             <span class="ident">request</span>.<span class="ident">uri</span>().<span class="ident">host</span>().<span class="ident">unwrap_or</span>(<span class="string">&quot;127.0.0.1&quot;</span>),
             <span class="ident">request</span>.<span class="ident">uri</span>().<span class="ident">port</span>().<span class="ident">unwrap_or</span>(<span class="ident">settings</span>.<span class="ident">port</span>),
             <span class="kw-2">&amp;</span><span class="ident">request</span>.<span class="ident">state</span>().<span class="ident">secrets</span>,
@@ -715,44 +678,11 @@
 }
 
 <span class="doccomment">/// Helper function for [HMAC](https://tools.ietf.org/html/rfc2104) verification.</span>
-<span class="kw">fn</span> <span class="ident">verify_hmac</span>(<span class="ident">info</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">key</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">expected</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="ident">AuthResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">verify_hmac</span>(<span class="ident">info</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">key</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">expected</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="ident">ApiResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hmac</span>: <span class="ident">Hmac</span><span class="op">&lt;</span><span class="ident">Sha256</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Hmac</span>::<span class="ident">new_varkey</span>(<span class="ident">key</span>)<span class="question-mark">?</span>;
     <span class="ident">hmac</span>.<span class="ident">input</span>(<span class="ident">info</span>);
     <span class="ident">hmac</span>.<span class="ident">verify</span>(<span class="ident">expected</span>).<span class="ident">map_err</span>(<span class="ident">From</span>::<span class="ident">from</span>)
 }
-
-<span class="doccomment">/// Common `Result` type for authentication methods.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">AuthResult</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">AuthError</span><span class="op">&gt;</span>;
-
-<span class="doccomment">/// Common `Error` type for authentication methods.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AuthError</span>;
-
-<span class="kw">impl</span> <span class="ident">Display</span> <span class="kw">for</span> <span class="ident">AuthError</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">formatter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">formatter</span>, <span class="string">&quot;invalid hawk header&quot;</span>)
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">Error</span> <span class="kw">for</span> <span class="ident">AuthError</span> {}
-<span class="kw">impl</span> <span class="ident">ResponseError</span> <span class="kw">for</span> <span class="ident">AuthError</span> {}
-
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">from_error</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">error</span>:<span class="ident">ty</span>) <span class="op">=&gt;</span> {
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">error</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">AuthError</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">_error</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">error</span>) <span class="op">-&gt;</span> <span class="ident">AuthError</span> {
-                <span class="ident">AuthError</span>
-            }
-        }
-    };
-}
-
-<span class="macro">from_error</span><span class="macro">!</span>(<span class="ident">DecodeError</span>);
-<span class="macro">from_error</span><span class="macro">!</span>(<span class="ident">HawkError</span>);
-<span class="macro">from_error</span><span class="macro">!</span>(<span class="ident">InvalidKeyLength</span>);
-<span class="macro">from_error</span><span class="macro">!</span>(<span class="ident">JsonError</span>);
-<span class="macro">from_error</span><span class="macro">!</span>(<span class="ident">MacError</span>);
-<span class="macro">from_error</span><span class="macro">!</span>(<span class="ident">ToStrError</span>);
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {

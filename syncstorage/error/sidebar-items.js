@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["_DERIVE_failure_Fail_FOR_ApiErrorKind",""],["_DERIVE_failure_core_fmt_Display_FOR_ApiErrorKind",""]],"enum":[["ApiErrorKind","Top-level ErrorKind."]],"struct":[["ApiError","Top-level error type."]],"type":[["ApiResult","Common `Result` type."]]});

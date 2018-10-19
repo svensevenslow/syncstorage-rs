@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["_DERIVE_failure_Fail_FOR_HawkErrorKind",""],["_DERIVE_failure_core_fmt_Display_FOR_HawkErrorKind",""]],"enum":[["HawkErrorKind","Causes of HAWK errors."]],"struct":[["HawkError","An error occurred during HAWK authentication."]]});
