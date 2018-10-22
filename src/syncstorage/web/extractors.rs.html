@@ -838,102 +838,24 @@
 <span id="838">838</span>
 <span id="839">839</span>
 <span id="840">840</span>
-<span id="841">841</span>
-<span id="842">842</span>
-<span id="843">843</span>
-<span id="844">844</span>
-<span id="845">845</span>
-<span id="846">846</span>
-<span id="847">847</span>
-<span id="848">848</span>
-<span id="849">849</span>
-<span id="850">850</span>
-<span id="851">851</span>
-<span id="852">852</span>
-<span id="853">853</span>
-<span id="854">854</span>
-<span id="855">855</span>
-<span id="856">856</span>
-<span id="857">857</span>
-<span id="858">858</span>
-<span id="859">859</span>
-<span id="860">860</span>
-<span id="861">861</span>
-<span id="862">862</span>
-<span id="863">863</span>
-<span id="864">864</span>
-<span id="865">865</span>
-<span id="866">866</span>
-<span id="867">867</span>
-<span id="868">868</span>
-<span id="869">869</span>
-<span id="870">870</span>
-<span id="871">871</span>
-<span id="872">872</span>
-<span id="873">873</span>
-<span id="874">874</span>
-<span id="875">875</span>
-<span id="876">876</span>
-<span id="877">877</span>
-<span id="878">878</span>
-<span id="879">879</span>
-<span id="880">880</span>
-<span id="881">881</span>
-<span id="882">882</span>
-<span id="883">883</span>
-<span id="884">884</span>
-<span id="885">885</span>
-<span id="886">886</span>
-<span id="887">887</span>
-<span id="888">888</span>
-<span id="889">889</span>
-<span id="890">890</span>
-<span id="891">891</span>
-<span id="892">892</span>
-<span id="893">893</span>
-<span id="894">894</span>
-<span id="895">895</span>
-<span id="896">896</span>
-<span id="897">897</span>
-<span id="898">898</span>
-<span id="899">899</span>
-<span id="900">900</span>
-<span id="901">901</span>
-<span id="902">902</span>
-<span id="903">903</span>
-<span id="904">904</span>
-<span id="905">905</span>
-<span id="906">906</span>
-<span id="907">907</span>
-<span id="908">908</span>
-<span id="909">909</span>
-<span id="910">910</span>
-<span id="911">911</span>
-<span id="912">912</span>
-<span id="913">913</span>
-<span id="914">914</span>
-<span id="915">915</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Request header/body/query extractors</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Handles ensuring the header&#39;s, body, and query parameters are correct, extraction to</span>
 <span class="doccomment">//! relevant types, and failing correctly with the appropriate errors if issues arise.</span>
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">error</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>::<span class="ident">FromStr</span>;
 
-<span class="kw">use</span> <span class="ident">actix_web</span>::<span class="ident">http</span>::<span class="ident">StatusCode</span>;
-<span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">Error</span>, <span class="ident">FromRequest</span>, <span class="ident">HttpRequest</span>, <span class="ident">HttpResponse</span>, <span class="ident">Path</span>, <span class="ident">Query</span>, <span class="ident">ResponseError</span>, <span class="ident">State</span>};
+<span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">Error</span>, <span class="ident">FromRequest</span>, <span class="ident">HttpRequest</span>, <span class="ident">Path</span>, <span class="ident">Query</span>, <span class="ident">State</span>};
 <span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">future</span>, <span class="ident">Future</span>};
 <span class="kw">use</span> <span class="ident">num</span>::<span class="ident">Zero</span>;
 <span class="kw">use</span> <span class="ident">regex</span>::<span class="ident">Regex</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">de</span>::{<span class="ident">Deserialize</span>, <span class="ident">Deserializer</span>, <span class="ident">Error</span> <span class="kw">as</span> <span class="ident">SerdeError</span>};
-<span class="kw">use</span> <span class="ident">serde_json</span>::<span class="ident">from_value</span>;
-<span class="kw">use</span> <span class="ident">validator</span>::{<span class="ident">Validate</span>, <span class="ident">ValidationError</span>, <span class="ident">ValidationErrors</span>};
+<span class="kw">use</span> <span class="ident">validator</span>::{<span class="ident">Validate</span>, <span class="ident">ValidationError</span>};
 
+<span class="kw">use</span> <span class="ident">error</span>::<span class="ident">ApiResult</span>;
 <span class="kw">use</span> <span class="ident">server</span>::<span class="ident">ServerState</span>;
 <span class="kw">use</span> <span class="ident">settings</span>::<span class="ident">Settings</span>;
-<span class="kw">use</span> <span class="ident">web</span>::<span class="ident">auth</span>::<span class="ident">HawkPayload</span>;
+<span class="kw">use</span> <span class="ident">web</span>::{<span class="ident">auth</span>::<span class="ident">HawkPayload</span>, <span class="ident">error</span>::<span class="ident">ValidationErrorKind</span>};
 
 <span class="kw">const</span> <span class="ident">BATCH_MAX_IDS</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">100</span>;
 
@@ -979,19 +901,20 @@
 
 <span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BsoParam</span> {
     <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> <span class="ident">Settings</span>;
-    <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">BsoParam</span>, <span class="ident">Error</span><span class="op">&gt;</span>;
+    <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="ident">ApiResult</span><span class="op">&lt;</span><span class="ident">BsoParam</span><span class="op">&gt;</span>;
 
     <span class="kw">fn</span> <span class="ident">from_request</span>(<span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Config</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="prelude-ty">Result</span> {
         <span class="kw">let</span> <span class="ident">bso</span> <span class="op">=</span> <span class="ident">Path</span>::<span class="op">&lt;</span><span class="ident">BsoParam</span><span class="op">&gt;</span>::<span class="ident">extract</span>(<span class="ident">req</span>)
-            .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
-                <span class="ident">RequestValidationErrors</span>::<span class="ident">with_error</span>(
-                    <span class="string">&quot;bso&quot;</span>,
-                    <span class="string">&quot;Invalid bso id&quot;</span>,
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
+                <span class="ident">ValidationErrorKind</span>::<span class="ident">FromDetails</span>(
+                    <span class="ident">e</span>.<span class="ident">to_string</span>(),
                     <span class="ident">RequestErrorLocation</span>::<span class="ident">Path</span>,
+                    <span class="prelude-val">Some</span>(<span class="string">&quot;bso&quot;</span>.<span class="ident">to_owned</span>()),
                 )
             })<span class="question-mark">?</span>.<span class="ident">into_inner</span>();
-        <span class="ident">bso</span>.<span class="ident">validate</span>()
-            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">RequestValidationErrors</span>::<span class="ident">with_location</span>(<span class="ident">e</span>, <span class="ident">RequestErrorLocation</span>::<span class="ident">Path</span>))<span class="question-mark">?</span>;
+        <span class="ident">bso</span>.<span class="ident">validate</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
+            <span class="ident">ValidationErrorKind</span>::<span class="ident">FromValidationErrors</span>(<span class="ident">e</span>, <span class="ident">RequestErrorLocation</span>::<span class="ident">Path</span>)
+        })<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">bso</span>)
     }
 }
@@ -1005,20 +928,20 @@
 
 <span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CollectionParam</span> {
     <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> <span class="ident">Settings</span>;
-    <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">CollectionParam</span>, <span class="ident">Error</span><span class="op">&gt;</span>;
+    <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="ident">ApiResult</span><span class="op">&lt;</span><span class="ident">CollectionParam</span><span class="op">&gt;</span>;
 
     <span class="kw">fn</span> <span class="ident">from_request</span>(<span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Config</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="prelude-ty">Result</span> {
         <span class="kw">let</span> <span class="ident">collection</span> <span class="op">=</span> <span class="ident">Path</span>::<span class="op">&lt;</span><span class="ident">CollectionParam</span><span class="op">&gt;</span>::<span class="ident">extract</span>(<span class="ident">req</span>)
-            .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
-                <span class="ident">RequestValidationErrors</span>::<span class="ident">with_error</span>(
-                    <span class="string">&quot;collection&quot;</span>,
-                    <span class="string">&quot;Invalid collection name&quot;</span>,
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
+                <span class="ident">ValidationErrorKind</span>::<span class="ident">FromDetails</span>(
+                    <span class="ident">e</span>.<span class="ident">to_string</span>(),
                     <span class="ident">RequestErrorLocation</span>::<span class="ident">Path</span>,
+                    <span class="prelude-val">Some</span>(<span class="string">&quot;collection&quot;</span>.<span class="ident">to_owned</span>()),
                 )
             })<span class="question-mark">?</span>.<span class="ident">into_inner</span>();
-        <span class="ident">collection</span>
-            .<span class="ident">validate</span>()
-            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">RequestValidationErrors</span>::<span class="ident">with_location</span>(<span class="ident">e</span>, <span class="ident">RequestErrorLocation</span>::<span class="ident">Path</span>))<span class="question-mark">?</span>;
+        <span class="ident">collection</span>.<span class="ident">validate</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
+            <span class="ident">ValidationErrorKind</span>::<span class="ident">FromValidationErrors</span>(<span class="ident">e</span>, <span class="ident">RequestErrorLocation</span>::<span class="ident">Path</span>)
+        })<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">collection</span>)
     }
 }
@@ -1129,30 +1052,24 @@
 
 <span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">HawkIdentifier</span> {
     <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> <span class="ident">Settings</span>;
-    <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">HawkIdentifier</span>, <span class="ident">Error</span><span class="op">&gt;</span>;
+    <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="ident">ApiResult</span><span class="op">&lt;</span><span class="ident">HawkIdentifier</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// Use HawkPayload extraction and format as HawkIdentifier.</span>
     <span class="kw">fn</span> <span class="ident">from_request</span>(<span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>, <span class="ident">settings</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Config</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="prelude-ty">Result</span> {
-        <span class="kw">let</span> <span class="ident">payload</span> <span class="op">=</span> <span class="ident">HawkPayload</span>::<span class="ident">from_request</span>(<span class="ident">req</span>, <span class="ident">settings</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
-            <span class="ident">RequestValidationErrors</span>::<span class="ident">with_error</span>(
-                <span class="string">&quot;Authentication&quot;</span>,
-                <span class="string">&quot;Invalid authentication&quot;</span>,
-                <span class="ident">RequestErrorLocation</span>::<span class="ident">Header</span>,
-            )
-        })<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">path_uid</span> <span class="op">=</span> <span class="ident">Path</span>::<span class="op">&lt;</span><span class="ident">UidParam</span><span class="op">&gt;</span>::<span class="ident">extract</span>(<span class="ident">req</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
-            <span class="ident">RequestValidationErrors</span>::<span class="ident">with_error</span>(
-                <span class="string">&quot;user-id&quot;</span>,
-                <span class="string">&quot;Invalid authentication&quot;</span>,
-                <span class="ident">RequestErrorLocation</span>::<span class="ident">Header</span>,
+        <span class="kw">let</span> <span class="ident">payload</span> <span class="op">=</span> <span class="ident">HawkPayload</span>::<span class="ident">from_request</span>(<span class="ident">req</span>, <span class="ident">settings</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">path_uid</span> <span class="op">=</span> <span class="ident">Path</span>::<span class="op">&lt;</span><span class="ident">UidParam</span><span class="op">&gt;</span>::<span class="ident">extract</span>(<span class="ident">req</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
+            <span class="ident">ValidationErrorKind</span>::<span class="ident">FromDetails</span>(
+                <span class="ident">e</span>.<span class="ident">to_string</span>(),
+                <span class="ident">RequestErrorLocation</span>::<span class="ident">Path</span>,
+                <span class="prelude-val">Some</span>(<span class="string">&quot;uid&quot;</span>.<span class="ident">to_owned</span>()),
             )
         })<span class="question-mark">?</span>;
         <span class="kw">if</span> <span class="ident">payload</span>.<span class="ident">user_id</span> <span class="op">!=</span> <span class="ident">path_uid</span>.<span class="ident">uid</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">RequestValidationErrors</span>::<span class="ident">with_error</span>(
-                <span class="string">&quot;user-id&quot;</span>,
-                <span class="string">&quot;Invalid authentication&quot;</span>,
+            <span class="prelude-val">Err</span>(<span class="ident">ValidationErrorKind</span>::<span class="ident">FromDetails</span>(
+                <span class="string">&quot;conflicts with payload&quot;</span>.<span class="ident">to_owned</span>(),
                 <span class="ident">RequestErrorLocation</span>::<span class="ident">Path</span>,
-            ).<span class="ident">into</span>());
+                <span class="prelude-val">Some</span>(<span class="string">&quot;uid&quot;</span>.<span class="ident">to_owned</span>()),
+            ))<span class="question-mark">?</span>;
         }
 
         <span class="prelude-val">Ok</span>(<span class="ident">HawkIdentifier</span> {
@@ -1209,14 +1126,21 @@
 
 <span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BsoQueryParams</span> {
     <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> <span class="ident">Settings</span>;
-    <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">BsoQueryParams</span>, <span class="ident">Error</span><span class="op">&gt;</span>;
+    <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="ident">ApiResult</span><span class="op">&lt;</span><span class="ident">BsoQueryParams</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// Extract and validate the query parameters</span>
     <span class="kw">fn</span> <span class="ident">from_request</span>(<span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Config</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="prelude-ty">Result</span> {
         <span class="comment">// TODO: serde deserialize the query ourselves to catch the serde error nicely</span>
-        <span class="kw">let</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Query</span>::<span class="op">&lt;</span><span class="ident">BsoQueryParams</span><span class="op">&gt;</span>::<span class="ident">from_request</span>(<span class="ident">req</span>, <span class="kw-2">&amp;</span>())<span class="question-mark">?</span>.<span class="ident">into_inner</span>();
+        <span class="kw">let</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Query</span>::<span class="op">&lt;</span><span class="ident">BsoQueryParams</span><span class="op">&gt;</span>::<span class="ident">from_request</span>(<span class="ident">req</span>, <span class="kw-2">&amp;</span>())
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
+                <span class="ident">ValidationErrorKind</span>::<span class="ident">FromDetails</span>(
+                    <span class="ident">e</span>.<span class="ident">to_string</span>(),
+                    <span class="ident">RequestErrorLocation</span>::<span class="ident">QueryString</span>,
+                    <span class="prelude-val">None</span>,
+                )
+            })<span class="question-mark">?</span>.<span class="ident">into_inner</span>();
         <span class="ident">params</span>.<span class="ident">validate</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
-            <span class="ident">RequestValidationErrors</span>::<span class="ident">with_location</span>(<span class="ident">e</span>, <span class="ident">RequestErrorLocation</span>::<span class="ident">QueryString</span>)
+            <span class="ident">ValidationErrorKind</span>::<span class="ident">FromValidationErrors</span>(<span class="ident">e</span>, <span class="ident">RequestErrorLocation</span>::<span class="ident">QueryString</span>)
         })<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">params</span>)
     }
@@ -1236,24 +1160,19 @@
 
 <span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PreConditionHeader</span><span class="op">&gt;</span> {
     <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> <span class="ident">Settings</span>;
-    <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PreConditionHeader</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span>;
+    <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="ident">ApiResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PreConditionHeader</span><span class="op">&gt;&gt;</span>;
 
     <span class="doccomment">/// Extract and validate the precondition headers</span>
     <span class="kw">fn</span> <span class="ident">from_request</span>(<span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Config</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="prelude-ty">Result</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">errors</span> <span class="op">=</span> <span class="ident">ValidationErrors</span>::<span class="ident">new</span>();
         <span class="kw">let</span> <span class="ident">headers</span> <span class="op">=</span> <span class="ident">req</span>.<span class="ident">headers</span>();
         <span class="kw">let</span> <span class="ident">modified</span> <span class="op">=</span> <span class="ident">headers</span>.<span class="ident">get</span>(<span class="string">&quot;X-If-Modified-Since&quot;</span>);
         <span class="kw">let</span> <span class="ident">unmodified</span> <span class="op">=</span> <span class="ident">headers</span>.<span class="ident">get</span>(<span class="string">&quot;X-If-Unmodified-Since&quot;</span>);
         <span class="kw">if</span> <span class="ident">modified</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="ident">unmodified</span>.<span class="ident">is_some</span>() {
-            <span class="ident">errors</span>.<span class="ident">add</span>(
-                <span class="string">&quot;X-If-Unmodified-Since&quot;</span>,
-                <span class="ident">request_error</span>(
-                    <span class="string">&quot;Cannot specify both X-If-Modified-Since and X-If-Unmodified-Since on \
-                     a single request&quot;</span>,
-                    <span class="ident">RequestErrorLocation</span>::<span class="ident">Header</span>,
-                ),
-            );
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">RequestValidationErrors</span>(<span class="ident">errors</span>).<span class="ident">into</span>());
+            <span class="prelude-val">Err</span>(<span class="ident">ValidationErrorKind</span>::<span class="ident">FromDetails</span>(
+                <span class="string">&quot;conflicts with X-If-Modified-Since&quot;</span>.<span class="ident">to_owned</span>(),
+                <span class="ident">RequestErrorLocation</span>::<span class="ident">Header</span>,
+                <span class="prelude-val">Some</span>(<span class="string">&quot;X-If-Unmodified-Since&quot;</span>.<span class="ident">to_owned</span>()),
+            ))<span class="question-mark">?</span>;
         };
         <span class="kw">let</span> (<span class="ident">value</span>, <span class="ident">field_name</span>) <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">modified_value</span>) <span class="op">=</span> <span class="ident">modified</span> {
             (<span class="ident">modified_value</span>, <span class="string">&quot;X-If-Modified-Since&quot;</span>)
@@ -1264,14 +1183,28 @@
         };
         <span class="ident">value</span>
             .<span class="ident">to_str</span>()
-            .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">request_error</span>(<span class="string">&quot;Bad value&quot;</span>, <span class="ident">RequestErrorLocation</span>::<span class="ident">Header</span>))
-            .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> {
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
+                <span class="ident">ValidationErrorKind</span>::<span class="ident">FromDetails</span>(
+                    <span class="ident">e</span>.<span class="ident">to_string</span>(),
+                    <span class="ident">RequestErrorLocation</span>::<span class="ident">Header</span>,
+                    <span class="prelude-val">Some</span>(<span class="ident">field_name</span>.<span class="ident">to_owned</span>()),
+                ).<span class="ident">into</span>()
+            }).<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> {
                 <span class="ident">v</span>.<span class="ident">parse</span>::<span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>()
-                    .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">request_error</span>(<span class="string">&quot;Bad value&quot;</span>, <span class="ident">RequestErrorLocation</span>::<span class="ident">Header</span>))
-                    .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> {
+                    .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
+                        <span class="ident">ValidationErrorKind</span>::<span class="ident">FromDetails</span>(
+                            <span class="ident">e</span>.<span class="ident">to_string</span>(),
+                            <span class="ident">RequestErrorLocation</span>::<span class="ident">Header</span>,
+                            <span class="prelude-val">Some</span>(<span class="ident">field_name</span>.<span class="ident">to_owned</span>()),
+                        ).<span class="ident">into</span>()
+                    }).<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> {
                         <span class="comment">// Don&#39;t allow negative values for the field</span>
                         <span class="kw">if</span> <span class="ident">v</span> <span class="op">&lt;</span> <span class="number">0.0</span> {
-                            <span class="prelude-val">Err</span>(<span class="ident">request_error</span>(<span class="string">&quot;Bad value&quot;</span>, <span class="ident">RequestErrorLocation</span>::<span class="ident">Header</span>))
+                            <span class="prelude-val">Err</span>(<span class="ident">ValidationErrorKind</span>::<span class="ident">FromDetails</span>(
+                                <span class="string">&quot;value is negative&quot;</span>.<span class="ident">to_string</span>(),
+                                <span class="ident">RequestErrorLocation</span>::<span class="ident">Header</span>,
+                                <span class="prelude-val">Some</span>(<span class="ident">field_name</span>.<span class="ident">to_owned</span>()),
+                            ))<span class="question-mark">?</span>
                         } <span class="kw">else</span> {
                             <span class="prelude-val">Ok</span>(<span class="ident">v</span>)
                         }
@@ -1282,53 +1215,14 @@
                 } <span class="kw">else</span> {
                     <span class="prelude-val">Some</span>(<span class="ident">PreConditionHeader</span>::<span class="ident">IfUnmodifiedSince</span>(<span class="ident">v</span>))
                 }
-            }).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span>: <span class="ident">ValidationError</span><span class="op">|</span> {
-                <span class="ident">errors</span>.<span class="ident">add</span>(<span class="ident">field_name</span>, <span class="ident">e</span>);
-                <span class="ident">RequestValidationErrors</span>(<span class="ident">errors</span>).<span class="ident">into</span>()
             })
-    }
-}
-
-<span class="doccomment">/// Client Request Error</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Represents errors returned when a client makes an error in its request.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>)]</span>
-<span class="kw">struct</span> <span class="ident">ClientRequestError</span> {
-    <span class="ident">status</span>: <span class="ident">u32</span>,
-    <span class="ident">errors</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RequestValidationError</span><span class="op">&gt;&gt;</span>,
-}
-
-<span class="doccomment">/// Request Validation errors</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Represents a single error from validating the request.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>)]</span>
-<span class="kw">struct</span> <span class="ident">RequestValidationError</span> {
-    <span class="ident">location</span>: <span class="ident">RequestErrorLocation</span>,
-    <span class="ident">name</span>: <span class="ident">String</span>,
-    <span class="ident">description</span>: <span class="ident">String</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">RequestValidationError</span> {
-    <span class="kw">fn</span> <span class="ident">with_name_and_error</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">error</span>: <span class="kw-2">&amp;</span><span class="ident">ValidationError</span>) <span class="op">-&gt;</span> <span class="ident">RequestValidationError</span> {
-        <span class="kw">let</span> <span class="ident">location</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">loc</span>) <span class="op">=</span> <span class="ident">error</span>.<span class="ident">params</span>.<span class="ident">get</span>(<span class="string">&quot;location&quot;</span>) {
-            <span class="comment">// In the event a bad location is given</span>
-            <span class="ident">from_value</span>(<span class="ident">loc</span>.<span class="ident">clone</span>()).<span class="ident">unwrap_or</span>(<span class="ident">RequestErrorLocation</span>::<span class="ident">Unknown</span>)
-        } <span class="kw">else</span> {
-            <span class="comment">// This ideally never happens, but just in case the location wasn&#39;t supplied</span>
-            <span class="ident">RequestErrorLocation</span>::<span class="ident">Unknown</span>
-        };
-        <span class="ident">RequestValidationError</span> {
-            <span class="ident">location</span>,
-            <span class="ident">name</span>: <span class="ident">name</span>.<span class="ident">to_string</span>(),
-            <span class="ident">description</span>: <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">error</span>),
-        }
     }
 }
 
 <span class="doccomment">/// Validation Error Location in the request</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename_all</span> <span class="op">=</span> <span class="string">&quot;lowercase&quot;</span>)]</span>
-<span class="kw">enum</span> <span class="ident">RequestErrorLocation</span> {
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">RequestErrorLocation</span> {
     <span class="ident">Body</span>,
     <span class="ident">QueryString</span>,
     <span class="ident">Url</span>,
@@ -1337,87 +1231,6 @@
     <span class="ident">Cookies</span>,
     <span class="ident">Method</span>,
     <span class="ident">Unknown</span>,
-}
-
-<span class="doccomment">/// Request Validation Errors</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This is a wrapper on validator&#39;s ValidationErrors so that the error can</span>
-<span class="doccomment">/// be properly adapted to a ResponseError.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RequestValidationErrors</span>(<span class="ident">ValidationErrors</span>);
-
-<span class="kw">impl</span> <span class="ident">RequestValidationErrors</span> {
-    <span class="doccomment">/// Map all the errors to a specific location</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This is useful for map_err to map the ValidationErrors from a single</span>
-    <span class="doccomment">/// location to include the appropriate `RequestErrorLocation`</span>
-    <span class="kw">fn</span> <span class="ident">with_location</span>(<span class="ident">errors</span>: <span class="ident">ValidationErrors</span>, <span class="ident">location</span>: <span class="ident">RequestErrorLocation</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_errors</span> <span class="op">=</span> <span class="ident">ValidationErrors</span>::<span class="ident">new</span>();
-        <span class="kw">let</span> <span class="ident">validation_errors</span> <span class="op">=</span> <span class="ident">errors</span>.<span class="ident">field_errors</span>();
-        <span class="kw">for</span> (<span class="kw-2">ref</span> <span class="ident">field_name</span>, <span class="ident">errors</span>) <span class="kw">in</span> <span class="ident">validation_errors</span>.<span class="ident">iter</span>() {
-            <span class="kw">for</span> <span class="ident">error</span> <span class="kw">in</span> <span class="ident">errors</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="ident">error</span>.<span class="ident">clone</span>();
-                <span class="ident">err</span>.<span class="ident">add_param</span>(<span class="string">&quot;location&quot;</span>.<span class="ident">into</span>(), <span class="kw-2">&amp;</span><span class="ident">location</span>);
-                <span class="ident">new_errors</span>.<span class="ident">add</span>(<span class="ident">field_name</span>.<span class="ident">clone</span>(), <span class="ident">err</span>);
-            }
-        }
-        <span class="ident">RequestValidationErrors</span>(<span class="ident">new_errors</span>)
-    }
-
-    <span class="doccomment">/// Helper to quickly make a `RequestValidationErrors` with a single error</span>
-    <span class="kw">fn</span> <span class="ident">with_error</span>(
-        <span class="ident">field_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-        <span class="ident">message</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-        <span class="ident">location</span>: <span class="ident">RequestErrorLocation</span>,
-    ) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">err</span> <span class="op">=</span> <span class="ident">request_error</span>(<span class="ident">message</span>, <span class="ident">location</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">errors</span> <span class="op">=</span> <span class="ident">ValidationErrors</span>::<span class="ident">new</span>();
-        <span class="ident">errors</span>.<span class="ident">add</span>(<span class="ident">field_name</span>, <span class="ident">err</span>);
-        <span class="ident">RequestValidationErrors</span>(<span class="ident">errors</span>)
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">error</span>::<span class="ident">Error</span> <span class="kw">for</span> <span class="ident">RequestValidationErrors</span> {
-    <span class="kw">fn</span> <span class="ident">description</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">str</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">description</span>()
-    }
-
-    <span class="kw">fn</span> <span class="ident">cause</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">error</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">cause</span>()
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">RequestValidationErrors</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">fmt</span>(<span class="ident">f</span>)
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">ResponseError</span> <span class="kw">for</span> <span class="ident">RequestValidationErrors</span> {
-    <span class="kw">fn</span> <span class="ident">error_response</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">HttpResponse</span> {
-        <span class="kw">let</span> <span class="ident">error</span>: <span class="ident">ClientRequestError</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">into</span>();
-        <span class="ident">HttpResponse</span>::<span class="ident">build</span>(<span class="ident">StatusCode</span>::<span class="ident">BAD_REQUEST</span>).<span class="ident">json</span>(<span class="ident">error</span>)
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">RequestValidationErrors</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ClientRequestError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">errors</span>: <span class="kw-2">&amp;</span><span class="ident">RequestValidationErrors</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sync_error</span> <span class="op">=</span> <span class="ident">ClientRequestError</span>::<span class="ident">default</span>();
-        <span class="ident">sync_error</span>.<span class="ident">status</span> <span class="op">=</span> <span class="number">400</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">client_errors</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
-        <span class="kw">let</span> <span class="ident">validation_errors</span> <span class="op">=</span> <span class="ident">errors</span>.<span class="number">0</span>.<span class="ident">clone</span>().<span class="ident">field_errors</span>();
-        <span class="kw">for</span> (<span class="kw-2">ref</span> <span class="ident">field_name</span>, <span class="ident">error_kind</span>) <span class="kw">in</span> <span class="ident">validation_errors</span>.<span class="ident">iter</span>() {
-            <span class="kw">for</span> <span class="ident">error</span> <span class="kw">in</span> <span class="ident">error_kind</span> {
-                <span class="ident">client_errors</span>.<span class="ident">push</span>(<span class="ident">RequestValidationError</span>::<span class="ident">with_name_and_error</span>(
-                    <span class="ident">field_name</span>, <span class="ident">error</span>,
-                ))
-            }
-        }
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">client_errors</span>.<span class="ident">is_empty</span>() {
-            <span class="ident">sync_error</span>.<span class="ident">errors</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">client_errors</span>)
-        }
-        <span class="ident">sync_error</span>
-    }
 }
 
 <span class="doccomment">/// Convenience function to create a `ValidationError` with additional context</span>
@@ -1514,6 +1327,7 @@
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
 
     <span class="kw">use</span> <span class="ident">actix_web</span>::<span class="ident">test</span>::<span class="ident">TestRequest</span>;
+    <span class="kw">use</span> <span class="ident">actix_web</span>::<span class="ident">HttpResponse</span>;
     <span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">http</span>::<span class="ident">Method</span>, <span class="ident">Binary</span>, <span class="ident">Body</span>};
     <span class="kw">use</span> <span class="ident">base64</span>;
     <span class="kw">use</span> <span class="ident">hawk</span>::{<span class="ident">Credentials</span>, <span class="ident">Key</span>, <span class="ident">RequestBuilder</span>};
@@ -1601,11 +1415,26 @@
         <span class="kw">let</span> <span class="ident">response</span>: <span class="ident">HttpResponse</span> <span class="op">=</span> <span class="ident">result</span>.<span class="ident">err</span>().<span class="ident">unwrap</span>().<span class="ident">into</span>();
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="number">400</span>);
         <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">extract_body_as_str</span>(<span class="kw-2">&amp;</span><span class="ident">response</span>);
-        <span class="kw">let</span> <span class="ident">err</span>: <span class="ident">ClientRequestError</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>.<span class="ident">status</span>, <span class="number">400</span>);
-        <span class="kw">let</span> <span class="ident">errors</span> <span class="op">=</span> <span class="ident">err</span>.<span class="ident">errors</span>.<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">errors</span>[<span class="number">0</span>].<span class="ident">location</span>, <span class="ident">RequestErrorLocation</span>::<span class="ident">QueryString</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">errors</span>.<span class="ident">len</span>(), <span class="number">2</span>);
+
+        <span class="kw">let</span> <span class="ident">err</span>: <span class="ident">serde_json</span>::<span class="ident">Value</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;status&quot;</span>], <span class="number">400</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;reason&quot;</span>], <span class="string">&quot;Bad Request&quot;</span>);
+
+        <span class="kw">let</span> (<span class="ident">lower_error</span>, <span class="ident">sort_error</span>) <span class="op">=</span> <span class="kw">if</span> <span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>][<span class="string">&quot;name&quot;</span>] <span class="op">==</span> <span class="string">&quot;lower&quot;</span> {
+            (<span class="kw-2">&amp;</span><span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>], <span class="kw-2">&amp;</span><span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">1</span>])
+        } <span class="kw">else</span> {
+            (<span class="kw-2">&amp;</span><span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">1</span>], <span class="kw-2">&amp;</span><span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>])
+        };
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">lower_error</span>[<span class="string">&quot;description&quot;</span>], <span class="string">&quot;Invalid value&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">lower_error</span>[<span class="string">&quot;location&quot;</span>], <span class="string">&quot;querystring&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">lower_error</span>[<span class="string">&quot;name&quot;</span>], <span class="string">&quot;lower&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">lower_error</span>[<span class="string">&quot;value&quot;</span>], <span class="op">-</span><span class="number">1.23</span>);
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">sort_error</span>[<span class="string">&quot;description&quot;</span>], <span class="string">&quot;Invalid sort option&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">sort_error</span>[<span class="string">&quot;location&quot;</span>], <span class="string">&quot;querystring&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">sort_error</span>[<span class="string">&quot;name&quot;</span>], <span class="string">&quot;sort&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">sort_error</span>[<span class="string">&quot;value&quot;</span>], <span class="string">&quot;whatever&quot;</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1671,10 +1500,14 @@
         <span class="kw">let</span> <span class="ident">response</span>: <span class="ident">HttpResponse</span> <span class="op">=</span> <span class="ident">result</span>.<span class="ident">err</span>().<span class="ident">unwrap</span>().<span class="ident">into</span>();
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="number">400</span>);
         <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">extract_body_as_str</span>(<span class="kw-2">&amp;</span><span class="ident">response</span>);
-        <span class="kw">let</span> <span class="ident">err</span>: <span class="ident">ClientRequestError</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>.<span class="ident">status</span>, <span class="number">400</span>);
-        <span class="kw">let</span> <span class="ident">errors</span> <span class="op">=</span> <span class="ident">err</span>.<span class="ident">errors</span>.<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">errors</span>[<span class="number">0</span>].<span class="ident">location</span>, <span class="ident">RequestErrorLocation</span>::<span class="ident">Path</span>);
+
+        <span class="kw">let</span> <span class="ident">err</span>: <span class="ident">serde_json</span>::<span class="ident">Value</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;status&quot;</span>], <span class="number">400</span>);
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>][<span class="string">&quot;description&quot;</span>], <span class="string">&quot;regex&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>][<span class="string">&quot;location&quot;</span>], <span class="string">&quot;path&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>][<span class="string">&quot;name&quot;</span>], <span class="string">&quot;bso&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>][<span class="string">&quot;value&quot;</span>], <span class="ident">INVALID_BSO_NAME</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1725,37 +1558,51 @@
         <span class="kw">let</span> <span class="ident">response</span>: <span class="ident">HttpResponse</span> <span class="op">=</span> <span class="ident">result</span>.<span class="ident">err</span>().<span class="ident">unwrap</span>().<span class="ident">into</span>();
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="number">400</span>);
         <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">extract_body_as_str</span>(<span class="kw-2">&amp;</span><span class="ident">response</span>);
-        <span class="kw">let</span> <span class="ident">err</span>: <span class="ident">ClientRequestError</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>.<span class="ident">status</span>, <span class="number">400</span>);
-        <span class="kw">let</span> <span class="ident">errors</span> <span class="op">=</span> <span class="ident">err</span>.<span class="ident">errors</span>.<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">errors</span>[<span class="number">0</span>].<span class="ident">location</span>, <span class="ident">RequestErrorLocation</span>::<span class="ident">Path</span>);
+
+        <span class="kw">let</span> <span class="ident">err</span>: <span class="ident">serde_json</span>::<span class="ident">Value</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;status&quot;</span>], <span class="number">400</span>);
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>][<span class="string">&quot;description&quot;</span>], <span class="string">&quot;regex&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>][<span class="string">&quot;location&quot;</span>], <span class="string">&quot;path&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>][<span class="string">&quot;name&quot;</span>], <span class="string">&quot;collection&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>][<span class="string">&quot;value&quot;</span>], <span class="ident">INVALID_COLLECTION_NAME</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_invalid_precondition_headers</span>() {
-        <span class="kw">fn</span> <span class="ident">assert_invalid_header</span>(<span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>) {
+        <span class="kw">fn</span> <span class="ident">assert_invalid_header</span>(
+            <span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>,
+            <span class="ident">error_header</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+            <span class="ident">error_message</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+        ) {
             <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PreConditionHeader</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;&gt;</span>::<span class="ident">extract</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>);
             <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">result</span>.<span class="ident">is_err</span>());
             <span class="kw">let</span> <span class="ident">response</span>: <span class="ident">HttpResponse</span> <span class="op">=</span> <span class="ident">result</span>.<span class="ident">err</span>().<span class="ident">unwrap</span>().<span class="ident">into</span>();
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="number">400</span>);
             <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">extract_body_as_str</span>(<span class="kw-2">&amp;</span><span class="ident">response</span>);
-            <span class="kw">let</span> <span class="ident">err</span>: <span class="ident">ClientRequestError</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>).<span class="ident">unwrap</span>();
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>.<span class="ident">status</span>, <span class="number">400</span>);
-            <span class="kw">let</span> <span class="ident">errors</span> <span class="op">=</span> <span class="ident">err</span>.<span class="ident">errors</span>.<span class="ident">unwrap</span>();
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">errors</span>[<span class="number">0</span>].<span class="ident">location</span>, <span class="ident">RequestErrorLocation</span>::<span class="ident">Header</span>);
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">errors</span>.<span class="ident">len</span>(), <span class="number">1</span>);
+
+            <span class="kw">let</span> <span class="ident">err</span>: <span class="ident">serde_json</span>::<span class="ident">Value</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>).<span class="ident">unwrap</span>();
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;status&quot;</span>], <span class="number">400</span>);
+
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>][<span class="string">&quot;description&quot;</span>], <span class="ident">error_message</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>][<span class="string">&quot;location&quot;</span>], <span class="string">&quot;header&quot;</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>][<span class="string">&quot;name&quot;</span>], <span class="ident">error_header</span>);
         }
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">with_state</span>(<span class="ident">make_state</span>())
             .<span class="ident">header</span>(<span class="string">&quot;X-If-Modified-Since&quot;</span>, <span class="string">&quot;32124.32&quot;</span>)
             .<span class="ident">header</span>(<span class="string">&quot;X-If-Unmodified-Since&quot;</span>, <span class="string">&quot;4212.12&quot;</span>)
             .<span class="ident">uri</span>(<span class="string">&quot;/&quot;</span>)
             .<span class="ident">finish</span>();
-        <span class="ident">assert_invalid_header</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>);
+        <span class="ident">assert_invalid_header</span>(
+            <span class="kw-2">&amp;</span><span class="ident">req</span>,
+            <span class="string">&quot;X-If-Unmodified-Since&quot;</span>,
+            <span class="string">&quot;conflicts with X-If-Modified-Since&quot;</span>,
+        );
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">with_state</span>(<span class="ident">make_state</span>())
             .<span class="ident">header</span>(<span class="string">&quot;X-If-Modified-Since&quot;</span>, <span class="string">&quot;-32.1&quot;</span>)
             .<span class="ident">uri</span>(<span class="string">&quot;/&quot;</span>)
             .<span class="ident">finish</span>();
-        <span class="ident">assert_invalid_header</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>);
+        <span class="ident">assert_invalid_header</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>, <span class="string">&quot;X-If-Modified-Since&quot;</span>, <span class="string">&quot;value is negative&quot;</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1823,10 +1670,13 @@
         <span class="kw">let</span> <span class="ident">response</span>: <span class="ident">HttpResponse</span> <span class="op">=</span> <span class="ident">result</span>.<span class="ident">err</span>().<span class="ident">unwrap</span>().<span class="ident">into</span>();
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="number">400</span>);
         <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">extract_body_as_str</span>(<span class="kw-2">&amp;</span><span class="ident">response</span>);
-        <span class="kw">let</span> <span class="ident">err</span>: <span class="ident">ClientRequestError</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>.<span class="ident">status</span>, <span class="number">400</span>);
-        <span class="kw">let</span> <span class="ident">errors</span> <span class="op">=</span> <span class="ident">err</span>.<span class="ident">errors</span>.<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">errors</span>[<span class="number">0</span>].<span class="ident">location</span>, <span class="ident">RequestErrorLocation</span>::<span class="ident">Path</span>);
+
+        <span class="kw">let</span> <span class="ident">err</span>: <span class="ident">serde_json</span>::<span class="ident">Value</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;status&quot;</span>], <span class="number">400</span>);
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>][<span class="string">&quot;description&quot;</span>], <span class="string">&quot;conflicts with payload&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>][<span class="string">&quot;location&quot;</span>], <span class="string">&quot;path&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>[<span class="string">&quot;errors&quot;</span>][<span class="number">0</span>][<span class="string">&quot;name&quot;</span>], <span class="string">&quot;uid&quot;</span>);
     }
 }
 </pre>
