@@ -33,7 +33,6 @@ ALIASES['crossbeam'] = {};
 ALIASES['crossbeam_channel'] = {};
 ALIASES['crossbeam_deque'] = {};
 ALIASES['crossbeam_epoch'] = {};
-ALIASES['crossbeam_epoch'] = {};
 ALIASES['crossbeam_utils'] = {};
 ALIASES['crossbeam_utils'] = {};
 ALIASES['crypto_mac'] = {};

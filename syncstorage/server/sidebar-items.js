@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Server",""],["ServerState","This is the global HTTP state object that will be made available to all HTTP API calls."]]});
+initSidebarItems({"fn":[["build_app",""]],"struct":[["Server",""],["ServerState","This is the global HTTP state object that will be made available to all HTTP API calls."]]});

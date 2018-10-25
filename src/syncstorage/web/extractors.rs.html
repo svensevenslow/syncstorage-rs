@@ -838,23 +838,50 @@
 <span id="838">838</span>
 <span id="839">839</span>
 <span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
+<span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
+<span id="860">860</span>
+<span id="861">861</span>
+<span id="862">862</span>
+<span id="863">863</span>
+<span id="864">864</span>
+<span id="865">865</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Request header/body/query extractors</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Handles ensuring the header&#39;s, body, and query parameters are correct, extraction to</span>
 <span class="doccomment">//! relevant types, and failing correctly with the appropriate errors if issues arise.</span>
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>::<span class="ident">FromStr</span>;
+<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">rc</span>::<span class="ident">Rc</span>, <span class="ident">str</span>::<span class="ident">FromStr</span>};
 
-<span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">Error</span>, <span class="ident">FromRequest</span>, <span class="ident">HttpRequest</span>, <span class="ident">Path</span>, <span class="ident">Query</span>, <span class="ident">State</span>};
+<span class="kw">use</span> <span class="ident">actix_web</span>::{
+    <span class="ident">error</span>::<span class="ident">ErrorInternalServerError</span>, <span class="ident">Error</span>, <span class="ident">FromRequest</span>, <span class="ident">HttpRequest</span>, <span class="ident">Path</span>, <span class="ident">Query</span>, <span class="ident">State</span>,
+};
 <span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">future</span>, <span class="ident">Future</span>};
 <span class="kw">use</span> <span class="ident">num</span>::<span class="ident">Zero</span>;
 <span class="kw">use</span> <span class="ident">regex</span>::<span class="ident">Regex</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">de</span>::{<span class="ident">Deserialize</span>, <span class="ident">Deserializer</span>, <span class="ident">Error</span> <span class="kw">as</span> <span class="ident">SerdeError</span>};
 <span class="kw">use</span> <span class="ident">validator</span>::{<span class="ident">Validate</span>, <span class="ident">ValidationError</span>};
 
+<span class="kw">use</span> <span class="ident">db</span>::<span class="ident">Db</span>;
 <span class="kw">use</span> <span class="ident">error</span>::<span class="ident">ApiResult</span>;
 <span class="kw">use</span> <span class="ident">server</span>::<span class="ident">ServerState</span>;
-<span class="kw">use</span> <span class="ident">settings</span>::<span class="ident">Settings</span>;
 <span class="kw">use</span> <span class="ident">web</span>::{<span class="ident">auth</span>::<span class="ident">HawkPayload</span>, <span class="ident">error</span>::<span class="ident">ValidationErrorKind</span>};
 
 <span class="kw">const</span> <span class="ident">BATCH_MAX_IDS</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">100</span>;
@@ -900,7 +927,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BsoParam</span> {
-    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> <span class="ident">Settings</span>;
+    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> ();
     <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="ident">ApiResult</span><span class="op">&lt;</span><span class="ident">BsoParam</span><span class="op">&gt;</span>;
 
     <span class="kw">fn</span> <span class="ident">from_request</span>(<span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Config</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="prelude-ty">Result</span> {
@@ -920,17 +947,21 @@
 }
 
 <span class="doccomment">/// Collection parameter extractor</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Validate</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Deserialize</span>, <span class="ident">Validate</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CollectionParam</span> {
     <span class="attribute">#[<span class="ident">validate</span>(<span class="ident">regex</span> <span class="op">=</span> <span class="string">&quot;VALID_COLLECTION_ID_REGEX&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">collection</span>: <span class="ident">String</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CollectionParam</span> {
-    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> <span class="ident">Settings</span>;
+    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> ();
     <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="ident">ApiResult</span><span class="op">&lt;</span><span class="ident">CollectionParam</span><span class="op">&gt;</span>;
 
     <span class="kw">fn</span> <span class="ident">from_request</span>(<span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Config</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="prelude-ty">Result</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">collection</span>) <span class="op">=</span> <span class="ident">req</span>.<span class="ident">extensions</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">CollectionParam</span><span class="op">&gt;</span>() {
+            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">collection</span>.<span class="ident">clone</span>());
+        }
+
         <span class="kw">let</span> <span class="ident">collection</span> <span class="op">=</span> <span class="ident">Path</span>::<span class="op">&lt;</span><span class="ident">CollectionParam</span><span class="op">&gt;</span>::<span class="ident">extract</span>(<span class="ident">req</span>)
             .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
                 <span class="ident">ValidationErrorKind</span>::<span class="ident">FromDetails</span>(
@@ -942,6 +973,7 @@
         <span class="ident">collection</span>.<span class="ident">validate</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
             <span class="ident">ValidationErrorKind</span>::<span class="ident">FromValidationErrors</span>(<span class="ident">e</span>, <span class="ident">RequestErrorLocation</span>::<span class="ident">Path</span>)
         })<span class="question-mark">?</span>;
+        <span class="ident">req</span>.<span class="ident">extensions_mut</span>().<span class="ident">insert</span>(<span class="ident">collection</span>.<span class="ident">clone</span>());
         <span class="prelude-val">Ok</span>(<span class="ident">collection</span>)
     }
 }
@@ -956,7 +988,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">MetaRequest</span> {
-    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> <span class="ident">Settings</span>;
+    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> ();
     <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">MetaRequest</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span><span class="op">&gt;&gt;</span>;
 
     <span class="kw">fn</span> <span class="ident">from_request</span>(<span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Config</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="prelude-ty">Result</span> {
@@ -984,16 +1016,14 @@
 }
 
 <span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CollectionRequest</span> {
-    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> <span class="ident">Settings</span>;
+    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> ();
     <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">CollectionRequest</span>, <span class="ident">Error</span><span class="op">&gt;</span>;
 
     <span class="kw">fn</span> <span class="ident">from_request</span>(<span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>, <span class="ident">settings</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Config</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="prelude-ty">Result</span> {
         <span class="kw">let</span> <span class="ident">user_id</span> <span class="op">=</span> <span class="ident">HawkIdentifier</span>::<span class="ident">from_request</span>(<span class="ident">req</span>, <span class="ident">settings</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">State</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;&gt;</span>::<span class="ident">from_request</span>(<span class="ident">req</span>, <span class="kw-2">&amp;</span>());
         <span class="kw">let</span> <span class="ident">query</span> <span class="op">=</span> <span class="ident">BsoQueryParams</span>::<span class="ident">from_request</span>(<span class="ident">req</span>, <span class="ident">settings</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">collection</span> <span class="op">=</span> <span class="ident">CollectionParam</span>::<span class="ident">from_request</span>(<span class="ident">req</span>, <span class="ident">settings</span>)<span class="question-mark">?</span>
-            .<span class="ident">collection</span>
-            .<span class="ident">clone</span>();
+        <span class="kw">let</span> <span class="ident">collection</span> <span class="op">=</span> <span class="ident">CollectionParam</span>::<span class="ident">from_request</span>(<span class="ident">req</span>, <span class="ident">settings</span>)<span class="question-mark">?</span>.<span class="ident">collection</span>;
 
         <span class="prelude-val">Ok</span>(<span class="ident">CollectionRequest</span> {
             <span class="ident">collection</span>,
@@ -1016,7 +1046,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BsoRequest</span> {
-    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> <span class="ident">Settings</span>;
+    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> ();
     <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">BsoRequest</span>, <span class="ident">Error</span><span class="op">&gt;</span>;
 
     <span class="kw">fn</span> <span class="ident">from_request</span>(<span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>, <span class="ident">settings</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Config</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="prelude-ty">Result</span> {
@@ -1051,11 +1081,15 @@
 }
 
 <span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">HawkIdentifier</span> {
-    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> <span class="ident">Settings</span>;
+    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> ();
     <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="ident">ApiResult</span><span class="op">&lt;</span><span class="ident">HawkIdentifier</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// Use HawkPayload extraction and format as HawkIdentifier.</span>
     <span class="kw">fn</span> <span class="ident">from_request</span>(<span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>, <span class="ident">settings</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Config</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="prelude-ty">Result</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">user_id</span>) <span class="op">=</span> <span class="ident">req</span>.<span class="ident">extensions</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">HawkIdentifier</span><span class="op">&gt;</span>() {
+            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">user_id</span>.<span class="ident">clone</span>());
+        }
+
         <span class="kw">let</span> <span class="ident">payload</span> <span class="op">=</span> <span class="ident">HawkPayload</span>::<span class="ident">from_request</span>(<span class="ident">req</span>, <span class="ident">settings</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">path_uid</span> <span class="op">=</span> <span class="ident">Path</span>::<span class="op">&lt;</span><span class="ident">UidParam</span><span class="op">&gt;</span>::<span class="ident">extract</span>(<span class="ident">req</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
             <span class="ident">ValidationErrorKind</span>::<span class="ident">FromDetails</span>(
@@ -1072,10 +1106,12 @@
             ))<span class="question-mark">?</span>;
         }
 
-        <span class="prelude-val">Ok</span>(<span class="ident">HawkIdentifier</span> {
+        <span class="kw">let</span> <span class="ident">user_id</span> <span class="op">=</span> <span class="ident">HawkIdentifier</span> {
             <span class="ident">legacy_id</span>: <span class="ident">payload</span>.<span class="ident">user_id</span>,
             <span class="ident">fxa_id</span>: <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
-        })
+        };
+        <span class="ident">req</span>.<span class="ident">extensions_mut</span>().<span class="ident">insert</span>(<span class="ident">user_id</span>.<span class="ident">clone</span>());
+        <span class="prelude-val">Ok</span>(<span class="ident">user_id</span>)
     }
 }
 
@@ -1086,6 +1122,18 @@
             <span class="ident">legacy_id</span>: <span class="ident">user_id</span>,
             ..<span class="ident">Default</span>::<span class="ident">default</span>()
         }
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">dyn</span> <span class="ident">Db</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> ();
+    <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">Error</span><span class="op">&gt;</span>;
+
+    <span class="kw">fn</span> <span class="ident">from_request</span>(<span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Config</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="prelude-ty">Result</span> {
+        <span class="ident">req</span>.<span class="ident">extensions</span>()
+            .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">dyn</span> <span class="ident">Db</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>()
+            .<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="ident">ErrorInternalServerError</span>(<span class="string">&quot;Unexpected Db error&quot;</span>))
+            .<span class="ident">map</span>(<span class="ident">Clone</span>::<span class="ident">clone</span>)
     }
 }
 
@@ -1125,7 +1173,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BsoQueryParams</span> {
-    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> <span class="ident">Settings</span>;
+    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> ();
     <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="ident">ApiResult</span><span class="op">&lt;</span><span class="ident">BsoQueryParams</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// Extract and validate the query parameters</span>
@@ -1159,7 +1207,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PreConditionHeader</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> <span class="ident">Settings</span>;
+    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> ();
     <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="ident">ApiResult</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PreConditionHeader</span><span class="op">&gt;&gt;</span>;
 
     <span class="doccomment">/// Extract and validate the precondition headers</span>
@@ -1336,7 +1384,7 @@
     <span class="kw">use</span> <span class="ident">serde_json</span>;
     <span class="kw">use</span> <span class="ident">sha2</span>::<span class="ident">Sha256</span>;
 
-    <span class="kw">use</span> <span class="ident">db</span>::<span class="ident">mock</span>::<span class="ident">MockDb</span>;
+    <span class="kw">use</span> <span class="ident">db</span>::<span class="ident">mock</span>::{<span class="ident">MockDb</span>, <span class="ident">MockDbPool</span>};
     <span class="kw">use</span> <span class="ident">server</span>::<span class="ident">ServerState</span>;
     <span class="kw">use</span> <span class="ident">settings</span>::{<span class="ident">Secrets</span>, <span class="ident">ServerLimits</span>};
 
@@ -1356,8 +1404,10 @@
     <span class="kw">fn</span> <span class="ident">make_state</span>() <span class="op">-&gt;</span> <span class="ident">ServerState</span> {
         <span class="ident">ServerState</span> {
             <span class="ident">db</span>: <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">MockDb</span>::<span class="ident">new</span>()),
+            <span class="ident">db_pool</span>: <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">MockDbPool</span>::<span class="ident">new</span>()),
             <span class="ident">limits</span>: <span class="ident">Arc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">SERVER_LIMITS</span>),
             <span class="ident">secrets</span>: <span class="ident">Arc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">SECRETS</span>),
+            <span class="ident">port</span>: <span class="number">8000</span>,
         }
     }
 

@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["MockDb",""]]});
+initSidebarItems({"struct":[["MockDb",""],["MockDbPool",""]]});

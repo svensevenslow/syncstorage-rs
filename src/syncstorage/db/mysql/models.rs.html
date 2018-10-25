@@ -646,12 +646,130 @@
 <span id="646">646</span>
 <span id="647">647</span>
 <span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
+<span id="674">674</span>
+<span id="675">675</span>
+<span id="676">676</span>
+<span id="677">677</span>
+<span id="678">678</span>
+<span id="679">679</span>
+<span id="680">680</span>
+<span id="681">681</span>
+<span id="682">682</span>
+<span id="683">683</span>
+<span id="684">684</span>
+<span id="685">685</span>
+<span id="686">686</span>
+<span id="687">687</span>
+<span id="688">688</span>
+<span id="689">689</span>
+<span id="690">690</span>
+<span id="691">691</span>
+<span id="692">692</span>
+<span id="693">693</span>
+<span id="694">694</span>
+<span id="695">695</span>
+<span id="696">696</span>
+<span id="697">697</span>
+<span id="698">698</span>
+<span id="699">699</span>
+<span id="700">700</span>
+<span id="701">701</span>
+<span id="702">702</span>
+<span id="703">703</span>
+<span id="704">704</span>
+<span id="705">705</span>
+<span id="706">706</span>
+<span id="707">707</span>
+<span id="708">708</span>
+<span id="709">709</span>
+<span id="710">710</span>
+<span id="711">711</span>
+<span id="712">712</span>
+<span id="713">713</span>
+<span id="714">714</span>
+<span id="715">715</span>
+<span id="716">716</span>
+<span id="717">717</span>
+<span id="718">718</span>
+<span id="719">719</span>
+<span id="720">720</span>
+<span id="721">721</span>
+<span id="722">722</span>
+<span id="723">723</span>
+<span id="724">724</span>
+<span id="725">725</span>
+<span id="726">726</span>
+<span id="727">727</span>
+<span id="728">728</span>
+<span id="729">729</span>
+<span id="730">730</span>
+<span id="731">731</span>
+<span id="732">732</span>
+<span id="733">733</span>
+<span id="734">734</span>
+<span id="735">735</span>
+<span id="736">736</span>
+<span id="737">737</span>
+<span id="738">738</span>
+<span id="739">739</span>
+<span id="740">740</span>
+<span id="741">741</span>
+<span id="742">742</span>
+<span id="743">743</span>
+<span id="744">744</span>
+<span id="745">745</span>
+<span id="746">746</span>
+<span id="747">747</span>
+<span id="748">748</span>
+<span id="749">749</span>
+<span id="750">750</span>
+<span id="751">751</span>
+<span id="752">752</span>
+<span id="753">753</span>
+<span id="754">754</span>
+<span id="755">755</span>
+<span id="756">756</span>
+<span id="757">757</span>
+<span id="758">758</span>
+<span id="759">759</span>
+<span id="760">760</span>
+<span id="761">761</span>
+<span id="762">762</span>
+<span id="763">763</span>
+<span id="764">764</span>
+<span id="765">765</span>
 </pre><pre class="rust ">
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">proc_macro_derive_resolution_fallback</span>)]</span>
 
-<span class="kw">use</span> <span class="ident">std</span>::{<span class="self">self</span>, <span class="ident">collections</span>::<span class="ident">HashMap</span>, <span class="ident">ops</span>::<span class="ident">Deref</span>, <span class="ident">sync</span>::<span class="ident">Arc</span>};
+<span class="kw">use</span> <span class="ident">std</span>::{<span class="self">self</span>, <span class="ident">cell</span>::<span class="ident">RefCell</span>, <span class="ident">collections</span>::<span class="ident">HashMap</span>, <span class="ident">ops</span>::<span class="ident">Deref</span>, <span class="ident">sync</span>::<span class="ident">Arc</span>};
 
 <span class="kw">use</span> <span class="ident">diesel</span>::{
+    <span class="ident">connection</span>::<span class="ident">TransactionManager</span>,
     <span class="ident">delete</span>,
     <span class="ident">dsl</span>::<span class="ident">max</span>,
     <span class="ident">expression</span>::<span class="ident">sql_literal</span>::<span class="ident">sql</span>,
@@ -664,7 +782,7 @@
 };
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">use</span> <span class="ident">diesel_logger</span>::<span class="ident">LoggingConnection</span>;
-<span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">future</span>;
+<span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">future</span>, <span class="ident">lazy</span>};
 
 <span class="kw">use</span> <span class="kw">super</span>::{
     <span class="ident">diesel_ext</span>::<span class="ident">LockInShareModeDsl</span>,
@@ -699,12 +817,14 @@
     <span class="prelude-val">Ok</span>(<span class="ident">embedded_migrations</span>::<span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="ident">conn</span>)<span class="question-mark">?</span>)
 }
 
-<span class="kw">enum</span> <span class="ident">CollectionLock</span> {
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">CollectionLock</span> {
     <span class="ident">Read</span>,
     <span class="ident">Write</span>,
 }
 
 <span class="doccomment">/// Per session Db metadata</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct</span> <span class="ident">MysqlDbSession</span> {
     <span class="doccomment">/// The &quot;current time&quot; on the server used for this session&#39;s operations</span>
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">timestamp</span>: <span class="ident">i64</span>,
@@ -724,27 +844,62 @@
     }
 }
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MysqlDb</span> {
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">test</span>))]</span>
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">conn</span>: <span class="ident">Conn</span>,
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">conn</span>: <span class="ident">LoggingConnection</span><span class="op">&lt;</span><span class="ident">Conn</span><span class="op">&gt;</span>,
-
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">session</span>: <span class="ident">MysqlDbSession</span>,
+    <span class="doccomment">/// Synchronous Diesel calls are executed in a tokio ThreadPool to satisfy</span>
+    <span class="doccomment">/// the Db trait&#39;s asynchronous interface.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Arc&lt;MysqlDbInner&gt; provides a Clone impl utilized for safely moving to</span>
+    <span class="doccomment">/// the thread pool but does not provide Send as the underlying db</span>
+    <span class="doccomment">/// conn. structs are !Sync (Arc requires both for Send). See the Send impl</span>
+    <span class="doccomment">/// below.</span>
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">inner</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">MysqlDbInner</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Pool level cache of collection_ids and their names</span>
     <span class="ident">coll_cache</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">CollectionCache</span><span class="op">&gt;</span>,
 }
 
+<span class="doccomment">/// Despite the db conn structs being !Sync (see Arc&lt;MysqlDbInner&gt; above) we</span>
+<span class="doccomment">/// don&#39;t spawn multiple MysqlDb calls at a time in the thread pool. Calls are</span>
+<span class="doccomment">/// queued to the thread pool via Futures, naturally serialized.</span>
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Send</span> <span class="kw">for</span> <span class="ident">MysqlDb</span> {}
+
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MysqlDbInner</span> {
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">test</span>))]</span>
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">conn</span>: <span class="ident">Conn</span>,
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">conn</span>: <span class="ident">LoggingConnection</span><span class="op">&lt;</span><span class="ident">Conn</span><span class="op">&gt;</span>,
+
+    <span class="ident">session</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">MysqlDbSession</span><span class="op">&gt;</span>,
+
+    <span class="ident">thread_pool</span>: <span class="ident">Arc</span><span class="op">&lt;</span>::<span class="ident">tokio_threadpool</span>::<span class="ident">ThreadPool</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">MysqlDb</span> {
+    <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="ident">MysqlDbInner</span>;
+
+    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Target</span> {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>
+    }
+}
+
 <span class="kw">impl</span> <span class="ident">MysqlDb</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">conn</span>: <span class="ident">Conn</span>, <span class="ident">coll_cache</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">CollectionCache</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">MysqlDb</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(
+        <span class="ident">conn</span>: <span class="ident">Conn</span>,
+        <span class="ident">thread_pool</span>: <span class="ident">Arc</span><span class="op">&lt;</span>::<span class="ident">tokio_threadpool</span>::<span class="ident">ThreadPool</span><span class="op">&gt;</span>,
+        <span class="ident">coll_cache</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">CollectionCache</span><span class="op">&gt;</span>,
+    ) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">MysqlDbInner</span> {
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">test</span>))]</span>
             <span class="ident">conn</span>,
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
             <span class="ident">conn</span>: <span class="ident">LoggingConnection</span>::<span class="ident">new</span>(<span class="ident">conn</span>),
+            <span class="ident">session</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">Default</span>::<span class="ident">default</span>()),
+            <span class="ident">thread_pool</span>,
+        };
+        <span class="ident">MysqlDb</span> {
+            <span class="ident">inner</span>: <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">inner</span>),
             <span class="ident">coll_cache</span>,
-            <span class="ident">session</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
         }
     }
 
@@ -757,24 +912,29 @@
     <span class="doccomment">/// In theory it would be possible to use serializable transactions rather</span>
     <span class="doccomment">/// than explicit locking, but our ops team have expressed concerns about</span>
     <span class="doccomment">/// the efficiency of that approach at scale.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lock_for_read</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">user_id</span>: <span class="ident">HawkIdentifier</span>, <span class="ident">collection</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">user_id</span> <span class="op">=</span> <span class="ident">user_id</span>.<span class="ident">legacy_id</span> <span class="kw">as</span> <span class="ident">u32</span>;
-        <span class="kw">let</span> <span class="ident">collection_id</span> <span class="op">=</span> <span class="self">self</span>
-            .<span class="ident">get_collection_id</span>(<span class="ident">collection</span>)
-            .<span class="ident">or_else</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">e</span>.<span class="ident">kind</span>() {
-                <span class="comment">// If the collection doesn&#39;t exist, we still want to start a</span>
-                <span class="comment">// transaction so it will continue to not exist.</span>
-                <span class="ident">DbErrorKind</span>::<span class="ident">CollectionNotFound</span> <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="number">0</span>),
-                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>),
-            })<span class="question-mark">?</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lock_for_read_sync</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">params</span>: <span class="ident">params</span>::<span class="ident">LockCollection</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">user_id</span> <span class="op">=</span> <span class="ident">params</span>.<span class="ident">user_id</span>.<span class="ident">legacy_id</span> <span class="kw">as</span> <span class="ident">u32</span>;
+        <span class="kw">let</span> <span class="ident">collection_id</span> <span class="op">=</span>
+            <span class="self">self</span>.<span class="ident">get_collection_id</span>(<span class="kw-2">&amp;</span><span class="ident">params</span>.<span class="ident">collection</span>)
+                .<span class="ident">or_else</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">e</span>.<span class="ident">kind</span>() {
+                    <span class="comment">// If the collection doesn&#39;t exist, we still want to start a</span>
+                    <span class="comment">// transaction so it will continue to not exist.</span>
+                    <span class="ident">DbErrorKind</span>::<span class="ident">CollectionNotFound</span> <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="number">0</span>),
+                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>),
+                })<span class="question-mark">?</span>;
         <span class="comment">// If we already have a read or write lock then it&#39;s safe to</span>
         <span class="comment">// use it as-is.</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw">_</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">session</span>.<span class="ident">coll_locks</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span>(<span class="ident">user_id</span>, <span class="ident">collection_id</span>)) {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw">_</span>) <span class="op">=</span> <span class="self">self</span>
+            .<span class="ident">session</span>
+            .<span class="ident">borrow</span>()
+            .<span class="ident">coll_locks</span>
+            .<span class="ident">get</span>(<span class="kw-2">&amp;</span>(<span class="ident">user_id</span>, <span class="ident">collection_id</span>))
+        {
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
         }
 
-        <span class="comment">// XXX: begin transaction here like python?</span>
         <span class="comment">// Lock the db</span>
+        <span class="self">self</span>.<span class="ident">begin</span>()<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">modified</span> <span class="op">=</span> <span class="ident">user_collections</span>::<span class="ident">table</span>
             .<span class="ident">select</span>(<span class="ident">user_collections</span>::<span class="ident">modified</span>)
             .<span class="ident">filter</span>(<span class="ident">user_collections</span>::<span class="ident">user_id</span>.<span class="ident">eq</span>(<span class="ident">user_id</span> <span class="kw">as</span> <span class="ident">i32</span>))
@@ -784,24 +944,32 @@
             .<span class="ident">optional</span>()<span class="question-mark">?</span>;
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">modified</span>) <span class="op">=</span> <span class="ident">modified</span> {
             <span class="self">self</span>.<span class="ident">session</span>
+                .<span class="ident">borrow_mut</span>()
                 .<span class="ident">coll_modified_cache</span>
                 .<span class="ident">insert</span>((<span class="ident">user_id</span>, <span class="ident">collection_id</span>), <span class="ident">modified</span>);
         }
-        <span class="comment">// XXX: who&#39;s responsible for unlocking</span>
+        <span class="comment">// XXX: who&#39;s responsible for unlocking (removing the entry)</span>
         <span class="self">self</span>.<span class="ident">session</span>
+            .<span class="ident">borrow_mut</span>()
             .<span class="ident">coll_locks</span>
             .<span class="ident">insert</span>((<span class="ident">user_id</span>, <span class="ident">collection_id</span>), <span class="ident">CollectionLock</span>::<span class="ident">Read</span>);
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lock_for_write</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">user_id</span>: <span class="ident">HawkIdentifier</span>, <span class="ident">collection</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">user_id</span> <span class="op">=</span> <span class="ident">user_id</span>.<span class="ident">legacy_id</span> <span class="kw">as</span> <span class="ident">u32</span>;
-        <span class="kw">let</span> <span class="ident">collection_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_or_create_collection_id</span>(<span class="ident">collection</span>)<span class="question-mark">?</span>;
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">CollectionLock</span>::<span class="ident">Read</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">session</span>.<span class="ident">coll_locks</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span>(<span class="ident">user_id</span>, <span class="ident">collection_id</span>)) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lock_for_write_sync</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">params</span>: <span class="ident">params</span>::<span class="ident">LockCollection</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">user_id</span> <span class="op">=</span> <span class="ident">params</span>.<span class="ident">user_id</span>.<span class="ident">legacy_id</span> <span class="kw">as</span> <span class="ident">u32</span>;
+        <span class="kw">let</span> <span class="ident">collection_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_or_create_collection_id</span>(<span class="kw-2">&amp;</span><span class="ident">params</span>.<span class="ident">collection</span>)<span class="question-mark">?</span>;
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">CollectionLock</span>::<span class="ident">Read</span>) <span class="op">=</span> <span class="self">self</span>
+            .<span class="ident">session</span>
+            .<span class="ident">borrow</span>()
+            .<span class="ident">coll_locks</span>
+            .<span class="ident">get</span>(<span class="kw-2">&amp;</span>(<span class="ident">user_id</span>, <span class="ident">collection_id</span>))
+        {
             <span class="prelude-val">Err</span>(<span class="ident">DbError</span>::<span class="ident">internal</span>(<span class="string">&quot;Can&#39;t escalate read-lock to write-lock&quot;</span>))<span class="question-mark">?</span>
         }
 
         <span class="comment">// Lock the db</span>
+        <span class="self">self</span>.<span class="ident">begin</span>()<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">modified</span> <span class="op">=</span> <span class="ident">user_collections</span>::<span class="ident">table</span>
             .<span class="ident">select</span>(<span class="ident">user_collections</span>::<span class="ident">modified</span>)
             .<span class="ident">filter</span>(<span class="ident">user_collections</span>::<span class="ident">user_id</span>.<span class="ident">eq</span>(<span class="ident">user_id</span> <span class="kw">as</span> <span class="ident">i32</span>))
@@ -811,17 +979,40 @@
             .<span class="ident">optional</span>()<span class="question-mark">?</span>;
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">modified</span>) <span class="op">=</span> <span class="ident">modified</span> {
             <span class="comment">// Forbid the write if it would not properly incr the timestamp</span>
-            <span class="kw">if</span> <span class="ident">modified</span> <span class="op">&gt;=</span> <span class="self">self</span>.<span class="ident">session</span>.<span class="ident">timestamp</span> {
+            <span class="kw">if</span> <span class="ident">modified</span> <span class="op">&gt;=</span> <span class="self">self</span>.<span class="ident">timestamp</span>() {
                 <span class="prelude-val">Err</span>(<span class="ident">DbErrorKind</span>::<span class="ident">Conflict</span>)<span class="question-mark">?</span>
             }
             <span class="self">self</span>.<span class="ident">session</span>
+                .<span class="ident">borrow_mut</span>()
                 .<span class="ident">coll_modified_cache</span>
                 .<span class="ident">insert</span>((<span class="ident">user_id</span>, <span class="ident">collection_id</span>), <span class="ident">modified</span>);
         }
         <span class="self">self</span>.<span class="ident">session</span>
+            .<span class="ident">borrow_mut</span>()
             .<span class="ident">coll_locks</span>
             .<span class="ident">insert</span>((<span class="ident">user_id</span>, <span class="ident">collection_id</span>), <span class="ident">CollectionLock</span>::<span class="ident">Write</span>);
         <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">begin</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>
+            .<span class="ident">conn</span>
+            .<span class="ident">transaction_manager</span>()
+            .<span class="ident">begin_transaction</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">conn</span>)<span class="question-mark">?</span>)
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">commit_sync</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>
+            .<span class="ident">conn</span>
+            .<span class="ident">transaction_manager</span>()
+            .<span class="ident">commit_transaction</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">conn</span>)<span class="question-mark">?</span>)
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rollback_sync</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>
+            .<span class="ident">conn</span>
+            .<span class="ident">transaction_manager</span>()
+            .<span class="ident">rollback_transaction</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">conn</span>)<span class="question-mark">?</span>)
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">delete_storage_sync</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">user_id</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
@@ -898,7 +1089,7 @@
         <span class="prelude-val">Ok</span>(<span class="ident">name</span>)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">put_bso_sync</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">bso</span>: <span class="kw-2">&amp;</span><span class="ident">params</span>::<span class="ident">PutBso</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">results</span>::<span class="ident">PutBso</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">put_bso_sync</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">bso</span>: <span class="ident">params</span>::<span class="ident">PutBso</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">results</span>::<span class="ident">PutBso</span><span class="op">&gt;</span> {
         <span class="comment">/*
         if bso.payload.is_none() &amp;&amp; bso.sortindex.is_none() &amp;&amp; bso.ttl.is_none() {
             // XXX: go returns an error here (ErrNothingToDo), and is treated
@@ -929,7 +1120,7 @@
                     .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">user_id</span>.<span class="ident">eq</span>(<span class="ident">user_id</span> <span class="kw">as</span> <span class="ident">i32</span>)) <span class="comment">// XXX:</span>
                     .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">collection_id</span>.<span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="ident">collection_id</span>))
                     .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">id</span>.<span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="ident">bso</span>.<span class="ident">id</span>))
-                    .<span class="ident">set</span>(<span class="ident">put_bso_as_changeset</span>(<span class="kw-2">&amp;</span><span class="ident">bso</span>, <span class="self">self</span>.<span class="ident">session</span>.<span class="ident">timestamp</span>))
+                    .<span class="ident">set</span>(<span class="ident">put_bso_as_changeset</span>(<span class="kw-2">&amp;</span><span class="ident">bso</span>, <span class="self">self</span>.<span class="ident">timestamp</span>()))
                     .<span class="ident">execute</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">conn</span>)<span class="question-mark">?</span>;
             } <span class="kw">else</span> {
                 <span class="kw">let</span> <span class="ident">payload</span> <span class="op">=</span> <span class="ident">bso</span>.<span class="ident">payload</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="ident">Deref</span>::<span class="ident">deref</span>).<span class="ident">unwrap_or_default</span>();
@@ -942,8 +1133,8 @@
                         <span class="ident">bso</span>::<span class="ident">id</span>.<span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="ident">bso</span>.<span class="ident">id</span>),
                         <span class="ident">bso</span>::<span class="ident">sortindex</span>.<span class="ident">eq</span>(<span class="ident">sortindex</span>),
                         <span class="ident">bso</span>::<span class="ident">payload</span>.<span class="ident">eq</span>(<span class="ident">payload</span>),
-                        <span class="ident">bso</span>::<span class="ident">modified</span>.<span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">session</span>.<span class="ident">timestamp</span>),
-                        <span class="ident">bso</span>::<span class="ident">expiry</span>.<span class="ident">eq</span>(<span class="self">self</span>.<span class="ident">session</span>.<span class="ident">timestamp</span> <span class="op">+</span> <span class="ident">ttl</span> <span class="kw">as</span> <span class="ident">i64</span>),
+                        <span class="ident">bso</span>::<span class="ident">modified</span>.<span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">timestamp</span>()),
+                        <span class="ident">bso</span>::<span class="ident">expiry</span>.<span class="ident">eq</span>(<span class="self">self</span>.<span class="ident">timestamp</span>() <span class="op">+</span> <span class="ident">ttl</span> <span class="kw">as</span> <span class="ident">i64</span>),
                     )).<span class="ident">execute</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">conn</span>)<span class="question-mark">?</span>;
             }
             <span class="self">self</span>.<span class="ident">touch_collection</span>(<span class="ident">user_id</span> <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">collection_id</span>)
@@ -981,7 +1172,7 @@
             .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">collection_id</span>.<span class="ident">eq</span>(<span class="ident">collection_id</span> <span class="kw">as</span> <span class="ident">i32</span>)) <span class="comment">// XXX:</span>
             .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">modified</span>.<span class="ident">lt</span>(<span class="ident">older</span> <span class="kw">as</span> <span class="ident">i64</span>))
             .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">modified</span>.<span class="ident">gt</span>(<span class="ident">newer</span> <span class="kw">as</span> <span class="ident">i64</span>))
-            .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">expiry</span>.<span class="ident">gt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">session</span>.<span class="ident">timestamp</span>))
+            .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">expiry</span>.<span class="ident">gt</span>(<span class="self">self</span>.<span class="ident">timestamp</span>()))
             .<span class="ident">into_boxed</span>();
 
         <span class="kw">if</span> <span class="op">!</span><span class="ident">ids</span>.<span class="ident">is_empty</span>() {
@@ -1029,7 +1220,7 @@
            .<span class="ident">bind</span>::<span class="op">&lt;</span><span class="ident">Integer</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="ident">user_id</span> <span class="kw">as</span> <span class="ident">i32</span>) <span class="comment">// XXX:</span>
            .<span class="ident">bind</span>::<span class="op">&lt;</span><span class="ident">Integer</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">collection_id</span>)
            .<span class="ident">bind</span>::<span class="op">&lt;</span><span class="ident">Text</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">params</span>.<span class="ident">id</span>)
-           .<span class="ident">bind</span>::<span class="op">&lt;</span><span class="ident">BigInt</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">session</span>.<span class="ident">timestamp</span>)
+           .<span class="ident">bind</span>::<span class="op">&lt;</span><span class="ident">BigInt</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">timestamp</span>())
            .<span class="ident">get_result</span>::<span class="op">&lt;</span><span class="ident">results</span>::<span class="ident">GetBso</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">conn</span>)
            .<span class="ident">optional</span>()<span class="question-mark">?</span>)
     }
@@ -1054,17 +1245,18 @@
     ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">results</span>::<span class="ident">PostCollection</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">collection_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_or_create_collection_id</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>.<span class="ident">collection</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">results</span>::<span class="ident">PostCollection</span> {
-            <span class="ident">modified</span>: <span class="self">self</span>.<span class="ident">session</span>.<span class="ident">timestamp</span> <span class="kw">as</span> <span class="ident">u64</span>,
+            <span class="ident">modified</span>: <span class="self">self</span>.<span class="ident">timestamp</span>() <span class="kw">as</span> <span class="ident">u64</span>,
             <span class="ident">success</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
             <span class="ident">failed</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
         };
 
         <span class="kw">for</span> <span class="ident">pbso</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">input</span>.<span class="ident">bsos</span> {
-            <span class="kw">let</span> <span class="ident">put_result</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">put_bso_sync</span>(<span class="kw-2">&amp;</span><span class="ident">params</span>::<span class="ident">PutBso</span> {
+            <span class="comment">// XXX: fix input (to take ownership) to remove the payload clone</span>
+            <span class="kw">let</span> <span class="ident">put_result</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">put_bso_sync</span>(<span class="ident">params</span>::<span class="ident">PutBso</span> {
                 <span class="ident">user_id</span>: <span class="ident">input</span>.<span class="ident">user_id</span>.<span class="ident">clone</span>(),
                 <span class="ident">collection</span>: <span class="ident">input</span>.<span class="ident">collection</span>.<span class="ident">clone</span>(),
                 <span class="ident">id</span>: <span class="ident">pbso</span>.<span class="ident">id</span>.<span class="ident">clone</span>(),
-                <span class="ident">payload</span>: <span class="ident">pbso</span>.<span class="ident">payload</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="ident">Into</span>::<span class="ident">into</span>),
+                <span class="ident">payload</span>: <span class="ident">pbso</span>.<span class="ident">payload</span>.<span class="ident">clone</span>(),
                 <span class="ident">sortindex</span>: <span class="ident">pbso</span>.<span class="ident">sortindex</span>,
                 <span class="ident">ttl</span>: <span class="ident">pbso</span>.<span class="ident">ttl</span>,
             });
@@ -1093,6 +1285,7 @@
         <span class="kw">let</span> <span class="ident">collection_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_collection_id</span>(<span class="ident">collection</span>)<span class="question-mark">?</span>;
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">modified</span>) <span class="op">=</span> <span class="self">self</span>
             .<span class="ident">session</span>
+            .<span class="ident">borrow</span>()
             .<span class="ident">coll_modified_cache</span>
             .<span class="ident">get</span>(<span class="kw-2">&amp;</span>(<span class="ident">user_id</span>, <span class="ident">collection_id</span>))
         {
@@ -1182,10 +1375,10 @@
         <span class="ident">sql_query</span>(<span class="ident">upsert</span>)
             .<span class="ident">bind</span>::<span class="op">&lt;</span><span class="ident">Integer</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="ident">user_id</span> <span class="kw">as</span> <span class="ident">i32</span>)
             .<span class="ident">bind</span>::<span class="op">&lt;</span><span class="ident">Integer</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">collection_id</span>)
-            .<span class="ident">bind</span>::<span class="op">&lt;</span><span class="ident">BigInt</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">session</span>.<span class="ident">timestamp</span>)
-            .<span class="ident">bind</span>::<span class="op">&lt;</span><span class="ident">BigInt</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">session</span>.<span class="ident">timestamp</span>)
+            .<span class="ident">bind</span>::<span class="op">&lt;</span><span class="ident">BigInt</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">timestamp</span>())
+            .<span class="ident">bind</span>::<span class="op">&lt;</span><span class="ident">BigInt</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">timestamp</span>())
             .<span class="ident">execute</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">conn</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">session</span>.<span class="ident">timestamp</span>)
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">timestamp</span>())
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_storage_size_sync</span>(
@@ -1195,7 +1388,7 @@
         <span class="kw">let</span> <span class="ident">total_size</span> <span class="op">=</span> <span class="ident">bso</span>::<span class="ident">table</span>
             .<span class="ident">select</span>(<span class="ident">sql</span>::<span class="op">&lt;</span><span class="ident">BigInt</span><span class="op">&gt;</span>(<span class="string">&quot;SUM(LENGTH(payload))&quot;</span>))
             .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">user_id</span>.<span class="ident">eq</span>(<span class="ident">user_id</span>.<span class="ident">legacy_id</span> <span class="kw">as</span> <span class="ident">i32</span>))
-            .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">expiry</span>.<span class="ident">gt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">session</span>.<span class="ident">timestamp</span>))
+            .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">expiry</span>.<span class="ident">gt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">timestamp</span>()))
             .<span class="ident">get_result</span>::<span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">conn</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">total_size</span> <span class="kw">as</span> <span class="ident">u64</span>)
     }
@@ -1207,7 +1400,7 @@
         <span class="kw">let</span> <span class="ident">counts</span> <span class="op">=</span> <span class="ident">bso</span>::<span class="ident">table</span>
             .<span class="ident">select</span>((<span class="ident">bso</span>::<span class="ident">collection_id</span>, <span class="ident">sql</span>::<span class="op">&lt;</span><span class="ident">BigInt</span><span class="op">&gt;</span>(<span class="string">&quot;SUM(LENGTH(payload))&quot;</span>)))
             .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">user_id</span>.<span class="ident">eq</span>(<span class="ident">user_id</span>.<span class="ident">legacy_id</span> <span class="kw">as</span> <span class="ident">i32</span>))
-            .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">expiry</span>.<span class="ident">gt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">session</span>.<span class="ident">timestamp</span>))
+            .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">expiry</span>.<span class="ident">gt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">timestamp</span>()))
             .<span class="ident">group_by</span>(<span class="ident">bso</span>::<span class="ident">collection_id</span>)
             .<span class="ident">load</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">conn</span>)<span class="question-mark">?</span>
             .<span class="ident">into_iter</span>()
@@ -1222,16 +1415,56 @@
         <span class="kw">let</span> <span class="ident">counts</span> <span class="op">=</span> <span class="ident">bso</span>::<span class="ident">table</span>
             .<span class="ident">select</span>((<span class="ident">bso</span>::<span class="ident">collection_id</span>, <span class="ident">sql</span>::<span class="op">&lt;</span><span class="ident">BigInt</span><span class="op">&gt;</span>(<span class="string">&quot;COUNT(collection_id)&quot;</span>)))
             .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">user_id</span>.<span class="ident">eq</span>(<span class="ident">user_id</span>.<span class="ident">legacy_id</span> <span class="kw">as</span> <span class="ident">i32</span>))
-            .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">expiry</span>.<span class="ident">gt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">session</span>.<span class="ident">timestamp</span>))
+            .<span class="ident">filter</span>(<span class="ident">bso</span>::<span class="ident">expiry</span>.<span class="ident">gt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">timestamp</span>()))
             .<span class="ident">group_by</span>(<span class="ident">bso</span>::<span class="ident">collection_id</span>)
             .<span class="ident">load</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">conn</span>)<span class="question-mark">?</span>
             .<span class="ident">into_iter</span>()
             .<span class="ident">collect</span>();
         <span class="self">self</span>.<span class="ident">map_collection_names</span>(<span class="ident">counts</span>)
     }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">timestamp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">i64</span> {
+        <span class="self">self</span>.<span class="ident">session</span>.<span class="ident">borrow</span>().<span class="ident">timestamp</span>
+    }
+
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">set_timestamp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">timestamp</span>: <span class="ident">i64</span>) {
+        <span class="self">self</span>.<span class="ident">session</span>.<span class="ident">borrow_mut</span>().<span class="ident">timestamp</span> <span class="op">=</span> <span class="ident">timestamp</span>;
+    }
+}
+
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">sync_db_method</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sync_name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>) <span class="op">=&gt;</span> {
+        <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">params</span>: <span class="ident">params</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span>) <span class="op">-&gt;</span> <span class="macro-nonterminal">DbFuture</span><span class="op">&lt;</span><span class="ident">results</span>::<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> {
+            <span class="kw">let</span> <span class="macro-nonterminal">db</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">clone</span>();
+            <span class="ident">Box</span>::<span class="ident">new</span>(
+                <span class="self">self</span>.<span class="ident">thread_pool</span>
+                    .<span class="ident">spawn_handle</span>(<span class="ident">lazy</span>(<span class="kw">move</span> <span class="op">||</span> <span class="ident">future</span>::<span class="ident">result</span>(<span class="ident">db</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sync_name</span>(<span class="ident">params</span>)))),
+            )
+        }
+    }
 }
 
 <span class="kw">impl</span> <span class="ident">Db</span> <span class="kw">for</span> <span class="ident">MysqlDb</span> {
+    <span class="kw">fn</span> <span class="ident">commit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">DbFuture</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">db</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">clone</span>();
+        <span class="ident">Box</span>::<span class="ident">new</span>(
+            <span class="self">self</span>.<span class="ident">thread_pool</span>
+                .<span class="ident">spawn_handle</span>(<span class="ident">lazy</span>(<span class="kw">move</span> <span class="op">||</span> <span class="ident">future</span>::<span class="ident">result</span>(<span class="ident">db</span>.<span class="ident">commit_sync</span>()))),
+        )
+    }
+
+    <span class="kw">fn</span> <span class="ident">rollback</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">DbFuture</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">db</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">clone</span>();
+        <span class="ident">Box</span>::<span class="ident">new</span>(
+            <span class="self">self</span>.<span class="ident">thread_pool</span>
+                .<span class="ident">spawn_handle</span>(<span class="ident">lazy</span>(<span class="kw">move</span> <span class="op">||</span> <span class="ident">future</span>::<span class="ident">result</span>(<span class="ident">db</span>.<span class="ident">rollback_sync</span>()))),
+        )
+    }
+
+    <span class="macro">sync_db_method</span><span class="macro">!</span>(<span class="ident">lock_for_read</span>, <span class="ident">lock_for_read_sync</span>, <span class="ident">LockCollection</span>);
+    <span class="macro">sync_db_method</span><span class="macro">!</span>(<span class="ident">lock_for_write</span>, <span class="ident">lock_for_write_sync</span>, <span class="ident">LockCollection</span>);
+
     <span class="macro">mock_db_method</span><span class="macro">!</span>(<span class="ident">get_collection_id</span>, <span class="ident">GetCollectionId</span>);
     <span class="macro">mock_db_method</span><span class="macro">!</span>(<span class="ident">get_collections</span>, <span class="ident">GetCollections</span>);
     <span class="macro">mock_db_method</span><span class="macro">!</span>(<span class="ident">get_collection_counts</span>, <span class="ident">GetCollectionCounts</span>);
@@ -1243,7 +1476,8 @@
     <span class="macro">mock_db_method</span><span class="macro">!</span>(<span class="ident">post_collection</span>, <span class="ident">PostCollection</span>);
     <span class="macro">mock_db_method</span><span class="macro">!</span>(<span class="ident">delete_bso</span>, <span class="ident">DeleteBso</span>);
     <span class="macro">mock_db_method</span><span class="macro">!</span>(<span class="ident">get_bso</span>, <span class="ident">GetBso</span>);
-    <span class="macro">mock_db_method</span><span class="macro">!</span>(<span class="ident">put_bso</span>, <span class="ident">PutBso</span>);
+
+    <span class="macro">sync_db_method</span><span class="macro">!</span>(<span class="ident">put_bso</span>, <span class="ident">put_bso_sync</span>, <span class="ident">PutBso</span>);
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">QueryableByName</span>)]</span>

@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["DefaultWeaveTimestamp","Default Timestamp used for WeaveTimestamp middleware."],["WeaveTimestamp","Middleware to set the X-Weave-Timestamp header on all responses."]]});
+initSidebarItems({"struct":[["DbTransaction",""],["DefaultWeaveTimestamp","Default Timestamp used for WeaveTimestamp middleware."],["WeaveTimestamp","Middleware to set the X-Weave-Timestamp header on all responses."]]});
