@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["diesel_ext",""],["models",""],["pool",""],["schema",""]]});
+initSidebarItems({"mod":[["batch",""],["diesel_ext",""],["models",""],["pool",""],["schema",""]]});

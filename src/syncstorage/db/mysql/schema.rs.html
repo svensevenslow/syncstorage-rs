@@ -38,7 +38,6 @@
 <span id="38">38</span>
 <span id="39">39</span>
 <span id="40">40</span>
-<span id="41">41</span>
 </pre><pre class="rust ">
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">proc_macro_derive_resolution_fallback</span>)]</span>
 
@@ -46,9 +45,9 @@
     <span class="ident">batches</span> (<span class="ident">user_id</span>, <span class="ident">collection_id</span>, <span class="ident">id</span>) {
         <span class="ident">user_id</span> <span class="op">-&gt;</span> <span class="ident">Integer</span>,
         <span class="ident">collection_id</span> <span class="op">-&gt;</span> <span class="ident">Integer</span>,
-        <span class="ident">id</span> <span class="op">-&gt;</span> <span class="ident">Varchar</span>,
-        <span class="ident">modified</span> <span class="op">-&gt;</span> <span class="ident">Bigint</span>,
-        <span class="ident">bsos</span> <span class="op">-&gt;</span> <span class="ident">Mediumtext</span>,
+        <span class="ident">id</span> <span class="op">-&gt;</span> <span class="ident">Bigint</span>,
+        <span class="ident">bsos</span> <span class="op">-&gt;</span> <span class="ident">Longtext</span>,
+        <span class="ident">expiry</span> <span class="op">-&gt;</span> <span class="ident">Bigint</span>,
     }
 }
 
@@ -59,7 +58,6 @@
         <span class="ident">id</span> <span class="op">-&gt;</span> <span class="ident">Varchar</span>,
         <span class="ident">sortindex</span> <span class="op">-&gt;</span> <span class="ident">Nullable</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>,
         <span class="ident">payload</span> <span class="op">-&gt;</span> <span class="ident">Mediumtext</span>,
-        <span class="ident">payload_size</span> <span class="op">-&gt;</span> <span class="ident">Integer</span>,
         <span class="ident">modified</span> <span class="op">-&gt;</span> <span class="ident">Bigint</span>,
         <span class="ident">expiry</span> <span class="op">-&gt;</span> <span class="ident">Bigint</span>,
     }

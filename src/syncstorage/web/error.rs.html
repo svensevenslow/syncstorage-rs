@@ -171,12 +171,21 @@
 <span id="171">171</span>
 <span id="172">172</span>
 <span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Error types for `web` modules.</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 
 <span class="kw">use</span> <span class="ident">actix_web</span>::<span class="ident">http</span>::<span class="ident">header</span>::<span class="ident">ToStrError</span>;
+<span class="kw">use</span> <span class="ident">actix_web</span>::<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">ActixError</span>;
 <span class="kw">use</span> <span class="ident">base64</span>::<span class="ident">DecodeError</span>;
 <span class="kw">use</span> <span class="ident">failure</span>::{<span class="ident">Backtrace</span>, <span class="ident">Context</span>, <span class="ident">Fail</span>, <span class="ident">SyncFailure</span>};
 <span class="kw">use</span> <span class="ident">hawk</span>::<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">ParseError</span>;
@@ -291,6 +300,13 @@
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">kind</span>: <span class="ident">ValidationErrorKind</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">validation_error</span>: <span class="ident">ValidationError</span> <span class="op">=</span> <span class="ident">Context</span>::<span class="ident">new</span>(<span class="ident">kind</span>).<span class="ident">into</span>();
         <span class="ident">validation_error</span>.<span class="ident">into</span>()
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ValidationErrorKind</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ActixError</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">kind</span>: <span class="ident">ValidationErrorKind</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">api_error</span>: <span class="ident">ApiError</span> <span class="op">=</span> <span class="ident">kind</span>.<span class="ident">into</span>();
+        <span class="ident">api_error</span>.<span class="ident">into</span>()
     }
 }
 

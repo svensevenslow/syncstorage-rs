@@ -60,6 +60,12 @@
 <span id="60">60</span>
 <span id="61">61</span>
 <span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Result types for database methods.</span>
 
@@ -68,32 +74,38 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 
 <span class="kw">use</span> <span class="ident">diesel</span>::<span class="ident">sql_types</span>::{<span class="ident">BigInt</span>, <span class="ident">Integer</span>, <span class="ident">Nullable</span>, <span class="ident">Text</span>};
+<span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">Serialize</span>;
+
+<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">params</span>;
+<span class="kw">use</span> <span class="ident">db</span>::<span class="ident">util</span>::<span class="ident">SyncTimestamp</span>;
 
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">LockCollection</span> <span class="op">=</span> ();
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GetCollectionId</span> <span class="op">=</span> <span class="ident">i32</span>;
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GetCollections</span> <span class="op">=</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">i64</span><span class="op">&gt;</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GetBsoTimestamp</span> <span class="op">=</span> <span class="ident">SyncTimestamp</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GetCollectionTimestamps</span> <span class="op">=</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">SyncTimestamp</span><span class="op">&gt;</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GetCollectionTimestamp</span> <span class="op">=</span> <span class="ident">SyncTimestamp</span>;
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GetCollectionCounts</span> <span class="op">=</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">i64</span><span class="op">&gt;</span>;
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GetCollectionUsage</span> <span class="op">=</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">u32</span><span class="op">&gt;</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GetCollectionUsage</span> <span class="op">=</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">i64</span><span class="op">&gt;</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GetStorageTimestamp</span> <span class="op">=</span> <span class="ident">SyncTimestamp</span>;
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GetStorageUsage</span> <span class="op">=</span> <span class="ident">u64</span>;
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">DeleteAll</span> <span class="op">=</span> ();
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GetCollection</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">GetCollectionItem</span><span class="op">&gt;</span>;
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">DeleteCollection</span> <span class="op">=</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DeleteBsos</span><span class="op">&gt;</span>;
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">DeleteBso</span> <span class="op">=</span> ();
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">PutBso</span> <span class="op">=</span> <span class="ident">u64</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">DeleteStorage</span> <span class="op">=</span> ();
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">DeleteCollection</span> <span class="op">=</span> <span class="ident">SyncTimestamp</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">DeleteBsos</span> <span class="op">=</span> <span class="ident">SyncTimestamp</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">DeleteBso</span> <span class="op">=</span> <span class="ident">SyncTimestamp</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">PutBso</span> <span class="op">=</span> <span class="ident">SyncTimestamp</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>)]</span>
-<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">GetCollectionItem</span> {
-    <span class="ident">Id</span>(<span class="ident">String</span>),
-    <span class="ident">Bso</span>(<span class="ident">GetBso</span>),
-}
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CreateBatch</span> <span class="op">=</span> <span class="ident">i64</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ValidateBatch</span> <span class="op">=</span> <span class="ident">bool</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">AppendToBatch</span> <span class="op">=</span> ();
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GetBatch</span> <span class="op">=</span> <span class="ident">params</span>::<span class="ident">Batch</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">DeleteBatch</span> <span class="op">=</span> ();
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CommitBatch</span> <span class="op">=</span> <span class="ident">PostBsos</span>;
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">Deserialize</span>, <span class="ident">Queryable</span>, <span class="ident">QueryableByName</span>, <span class="ident">Serialize</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetBso</span> {
     <span class="attribute">#[<span class="ident">sql_type</span> <span class="op">=</span> <span class="string">&quot;Text&quot;</span>]</span>
     <span class="kw">pub</span> <span class="ident">id</span>: <span class="ident">String</span>,
     <span class="attribute">#[<span class="ident">sql_type</span> <span class="op">=</span> <span class="string">&quot;BigInt&quot;</span>]</span>
-    <span class="kw">pub</span> <span class="ident">modified</span>: <span class="ident">i64</span>,
+    <span class="kw">pub</span> <span class="ident">modified</span>: <span class="ident">SyncTimestamp</span>,
     <span class="attribute">#[<span class="ident">sql_type</span> <span class="op">=</span> <span class="string">&quot;Text&quot;</span>]</span>
     <span class="kw">pub</span> <span class="ident">payload</span>: <span class="ident">String</span>,
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Option::is_none&quot;</span>)]</span>
@@ -106,20 +118,20 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BSOs</span> {
-    <span class="kw">pub</span> <span class="ident">bsos</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">GetBso</span><span class="op">&gt;</span>, <span class="comment">// XXX: naming</span>
-    <span class="kw">pub</span> <span class="ident">more</span>: <span class="ident">bool</span>,
-    <span class="kw">pub</span> <span class="ident">offset</span>: <span class="ident">i64</span>, <span class="comment">// XXX: i64?</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Paginated</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">Serialize</span>,
+{
+    <span class="kw">pub</span> <span class="ident">items</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">offset</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span>, <span class="comment">// XXX: i64?</span>
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeleteBsos</span> {
-    <span class="ident">modified</span>: <span class="ident">u64</span>,
-}
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GetBsos</span> <span class="op">=</span> <span class="ident">Paginated</span><span class="op">&lt;</span><span class="ident">GetBso</span><span class="op">&gt;</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GetBsoIds</span> <span class="op">=</span> <span class="ident">Paginated</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>;
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PostCollection</span> {
-    <span class="kw">pub</span> <span class="ident">modified</span>: <span class="ident">u64</span>,
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PostBsos</span> {
+    <span class="kw">pub</span> <span class="ident">modified</span>: <span class="ident">SyncTimestamp</span>,
     <span class="kw">pub</span> <span class="ident">success</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">failed</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>,
 }

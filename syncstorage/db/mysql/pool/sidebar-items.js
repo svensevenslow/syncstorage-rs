@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["CollectionCache",""],["MysqlDbPool",""]]});
+initSidebarItems({"fn":[["run_embedded_migrations","Run the diesel embedded migrations"]],"mod":[["embedded_migrations",""]],"struct":[["CollectionCache",""],["MysqlDbPool",""]]});
