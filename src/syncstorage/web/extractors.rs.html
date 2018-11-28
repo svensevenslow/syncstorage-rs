@@ -1336,7 +1336,6 @@
 <span id="1336">1336</span>
 <span id="1337">1337</span>
 <span id="1338">1338</span>
-<span id="1339">1339</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Request header/body/query extractors</span>
 <span class="doccomment">//!</span>
@@ -1541,12 +1540,11 @@
         <span class="kw">match</span> <span class="ident">headers</span>.<span class="ident">get</span>(<span class="ident">CONTENT_TYPE</span>).<span class="ident">unwrap_or</span>(<span class="kw-2">&amp;</span><span class="ident">default</span>).<span class="ident">as_bytes</span>() {
             <span class="string">b&quot;application/json&quot;</span> <span class="op">|</span> <span class="string">b&quot;text/plain&quot;</span> <span class="op">|</span> <span class="string">b&quot;&quot;</span> <span class="op">=&gt;</span> (),
             <span class="kw">_</span> <span class="op">=&gt;</span> {
-                <span class="comment">// TODO: This is supposed to return a 415 status for unknown content-type</span>
                 <span class="kw">return</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">future</span>::<span class="ident">err</span>(
                     <span class="ident">ValidationErrorKind</span>::<span class="ident">FromDetails</span>(
                         <span class="string">&quot;Invalid content-type&quot;</span>.<span class="ident">to_owned</span>(),
                         <span class="ident">RequestErrorLocation</span>::<span class="ident">Header</span>,
-                        <span class="prelude-val">Some</span>(<span class="string">&quot;content-type&quot;</span>.<span class="ident">to_owned</span>()),
+                        <span class="prelude-val">Some</span>(<span class="string">&quot;Content-Type&quot;</span>.<span class="ident">to_owned</span>()),
                     ).<span class="ident">into</span>(),
                 ));
             }
