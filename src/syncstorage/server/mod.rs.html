@@ -161,8 +161,8 @@
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build_app</span>(<span class="ident">state</span>: <span class="ident">ServerState</span>) <span class="op">-&gt;</span> <span class="ident">App</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> {
     <span class="ident">App</span>::<span class="ident">with_state</span>(<span class="ident">state</span>)
-        .<span class="ident">middleware</span>(<span class="ident">middleware</span>::<span class="ident">WeaveTimestamp</span>)
         .<span class="ident">middleware</span>(<span class="ident">middleware</span>::<span class="ident">DbTransaction</span>)
+        .<span class="ident">middleware</span>(<span class="ident">middleware</span>::<span class="ident">WeaveTimestamp</span>)
         .<span class="ident">middleware</span>(<span class="ident">middleware</span>::<span class="ident">PreConditionCheck</span>)
         .<span class="ident">configure</span>(<span class="op">|</span><span class="ident">app</span><span class="op">|</span> <span class="macro">init_routes</span><span class="macro">!</span>(<span class="ident">Cors</span>::<span class="ident">for_app</span>(<span class="ident">app</span>)).<span class="ident">register</span>())
 }
