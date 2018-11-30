@@ -1418,6 +1418,27 @@
 <span id="1418">1418</span>
 <span id="1419">1419</span>
 <span id="1420">1420</span>
+<span id="1421">1421</span>
+<span id="1422">1422</span>
+<span id="1423">1423</span>
+<span id="1424">1424</span>
+<span id="1425">1425</span>
+<span id="1426">1426</span>
+<span id="1427">1427</span>
+<span id="1428">1428</span>
+<span id="1429">1429</span>
+<span id="1430">1430</span>
+<span id="1431">1431</span>
+<span id="1432">1432</span>
+<span id="1433">1433</span>
+<span id="1434">1434</span>
+<span id="1435">1435</span>
+<span id="1436">1436</span>
+<span id="1437">1437</span>
+<span id="1438">1438</span>
+<span id="1439">1439</span>
+<span id="1440">1440</span>
+<span id="1441">1441</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Request header/body/query extractors</span>
 <span class="doccomment">//!</span>
@@ -1426,7 +1447,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>::<span class="ident">FromStr</span>;
 
-<span class="kw">use</span> <span class="ident">actix_web</span>::<span class="ident">http</span>::<span class="ident">header</span>::{<span class="ident">HeaderValue</span>, <span class="ident">CONTENT_TYPE</span>};
+<span class="kw">use</span> <span class="ident">actix_web</span>::<span class="ident">http</span>::<span class="ident">header</span>::{<span class="ident">HeaderValue</span>, <span class="ident">ACCEPT</span>, <span class="ident">CONTENT_TYPE</span>};
 <span class="kw">use</span> <span class="ident">actix_web</span>::{
     <span class="ident">dev</span>::{<span class="ident">JsonConfig</span>, <span class="ident">PayloadConfig</span>},
     <span class="ident">error</span>::<span class="ident">ErrorInternalServerError</span>,
@@ -1812,6 +1833,13 @@
     }
 }
 
+<span class="doccomment">/// Desired reply format for a Collection Get request</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ReplyFormat</span> {
+    <span class="ident">Json</span>,
+    <span class="ident">Newlines</span>,
+}
+
 <span class="doccomment">/// Collection Request Delete/Get extractor</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Extracts/validates information needed for collection delete/get requests.</span>
@@ -1820,6 +1848,7 @@
     <span class="kw">pub</span> <span class="ident">db</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">dyn</span> <span class="ident">Db</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">user_id</span>: <span class="ident">HawkIdentifier</span>,
     <span class="kw">pub</span> <span class="ident">query</span>: <span class="ident">BsoQueryParams</span>,
+    <span class="kw">pub</span> <span class="ident">reply</span>: <span class="ident">ReplyFormat</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CollectionRequest</span> {
@@ -1831,12 +1860,25 @@
         <span class="kw">let</span> <span class="ident">db</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">dyn</span> <span class="ident">Db</span><span class="op">&gt;&gt;</span>::<span class="ident">from_request</span>(<span class="ident">req</span>, <span class="ident">settings</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">query</span> <span class="op">=</span> <span class="ident">BsoQueryParams</span>::<span class="ident">from_request</span>(<span class="ident">req</span>, <span class="ident">settings</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">collection</span> <span class="op">=</span> <span class="ident">CollectionParam</span>::<span class="ident">from_request</span>(<span class="ident">req</span>, <span class="ident">settings</span>)<span class="question-mark">?</span>.<span class="ident">collection</span>;
+        <span class="kw">let</span> <span class="ident">reply</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">req</span>.<span class="ident">headers</span>().<span class="ident">get</span>(<span class="ident">ACCEPT</span>) {
+            <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="kw">if</span> <span class="ident">v</span>.<span class="ident">as_bytes</span>() <span class="op">==</span> <span class="string">b&quot;application/newlines&quot;</span> <span class="op">=&gt;</span> <span class="ident">ReplyFormat</span>::<span class="ident">Newlines</span>,
+            <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="kw">if</span> <span class="ident">v</span>.<span class="ident">as_bytes</span>() <span class="op">==</span> <span class="string">b&quot;application/json&quot;</span> <span class="op">=&gt;</span> <span class="ident">ReplyFormat</span>::<span class="ident">Json</span>,
+            <span class="prelude-val">Some</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {
+                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ValidationErrorKind</span>::<span class="ident">FromDetails</span>(
+                    <span class="string">&quot;Invalid accept&quot;</span>.<span class="ident">to_string</span>(),
+                    <span class="ident">RequestErrorLocation</span>::<span class="ident">Header</span>,
+                    <span class="prelude-val">Some</span>(<span class="string">&quot;accept&quot;</span>.<span class="ident">to_string</span>()),
+                ).<span class="ident">into</span>());
+            }
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">ReplyFormat</span>::<span class="ident">Json</span>,
+        };
 
         <span class="prelude-val">Ok</span>(<span class="ident">CollectionRequest</span> {
             <span class="ident">collection</span>,
             <span class="ident">db</span>,
             <span class="ident">user_id</span>,
             <span class="ident">query</span>,
+            <span class="ident">reply</span>,
         })
     }
 }
