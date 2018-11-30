@@ -226,6 +226,7 @@
 <span id="226">226</span>
 <span id="227">227</span>
 <span id="228">228</span>
+<span id="229">229</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! API Handlers</span>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
@@ -390,6 +391,7 @@
                 <span class="ident">user_id</span>: <span class="ident">coll</span>.<span class="ident">user_id</span>,
                 <span class="ident">collection</span>: <span class="ident">coll</span>.<span class="ident">collection</span>,
                 <span class="ident">bsos</span>: <span class="ident">coll</span>.<span class="ident">bsos</span>.<span class="ident">valid</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">From</span>::<span class="ident">from</span>).<span class="ident">collect</span>(),
+                <span class="ident">failed</span>: <span class="ident">coll</span>.<span class="ident">bsos</span>.<span class="ident">invalid</span>,
             }).<span class="ident">map_err</span>(<span class="ident">From</span>::<span class="ident">from</span>)
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">result</span><span class="op">|</span> {
                 <span class="ident">HttpResponse</span>::<span class="ident">build</span>(<span class="ident">StatusCode</span>::<span class="ident">OK</span>)

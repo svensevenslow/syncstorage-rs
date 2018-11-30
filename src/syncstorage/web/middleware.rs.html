@@ -311,6 +311,7 @@
 <span id="311">311</span>
 <span id="312">312</span>
 <span id="313">313</span>
+<span id="314">314</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # Web Middleware</span>
 <span class="doccomment">//!</span>
@@ -469,7 +470,8 @@
             <span class="kw">match</span> <span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PreConditionHeader</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;&gt;</span>::<span class="ident">from_request</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>, <span class="kw-2">&amp;</span>())
             {
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">precondition</span>)) <span class="op">=&gt;</span> <span class="ident">precondition</span>,
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) <span class="op">|</span> <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Started</span>::<span class="ident">Done</span>),
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Started</span>::<span class="ident">Done</span>),
+                <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Started</span>::<span class="ident">Response</span>(<span class="ident">e</span>.<span class="ident">into</span>())),
             };
         <span class="kw">let</span> <span class="ident">user_id</span> <span class="op">=</span> <span class="ident">HawkIdentifier</span>::<span class="ident">from_request</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>, <span class="kw-2">&amp;</span>())<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">db</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">dyn</span> <span class="ident">Db</span><span class="op">&gt;&gt;</span>::<span class="ident">from_request</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>, <span class="kw-2">&amp;</span>())<span class="question-mark">?</span>;

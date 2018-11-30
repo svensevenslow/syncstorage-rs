@@ -295,6 +295,7 @@
 <span id="295">295</span>
 <span id="296">296</span>
 <span id="297">297</span>
+<span id="298">298</span>
 </pre><pre class="rust ">
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">proc_macro_derive_resolution_fallback</span>)]</span>
 
@@ -392,6 +393,7 @@
         <span class="ident">user_id</span>: <span class="ident">params</span>.<span class="ident">user_id</span>.<span class="ident">clone</span>(),
         <span class="ident">collection</span>: <span class="ident">params</span>.<span class="ident">collection</span>.<span class="ident">clone</span>(),
         <span class="ident">bsos</span>,
+        <span class="ident">failed</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
     });
     <span class="ident">delete</span>(
         <span class="ident">db</span>,
