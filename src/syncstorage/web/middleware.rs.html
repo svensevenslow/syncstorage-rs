@@ -312,6 +312,9 @@
 <span id="312">312</span>
 <span id="313">313</span>
 <span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # Web Middleware</span>
 <span class="doccomment">//!</span>
@@ -321,7 +324,6 @@
     <span class="ident">middleware</span>::{<span class="ident">Middleware</span>, <span class="ident">Response</span>, <span class="ident">Started</span>},
     <span class="ident">FromRequest</span>, <span class="ident">HttpRequest</span>, <span class="ident">HttpResponse</span>, <span class="prelude-ty">Result</span>,
 };
-<span class="kw">use</span> <span class="ident">chrono</span>::<span class="ident">Utc</span>;
 <span class="kw">use</span> <span class="ident">futures</span>::{
     <span class="ident">future</span>::{<span class="self">self</span>, <span class="ident">Either</span>},
     <span class="ident">Future</span>,
@@ -333,7 +335,8 @@
 <span class="kw">use</span> <span class="ident">web</span>::<span class="ident">extractors</span>::{<span class="ident">BsoParam</span>, <span class="ident">CollectionParam</span>, <span class="ident">HawkIdentifier</span>, <span class="ident">PreConditionHeader</span>};
 
 <span class="doccomment">/// Default Timestamp used for WeaveTimestamp middleware.</span>
-<span class="kw">struct</span> <span class="ident">DefaultWeaveTimestamp</span>(<span class="ident">f64</span>);
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
+<span class="kw">struct</span> <span class="ident">DefaultWeaveTimestamp</span>(<span class="ident">SyncTimestamp</span>);
 
 <span class="doccomment">/// Middleware to set the X-Weave-Timestamp header on all responses.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">WeaveTimestamp</span>;
@@ -341,18 +344,16 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> <span class="ident">Middleware</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">WeaveTimestamp</span> {
     <span class="doccomment">/// Set the `DefaultWeaveTimestamp` and attach to the `HttpRequest`</span>
     <span class="kw">fn</span> <span class="ident">start</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Started</span><span class="op">&gt;</span> {
-        <span class="comment">// Get millisecond resolution and convert to seconds</span>
-        <span class="kw">let</span> <span class="ident">ts</span> <span class="op">=</span> <span class="ident">Utc</span>::<span class="ident">now</span>().<span class="ident">timestamp_millis</span>() <span class="kw">as</span> <span class="ident">f64</span> <span class="op">/</span> <span class="number">1_000.0</span>;
-        <span class="ident">req</span>.<span class="ident">extensions_mut</span>().<span class="ident">insert</span>(<span class="ident">DefaultWeaveTimestamp</span>(<span class="ident">ts</span>));
+        <span class="ident">req</span>.<span class="ident">extensions_mut</span>()
+            .<span class="ident">insert</span>(<span class="ident">DefaultWeaveTimestamp</span>::<span class="ident">default</span>());
         <span class="prelude-val">Ok</span>(<span class="ident">Started</span>::<span class="ident">Done</span>)
     }
 
     <span class="doccomment">/// Method is called when handler returns response,</span>
     <span class="doccomment">/// but before sending http message to peer.</span>
     <span class="kw">fn</span> <span class="ident">response</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>, <span class="kw-2">mut</span> <span class="ident">resp</span>: <span class="ident">HttpResponse</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Response</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">extensions</span> <span class="op">=</span> <span class="ident">req</span>.<span class="ident">extensions</span>();
-        <span class="kw">let</span> <span class="ident">ts</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">extensions</span>.<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">DefaultWeaveTimestamp</span><span class="op">&gt;</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">ts</span>) <span class="op">=&gt;</span> <span class="ident">ts</span>,
+        <span class="kw">let</span> <span class="ident">ts</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">req</span>.<span class="ident">extensions</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">DefaultWeaveTimestamp</span><span class="op">&gt;</span>() {
+            <span class="prelude-val">Some</span>(<span class="ident">ts</span>) <span class="op">=&gt;</span> <span class="ident">ts</span>.<span class="number">0</span>.<span class="ident">as_seconds</span>(),
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Response</span>::<span class="ident">Done</span>(<span class="ident">resp</span>)),
         };
 
@@ -373,13 +374,13 @@
                     )).<span class="ident">into</span>();
                     <span class="ident">error</span>
                 })<span class="question-mark">?</span>;
-            <span class="kw">if</span> <span class="ident">resp_ts</span> <span class="op">&gt;</span> <span class="ident">ts</span>.<span class="number">0</span> {
+            <span class="kw">if</span> <span class="ident">resp_ts</span> <span class="op">&gt;</span> <span class="ident">ts</span> {
                 <span class="ident">resp_ts</span>
             } <span class="kw">else</span> {
-                <span class="ident">ts</span>.<span class="number">0</span>
+                <span class="ident">ts</span>
             }
         } <span class="kw">else</span> {
-            <span class="ident">ts</span>.<span class="number">0</span>
+            <span class="ident">ts</span>
         };
         <span class="ident">resp</span>.<span class="ident">headers_mut</span>().<span class="ident">insert</span>(
             <span class="string">&quot;x-weave-timestamp&quot;</span>,
@@ -459,6 +460,9 @@
     }
 }
 
+<span class="doccomment">/// The resource in question&#39;s Timestamp</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ResourceTimestamp</span>(<span class="ident">SyncTimestamp</span>);
+
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PreConditionCheck</span>;
 
@@ -485,7 +489,7 @@
             .<span class="ident">and_then</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">resource_ts</span>: <span class="ident">SyncTimestamp</span><span class="op">|</span> {
                 <span class="comment">// Ensure we stash the extracted resource timestamp on the request in case its</span>
                 <span class="comment">// requested elsewhere</span>
-                <span class="ident">req</span>.<span class="ident">extensions_mut</span>().<span class="ident">insert</span>(<span class="ident">resource_ts</span>.<span class="ident">clone</span>());
+                <span class="ident">req</span>.<span class="ident">extensions_mut</span>().<span class="ident">insert</span>(<span class="ident">ResourceTimestamp</span>(<span class="ident">resource_ts</span>));
                 <span class="kw">let</span> <span class="ident">status</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">precondition</span> {
                     <span class="ident">PreConditionHeader</span>::<span class="ident">IfModifiedSince</span>(<span class="ident">header_ts</span>) <span class="kw">if</span> <span class="ident">resource_ts</span> <span class="op">&lt;=</span> <span class="ident">header_ts</span> <span class="op">=&gt;</span> {
                         <span class="ident">StatusCode</span>::<span class="ident">NOT_MODIFIED</span>
@@ -510,7 +514,8 @@
         }
 
         <span class="comment">// See if we already extracted one and use that if possible</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ts</span>) <span class="op">=</span> <span class="ident">req</span>.<span class="ident">extensions</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">SyncTimestamp</span><span class="op">&gt;</span>() {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">resource_ts</span>) <span class="op">=</span> <span class="ident">req</span>.<span class="ident">extensions</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">ResourceTimestamp</span><span class="op">&gt;</span>() {
+            <span class="kw">let</span> <span class="ident">ts</span> <span class="op">=</span> <span class="ident">resource_ts</span>.<span class="number">0</span>;
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">ts_header</span>) <span class="op">=</span> <span class="ident">header</span>::<span class="ident">HeaderValue</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">ts</span>.<span class="ident">as_header</span>()) {
                 <span class="ident">resp</span>.<span class="ident">headers_mut</span>().<span class="ident">insert</span>(<span class="string">&quot;X-Last-Modified&quot;</span>, <span class="ident">ts_header</span>);
             }
@@ -541,6 +546,7 @@
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="ident">actix_web</span>::<span class="ident">http</span>;
     <span class="kw">use</span> <span class="ident">actix_web</span>::<span class="ident">test</span>::<span class="ident">TestRequest</span>;
+    <span class="kw">use</span> <span class="ident">chrono</span>::<span class="ident">Utc</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_no_modified_header</span>() {

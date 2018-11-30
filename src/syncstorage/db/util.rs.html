@@ -124,6 +124,11 @@
 <span id="124">124</span>
 <span id="125">125</span>
 <span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
 </pre><pre class="rust ">
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">proc_macro_derive_resolution_fallback</span>)]</span>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">u64</span>;
@@ -202,9 +207,14 @@
         <span class="ident">SyncTimestamp</span>(<span class="ident">val</span> <span class="op">-</span> (<span class="ident">val</span> <span class="op">%</span> <span class="number">10</span>))
     }
 
-    <span class="doccomment">/// Return the timestamp as an i64 milliseconds</span>
+    <span class="doccomment">/// Return the timestamp as an i64 milliseconds since epoch</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_i64</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">i64</span> {
         <span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">i64</span>
+    }
+
+    <span class="doccomment">/// Return the timestamp as an f64 seconds since epoch</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_seconds</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">f64</span> {
+        <span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">/</span> <span class="number">1000.0</span>
     }
 }
 
