@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["derive_validation",""]]});
+initSidebarItems({"derive":[["Validate",""]]});

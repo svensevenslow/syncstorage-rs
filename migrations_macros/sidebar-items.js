@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["derive_embed_migrations",""]]});
+initSidebarItems({"derive":[["EmbedMigrations",""]]});
