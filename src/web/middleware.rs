@@ -26,6 +26,7 @@ pub struct WeaveTimestamp;
 impl<S> Middleware<S> for WeaveTimestamp {
     /// Set the `DefaultWeaveTimestamp` and attach to the `HttpRequest`
     fn start(&self, req: &HttpRequest<S>) -> Result<Started> {
+        println!("middleware::WeaveTimestamp::start: {}", req.uri());
         req.extensions_mut()
             .insert(DefaultWeaveTimestamp::default());
         Ok(Started::Done)
@@ -34,12 +35,14 @@ impl<S> Middleware<S> for WeaveTimestamp {
     /// Method is called when handler returns response,
     /// but before sending http message to peer.
     fn response(&self, req: &HttpRequest<S>, mut resp: HttpResponse) -> Result<Response> {
+        println!("middleware::WeaveTimestamp::response: {}", req.uri());
         let ts = match req.extensions().get::<DefaultWeaveTimestamp>() {
             Some(ts) => ts.0.as_seconds(),
             None => return Ok(Response::Done(resp)),
         };
 
         let weave_ts = if let Some(val) = resp.headers().get("X-Last-Modified") {
+            println!("middleware::WeaveTimestamp::response: 1");
             let resp_ts = val
                 .to_str()
                 .map_err(|e| {
@@ -60,11 +63,14 @@ impl<S> Middleware<S> for WeaveTimestamp {
                     error
                 })?;
             if resp_ts > ts {
+                println!("middleware::WeaveTimestamp::response: 2");
                 resp_ts
             } else {
+                println!("middleware::WeaveTimestamp::response: 3");
                 ts
             }
         } else {
+            println!("middleware::WeaveTimestamp::response: 4");
             ts
         };
         resp.headers_mut().insert(
@@ -78,6 +84,7 @@ impl<S> Middleware<S> for WeaveTimestamp {
                 error
             })?,
         );
+        println!("middleware::WeaveTimestamp::response: 5");
         Ok(Response::Done(resp))
     }
 }
@@ -88,6 +95,7 @@ pub struct DbTransaction;
 impl Middleware<ServerState> for DbTransaction {
     /// Initialize the database
     fn start(&self, req: &HttpRequest<ServerState>) -> Result<Started> {
+        println!("middleware::DbTransaction::start: {}", req.uri());
         let req = req.clone();
         // We may or may not be operating on a collection
         let collection = CollectionParam::from_request(&req, &())
@@ -134,6 +142,7 @@ impl Middleware<ServerState> for DbTransaction {
     }
 
     fn response(&self, req: &HttpRequest<ServerState>, resp: HttpResponse) -> Result<Response> {
+        println!("middleware::DbTransaction::response: {}", req.uri());
         if let Some((db, in_transaction)) = req.extensions().get::<(Box<dyn Db>, bool)>() {
             if *in_transaction {
                 let fut = match resp.error() {
@@ -141,9 +150,11 @@ impl Middleware<ServerState> for DbTransaction {
                     Some(_) => db.rollback(),
                 };
                 let fut = fut.and_then(|_| Ok(resp)).map_err(Into::into);
+                println!("middleware::DbTransaction::response: 1");
                 return Ok(Response::Future(Box::new(fut)));
             }
         }
+        println!("middleware::DbTransaction::response: 2");
         Ok(Response::Done(resp))
     }
 }
@@ -158,6 +169,7 @@ impl Middleware<ServerState> for PreConditionCheck {
     /// This middleware must be wrapped by the `DbTransaction` middleware to ensure a Db object
     /// is available.
     fn start(&self, req: &HttpRequest<ServerState>) -> Result<Started> {
+        println!("middleware::PreConditionCheck::start: {}", req.uri());
         let precondition =
             match <Option<PreConditionHeader> as FromRequest<ServerState>>::from_request(&req, &())
             {
@@ -197,15 +209,19 @@ impl Middleware<ServerState> for PreConditionCheck {
     }
 
     fn response(&self, req: &HttpRequest<ServerState>, mut resp: HttpResponse) -> Result<Response> {
+        println!("middleware::PreConditionCheck::response: {}", req.uri());
         // Ensure all outgoing requests from here have a X-Last-Modified
         if resp.headers().contains_key("X-Last-Modified") {
+            println!("middleware::PreConditionCheck::response: 1");
             return Ok(Response::Done(resp));
         }
 
         // See if we already extracted one and use that if possible
         if let Some(resource_ts) = req.extensions().get::<ResourceTimestamp>() {
+            println!("middleware::PreConditionCheck::response: 2");
             let ts = resource_ts.0;
             if let Ok(ts_header) = header::HeaderValue::from_str(&ts.as_header()) {
+                println!("middleware::PreConditionCheck::response: 3");
                 resp.headers_mut().insert("X-Last-Modified", ts_header);
             }
             return Ok(Response::Done(resp));
@@ -227,6 +243,7 @@ impl Middleware<ServerState> for PreConditionCheck {
                 future::ok(resp)
             })
             .map_err(Into::into);
+        println!("middleware::PreConditionCheck::response: 4");
         Ok(Response::Future(Box::new(fut)))
     }
 }

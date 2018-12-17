@@ -16,6 +16,7 @@ use web::extractors::{
 pub const ONE_KB: f64 = 1024.0;
 
 pub fn get_collections(meta: MetaRequest) -> FutureResponse<HttpResponse> {
+    println!("handlers::get_collections");
     Box::new(
         meta.db
             .get_collection_timestamps(meta.user_id)
@@ -29,6 +30,7 @@ pub fn get_collections(meta: MetaRequest) -> FutureResponse<HttpResponse> {
 }
 
 pub fn get_collection_counts(meta: MetaRequest) -> FutureResponse<HttpResponse> {
+    println!("handlers::get_collection_counts");
     Box::new(
         meta.db
             .get_collection_counts(meta.user_id)
@@ -42,6 +44,7 @@ pub fn get_collection_counts(meta: MetaRequest) -> FutureResponse<HttpResponse> 
 }
 
 pub fn get_collection_usage(meta: MetaRequest) -> FutureResponse<HttpResponse> {
+    println!("handlers::get_collection_usage");
     Box::new(
         meta.db
             .get_collection_usage(meta.user_id)
@@ -59,6 +62,7 @@ pub fn get_collection_usage(meta: MetaRequest) -> FutureResponse<HttpResponse> {
 }
 
 pub fn get_quota(meta: MetaRequest) -> FutureResponse<HttpResponse> {
+    println!("handlers::get_quota");
     Box::new(
         meta.db
             .get_storage_usage(meta.user_id)
@@ -68,6 +72,7 @@ pub fn get_quota(meta: MetaRequest) -> FutureResponse<HttpResponse> {
 }
 
 pub fn delete_all(meta: MetaRequest) -> FutureResponse<HttpResponse> {
+    println!("handlers::delete_all");
     Box::new(
         meta.db
             .delete_storage(meta.user_id)
@@ -77,6 +82,7 @@ pub fn delete_all(meta: MetaRequest) -> FutureResponse<HttpResponse> {
 }
 
 pub fn delete_collection(coll: CollectionRequest) -> FutureResponse<HttpResponse> {
+    println!("handlers::delete_collection");
     let delete_bsos = !coll.query.ids.is_empty();
     let fut = if delete_bsos {
         coll.db.delete_bsos(params::DeleteBsos {
@@ -111,6 +117,7 @@ pub fn delete_collection(coll: CollectionRequest) -> FutureResponse<HttpResponse
 }
 
 pub fn get_collection(coll: CollectionRequest) -> FutureResponse<HttpResponse> {
+    println!("handlers::get_collection");
     let params = params::GetBsos {
         user_id: coll.user_id.clone(),
         collection: coll.collection.clone(),
@@ -176,6 +183,7 @@ where
 }
 
 pub fn post_collection(coll: CollectionPostRequest) -> FutureResponse<HttpResponse> {
+    println!("handlers::post_collection");
     if coll.batch.is_some() {
         return post_collection_batch(coll);
     }
@@ -197,6 +205,7 @@ pub fn post_collection(coll: CollectionPostRequest) -> FutureResponse<HttpRespon
 }
 
 pub fn post_collection_batch(coll: CollectionPostRequest) -> FutureResponse<HttpResponse> {
+    println!("handlers::post_collection_batch");
     // Bail early if we have nonsensical arguments
     let breq = match coll.batch.clone() {
         Some(breq) => breq,
@@ -310,6 +319,7 @@ pub fn post_collection_batch(coll: CollectionPostRequest) -> FutureResponse<Http
 }
 
 pub fn delete_bso(bso_req: BsoRequest) -> FutureResponse<HttpResponse> {
+    println!("handlers::delete_bso");
     Box::new(
         bso_req
             .db
@@ -324,6 +334,7 @@ pub fn delete_bso(bso_req: BsoRequest) -> FutureResponse<HttpResponse> {
 }
 
 pub fn get_bso(bso_req: BsoRequest) -> FutureResponse<HttpResponse> {
+    println!("handlers::get_bso");
     Box::new(
         bso_req
             .db
@@ -343,6 +354,7 @@ pub fn get_bso(bso_req: BsoRequest) -> FutureResponse<HttpResponse> {
 }
 
 pub fn put_bso(bso_req: BsoPutRequest) -> FutureResponse<HttpResponse> {
+    println!("handlers::put_bso");
     Box::new(
         bso_req
             .db
@@ -366,10 +378,12 @@ pub fn put_bso(bso_req: BsoPutRequest) -> FutureResponse<HttpResponse> {
 pub fn get_configuration(
     (_auth, state): (HawkIdentifier, State<ServerState>),
 ) -> FutureResponse<HttpResponse> {
+    println!("handlers::get_configuration");
     Box::new(future::result(Ok(HttpResponse::Ok().json(&*state.limits))))
 }
 
 pub fn not_found(req: &HttpRequest<ServerState>) -> HttpResponse {
+    println!("handlers::not_found");
     req.build_response(StatusCode::NOT_FOUND)
         .content_type("application/json")
         .body("0")
