@@ -74,7 +74,11 @@ pub fn build_app(state: ServerState) -> App<ServerState> {
         .middleware(middleware::WeaveTimestamp)
         .middleware(middleware::DbTransaction)
         .middleware(middleware::PreConditionCheck)
-        .configure(|app| init_routes!(Cors::for_app(app)).register())
+        .configure(|app| {
+            init_routes!(Cors::for_app(app))
+                .register()
+                .default_resource(|r| r.f(handlers::not_found))
+        })
 }
 
 pub struct Server {}

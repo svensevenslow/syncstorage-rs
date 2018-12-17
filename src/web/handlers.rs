@@ -1,7 +1,7 @@
 //! API Handlers
 use std::collections::HashMap;
 
-use actix_web::{http::StatusCode, FutureResponse, HttpResponse, State};
+use actix_web::{http::StatusCode, FutureResponse, HttpRequest, HttpResponse, State};
 use futures::future::{self, Either, Future};
 use serde::Serialize;
 
@@ -367,4 +367,10 @@ pub fn get_configuration(
     (_auth, state): (HawkIdentifier, State<ServerState>),
 ) -> FutureResponse<HttpResponse> {
     Box::new(future::result(Ok(HttpResponse::Ok().json(&*state.limits))))
+}
+
+pub fn not_found(req: &HttpRequest<ServerState>) -> HttpResponse {
+    req.build_response(StatusCode::NOT_FOUND)
+        .content_type("application/json")
+        .body("0")
 }
