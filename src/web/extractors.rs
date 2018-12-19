@@ -6,11 +6,12 @@ use std::{self, collections::HashMap, str::FromStr};
 
 use actix_web::http::header::{HeaderValue, ACCEPT, CONTENT_TYPE};
 use actix_web::{
-    dev::{JsonConfig, PayloadConfig},
+    dev::{JsonConfig, PayloadConfig, QueryConfig},
     error::ErrorInternalServerError,
     Error, FromRequest, HttpRequest, Json, Path, Query,
 };
 use futures::{future, Future};
+use mime::{PLAIN, TEXT};
 use regex::Regex;
 use serde::de::{Deserialize, Deserializer, Error as SerdeError};
 use serde_json::Value;
@@ -277,9 +278,10 @@ impl FromRequest<ServerState> for BsoBody {
                 ));
             }
         }
-        let mut config = JsonConfig::default();
+        let mut config = JsonConfig::<ServerState>::default();
         let max_request_size = req.state().limits.max_request_bytes as usize;
         config.limit(max_request_size);
+        config.content_type(|mime| mime.type_() == TEXT && mime.subtype() == PLAIN);
 
         let max_payload_size = req.state().limits.max_record_payload_bytes as usize;
         let fut = <Json<BsoBody>>::from_request(req, &config)
@@ -746,7 +748,7 @@ impl FromRequest<ServerState> for BsoQueryParams {
     /// Extract and validate the query parameters
     fn from_request(req: &HttpRequest<ServerState>, _: &Self::Config) -> Self::Result {
         // TODO: serde deserialize the query ourselves to catch the serde error nicely
-        let params = Query::<BsoQueryParams>::from_request(req, &())
+        let params = Query::<BsoQueryParams>::from_request(req, &QueryConfig::default())
             .map_err(|e| {
                 ValidationErrorKind::FromDetails(
                     e.to_string(),
@@ -781,7 +783,7 @@ impl FromRequest<ServerState> for Option<BatchRequest> {
     type Result = ApiResult<Option<BatchRequest>>;
 
     fn from_request(req: &HttpRequest<ServerState>, _: &Self::Config) -> Self::Result {
-        let params = Query::<BatchParams>::from_request(req, &())
+        let params = Query::<BatchParams>::from_request(req, &QueryConfig::default())
             .map_err(|e| {
                 ValidationErrorKind::FromDetails(
                     e.to_string(),

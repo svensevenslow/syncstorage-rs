@@ -19,6 +19,7 @@ extern crate lazy_static;
 extern crate hawk;
 extern crate hkdf;
 extern crate hmac;
+extern crate mime;
 extern crate mozsvc_common;
 extern crate num;
 extern crate num_cpus;
