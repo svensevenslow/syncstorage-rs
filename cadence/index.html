@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `cadence` crate."><meta name="keywords" content="rust, rustlang, rust-lang, cadence"><title>cadence - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><p class='location'>Crate cadence</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all cadence's items</p></a><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#traits">Traits</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'cadence', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/cadence/lib.rs.html#11-381' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>cadence</a></span></h1><div class='docblock'><p>An extensible Statsd client for Rust!</p>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `cadence` crate."><meta name="keywords" content="rust, rustlang, rust-lang, cadence"><title>cadence - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><p class='location'>Crate cadence</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all cadence's items</p></a><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#traits">Traits</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'cadence', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/cadence/lib.rs.html#11-381' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>cadence</a></span></h1><div class='docblock'><p>An extensible Statsd client for Rust!</p>
 <p><a href="https://github.com/etsy/statsd">Statsd</a> is a network server that listens for
 metrics (things like counters and timers) sent over UDP and sends aggregates of
 these metrics to a backend service of some kind (often
@@ -30,11 +30,11 @@ cadence = &quot;x.y.z&quot;
 </code></pre>
 <p>Then, link to it in your library or application.</p>
 
-<pre class="rust rust-example-rendered">
+<div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="comment">// bin.rs or lib.rs</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">cadence</span>;
 
-<span class="comment">// rest of your library or application</span></pre>
+<span class="comment">// rest of your library or application</span></pre></div>
 <h2 id="usage" class="section-header"><a href="#usage">Usage</a></h2>
 <p>Some examples of how to use Cadence are shown below. The examples start
 simple and work up to how you should be using Cadence in a production
@@ -44,7 +44,7 @@ application.</p>
 the client, create an instance that will write to some imaginary metrics
 server, and send a few metrics.</p>
 
-<pre class="rust rust-example-rendered">
+<div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="comment">// Import the client.</span>
 <span class="kw">use</span> <span class="ident">cadence</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">cadence</span>::{<span class="ident">StatsdClient</span>, <span class="ident">UdpMetricSink</span>, <span class="ident">DEFAULT_PORT</span>};
@@ -61,7 +61,7 @@ server, and send a few metrics.</p>
 <span class="ident">client</span>.<span class="ident">incr</span>(<span class="string">&quot;some.counter&quot;</span>);
 <span class="ident">client</span>.<span class="ident">time</span>(<span class="string">&quot;some.methodCall&quot;</span>, <span class="number">42</span>);
 <span class="ident">client</span>.<span class="ident">gauge</span>(<span class="string">&quot;some.thing&quot;</span>, <span class="number">7</span>);
-<span class="ident">client</span>.<span class="ident">meter</span>(<span class="string">&quot;some.value&quot;</span>, <span class="number">5</span>);</pre>
+<span class="ident">client</span>.<span class="ident">meter</span>(<span class="string">&quot;some.value&quot;</span>, <span class="number">5</span>);</pre></div>
 <h3 id="buffered-udp-sink" class="section-header"><a href="#buffered-udp-sink">Buffered UDP Sink</a></h3>
 <p>While sending a metric over UDP is very fast, the overhead of frequent
 network calls can start to add up. This is especially true if you are
@@ -72,7 +72,7 @@ buffers multiple metrics before sending them in a single network
 operation. For this, there's <code>BufferedUdpMetricSink</code>. An example of
 using this sink is given below.</p>
 
-<pre class="rust rust-example-rendered">
+<div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">net</span>::<span class="ident">UdpSocket</span>;
 <span class="kw">use</span> <span class="ident">cadence</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">cadence</span>::{<span class="ident">StatsdClient</span>, <span class="ident">BufferedUdpMetricSink</span>, <span class="ident">DEFAULT_PORT</span>};
@@ -86,7 +86,7 @@ using this sink is given below.</p>
 
 <span class="ident">client</span>.<span class="ident">count</span>(<span class="string">&quot;my.counter.thing&quot;</span>, <span class="number">29</span>);
 <span class="ident">client</span>.<span class="ident">time</span>(<span class="string">&quot;my.service.call&quot;</span>, <span class="number">214</span>);
-<span class="ident">client</span>.<span class="ident">incr</span>(<span class="string">&quot;some.event&quot;</span>);</pre>
+<span class="ident">client</span>.<span class="ident">incr</span>(<span class="string">&quot;some.event&quot;</span>);</pre></div>
 <p>As you can see, using this buffered UDP sink is no more complicated
 than using the regular, non-buffered, UDP sink.</p>
 <p>The only downside to this sink is that metrics aren't written to the
@@ -112,7 +112,7 @@ you don't need to worry: they are all thread safe.</p>
 metric sink is given below. This is the preferred way to use Cadence
 in production.</p>
 
-<pre class="rust rust-example-rendered">
+<div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">net</span>::<span class="ident">UdpSocket</span>;
 <span class="kw">use</span> <span class="ident">cadence</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">cadence</span>::{<span class="ident">StatsdClient</span>, <span class="ident">QueuingMetricSink</span>, <span class="ident">BufferedUdpMetricSink</span>,
@@ -128,7 +128,7 @@ in production.</p>
 
 <span class="ident">client</span>.<span class="ident">count</span>(<span class="string">&quot;my.counter.thing&quot;</span>, <span class="number">29</span>);
 <span class="ident">client</span>.<span class="ident">time</span>(<span class="string">&quot;my.service.call&quot;</span>, <span class="number">214</span>);
-<span class="ident">client</span>.<span class="ident">incr</span>(<span class="string">&quot;some.event&quot;</span>);</pre>
+<span class="ident">client</span>.<span class="ident">incr</span>(<span class="string">&quot;some.event&quot;</span>);</pre></div>
 <h3 id="use-with-tags" class="section-header"><a href="#use-with-tags">Use With Tags</a></h3>
 <p>Adding tags to metrics is accomplished via the use of each of the <code>_with_tags</code>
 methods that are part of the Cadence <code>StatsdClient</code> struct. An example of using
@@ -137,7 +137,7 @@ protocol and so may not be supported by all servers.</p>
 <p>See the <a href="https://docs.datadoghq.com/developers/dogstatsd/">Datadog docs</a> for
 more information.</p>
 
-<pre class="rust rust-example-rendered">
+<div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">cadence</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">cadence</span>::{<span class="ident">Metric</span>, <span class="ident">StatsdClient</span>, <span class="ident">NopMetricSink</span>};
 
@@ -155,7 +155,7 @@ more information.</p>
         <span class="string">&quot;beta-test&quot;</span>
     ),
     <span class="ident">res</span>.<span class="ident">unwrap</span>().<span class="ident">as_metric_str</span>()
-);</pre>
+);</pre></div>
 <h3 id="counted-timed-gauged-metered-histogrammed-setted-and-metricclient-traits" class="section-header"><a href="#counted-timed-gauged-metered-histogrammed-setted-and-metricclient-traits"><code>Counted</code>, <code>Timed</code>, <code>Gauged</code>, <code>Metered</code>, <code>Histogrammed</code>, <code>Setted</code>, and <code>MetricClient</code> Traits</a></h3>
 <p>Each of the methods that the Cadence <code>StatsdClient</code> struct uses to send
 metrics are implemented as a trait. There is also a trait that combines
@@ -168,7 +168,7 @@ pointer.</p>
 <p>Each of these traits are exported in the prelude module. They are also
 available in the main module but aren't typically used like that.</p>
 
-<pre class="rust rust-example-rendered">
+<div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">cadence</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">cadence</span>::{<span class="ident">StatsdClient</span>, <span class="ident">UdpMetricSink</span>, <span class="ident">DEFAULT_PORT</span>};
 
@@ -213,7 +213,7 @@ available in the main module but aren't typically used like that.</p>
 <span class="kw">match</span> <span class="ident">dao</span>.<span class="ident">get_user_by_id</span>(<span class="number">123</span>) {
     <span class="prelude-val">Some</span>(<span class="ident">u</span>) <span class="op">=&gt;</span> <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Found a user!&quot;</span>),
     <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;No user!&quot;</span>)
-};</pre>
+};</pre></div>
 <h3 id="quiet-metric-sending-and-error-handling" class="section-header"><a href="#quiet-metric-sending-and-error-handling">Quiet Metric Sending and Error Handling</a></h3>
 <p>When sending metrics sometimes you don't really care about the <code>Result</code> of
 trying to send it or maybe you just don't want to deal with it inline with
@@ -223,7 +223,7 @@ metrics so that the calling code doesn't have to deal with them.</p>
 <p>An example of configuring an error handler and an example of when it might
 be invoked is given below.</p>
 
-<pre class="rust rust-example-rendered">
+<div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">cadence</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">cadence</span>::{<span class="ident">MetricError</span>, <span class="ident">StatsdClient</span>, <span class="ident">NopMetricSink</span>};
 
@@ -240,7 +240,7 @@ be invoked is given below.</p>
 <span class="comment">// as opposed to the `.try_send()` method</span>
 <span class="ident">client</span>.<span class="ident">count_with_tags</span>(<span class="string">&quot;some.counter&quot;</span>, <span class="number">42</span>)
     .<span class="ident">with_tag</span>(<span class="string">&quot;region&quot;</span>, <span class="string">&quot;us-east-2&quot;</span>)
-    .<span class="ident">send</span>();</pre>
+    .<span class="ident">send</span>();</pre></div>
 <h3 id="custom-metric-sinks" class="section-header"><a href="#custom-metric-sinks">Custom Metric Sinks</a></h3>
 <p>The Cadence <code>StatsdClient</code> uses implementations of the <code>MetricSink</code>
 trait to send metrics to a metric server. Most users of the Cadence
@@ -249,7 +249,7 @@ of the <code>BufferedMetricSink</code>.</p>
 <p>However, maybe you want to do something not covered by an existing sink.
 An example of creating a custom sink is below.</p>
 
-<pre class="rust rust-example-rendered">
+<div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>;
 <span class="kw">use</span> <span class="ident">cadence</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">cadence</span>::{<span class="ident">StatsdClient</span>, <span class="ident">MetricSink</span>, <span class="ident">DEFAULT_PORT</span>};
@@ -270,14 +270,14 @@ An example of creating a custom sink is below.</p>
 
 <span class="ident">client</span>.<span class="ident">count</span>(<span class="string">&quot;my.counter.thing&quot;</span>, <span class="number">42</span>);
 <span class="ident">client</span>.<span class="ident">time</span>(<span class="string">&quot;my.method.time&quot;</span>, <span class="number">25</span>);
-<span class="ident">client</span>.<span class="ident">incr</span>(<span class="string">&quot;some.other.counter&quot;</span>);</pre>
+<span class="ident">client</span>.<span class="ident">incr</span>(<span class="string">&quot;some.other.counter&quot;</span>);</pre></div>
 <h3 id="custom-udp-socket" class="section-header"><a href="#custom-udp-socket">Custom UDP Socket</a></h3>
 <p>Most users of the Cadence <code>StatsdClient</code> will be using it to send metrics
 over a UDP socket. If you need to customize the socket, for example you
 want to use the socket in blocking mode but set a write timeout, you can
 do that as demonstrated below.</p>
 
-<pre class="rust rust-example-rendered">
+<div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">net</span>::<span class="ident">UdpSocket</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::<span class="ident">Duration</span>;
 <span class="kw">use</span> <span class="ident">cadence</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
@@ -293,236 +293,40 @@ do that as demonstrated below.</p>
 <span class="ident">client</span>.<span class="ident">count</span>(<span class="string">&quot;my.counter.thing&quot;</span>, <span class="number">29</span>);
 <span class="ident">client</span>.<span class="ident">time</span>(<span class="string">&quot;my.service.call&quot;</span>, <span class="number">214</span>);
 <span class="ident">client</span>.<span class="ident">incr</span>(<span class="string">&quot;some.event&quot;</span>);
-<span class="ident">client</span>.<span class="ident">set</span>(<span class="string">&quot;users.uniques&quot;</span>, <span class="number">42</span>);</pre>
+<span class="ident">client</span>.<span class="ident">set</span>(<span class="string">&quot;users.uniques&quot;</span>, <span class="number">42</span>);</pre></div>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="mod" href="ext/index.html"
-                                  title='mod cadence::ext'>ext</a></td>
-                           <td class='docblock-short'>
-                                <p>Extension points for the Cadence library</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="mod" href="prelude/index.html"
-                                  title='mod cadence::prelude'>prelude</a></td>
-                           <td class='docblock-short'>
-                                <p>Export commonly used parts of Cadence for easy glob imports</p>
-
-                           </td>
-                       </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.BufferedUdpMetricSink.html"
-                                  title='struct cadence::BufferedUdpMetricSink'>BufferedUdpMetricSink</a></td>
-                           <td class='docblock-short'>
-                                <p>Implementation of a <code>MetricSink</code> that buffers metrics before
+<table><tr class='module-item'><td><a class="mod" href="ext/index.html" title='cadence::ext mod'>ext</a></td><td class='docblock-short'><p>Extension points for the Cadence library</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="prelude/index.html" title='cadence::prelude mod'>prelude</a></td><td class='docblock-short'><p>Export commonly used parts of Cadence for easy glob imports</p>
+</td></tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.BufferedUdpMetricSink.html" title='cadence::BufferedUdpMetricSink struct'>BufferedUdpMetricSink</a></td><td class='docblock-short'><p>Implementation of a <code>MetricSink</code> that buffers metrics before
 sending them to a UDP socket.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.Counter.html"
-                                  title='struct cadence::Counter'>Counter</a></td>
-                           <td class='docblock-short'>
-                                <p>Counters are simple values incremented or decremented by a client.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.Gauge.html"
-                                  title='struct cadence::Gauge'>Gauge</a></td>
-                           <td class='docblock-short'>
-                                <p>Gauges are an instantaneous value determined by the client.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.Histogram.html"
-                                  title='struct cadence::Histogram'>Histogram</a></td>
-                           <td class='docblock-short'>
-                                <p>Histograms are values whose distribution is calculated by the server.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.Meter.html"
-                                  title='struct cadence::Meter'>Meter</a></td>
-                           <td class='docblock-short'>
-                                <p>Meters measure the rate at which events occur as determined by the server.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.MetricBuilder.html"
-                                  title='struct cadence::MetricBuilder'>MetricBuilder</a></td>
-                           <td class='docblock-short'>
-                                <p>Builder for adding tags to in-progress metrics.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.MetricError.html"
-                                  title='struct cadence::MetricError'>MetricError</a></td>
-                           <td class='docblock-short'>
-                                <p>Error generated by this library potentially wrapping another
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Counter.html" title='cadence::Counter struct'>Counter</a></td><td class='docblock-short'><p>Counters are simple values incremented or decremented by a client.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Gauge.html" title='cadence::Gauge struct'>Gauge</a></td><td class='docblock-short'><p>Gauges are an instantaneous value determined by the client.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Histogram.html" title='cadence::Histogram struct'>Histogram</a></td><td class='docblock-short'><p>Histograms are values whose distribution is calculated by the server.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Meter.html" title='cadence::Meter struct'>Meter</a></td><td class='docblock-short'><p>Meters measure the rate at which events occur as determined by the server.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.MetricBuilder.html" title='cadence::MetricBuilder struct'>MetricBuilder</a></td><td class='docblock-short'><p>Builder for adding tags to in-progress metrics.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.MetricError.html" title='cadence::MetricError struct'>MetricError</a></td><td class='docblock-short'><p>Error generated by this library potentially wrapping another
 type of error (exposed via the <code>Error</code> trait).</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.NopMetricSink.html"
-                                  title='struct cadence::NopMetricSink'>NopMetricSink</a></td>
-                           <td class='docblock-short'>
-                                <p>Implementation of a <code>MetricSink</code> that discards all metrics.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.QueuingMetricSink.html"
-                                  title='struct cadence::QueuingMetricSink'>QueuingMetricSink</a></td>
-                           <td class='docblock-short'>
-                                <p>Implementation of a <code>MetricSink</code> that wraps another implementation
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.NopMetricSink.html" title='cadence::NopMetricSink struct'>NopMetricSink</a></td><td class='docblock-short'><p>Implementation of a <code>MetricSink</code> that discards all metrics.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.QueuingMetricSink.html" title='cadence::QueuingMetricSink struct'>QueuingMetricSink</a></td><td class='docblock-short'><p>Implementation of a <code>MetricSink</code> that wraps another implementation
 and uses it to emit metrics asynchronously, in another thread.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.Set.html"
-                                  title='struct cadence::Set'>Set</a></td>
-                           <td class='docblock-short'>
-                                <p>Sets count the number of unique elements in a group.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.StatsdClient.html"
-                                  title='struct cadence::StatsdClient'>StatsdClient</a></td>
-                           <td class='docblock-short'>
-                                <p>Client for Statsd that implements various traits to record metrics.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.StatsdClientBuilder.html"
-                                  title='struct cadence::StatsdClientBuilder'>StatsdClientBuilder</a></td>
-                           <td class='docblock-short'>
-                                <p>Builder for creating and customizing <code>StatsdClient</code> instances.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.Timer.html"
-                                  title='struct cadence::Timer'>Timer</a></td>
-                           <td class='docblock-short'>
-                                <p>Timers are a positive number of milliseconds between a start and end point.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.UdpMetricSink.html"
-                                  title='struct cadence::UdpMetricSink'>UdpMetricSink</a></td>
-                           <td class='docblock-short'>
-                                <p>Implementation of a <code>MetricSink</code> that emits metrics over UDP.</p>
-
-                           </td>
-                       </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="enum" href="enum.ErrorKind.html"
-                                  title='enum cadence::ErrorKind'>ErrorKind</a></td>
-                           <td class='docblock-short'>
-                                <p>Potential categories an error from this library falls into.</p>
-
-                           </td>
-                       </tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="constant" href="constant.DEFAULT_PORT.html"
-                                  title='constant cadence::DEFAULT_PORT'>DEFAULT_PORT</a></td>
-                           <td class='docblock-short'>
-                                
-                           </td>
-                       </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="trait" href="trait.Counted.html"
-                                  title='trait cadence::Counted'>Counted</a></td>
-                           <td class='docblock-short'>
-                                <p>Trait for incrementing and decrementing counters.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="trait" href="trait.Gauged.html"
-                                  title='trait cadence::Gauged'>Gauged</a></td>
-                           <td class='docblock-short'>
-                                <p>Trait for recording gauge values.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="trait" href="trait.Histogrammed.html"
-                                  title='trait cadence::Histogrammed'>Histogrammed</a></td>
-                           <td class='docblock-short'>
-                                <p>Trait for recording histogram values.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="trait" href="trait.Metered.html"
-                                  title='trait cadence::Metered'>Metered</a></td>
-                           <td class='docblock-short'>
-                                <p>Trait for recording meter values.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="trait" href="trait.Metric.html"
-                                  title='trait cadence::Metric'>Metric</a></td>
-                           <td class='docblock-short'>
-                                <p>Trait for metrics to expose Statsd metric string slice representation.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="trait" href="trait.MetricClient.html"
-                                  title='trait cadence::MetricClient'>MetricClient</a></td>
-                           <td class='docblock-short'>
-                                <p>Trait that encompasses all other traits for sending metrics.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="trait" href="trait.MetricSink.html"
-                                  title='trait cadence::MetricSink'>MetricSink</a></td>
-                           <td class='docblock-short'>
-                                <p>Trait for various backends that send Statsd metrics somewhere.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="trait" href="trait.Setted.html"
-                                  title='trait cadence::Setted'>Setted</a></td>
-                           <td class='docblock-short'>
-                                <p>Trait for recording set values.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="trait" href="trait.Timed.html"
-                                  title='trait cadence::Timed'>Timed</a></td>
-                           <td class='docblock-short'>
-                                <p>Trait for recording timings in milliseconds.</p>
-
-                           </td>
-                       </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="type" href="type.MetricResult.html"
-                                  title='type cadence::MetricResult'>MetricResult</a></td>
-                           <td class='docblock-short'>
-                                
-                           </td>
-                       </tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../";window.currentCrate = "cadence";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Set.html" title='cadence::Set struct'>Set</a></td><td class='docblock-short'><p>Sets count the number of unique elements in a group.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.StatsdClient.html" title='cadence::StatsdClient struct'>StatsdClient</a></td><td class='docblock-short'><p>Client for Statsd that implements various traits to record metrics.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.StatsdClientBuilder.html" title='cadence::StatsdClientBuilder struct'>StatsdClientBuilder</a></td><td class='docblock-short'><p>Builder for creating and customizing <code>StatsdClient</code> instances.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Timer.html" title='cadence::Timer struct'>Timer</a></td><td class='docblock-short'><p>Timers are a positive number of milliseconds between a start and end point.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.UdpMetricSink.html" title='cadence::UdpMetricSink struct'>UdpMetricSink</a></td><td class='docblock-short'><p>Implementation of a <code>MetricSink</code> that emits metrics over UDP.</p>
+</td></tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table><tr class='module-item'><td><a class="enum" href="enum.ErrorKind.html" title='cadence::ErrorKind enum'>ErrorKind</a></td><td class='docblock-short'><p>Potential categories an error from this library falls into.</p>
+</td></tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+<table><tr class='module-item'><td><a class="constant" href="constant.DEFAULT_PORT.html" title='cadence::DEFAULT_PORT constant'>DEFAULT_PORT</a></td><td class='docblock-short'></td></tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table><tr class='module-item'><td><a class="trait" href="trait.Counted.html" title='cadence::Counted trait'>Counted</a></td><td class='docblock-short'><p>Trait for incrementing and decrementing counters.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.Gauged.html" title='cadence::Gauged trait'>Gauged</a></td><td class='docblock-short'><p>Trait for recording gauge values.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.Histogrammed.html" title='cadence::Histogrammed trait'>Histogrammed</a></td><td class='docblock-short'><p>Trait for recording histogram values.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.Metered.html" title='cadence::Metered trait'>Metered</a></td><td class='docblock-short'><p>Trait for recording meter values.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.Metric.html" title='cadence::Metric trait'>Metric</a></td><td class='docblock-short'><p>Trait for metrics to expose Statsd metric string slice representation.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.MetricClient.html" title='cadence::MetricClient trait'>MetricClient</a></td><td class='docblock-short'><p>Trait that encompasses all other traits for sending metrics.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.MetricSink.html" title='cadence::MetricSink trait'>MetricSink</a></td><td class='docblock-short'><p>Trait for various backends that send Statsd metrics somewhere.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.Setted.html" title='cadence::Setted trait'>Setted</a></td><td class='docblock-short'><p>Trait for recording set values.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.Timed.html" title='cadence::Timed trait'>Timed</a></td><td class='docblock-short'><p>Trait for recording timings in milliseconds.</p>
+</td></tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table><tr class='module-item'><td><a class="type" href="type.MetricResult.html" title='cadence::MetricResult type'>MetricResult</a></td><td class='docblock-short'></td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../";window.currentCrate = "cadence";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>
