@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.7.1/src/fut/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.7.9/src/fut/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../actix/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -415,6 +415,52 @@
 <span id="415">415</span>
 <span id="416">416</span>
 <span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Custom `Future` implementation with `Actix` support</span>
 
@@ -462,7 +508,39 @@
 <span class="doccomment">/// Trait for types which are a placeholder of a value that may become</span>
 <span class="doccomment">/// available at some later point in time.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// This is similar to `futures::Future` trait, except it works with `Actor`</span>
+<span class="doccomment">/// `ActorFuture` is very similar to a regular `Future`, only with subsequent combinator closures accepting the actor and its context, in addition to the result.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// `ActorFuture` allows for use cases where future processing requires access to the actor or its context.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Here is an example of a handler on a single actor, deferring work to another actor, and</span>
+<span class="doccomment">/// then updating the initiating actor&#39;s state:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```rust,ignore</span>
+<span class="doccomment">/// impl Message for SomeMessage {</span>
+<span class="doccomment">///     type Result = ();</span>
+<span class="doccomment">/// }</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// impl Handler&lt;DeferredWork&gt; for OriginalActor {</span>
+<span class="doccomment">///     type Result = ResponseActFuture&lt;Self, (), Error&gt;;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///     fn handle(&amp;mut self, _msg: Refresh, ctx: &amp;mut Context&lt;Self&gt;) -&gt; Self::Result {</span>
+<span class="doccomment">///         let send_to_other = self.other_actor_addr</span>
+<span class="doccomment">///             .send(OtherMessage::new())</span>
+<span class="doccomment">///             .map_err(Error::from);</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///         let update_self =</span>
+<span class="doccomment">///             wrap_future::&lt;_, Self&gt;(send_to_other).map(|result, actor, _ctx| {</span>
+<span class="doccomment">///                 // Actor&#39;s state updated here</span>
+<span class="doccomment">///                 actor.inner_state.update_from(result);</span>
+<span class="doccomment">///             });</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///         // return the wrapping future</span>
+<span class="doccomment">///         Box::new(update_self);</span>
+<span class="doccomment">///     }</span>
+<span class="doccomment">/// }</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// See also [into_actor](trait.WrapFuture.html#tymethod.into_actor), which provides future conversion using trait</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ActorFuture</span> {
     <span class="doccomment">/// The type of value that this future will resolved with if it is</span>
     <span class="doccomment">/// successful.</span>
@@ -476,7 +554,9 @@
     <span class="kw">type</span> <span class="ident">Actor</span>: <span class="ident">Actor</span>;
 
     <span class="kw">fn</span> <span class="ident">poll</span>(
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">srv</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Actor</span>, <span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Actor</span> <span class="kw">as</span> <span class="ident">Actor</span><span class="op">&gt;</span>::<span class="ident">Context</span>,
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="ident">srv</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Actor</span>,
+        <span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Actor</span> <span class="kw">as</span> <span class="ident">Actor</span><span class="op">&gt;</span>::<span class="ident">Context</span>,
     ) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// Map this future&#39;s result to a different type, returning a new future of</span>
@@ -568,7 +648,9 @@
     <span class="kw">type</span> <span class="ident">Actor</span>: <span class="ident">Actor</span>;
 
     <span class="kw">fn</span> <span class="ident">poll</span>(
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">srv</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Actor</span>, <span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Actor</span> <span class="kw">as</span> <span class="ident">Actor</span><span class="op">&gt;</span>::<span class="ident">Context</span>,
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="ident">srv</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Actor</span>,
+        <span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Actor</span> <span class="kw">as</span> <span class="ident">Actor</span><span class="op">&gt;</span>::<span class="ident">Context</span>,
     ) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// Converts a stream of type `T` to a stream of type `U`.</span>
@@ -688,7 +770,9 @@
     <span class="kw">type</span> <span class="ident">Actor</span> <span class="op">=</span> <span class="ident">F</span>::<span class="ident">Actor</span>;
 
     <span class="kw">fn</span> <span class="ident">poll</span>(
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">srv</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Actor</span>, <span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Actor</span> <span class="kw">as</span> <span class="ident">Actor</span><span class="op">&gt;</span>::<span class="ident">Context</span>,
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="ident">srv</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Actor</span>,
+        <span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Actor</span> <span class="kw">as</span> <span class="ident">Actor</span><span class="op">&gt;</span>::<span class="ident">Context</span>,
     ) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
         (<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>).<span class="ident">poll</span>(<span class="ident">srv</span>, <span class="ident">ctx</span>)
     }
@@ -737,7 +821,11 @@
     <span class="ident">act</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>,
 }
 
-<span class="doccomment">/// Converts normal future into `ActorFuture`</span>
+<span class="doccomment">/// Converts normal future into `ActorFuture`, allowing its processing to</span>
+<span class="doccomment">/// use the actor&#39;s state.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// See the documentation for [ActorFuture](trait.ActorFuture.html) for a practical example involving both</span>
+<span class="doccomment">/// `wrap_future` and `ActorFuture`</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wrap_future</span><span class="op">&lt;</span><span class="ident">F</span>, <span class="ident">A</span><span class="op">&gt;</span>(<span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">FutureWrap</span><span class="op">&lt;</span><span class="ident">F</span>, <span class="ident">A</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">F</span>: <span class="ident">Future</span>,
@@ -758,7 +846,9 @@
     <span class="kw">type</span> <span class="ident">Actor</span> <span class="op">=</span> <span class="ident">A</span>;
 
     <span class="kw">fn</span> <span class="ident">poll</span>(
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Actor</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Actor</span> <span class="kw">as</span> <span class="ident">Actor</span><span class="op">&gt;</span>::<span class="ident">Context</span>,
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Actor</span>,
+        <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Actor</span> <span class="kw">as</span> <span class="ident">Actor</span><span class="op">&gt;</span>::<span class="ident">Context</span>,
     ) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">fut</span>.<span class="ident">poll</span>()
     }
@@ -828,7 +918,9 @@
     <span class="kw">type</span> <span class="ident">Actor</span> <span class="op">=</span> <span class="ident">A</span>;
 
     <span class="kw">fn</span> <span class="ident">poll</span>(
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Actor</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Actor</span> <span class="kw">as</span> <span class="ident">Actor</span><span class="op">&gt;</span>::<span class="ident">Context</span>,
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Actor</span>,
+        <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Actor</span> <span class="kw">as</span> <span class="ident">Actor</span><span class="op">&gt;</span>::<span class="ident">Context</span>,
     ) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">st</span>.<span class="ident">poll</span>()
     }

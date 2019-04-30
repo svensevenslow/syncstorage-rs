@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-web-0.7.7/src/server/h1.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>h1.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-web-0.7.19/src/server/h1.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>h1.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../actix_web/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
 <span id="2">   2</span>
 <span id="3">   3</span>
 <span id="4">   4</span>
@@ -1220,135 +1220,305 @@
 <span id="1220">1220</span>
 <span id="1221">1221</span>
 <span id="1222">1222</span>
+<span id="1223">1223</span>
+<span id="1224">1224</span>
+<span id="1225">1225</span>
+<span id="1226">1226</span>
+<span id="1227">1227</span>
+<span id="1228">1228</span>
+<span id="1229">1229</span>
+<span id="1230">1230</span>
+<span id="1231">1231</span>
+<span id="1232">1232</span>
+<span id="1233">1233</span>
+<span id="1234">1234</span>
+<span id="1235">1235</span>
+<span id="1236">1236</span>
+<span id="1237">1237</span>
+<span id="1238">1238</span>
+<span id="1239">1239</span>
+<span id="1240">1240</span>
+<span id="1241">1241</span>
+<span id="1242">1242</span>
+<span id="1243">1243</span>
+<span id="1244">1244</span>
+<span id="1245">1245</span>
+<span id="1246">1246</span>
+<span id="1247">1247</span>
+<span id="1248">1248</span>
+<span id="1249">1249</span>
+<span id="1250">1250</span>
+<span id="1251">1251</span>
+<span id="1252">1252</span>
+<span id="1253">1253</span>
+<span id="1254">1254</span>
+<span id="1255">1255</span>
+<span id="1256">1256</span>
+<span id="1257">1257</span>
+<span id="1258">1258</span>
+<span id="1259">1259</span>
+<span id="1260">1260</span>
+<span id="1261">1261</span>
+<span id="1262">1262</span>
+<span id="1263">1263</span>
+<span id="1264">1264</span>
+<span id="1265">1265</span>
+<span id="1266">1266</span>
+<span id="1267">1267</span>
+<span id="1268">1268</span>
+<span id="1269">1269</span>
+<span id="1270">1270</span>
+<span id="1271">1271</span>
+<span id="1272">1272</span>
+<span id="1273">1273</span>
+<span id="1274">1274</span>
+<span id="1275">1275</span>
+<span id="1276">1276</span>
+<span id="1277">1277</span>
+<span id="1278">1278</span>
+<span id="1279">1279</span>
+<span id="1280">1280</span>
+<span id="1281">1281</span>
+<span id="1282">1282</span>
+<span id="1283">1283</span>
+<span id="1284">1284</span>
+<span id="1285">1285</span>
+<span id="1286">1286</span>
+<span id="1287">1287</span>
+<span id="1288">1288</span>
+<span id="1289">1289</span>
+<span id="1290">1290</span>
+<span id="1291">1291</span>
+<span id="1292">1292</span>
+<span id="1293">1293</span>
+<span id="1294">1294</span>
+<span id="1295">1295</span>
+<span id="1296">1296</span>
+<span id="1297">1297</span>
+<span id="1298">1298</span>
+<span id="1299">1299</span>
+<span id="1300">1300</span>
+<span id="1301">1301</span>
+<span id="1302">1302</span>
+<span id="1303">1303</span>
+<span id="1304">1304</span>
+<span id="1305">1305</span>
+<span id="1306">1306</span>
+<span id="1307">1307</span>
+<span id="1308">1308</span>
+<span id="1309">1309</span>
+<span id="1310">1310</span>
+<span id="1311">1311</span>
+<span id="1312">1312</span>
+<span id="1313">1313</span>
+<span id="1314">1314</span>
+<span id="1315">1315</span>
+<span id="1316">1316</span>
+<span id="1317">1317</span>
+<span id="1318">1318</span>
+<span id="1319">1319</span>
+<span id="1320">1320</span>
+<span id="1321">1321</span>
+<span id="1322">1322</span>
+<span id="1323">1323</span>
+<span id="1324">1324</span>
+<span id="1325">1325</span>
+<span id="1326">1326</span>
+<span id="1327">1327</span>
+<span id="1328">1328</span>
+<span id="1329">1329</span>
+<span id="1330">1330</span>
+<span id="1331">1331</span>
+<span id="1332">1332</span>
+<span id="1333">1333</span>
+<span id="1334">1334</span>
+<span id="1335">1335</span>
+<span id="1336">1336</span>
+<span id="1337">1337</span>
+<span id="1338">1338</span>
+<span id="1339">1339</span>
+<span id="1340">1340</span>
+<span id="1341">1341</span>
+<span id="1342">1342</span>
+<span id="1343">1343</span>
+<span id="1344">1344</span>
+<span id="1345">1345</span>
+<span id="1346">1346</span>
+<span id="1347">1347</span>
+<span id="1348">1348</span>
+<span id="1349">1349</span>
+<span id="1350">1350</span>
+<span id="1351">1351</span>
+<span id="1352">1352</span>
+<span id="1353">1353</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">VecDeque</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">net</span>::<span class="ident">SocketAddr</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">rc</span>::<span class="ident">Rc</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">net</span>::{<span class="ident">Shutdown</span>, <span class="ident">SocketAddr</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::{<span class="ident">Duration</span>, <span class="ident">Instant</span>};
 
 <span class="kw">use</span> <span class="ident">bytes</span>::<span class="ident">BytesMut</span>;
 <span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">Async</span>, <span class="ident">Future</span>, <span class="ident">Poll</span>};
+<span class="kw">use</span> <span class="ident">tokio_current_thread</span>::<span class="ident">spawn</span>;
 <span class="kw">use</span> <span class="ident">tokio_timer</span>::<span class="ident">Delay</span>;
 
+<span class="kw">use</span> <span class="ident">body</span>::<span class="ident">Binary</span>;
 <span class="kw">use</span> <span class="ident">error</span>::{<span class="ident">Error</span>, <span class="ident">PayloadError</span>};
 <span class="kw">use</span> <span class="ident">http</span>::{<span class="ident">StatusCode</span>, <span class="ident">Version</span>};
 <span class="kw">use</span> <span class="ident">payload</span>::{<span class="ident">Payload</span>, <span class="ident">PayloadStatus</span>, <span class="ident">PayloadWriter</span>};
 
-<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">error</span>::<span class="ident">ServerError</span>;
+<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">error</span>::{<span class="ident">HttpDispatchError</span>, <span class="ident">ServerError</span>};
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">h1decoder</span>::{<span class="ident">DecoderError</span>, <span class="ident">H1Decoder</span>, <span class="ident">Message</span>};
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">h1writer</span>::<span class="ident">H1Writer</span>;
+<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">handler</span>::{<span class="ident">HttpHandler</span>, <span class="ident">HttpHandlerTask</span>, <span class="ident">HttpHandlerTaskFut</span>};
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">input</span>::<span class="ident">PayloadType</span>;
-<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">settings</span>::<span class="ident">WorkerSettings</span>;
-<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">Writer</span>;
-<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">HttpHandler</span>, <span class="ident">HttpHandlerTask</span>, <span class="ident">IoStream</span>};
+<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">settings</span>::<span class="ident">ServiceConfig</span>;
+<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">IoStream</span>, <span class="ident">Writer</span>};
 
 <span class="kw">const</span> <span class="ident">MAX_PIPELINED_MESSAGES</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">16</span>;
 
 <span class="macro">bitflags</span><span class="macro">!</span> {
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Flags</span>: <span class="ident">u8</span> {
         <span class="kw">const</span> <span class="ident">STARTED</span>            <span class="op">=</span> <span class="number">0b0000_0001</span>;
-        <span class="kw">const</span> <span class="ident">ERROR</span>              <span class="op">=</span> <span class="number">0b0000_0010</span>;
+        <span class="kw">const</span> <span class="ident">KEEPALIVE_ENABLED</span>  <span class="op">=</span> <span class="number">0b0000_0010</span>;
         <span class="kw">const</span> <span class="ident">KEEPALIVE</span>          <span class="op">=</span> <span class="number">0b0000_0100</span>;
         <span class="kw">const</span> <span class="ident">SHUTDOWN</span>           <span class="op">=</span> <span class="number">0b0000_1000</span>;
         <span class="kw">const</span> <span class="ident">READ_DISCONNECTED</span>  <span class="op">=</span> <span class="number">0b0001_0000</span>;
         <span class="kw">const</span> <span class="ident">WRITE_DISCONNECTED</span> <span class="op">=</span> <span class="number">0b0010_0000</span>;
         <span class="kw">const</span> <span class="ident">POLLED</span>             <span class="op">=</span> <span class="number">0b0100_0000</span>;
+        <span class="kw">const</span> <span class="ident">FLUSHED</span>            <span class="op">=</span> <span class="number">0b1000_0000</span>;
     }
 }
 
-<span class="macro">bitflags</span><span class="macro">!</span> {
-    <span class="kw">struct</span> <span class="ident">EntryFlags</span>: <span class="ident">u8</span> {
-        <span class="kw">const</span> <span class="ident">EOF</span> <span class="op">=</span> <span class="number">0b0000_0001</span>;
-        <span class="kw">const</span> <span class="ident">ERROR</span> <span class="op">=</span> <span class="number">0b0000_0010</span>;
-        <span class="kw">const</span> <span class="ident">FINISHED</span> <span class="op">=</span> <span class="number">0b0000_0100</span>;
-    }
-}
-
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">Http1</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">IoStream</span>, <span class="ident">H</span>: <span class="ident">HttpHandler</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
+<span class="doccomment">/// Dispatcher for HTTP/1.1 protocol</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Http1Dispatcher</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">IoStream</span>, <span class="ident">H</span>: <span class="ident">HttpHandler</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
     <span class="ident">flags</span>: <span class="ident">Flags</span>,
-    <span class="ident">settings</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">WorkerSettings</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">settings</span>: <span class="ident">ServiceConfig</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>,
     <span class="ident">addr</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SocketAddr</span><span class="op">&gt;</span>,
     <span class="ident">stream</span>: <span class="ident">H1Writer</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">H</span><span class="op">&gt;</span>,
     <span class="ident">decoder</span>: <span class="ident">H1Decoder</span>,
     <span class="ident">payload</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PayloadType</span><span class="op">&gt;</span>,
     <span class="ident">buf</span>: <span class="ident">BytesMut</span>,
     <span class="ident">tasks</span>: <span class="ident">VecDeque</span><span class="op">&lt;</span><span class="ident">Entry</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;&gt;</span>,
-    <span class="ident">keepalive_timer</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Delay</span><span class="op">&gt;</span>,
+    <span class="ident">error</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HttpDispatchError</span><span class="op">&gt;</span>,
+    <span class="ident">ka_expire</span>: <span class="ident">Instant</span>,
+    <span class="ident">ka_timer</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Delay</span><span class="op">&gt;</span>,
 }
 
-<span class="kw">enum</span> <span class="ident">EntryPipe</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">HttpHandler</span><span class="op">&gt;</span> {
-    <span class="ident">Task</span>(<span class="ident">H</span>::<span class="ident">Task</span>),
+<span class="kw">enum</span> <span class="ident">Entry</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">HttpHandler</span><span class="op">&gt;</span> {
+    <span class="ident">Task</span>(<span class="ident">H</span>::<span class="ident">Task</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span>()<span class="op">&gt;</span>),
     <span class="ident">Error</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">HttpHandlerTask</span><span class="op">&gt;</span>),
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">HttpHandler</span><span class="op">&gt;</span> <span class="ident">EntryPipe</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">HttpHandler</span><span class="op">&gt;</span> <span class="ident">Entry</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">into_task</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">H</span>::<span class="ident">Task</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Entry</span>::<span class="ident">Task</span>(<span class="ident">task</span>, <span class="kw">_</span>) <span class="op">=&gt;</span> <span class="ident">task</span>,
+            <span class="ident">Entry</span>::<span class="ident">Error</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(),
+        }
+    }
     <span class="kw">fn</span> <span class="ident">disconnected</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">EntryPipe</span>::<span class="ident">Task</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">task</span>) <span class="op">=&gt;</span> <span class="ident">task</span>.<span class="ident">disconnected</span>(),
-            <span class="ident">EntryPipe</span>::<span class="ident">Error</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">task</span>) <span class="op">=&gt;</span> <span class="ident">task</span>.<span class="ident">disconnected</span>(),
+            <span class="ident">Entry</span>::<span class="ident">Task</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">task</span>, <span class="kw">_</span>) <span class="op">=&gt;</span> <span class="ident">task</span>.<span class="ident">disconnected</span>(),
+            <span class="ident">Entry</span>::<span class="ident">Error</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">task</span>) <span class="op">=&gt;</span> <span class="ident">task</span>.<span class="ident">disconnected</span>(),
         }
     }
     <span class="kw">fn</span> <span class="ident">poll_io</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">io</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Writer</span>) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span><span class="ident">bool</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">EntryPipe</span>::<span class="ident">Task</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">task</span>) <span class="op">=&gt;</span> <span class="ident">task</span>.<span class="ident">poll_io</span>(<span class="ident">io</span>),
-            <span class="ident">EntryPipe</span>::<span class="ident">Error</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">task</span>) <span class="op">=&gt;</span> <span class="ident">task</span>.<span class="ident">poll_io</span>(<span class="ident">io</span>),
+            <span class="ident">Entry</span>::<span class="ident">Task</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">task</span>, <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">except</span>) <span class="op">=&gt;</span> {
+                <span class="kw">match</span> <span class="ident">except</span> {
+                    <span class="prelude-val">Some</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {
+                        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">io</span>.<span class="ident">write</span>(<span class="kw-2">&amp;</span><span class="ident">Binary</span>::<span class="ident">from</span>(<span class="string">&quot;HTTP/1.1 100 Continue\r\n\r\n&quot;</span>));
+                    }
+                    <span class="kw">_</span> <span class="op">=&gt;</span> (),
+                };
+                <span class="ident">task</span>.<span class="ident">poll_io</span>(<span class="ident">io</span>)
+            }
+            <span class="ident">Entry</span>::<span class="ident">Error</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">task</span>) <span class="op">=&gt;</span> <span class="ident">task</span>.<span class="ident">poll_io</span>(<span class="ident">io</span>),
         }
     }
     <span class="kw">fn</span> <span class="ident">poll_completed</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">EntryPipe</span>::<span class="ident">Task</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">task</span>) <span class="op">=&gt;</span> <span class="ident">task</span>.<span class="ident">poll_completed</span>(),
-            <span class="ident">EntryPipe</span>::<span class="ident">Error</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">task</span>) <span class="op">=&gt;</span> <span class="ident">task</span>.<span class="ident">poll_completed</span>(),
+            <span class="ident">Entry</span>::<span class="ident">Task</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">task</span>, <span class="kw">_</span>) <span class="op">=&gt;</span> <span class="ident">task</span>.<span class="ident">poll_completed</span>(),
+            <span class="ident">Entry</span>::<span class="ident">Error</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">task</span>) <span class="op">=&gt;</span> <span class="ident">task</span>.<span class="ident">poll_completed</span>(),
         }
     }
 }
 
-<span class="kw">struct</span> <span class="ident">Entry</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">HttpHandler</span><span class="op">&gt;</span> {
-    <span class="ident">pipe</span>: <span class="ident">EntryPipe</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>,
-    <span class="ident">flags</span>: <span class="ident">EntryFlags</span>,
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">H</span><span class="op">&gt;</span> <span class="ident">Http1</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">H</span><span class="op">&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">H</span><span class="op">&gt;</span> <span class="ident">Http1Dispatcher</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">H</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">T</span>: <span class="ident">IoStream</span>,
     <span class="ident">H</span>: <span class="ident">HttpHandler</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
 {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(
-        <span class="ident">settings</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">WorkerSettings</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;&gt;</span>, <span class="ident">stream</span>: <span class="ident">T</span>, <span class="ident">addr</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SocketAddr</span><span class="op">&gt;</span>,
-        <span class="ident">buf</span>: <span class="ident">BytesMut</span>, <span class="ident">is_eof</span>: <span class="ident">bool</span>,
+        <span class="ident">settings</span>: <span class="ident">ServiceConfig</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>,
+        <span class="ident">stream</span>: <span class="ident">T</span>,
+        <span class="ident">buf</span>: <span class="ident">BytesMut</span>,
+        <span class="ident">is_eof</span>: <span class="ident">bool</span>,
+        <span class="ident">keepalive_timer</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Delay</span><span class="op">&gt;</span>,
     ) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">Http1</span> {
-            <span class="ident">flags</span>: <span class="kw">if</span> <span class="ident">is_eof</span> {
-                <span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span>
-            } <span class="kw">else</span> {
-                <span class="ident">Flags</span>::<span class="ident">KEEPALIVE</span>
-            },
-            <span class="ident">stream</span>: <span class="ident">H1Writer</span>::<span class="ident">new</span>(<span class="ident">stream</span>, <span class="ident">Rc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">settings</span>)),
+        <span class="kw">let</span> <span class="ident">addr</span> <span class="op">=</span> <span class="ident">stream</span>.<span class="ident">peer_addr</span>();
+        <span class="kw">let</span> (<span class="ident">ka_expire</span>, <span class="ident">ka_timer</span>) <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">delay</span>) <span class="op">=</span> <span class="ident">keepalive_timer</span> {
+            (<span class="ident">delay</span>.<span class="ident">deadline</span>(), <span class="prelude-val">Some</span>(<span class="ident">delay</span>))
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">delay</span>) <span class="op">=</span> <span class="ident">settings</span>.<span class="ident">keep_alive_timer</span>() {
+            (<span class="ident">delay</span>.<span class="ident">deadline</span>(), <span class="prelude-val">Some</span>(<span class="ident">delay</span>))
+        } <span class="kw">else</span> {
+            (<span class="ident">settings</span>.<span class="ident">now</span>(), <span class="prelude-val">None</span>)
+        };
+
+        <span class="kw">let</span> <span class="ident">flags</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">is_eof</span> {
+            <span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span> <span class="op">|</span> <span class="ident">Flags</span>::<span class="ident">FLUSHED</span>
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">settings</span>.<span class="ident">keep_alive_enabled</span>() {
+            <span class="ident">Flags</span>::<span class="ident">KEEPALIVE</span> <span class="op">|</span> <span class="ident">Flags</span>::<span class="ident">KEEPALIVE_ENABLED</span> <span class="op">|</span> <span class="ident">Flags</span>::<span class="ident">FLUSHED</span>
+        } <span class="kw">else</span> {
+            <span class="ident">Flags</span>::<span class="ident">empty</span>()
+        };
+
+        <span class="ident">Http1Dispatcher</span> {
+            <span class="ident">stream</span>: <span class="ident">H1Writer</span>::<span class="ident">new</span>(<span class="ident">stream</span>, <span class="ident">settings</span>.<span class="ident">clone</span>()),
             <span class="ident">decoder</span>: <span class="ident">H1Decoder</span>::<span class="ident">new</span>(),
             <span class="ident">payload</span>: <span class="prelude-val">None</span>,
             <span class="ident">tasks</span>: <span class="ident">VecDeque</span>::<span class="ident">new</span>(),
-            <span class="ident">keepalive_timer</span>: <span class="prelude-val">None</span>,
+            <span class="ident">error</span>: <span class="prelude-val">None</span>,
+            <span class="ident">flags</span>,
             <span class="ident">addr</span>,
             <span class="ident">buf</span>,
             <span class="ident">settings</span>,
+            <span class="ident">ka_timer</span>,
+            <span class="ident">ka_expire</span>,
         }
     }
 
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">settings</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">WorkerSettings</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">settings</span>.<span class="ident">as_ref</span>()
-    }
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">for_error</span>(
+        <span class="ident">settings</span>: <span class="ident">ServiceConfig</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>,
+        <span class="ident">stream</span>: <span class="ident">T</span>,
+        <span class="ident">status</span>: <span class="ident">StatusCode</span>,
+        <span class="kw-2">mut</span> <span class="ident">keepalive_timer</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Delay</span><span class="op">&gt;</span>,
+        <span class="ident">buf</span>: <span class="ident">BytesMut</span>,
+    ) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">deadline</span>) <span class="op">=</span> <span class="ident">settings</span>.<span class="ident">client_timer_expire</span>() {
+            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">keepalive_timer</span>.<span class="ident">as_mut</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">delay</span><span class="op">|</span> <span class="ident">delay</span>.<span class="ident">reset</span>(<span class="ident">deadline</span>));
+        }
 
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">io</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">T</span> {
-        <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">get_mut</span>()
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">disp</span> <span class="op">=</span> <span class="ident">Http1Dispatcher</span> {
+            <span class="ident">flags</span>: <span class="ident">Flags</span>::<span class="ident">STARTED</span> <span class="op">|</span> <span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span> <span class="op">|</span> <span class="ident">Flags</span>::<span class="ident">FLUSHED</span>,
+            <span class="ident">stream</span>: <span class="ident">H1Writer</span>::<span class="ident">new</span>(<span class="ident">stream</span>, <span class="ident">settings</span>.<span class="ident">clone</span>()),
+            <span class="ident">decoder</span>: <span class="ident">H1Decoder</span>::<span class="ident">new</span>(),
+            <span class="ident">payload</span>: <span class="prelude-val">None</span>,
+            <span class="ident">tasks</span>: <span class="ident">VecDeque</span>::<span class="ident">new</span>(),
+            <span class="ident">error</span>: <span class="prelude-val">None</span>,
+            <span class="ident">addr</span>: <span class="prelude-val">None</span>,
+            <span class="ident">ka_timer</span>: <span class="ident">keepalive_timer</span>,
+            <span class="ident">ka_expire</span>: <span class="ident">settings</span>.<span class="ident">now</span>(),
+            <span class="ident">buf</span>,
+            <span class="ident">settings</span>,
+        };
+        <span class="ident">disp</span>.<span class="ident">push_response_entry</span>(<span class="ident">status</span>);
+        <span class="ident">disp</span>
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">can_read</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">if</span> <span class="self">self</span>
-            .<span class="ident">flags</span>
-            .<span class="ident">intersects</span>(<span class="ident">Flags</span>::<span class="ident">ERROR</span> <span class="op">|</span> <span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span>)
-        {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span>) {
             <span class="kw">return</span> <span class="bool-val">false</span>;
         }
 
@@ -1359,247 +1529,309 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">notify_disconnect</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
-        <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">WRITE_DISCONNECTED</span>);
-
-        <span class="comment">// notify all tasks</span>
-        <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">disconnected</span>();
-        <span class="kw">for</span> <span class="ident">task</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">tasks</span> {
-            <span class="ident">task</span>.<span class="ident">pipe</span>.<span class="ident">disconnected</span>();
-        }
-    }
-
-    <span class="kw">fn</span> <span class="ident">client_disconnect</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
-        <span class="comment">// notify all tasks</span>
-        <span class="self">self</span>.<span class="ident">notify_disconnect</span>();
-        <span class="comment">// kill keepalive</span>
-        <span class="self">self</span>.<span class="ident">keepalive_timer</span>.<span class="ident">take</span>();
-
-        <span class="comment">// on parse error, stop reading stream but tasks need to be</span>
-        <span class="comment">// completed</span>
-        <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">ERROR</span>);
-
+    <span class="comment">// if checked is set to true, delay disconnect until all tasks have finished.</span>
+    <span class="kw">fn</span> <span class="ident">client_disconnected</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">checked</span>: <span class="ident">bool</span>) {
+        <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span>);
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">payload</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">payload</span>.<span class="ident">take</span>() {
             <span class="ident">payload</span>.<span class="ident">set_error</span>(<span class="ident">PayloadError</span>::<span class="ident">Incomplete</span>);
         }
+
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">checked</span> <span class="op">||</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">is_empty</span>() {
+            <span class="self">self</span>.<span class="ident">flags</span>
+                .<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">WRITE_DISCONNECTED</span> <span class="op">|</span> <span class="ident">Flags</span>::<span class="ident">FLUSHED</span>);
+            <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">disconnected</span>();
+
+            <span class="comment">// notify all tasks</span>
+            <span class="kw">for</span> <span class="kw-2">mut</span> <span class="ident">task</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">drain</span>(..) {
+                <span class="ident">task</span>.<span class="ident">disconnected</span>();
+                <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">poll_completed</span>() {
+                    <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> {
+                        <span class="comment">// spawn not completed task, it does not require access to io</span>
+                        <span class="comment">// at this point</span>
+                        <span class="ident">spawn</span>(<span class="ident">HttpHandlerTaskFut</span>::<span class="ident">new</span>(<span class="ident">task</span>.<span class="ident">into_task</span>()));
+                    }
+                    <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="kw">_</span>)) <span class="op">=&gt;</span> (),
+                    <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
+                        <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unhandled application error: {}&quot;</span>, <span class="ident">err</span>);
+                    }
+                }
+            }
+        }
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">poll</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span>(), ()<span class="op">&gt;</span> {
-        <span class="comment">// keep-alive timer</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">timer</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">keepalive_timer</span> {
-            <span class="kw">match</span> <span class="ident">timer</span>.<span class="ident">poll</span>() {
-                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="kw">_</span>)) <span class="op">=&gt;</span> {
-                    <span class="macro">trace</span><span class="macro">!</span>(<span class="string">&quot;Keep-alive timeout, close connection&quot;</span>);
-                    <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">SHUTDOWN</span>);
-                }
-                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> (),
-                <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
-            }
-        }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">poll</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span>(), <span class="ident">HttpDispatchError</span><span class="op">&gt;</span> {
+        <span class="comment">// check connection keep-alive</span>
+        <span class="self">self</span>.<span class="ident">poll_keepalive</span>()<span class="question-mark">?</span>;
 
         <span class="comment">// shutdown</span>
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">SHUTDOWN</span>) {
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">intersects</span>(
-                <span class="ident">Flags</span>::<span class="ident">ERROR</span> <span class="op">|</span> <span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span> <span class="op">|</span> <span class="ident">Flags</span>::<span class="ident">WRITE_DISCONNECTED</span>,
-            ) {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">WRITE_DISCONNECTED</span>) {
                 <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(()));
             }
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">poll_completed</span>(<span class="bool-val">true</span>) {
-                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>),
-                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="kw">_</span>)) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(())),
-                <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
-                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Error sending data: {}&quot;</span>, <span class="ident">err</span>);
-                    <span class="kw">return</span> <span class="prelude-val">Err</span>(());
-                }
-            }
+            <span class="kw">return</span> <span class="self">self</span>.<span class="ident">poll_flush</span>(<span class="bool-val">true</span>);
         }
 
-        <span class="self">self</span>.<span class="ident">poll_io</span>();
+        <span class="comment">// process incoming requests</span>
+        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">WRITE_DISCONNECTED</span>) {
+            <span class="self">self</span>.<span class="ident">poll_handler</span>()<span class="question-mark">?</span>;
 
-        <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">poll_handler</span>()<span class="question-mark">?</span> {
-                <span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="bool-val">true</span>) <span class="op">=&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">poll_io</span>();
+            <span class="comment">// flush stream</span>
+            <span class="self">self</span>.<span class="ident">poll_flush</span>(<span class="bool-val">false</span>)<span class="question-mark">?</span>;
+
+            <span class="comment">// deal with keep-alive and stream eof (client-side write shutdown)</span>
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">is_empty</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">FLUSHED</span>) {
+                <span class="comment">// handle stream eof</span>
+                <span class="kw">if</span> <span class="self">self</span>
+                    .<span class="ident">flags</span>
+                    .<span class="ident">intersects</span>(<span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span> <span class="op">|</span> <span class="ident">Flags</span>::<span class="ident">WRITE_DISCONNECTED</span>)
+                {
+                    <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(()));
                 }
-                <span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="bool-val">false</span>) <span class="op">=&gt;</span> {
+                <span class="comment">// no keep-alive</span>
+                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">STARTED</span>)
+                    <span class="op">&amp;&amp;</span> (<span class="op">!</span><span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">KEEPALIVE_ENABLED</span>)
+                        <span class="op">||</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">KEEPALIVE</span>))
+                {
                     <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">SHUTDOWN</span>);
                     <span class="kw">return</span> <span class="self">self</span>.<span class="ident">poll</span>();
                 }
-                <span class="ident">Async</span>::<span class="ident">NotReady</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>),
             }
+            <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>)
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">error</span>.<span class="ident">take</span>() {
+            <span class="prelude-val">Err</span>(<span class="ident">err</span>)
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(()))
         }
     }
 
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="doccomment">/// read data from stream</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">poll_io</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">POLLED</span>) {
-            <span class="self">self</span>.<span class="ident">parse</span>();
-            <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">POLLED</span>);
-            <span class="kw">return</span>;
-        }
-
-        <span class="comment">// read io from socket</span>
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">can_read</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">MAX_PIPELINED_MESSAGES</span> {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">get_mut</span>().<span class="ident">read_available</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">buf</span>) {
-                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>((<span class="ident">read_some</span>, <span class="ident">disconnected</span>))) <span class="op">=&gt;</span> {
-                    <span class="kw">if</span> <span class="ident">read_some</span> {
-                        <span class="self">self</span>.<span class="ident">parse</span>();
+    <span class="doccomment">/// Flush stream</span>
+    <span class="kw">fn</span> <span class="ident">poll_flush</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">shutdown</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span>(), <span class="ident">HttpDispatchError</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="ident">shutdown</span> <span class="op">||</span> <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">STARTED</span>) {
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">poll_completed</span>(<span class="ident">shutdown</span>) {
+                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> {
+                    <span class="comment">// mark stream</span>
+                    <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">flushed</span>() {
+                        <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">remove</span>(<span class="ident">Flags</span>::<span class="ident">FLUSHED</span>);
                     }
-                    <span class="kw">if</span> <span class="ident">disconnected</span> {
-                        <span class="comment">// delay disconnect until all tasks have finished.</span>
-                        <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span>);
-                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">is_empty</span>() {
-                            <span class="self">self</span>.<span class="ident">client_disconnect</span>();
+                    <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>)
+                }
+                <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
+                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Error sending data: {}&quot;</span>, <span class="ident">err</span>);
+                    <span class="self">self</span>.<span class="ident">client_disconnected</span>(<span class="bool-val">false</span>);
+                    <span class="prelude-val">Err</span>(<span class="ident">err</span>.<span class="ident">into</span>())
+                }
+                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="kw">_</span>)) <span class="op">=&gt;</span> {
+                    <span class="comment">// if payload is not consumed we can not use connection</span>
+                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">payload</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">is_empty</span>() {
+                        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">HttpDispatchError</span>::<span class="ident">PayloadIsNotConsumed</span>);
+                    }
+                    <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">FLUSHED</span>);
+                    <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(()))
+                }
+            }
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(()))
+        }
+    }
+
+    <span class="doccomment">/// keep-alive timer. returns `true` is keep-alive, otherwise drop</span>
+    <span class="kw">fn</span> <span class="ident">poll_keepalive</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">HttpDispatchError</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">timer</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">ka_timer</span> {
+            <span class="kw">match</span> <span class="ident">timer</span>.<span class="ident">poll</span>() {
+                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="kw">_</span>)) <span class="op">=&gt;</span> {
+                    <span class="comment">// if we get timer during shutdown, just drop connection</span>
+                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">SHUTDOWN</span>) {
+                        <span class="kw">let</span> <span class="ident">io</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">get_mut</span>();
+                        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">IoStream</span>::<span class="ident">set_linger</span>(<span class="ident">io</span>, <span class="prelude-val">Some</span>(<span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">0</span>)));
+                        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">IoStream</span>::<span class="ident">shutdown</span>(<span class="ident">io</span>, <span class="ident">Shutdown</span>::<span class="ident">Both</span>);
+                        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">HttpDispatchError</span>::<span class="ident">ShutdownTimeout</span>);
+                    }
+                    <span class="kw">if</span> <span class="ident">timer</span>.<span class="ident">deadline</span>() <span class="op">&gt;=</span> <span class="self">self</span>.<span class="ident">ka_expire</span> {
+                        <span class="comment">// check for any outstanding request handling</span>
+                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">is_empty</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">FLUSHED</span>) {
+                            <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">STARTED</span>) {
+                                <span class="comment">// timeout on first request (slow request) return 408</span>
+                                <span class="macro">trace</span><span class="macro">!</span>(<span class="string">&quot;Slow request timeout&quot;</span>);
+                                <span class="self">self</span>.<span class="ident">flags</span>
+                                    .<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">STARTED</span> <span class="op">|</span> <span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span>);
+                                <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">push_back</span>(<span class="ident">Entry</span>::<span class="ident">Error</span>(<span class="ident">ServerError</span>::<span class="ident">err</span>(
+                                    <span class="ident">Version</span>::<span class="ident">HTTP_11</span>,
+                                    <span class="ident">StatusCode</span>::<span class="ident">REQUEST_TIMEOUT</span>,
+                                )));
+                            } <span class="kw">else</span> {
+                                <span class="macro">trace</span><span class="macro">!</span>(<span class="string">&quot;Keep-alive timeout, close connection&quot;</span>);
+                                <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">SHUTDOWN</span>);
+
+                                <span class="comment">// start shutdown timer</span>
+                                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">deadline</span>) <span class="op">=</span>
+                                    <span class="self">self</span>.<span class="ident">settings</span>.<span class="ident">client_shutdown_timer</span>()
+                                {
+                                    <span class="ident">timer</span>.<span class="ident">reset</span>(<span class="ident">deadline</span>);
+                                    <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">timer</span>.<span class="ident">poll</span>();
+                                } <span class="kw">else</span> {
+                                    <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
+                                }
+                            }
+                        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">dl</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">settings</span>.<span class="ident">keep_alive_expire</span>() {
+                            <span class="ident">timer</span>.<span class="ident">reset</span>(<span class="ident">dl</span>);
+                            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">timer</span>.<span class="ident">poll</span>();
                         }
+                    } <span class="kw">else</span> {
+                        <span class="ident">timer</span>.<span class="ident">reset</span>(<span class="self">self</span>.<span class="ident">ka_expire</span>);
+                        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">timer</span>.<span class="ident">poll</span>();
                     }
                 }
                 <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> (),
-                <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">client_disconnect</span>();
+                <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> {
+                    <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Timer error {:?}&quot;</span>, <span class="ident">e</span>);
+                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">HttpDispatchError</span>::<span class="ident">Unknown</span>);
                 }
             }
         }
+
+        <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">poll_handler</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span><span class="ident">bool</span>, ()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">retry</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">can_read</span>();
-
-        <span class="comment">// check in-flight messages</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">io</span> <span class="op">=</span> <span class="bool-val">false</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idx</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">while</span> <span class="ident">idx</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">len</span>() {
-            <span class="comment">// only one task can do io operation in http/1</span>
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">io</span>
-                <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">tasks</span>[<span class="ident">idx</span>].<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">EntryFlags</span>::<span class="ident">EOF</span>)
-                <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">WRITE_DISCONNECTED</span>)
-            {
-                <span class="comment">// io is corrupted, send buffer</span>
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tasks</span>[<span class="ident">idx</span>].<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">EntryFlags</span>::<span class="ident">ERROR</span>) {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">poll_completed</span>(<span class="bool-val">true</span>) {
-                        <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>);
-                    }
-                    <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">ERROR</span>);
-                    <span class="kw">return</span> <span class="prelude-val">Err</span>(());
-                }
-
-                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tasks</span>[<span class="ident">idx</span>].<span class="ident">pipe</span>.<span class="ident">poll_io</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">stream</span>) {
-                    <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">ready</span>)) <span class="op">=&gt;</span> {
-                        <span class="comment">// override keep-alive state</span>
-                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">keepalive</span>() {
-                            <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">KEEPALIVE</span>);
-                        } <span class="kw">else</span> {
-                            <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">remove</span>(<span class="ident">Flags</span>::<span class="ident">KEEPALIVE</span>);
-                        }
-                        <span class="comment">// prepare stream for next response</span>
-                        <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">reset</span>();
-
-                        <span class="kw">if</span> <span class="ident">ready</span> {
-                            <span class="self">self</span>.<span class="ident">tasks</span>[<span class="ident">idx</span>]
-                                .<span class="ident">flags</span>
-                                .<span class="ident">insert</span>(<span class="ident">EntryFlags</span>::<span class="ident">EOF</span> <span class="op">|</span> <span class="ident">EntryFlags</span>::<span class="ident">FINISHED</span>);
-                        } <span class="kw">else</span> {
-                            <span class="self">self</span>.<span class="ident">tasks</span>[<span class="ident">idx</span>].<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">EntryFlags</span>::<span class="ident">EOF</span>);
-                        }
-                    }
-                    <span class="comment">// no more IO for this iteration</span>
-                    <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> {
-                        <span class="comment">// check if previously read backpressure was enabled</span>
-                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">can_read</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">retry</span> {
-                            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="bool-val">true</span>));
-                        }
-                        <span class="ident">io</span> <span class="op">=</span> <span class="bool-val">true</span>;
-                    }
-                    <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
-                        <span class="comment">// it is not possible to recover from error</span>
-                        <span class="comment">// during pipe handling, so just drop connection</span>
-                        <span class="self">self</span>.<span class="ident">notify_disconnect</span>();
-                        <span class="self">self</span>.<span class="ident">tasks</span>[<span class="ident">idx</span>].<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">EntryFlags</span>::<span class="ident">ERROR</span>);
-                        <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unhandled error1: {}&quot;</span>, <span class="ident">err</span>);
-                        <span class="kw">continue</span>;
-                    }
-                }
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">tasks</span>[<span class="ident">idx</span>].<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">EntryFlags</span>::<span class="ident">FINISHED</span>) {
-                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tasks</span>[<span class="ident">idx</span>].<span class="ident">pipe</span>.<span class="ident">poll_completed</span>() {
-                    <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> (),
-                    <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="kw">_</span>)) <span class="op">=&gt;</span> {
-                        <span class="self">self</span>.<span class="ident">tasks</span>[<span class="ident">idx</span>].<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">EntryFlags</span>::<span class="ident">FINISHED</span>)
-                    }
-                    <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
-                        <span class="self">self</span>.<span class="ident">notify_disconnect</span>();
-                        <span class="self">self</span>.<span class="ident">tasks</span>[<span class="ident">idx</span>].<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">EntryFlags</span>::<span class="ident">ERROR</span>);
-                        <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unhandled error: {}&quot;</span>, <span class="ident">err</span>);
-                        <span class="kw">continue</span>;
-                    }
-                }
-            }
-            <span class="ident">idx</span> <span class="op">+=</span> <span class="number">1</span>;
-        }
-
-        <span class="comment">// cleanup finished tasks</span>
-        <span class="kw">while</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tasks</span>[<span class="number">0</span>]
-                .<span class="ident">flags</span>
-                .<span class="ident">contains</span>(<span class="ident">EntryFlags</span>::<span class="ident">EOF</span> <span class="op">|</span> <span class="ident">EntryFlags</span>::<span class="ident">FINISHED</span>)
-            {
-                <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">pop_front</span>();
-            } <span class="kw">else</span> {
-                <span class="kw">break</span>;
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="doccomment">/// read data from the stream</span>
+    <span class="kw">pub</span>(<span class="self">self</span>) <span class="kw">fn</span> <span class="ident">poll_io</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">bool</span>, <span class="ident">HttpDispatchError</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">POLLED</span>) {
+            <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">POLLED</span>);
+            <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">is_empty</span>() {
+                <span class="kw">let</span> <span class="ident">updated</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>;
+                <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">updated</span>);
             }
         }
 
-        <span class="comment">// check stream state</span>
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">STARTED</span>) {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">poll_completed</span>(<span class="bool-val">false</span>) {
-                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>),
+        <span class="comment">// read io from socket</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">updated</span> <span class="op">=</span> <span class="bool-val">false</span>;
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">can_read</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">MAX_PIPELINED_MESSAGES</span> {
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">get_mut</span>().<span class="ident">read_available</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">buf</span>) {
+                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>((<span class="ident">read_some</span>, <span class="ident">disconnected</span>))) <span class="op">=&gt;</span> {
+                    <span class="kw">if</span> <span class="ident">read_some</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">parse</span>()<span class="question-mark">?</span> {
+                        <span class="ident">updated</span> <span class="op">=</span> <span class="bool-val">true</span>;
+                    }
+                    <span class="kw">if</span> <span class="ident">disconnected</span> {
+                        <span class="self">self</span>.<span class="ident">client_disconnected</span>(<span class="bool-val">true</span>);
+                    }
+                }
+                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> (),
                 <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
-                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Error sending data: {}&quot;</span>, <span class="ident">err</span>);
-                    <span class="self">self</span>.<span class="ident">notify_disconnect</span>();
-                    <span class="kw">return</span> <span class="prelude-val">Err</span>(());
-                }
-                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="kw">_</span>)) <span class="op">=&gt;</span> {
-                    <span class="comment">// non consumed payload in that case close connection</span>
-                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">payload</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">is_empty</span>() {
-                        <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="bool-val">false</span>));
-                    }
+                    <span class="self">self</span>.<span class="ident">client_disconnected</span>(<span class="bool-val">false</span>);
+                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>.<span class="ident">into</span>());
                 }
             }
         }
-
-        <span class="comment">// deal with keep-alive and steam eof (client-side write shutdown)</span>
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">is_empty</span>() {
-            <span class="comment">// handle stream eof</span>
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span>) {
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="bool-val">false</span>));
-            }
-            <span class="comment">// no keep-alive</span>
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">ERROR</span>)
-                <span class="op">||</span> (<span class="op">!</span><span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">KEEPALIVE</span>)
-                    <span class="op">||</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">settings</span>.<span class="ident">keep_alive_enabled</span>())
-                    <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">STARTED</span>)
-            {
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="bool-val">false</span>));
-            }
-
-            <span class="comment">// start keep-alive timer</span>
-            <span class="kw">let</span> <span class="ident">keep_alive</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">settings</span>.<span class="ident">keep_alive</span>();
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">keepalive_timer</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">keep_alive</span> <span class="op">&gt;</span> <span class="number">0</span> {
-                <span class="macro">trace</span><span class="macro">!</span>(<span class="string">&quot;Start keep-alive timer&quot;</span>);
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">timer</span> <span class="op">=</span>
-                    <span class="ident">Delay</span>::<span class="ident">new</span>(<span class="ident">Instant</span>::<span class="ident">now</span>() <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="ident">keep_alive</span>, <span class="number">0</span>));
-                <span class="comment">// register timer</span>
-                <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">timer</span>.<span class="ident">poll</span>();
-                <span class="self">self</span>.<span class="ident">keepalive_timer</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">timer</span>);
-            }
-        }
-        <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>)
+        <span class="prelude-val">Ok</span>(<span class="ident">updated</span>)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+    <span class="kw">pub</span>(<span class="self">self</span>) <span class="kw">fn</span> <span class="ident">poll_handler</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">HttpDispatchError</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">poll_io</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">retry</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">can_read</span>();
+
+        <span class="comment">// process first pipelined response, only first task can do io operation in http/1</span>
+        <span class="kw">while</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">is_empty</span>() {
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tasks</span>[<span class="number">0</span>].<span class="ident">poll_io</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">stream</span>) {
+                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">ready</span>)) <span class="op">=&gt;</span> {
+                    <span class="comment">// override keep-alive state</span>
+                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">keepalive</span>() {
+                        <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">KEEPALIVE</span>);
+                    } <span class="kw">else</span> {
+                        <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">remove</span>(<span class="ident">Flags</span>::<span class="ident">KEEPALIVE</span>);
+                    }
+                    <span class="comment">// prepare stream for next response</span>
+                    <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">reset</span>();
+
+                    <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">pop_front</span>().<span class="ident">unwrap</span>();
+                    <span class="kw">if</span> <span class="op">!</span><span class="ident">ready</span> {
+                        <span class="comment">// task is done with io operations but still needs to do more work</span>
+                        <span class="ident">spawn</span>(<span class="ident">HttpHandlerTaskFut</span>::<span class="ident">new</span>(<span class="ident">task</span>.<span class="ident">into_task</span>()));
+                    }
+                }
+                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> {
+                    <span class="comment">// check if we need timer</span>
+                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">ka_timer</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">upgrade</span>() {
+                        <span class="self">self</span>.<span class="ident">ka_timer</span>.<span class="ident">take</span>();
+                    }
+
+                    <span class="comment">// if read-backpressure is enabled and we consumed some data.</span>
+                    <span class="comment">// we may read more dataand retry</span>
+                    <span class="kw">if</span> <span class="op">!</span><span class="ident">retry</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">can_read</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">poll_io</span>()<span class="question-mark">?</span> {
+                        <span class="ident">retry</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">can_read</span>();
+                        <span class="kw">continue</span>;
+                    }
+                    <span class="kw">break</span>;
+                }
+                <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
+                    <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unhandled error1: {}&quot;</span>, <span class="ident">err</span>);
+                    <span class="comment">// it is not possible to recover from error</span>
+                    <span class="comment">// during pipe handling, so just drop connection</span>
+                    <span class="self">self</span>.<span class="ident">client_disconnected</span>(<span class="bool-val">false</span>);
+                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>.<span class="ident">into</span>());
+                }
+            }
+        }
+
+        <span class="comment">// check in-flight messages. all tasks must be alive,</span>
+        <span class="comment">// they need to produce response. if app returned error</span>
+        <span class="comment">// and we can not continue processing incoming requests.</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idx</span> <span class="op">=</span> <span class="number">1</span>;
+        <span class="kw">while</span> <span class="ident">idx</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">len</span>() {
+            <span class="kw">let</span> <span class="ident">stop</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tasks</span>[<span class="ident">idx</span>].<span class="ident">poll_completed</span>() {
+                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="kw">_</span>)) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
+                    <span class="self">self</span>.<span class="ident">error</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">err</span>.<span class="ident">into</span>());
+                    <span class="bool-val">true</span>
+                }
+            };
+            <span class="kw">if</span> <span class="ident">stop</span> {
+                <span class="comment">// error in task handling or task is completed,</span>
+                <span class="comment">// so no response for this task which means we can not read more requests</span>
+                <span class="comment">// because pipeline sequence is broken.</span>
+                <span class="comment">// but we can safely complete existing tasks</span>
+                <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span>);
+
+                <span class="kw">for</span> <span class="kw-2">mut</span> <span class="ident">task</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">drain</span>(<span class="ident">idx</span>..) {
+                    <span class="ident">task</span>.<span class="ident">disconnected</span>();
+                    <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">poll_completed</span>() {
+                        <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> {
+                            <span class="comment">// spawn not completed task, it does not require access to io</span>
+                            <span class="comment">// at this point</span>
+                            <span class="ident">spawn</span>(<span class="ident">HttpHandlerTaskFut</span>::<span class="ident">new</span>(<span class="ident">task</span>.<span class="ident">into_task</span>()));
+                        }
+                        <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="kw">_</span>)) <span class="op">=&gt;</span> (),
+                        <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
+                            <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unhandled application error: {}&quot;</span>, <span class="ident">err</span>);
+                        }
+                    }
+                }
+                <span class="kw">break</span>;
+            } <span class="kw">else</span> {
+                <span class="ident">idx</span> <span class="op">+=</span> <span class="number">1</span>;
+            }
+        }
+
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="kw">fn</span> <span class="ident">push_response_entry</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">status</span>: <span class="ident">StatusCode</span>) {
+        <span class="self">self</span>.<span class="ident">tasks</span>
+            .<span class="ident">push_back</span>(<span class="ident">Entry</span>::<span class="ident">Error</span>(<span class="ident">ServerError</span>::<span class="ident">err</span>(<span class="ident">Version</span>::<span class="ident">HTTP_11</span>, <span class="ident">status</span>)));
+    }
+
+    <span class="kw">pub</span>(<span class="self">self</span>) <span class="kw">fn</span> <span class="ident">parse</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">bool</span>, <span class="ident">HttpDispatchError</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">updated</span> <span class="op">=</span> <span class="bool-val">false</span>;
+
         <span class="lifetime">&#39;outer</span>: <span class="kw">loop</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">decoder</span>.<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">buf</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">settings</span>) {
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">Message</span>::<span class="ident">Message</span> { <span class="kw-2">mut</span> <span class="ident">msg</span>, <span class="ident">payload</span> })) <span class="op">=&gt;</span> {
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">Message</span>::<span class="ident">Message</span> {
+                    <span class="kw-2">mut</span> <span class="ident">msg</span>,
+                    <span class="kw-2">mut</span> <span class="ident">expect</span>,
+                    <span class="ident">payload</span>,
+                })) <span class="op">=&gt;</span> {
+                    <span class="ident">updated</span> <span class="op">=</span> <span class="bool-val">true</span>;
                     <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">STARTED</span>);
 
                     <span class="kw">if</span> <span class="ident">payload</span> {
@@ -1615,89 +1847,85 @@
                     <span class="comment">// set remote addr</span>
                     <span class="ident">msg</span>.<span class="ident">inner_mut</span>().<span class="ident">addr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">addr</span>;
 
-                    <span class="comment">// stop keepalive timer</span>
-                    <span class="self">self</span>.<span class="ident">keepalive_timer</span>.<span class="ident">take</span>();
-
                     <span class="comment">// search handler for request</span>
-                    <span class="kw">for</span> <span class="ident">h</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">settings</span>.<span class="ident">handlers</span>().<span class="ident">iter</span>() {
-                        <span class="ident">msg</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">h</span>.<span class="ident">handle</span>(<span class="ident">msg</span>) {
-                            <span class="prelude-val">Ok</span>(<span class="kw-2">mut</span> <span class="ident">pipe</span>) <span class="op">=&gt;</span> {
-                                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">is_empty</span>() {
-                                    <span class="kw">match</span> <span class="ident">pipe</span>.<span class="ident">poll_io</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">stream</span>) {
-                                        <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">ready</span>)) <span class="op">=&gt;</span> {
-                                            <span class="comment">// override keep-alive state</span>
-                                            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">keepalive</span>() {
-                                                <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">KEEPALIVE</span>);
-                                            } <span class="kw">else</span> {
-                                                <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">remove</span>(<span class="ident">Flags</span>::<span class="ident">KEEPALIVE</span>);
-                                            }
-                                            <span class="comment">// prepare stream for next response</span>
-                                            <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">reset</span>();
+                    <span class="kw">match</span> <span class="self">self</span>.<span class="ident">settings</span>.<span class="ident">handler</span>().<span class="ident">handle</span>(<span class="ident">msg</span>) {
+                        <span class="prelude-val">Ok</span>(<span class="kw-2">mut</span> <span class="ident">task</span>) <span class="op">=&gt;</span> {
+                            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">is_empty</span>() {
+                                <span class="kw">if</span> <span class="ident">expect</span> {
+                                    <span class="ident">expect</span> <span class="op">=</span> <span class="bool-val">false</span>;
+                                    <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">write</span>(<span class="kw-2">&amp;</span><span class="ident">Binary</span>::<span class="ident">from</span>(
+                                        <span class="string">&quot;HTTP/1.1 100 Continue\r\n\r\n&quot;</span>,
+                                    ));
+                                }
+                                <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">poll_io</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">stream</span>) {
+                                    <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">ready</span>)) <span class="op">=&gt;</span> {
+                                        <span class="comment">// override keep-alive state</span>
+                                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">keepalive</span>() {
+                                            <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">KEEPALIVE</span>);
+                                        } <span class="kw">else</span> {
+                                            <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">remove</span>(<span class="ident">Flags</span>::<span class="ident">KEEPALIVE</span>);
+                                        }
+                                        <span class="comment">// prepare stream for next response</span>
+                                        <span class="self">self</span>.<span class="ident">stream</span>.<span class="ident">reset</span>();
 
-                                            <span class="kw">if</span> <span class="op">!</span><span class="ident">ready</span> {
-                                                <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="ident">Entry</span> {
-                                                    <span class="ident">pipe</span>: <span class="ident">EntryPipe</span>::<span class="ident">Task</span>(<span class="ident">pipe</span>),
-                                                    <span class="ident">flags</span>: <span class="ident">EntryFlags</span>::<span class="ident">EOF</span>,
-                                                };
-                                                <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">push_back</span>(<span class="ident">item</span>);
-                                            }
-                                            <span class="kw">continue</span> <span class="lifetime">&#39;outer</span>;
+                                        <span class="kw">if</span> <span class="op">!</span><span class="ident">ready</span> {
+                                            <span class="comment">// task is done with io operations</span>
+                                            <span class="comment">// but still needs to do more work</span>
+                                            <span class="ident">spawn</span>(<span class="ident">HttpHandlerTaskFut</span>::<span class="ident">new</span>(<span class="ident">task</span>));
                                         }
-                                        <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> {}
-                                        <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
-                                            <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unhandled error: {}&quot;</span>, <span class="ident">err</span>);
-                                            <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">ERROR</span>);
-                                            <span class="kw">return</span>;
-                                        }
+                                        <span class="kw">continue</span> <span class="lifetime">&#39;outer</span>;
+                                    }
+                                    <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> (),
+                                    <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
+                                        <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unhandled error: {}&quot;</span>, <span class="ident">err</span>);
+                                        <span class="self">self</span>.<span class="ident">client_disconnected</span>(<span class="bool-val">false</span>);
+                                        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>.<span class="ident">into</span>());
                                     }
                                 }
-                                <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">push_back</span>(<span class="ident">Entry</span> {
-                                    <span class="ident">pipe</span>: <span class="ident">EntryPipe</span>::<span class="ident">Task</span>(<span class="ident">pipe</span>),
-                                    <span class="ident">flags</span>: <span class="ident">EntryFlags</span>::<span class="ident">empty</span>(),
-                                });
-                                <span class="kw">continue</span> <span class="lifetime">&#39;outer</span>;
                             }
-                            <span class="prelude-val">Err</span>(<span class="ident">msg</span>) <span class="op">=&gt;</span> <span class="ident">msg</span>,
+                            <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">push_back</span>(<span class="ident">Entry</span>::<span class="ident">Task</span>(
+                                <span class="ident">task</span>,
+                                <span class="kw">if</span> <span class="ident">expect</span> { <span class="prelude-val">Some</span>(()) } <span class="kw">else</span> { <span class="prelude-val">None</span> },
+                            ));
+                            <span class="kw">continue</span> <span class="lifetime">&#39;outer</span>;
+                        }
+                        <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {
+                            <span class="comment">// handler is not found</span>
+                            <span class="self">self</span>.<span class="ident">push_response_entry</span>(<span class="ident">StatusCode</span>::<span class="ident">NOT_FOUND</span>);
                         }
                     }
-
-                    <span class="comment">// handler is not found</span>
-                    <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">push_back</span>(<span class="ident">Entry</span> {
-                        <span class="ident">pipe</span>: <span class="ident">EntryPipe</span>::<span class="ident">Error</span>(<span class="ident">ServerError</span>::<span class="ident">err</span>(
-                            <span class="ident">Version</span>::<span class="ident">HTTP_11</span>,
-                            <span class="ident">StatusCode</span>::<span class="ident">NOT_FOUND</span>,
-                        )),
-                        <span class="ident">flags</span>: <span class="ident">EntryFlags</span>::<span class="ident">empty</span>(),
-                    });
                 }
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">Message</span>::<span class="ident">Chunk</span>(<span class="ident">chunk</span>))) <span class="op">=&gt;</span> {
+                    <span class="ident">updated</span> <span class="op">=</span> <span class="bool-val">true</span>;
                     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">payload</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">payload</span> {
                         <span class="ident">payload</span>.<span class="ident">feed_data</span>(<span class="ident">chunk</span>);
                     } <span class="kw">else</span> {
                         <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Internal server error: unexpected payload chunk&quot;</span>);
-                        <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">ERROR</span>);
+                        <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span> <span class="op">|</span> <span class="ident">Flags</span>::<span class="ident">STARTED</span>);
+                        <span class="self">self</span>.<span class="ident">push_response_entry</span>(<span class="ident">StatusCode</span>::<span class="ident">INTERNAL_SERVER_ERROR</span>);
+                        <span class="self">self</span>.<span class="ident">error</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">HttpDispatchError</span>::<span class="ident">InternalError</span>);
                         <span class="kw">break</span>;
                     }
                 }
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">Message</span>::<span class="ident">Eof</span>)) <span class="op">=&gt;</span> {
+                    <span class="ident">updated</span> <span class="op">=</span> <span class="bool-val">true</span>;
                     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">payload</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">payload</span>.<span class="ident">take</span>() {
                         <span class="ident">payload</span>.<span class="ident">feed_eof</span>();
                     } <span class="kw">else</span> {
                         <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Internal server error: unexpected eof&quot;</span>);
-                        <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">ERROR</span>);
+                        <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span> <span class="op">|</span> <span class="ident">Flags</span>::<span class="ident">STARTED</span>);
+                        <span class="self">self</span>.<span class="ident">push_response_entry</span>(<span class="ident">StatusCode</span>::<span class="ident">INTERNAL_SERVER_ERROR</span>);
+                        <span class="self">self</span>.<span class="ident">error</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">HttpDispatchError</span>::<span class="ident">InternalError</span>);
                         <span class="kw">break</span>;
                     }
                 }
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) <span class="op">=&gt;</span> {
-                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span>)
-                        <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">tasks</span>.<span class="ident">is_empty</span>()
-                    {
-                        <span class="self">self</span>.<span class="ident">client_disconnect</span>();
+                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span>) {
+                        <span class="self">self</span>.<span class="ident">client_disconnected</span>(<span class="bool-val">true</span>);
                     }
                     <span class="kw">break</span>;
                 }
                 <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">ERROR</span>);
                     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">payload</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">payload</span>.<span class="ident">take</span>() {
                         <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">e</span> {
                             <span class="ident">DecoderError</span>::<span class="ident">Io</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="ident">PayloadError</span>::<span class="ident">Io</span>(<span class="ident">e</span>),
@@ -1705,10 +1933,22 @@
                         };
                         <span class="ident">payload</span>.<span class="ident">set_error</span>(<span class="ident">e</span>);
                     }
+
+                    <span class="comment">// Malformed requests should be responded with 400</span>
+                    <span class="self">self</span>.<span class="ident">push_response_entry</span>(<span class="ident">StatusCode</span>::<span class="ident">BAD_REQUEST</span>);
+                    <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">insert</span>(<span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span> <span class="op">|</span> <span class="ident">Flags</span>::<span class="ident">STARTED</span>);
+                    <span class="self">self</span>.<span class="ident">error</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">HttpDispatchError</span>::<span class="ident">MalformedRequest</span>);
                     <span class="kw">break</span>;
                 }
             }
         }
+
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">ka_timer</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="ident">updated</span> {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">expire</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">settings</span>.<span class="ident">keep_alive_expire</span>() {
+                <span class="self">self</span>.<span class="ident">ka_expire</span> <span class="op">=</span> <span class="ident">expire</span>;
+            }
+        }
+        <span class="prelude-val">Ok</span>(<span class="ident">updated</span>)
     }
 }
 
@@ -1717,36 +1957,40 @@
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">net</span>::<span class="ident">Shutdown</span>;
     <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">cmp</span>, <span class="ident">io</span>, <span class="ident">time</span>};
 
+    <span class="kw">use</span> <span class="ident">actix</span>::<span class="ident">System</span>;
     <span class="kw">use</span> <span class="ident">bytes</span>::{<span class="ident">Buf</span>, <span class="ident">Bytes</span>, <span class="ident">BytesMut</span>};
+    <span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">future</span>;
     <span class="kw">use</span> <span class="ident">http</span>::{<span class="ident">Method</span>, <span class="ident">Version</span>};
     <span class="kw">use</span> <span class="ident">tokio_io</span>::{<span class="ident">AsyncRead</span>, <span class="ident">AsyncWrite</span>};
 
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">application</span>::<span class="ident">HttpApplication</span>;
+    <span class="kw">use</span> <span class="ident">application</span>::{<span class="ident">App</span>, <span class="ident">HttpApplication</span>};
     <span class="kw">use</span> <span class="ident">httpmessage</span>::<span class="ident">HttpMessage</span>;
     <span class="kw">use</span> <span class="ident">server</span>::<span class="ident">h1decoder</span>::<span class="ident">Message</span>;
-    <span class="kw">use</span> <span class="ident">server</span>::<span class="ident">settings</span>::{<span class="ident">ServerSettings</span>, <span class="ident">WorkerSettings</span>};
-    <span class="kw">use</span> <span class="ident">server</span>::{<span class="ident">Connections</span>, <span class="ident">KeepAlive</span>, <span class="ident">Request</span>};
+    <span class="kw">use</span> <span class="ident">server</span>::<span class="ident">handler</span>::<span class="ident">IntoHttpHandler</span>;
+    <span class="kw">use</span> <span class="ident">server</span>::<span class="ident">settings</span>::{<span class="ident">ServerSettings</span>, <span class="ident">ServiceConfig</span>};
+    <span class="kw">use</span> <span class="ident">server</span>::{<span class="ident">KeepAlive</span>, <span class="ident">Request</span>};
 
-    <span class="kw">fn</span> <span class="ident">wrk_settings</span>() <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">WorkerSettings</span><span class="op">&lt;</span><span class="ident">HttpApplication</span><span class="op">&gt;&gt;</span> {
-        <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">WorkerSettings</span>::<span class="op">&lt;</span><span class="ident">HttpApplication</span><span class="op">&gt;</span>::<span class="ident">new</span>(
-            <span class="ident">Vec</span>::<span class="ident">new</span>(),
+    <span class="kw">fn</span> <span class="ident">wrk_settings</span>() <span class="op">-&gt;</span> <span class="ident">ServiceConfig</span><span class="op">&lt;</span><span class="ident">HttpApplication</span><span class="op">&gt;</span> {
+        <span class="ident">ServiceConfig</span>::<span class="op">&lt;</span><span class="ident">HttpApplication</span><span class="op">&gt;</span>::<span class="ident">new</span>(
+            <span class="ident">App</span>::<span class="ident">new</span>().<span class="ident">into_handler</span>(),
             <span class="ident">KeepAlive</span>::<span class="ident">Os</span>,
+            <span class="number">5000</span>,
+            <span class="number">2000</span>,
             <span class="ident">ServerSettings</span>::<span class="ident">default</span>(),
-            <span class="ident">Connections</span>::<span class="ident">default</span>(),
-        ))
+        )
     }
 
     <span class="kw">impl</span> <span class="ident">Message</span> {
         <span class="kw">fn</span> <span class="ident">message</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Request</span> {
             <span class="kw">match</span> <span class="self">self</span> {
-                <span class="ident">Message</span>::<span class="ident">Message</span> { <span class="ident">msg</span>, <span class="ident">payload</span>: <span class="kw">_</span> } <span class="op">=&gt;</span> <span class="ident">msg</span>,
+                <span class="ident">Message</span>::<span class="ident">Message</span> { <span class="ident">msg</span>, .. } <span class="op">=&gt;</span> <span class="ident">msg</span>,
                 <span class="kw">_</span> <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;error&quot;</span>),
             }
         }
         <span class="kw">fn</span> <span class="ident">is_payload</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
             <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-                <span class="ident">Message</span>::<span class="ident">Message</span> { <span class="ident">msg</span>: <span class="kw">_</span>, <span class="ident">payload</span> } <span class="op">=&gt;</span> <span class="ident">payload</span>,
+                <span class="ident">Message</span>::<span class="ident">Message</span> { <span class="ident">payload</span>, .. } <span class="op">=&gt;</span> <span class="ident">payload</span>,
                 <span class="kw">_</span> <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;error&quot;</span>),
             }
         }
@@ -1831,6 +2075,9 @@
         <span class="kw">fn</span> <span class="ident">set_linger</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw">_</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">time</span>::<span class="ident">Duration</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
             <span class="prelude-val">Ok</span>(())
         }
+        <span class="kw">fn</span> <span class="ident">set_keepalive</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw">_</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">time</span>::<span class="ident">Duration</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+            <span class="prelude-val">Ok</span>(())
+        }
     }
     <span class="kw">impl</span> <span class="ident">io</span>::<span class="ident">Write</span> <span class="kw">for</span> <span class="ident">Buffer</span> {
         <span class="kw">fn</span> <span class="ident">write</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
@@ -1850,39 +2097,21 @@
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_req_parse1</span>() {
-        <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">Buffer</span>::<span class="ident">new</span>(<span class="string">&quot;GET /test HTTP/1.1\r\n\r\n&quot;</span>);
-        <span class="kw">let</span> <span class="ident">readbuf</span> <span class="op">=</span> <span class="ident">BytesMut</span>::<span class="ident">new</span>();
-        <span class="kw">let</span> <span class="ident">settings</span> <span class="op">=</span> <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">wrk_settings</span>());
-
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h1</span> <span class="op">=</span> <span class="ident">Http1</span>::<span class="ident">new</span>(<span class="ident">Rc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">settings</span>), <span class="ident">buf</span>, <span class="prelude-val">None</span>, <span class="ident">readbuf</span>, <span class="bool-val">false</span>);
-        <span class="ident">h1</span>.<span class="ident">poll_io</span>();
-        <span class="ident">h1</span>.<span class="ident">poll_io</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h1</span>.<span class="ident">tasks</span>.<span class="ident">len</span>(), <span class="number">1</span>);
-    }
-
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_req_parse2</span>() {
-        <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">Buffer</span>::<span class="ident">new</span>(<span class="string">&quot;&quot;</span>);
-        <span class="kw">let</span> <span class="ident">readbuf</span> <span class="op">=</span>
-            <span class="ident">BytesMut</span>::<span class="ident">from</span>(<span class="ident">Vec</span>::<span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>::<span class="ident">from</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;GET /test HTTP/1.1\r\n\r\n&quot;</span>[..]));
-        <span class="kw">let</span> <span class="ident">settings</span> <span class="op">=</span> <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">wrk_settings</span>());
-
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h1</span> <span class="op">=</span> <span class="ident">Http1</span>::<span class="ident">new</span>(<span class="ident">Rc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">settings</span>), <span class="ident">buf</span>, <span class="prelude-val">None</span>, <span class="ident">readbuf</span>, <span class="bool-val">true</span>);
-        <span class="ident">h1</span>.<span class="ident">poll_io</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h1</span>.<span class="ident">tasks</span>.<span class="ident">len</span>(), <span class="number">1</span>);
-    }
-
-    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_req_parse_err</span>() {
-        <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">Buffer</span>::<span class="ident">new</span>(<span class="string">&quot;GET /test HTTP/1\r\n\r\n&quot;</span>);
-        <span class="kw">let</span> <span class="ident">readbuf</span> <span class="op">=</span> <span class="ident">BytesMut</span>::<span class="ident">new</span>();
-        <span class="kw">let</span> <span class="ident">settings</span> <span class="op">=</span> <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">wrk_settings</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sys</span> <span class="op">=</span> <span class="ident">System</span>::<span class="ident">new</span>(<span class="string">&quot;test&quot;</span>);
+        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">sys</span>.<span class="ident">block_on</span>(<span class="ident">future</span>::<span class="ident">lazy</span>(<span class="op">||</span> {
+            <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">Buffer</span>::<span class="ident">new</span>(<span class="string">&quot;GET /test HTTP/1\r\n\r\n&quot;</span>);
+            <span class="kw">let</span> <span class="ident">readbuf</span> <span class="op">=</span> <span class="ident">BytesMut</span>::<span class="ident">new</span>();
+            <span class="kw">let</span> <span class="ident">settings</span> <span class="op">=</span> <span class="ident">wrk_settings</span>();
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h1</span> <span class="op">=</span> <span class="ident">Http1</span>::<span class="ident">new</span>(<span class="ident">Rc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">settings</span>), <span class="ident">buf</span>, <span class="prelude-val">None</span>, <span class="ident">readbuf</span>, <span class="bool-val">false</span>);
-        <span class="ident">h1</span>.<span class="ident">poll_io</span>();
-        <span class="ident">h1</span>.<span class="ident">poll_io</span>();
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">h1</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">ERROR</span>));
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h1</span> <span class="op">=</span>
+                <span class="ident">Http1Dispatcher</span>::<span class="ident">new</span>(<span class="ident">settings</span>.<span class="ident">clone</span>(), <span class="ident">buf</span>, <span class="ident">readbuf</span>, <span class="bool-val">false</span>, <span class="prelude-val">None</span>);
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">h1</span>.<span class="ident">poll_io</span>().<span class="ident">is_ok</span>());
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">h1</span>.<span class="ident">poll_io</span>().<span class="ident">is_ok</span>());
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">h1</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">Flags</span>::<span class="ident">READ_DISCONNECTED</span>));
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h1</span>.<span class="ident">tasks</span>.<span class="ident">len</span>(), <span class="number">1</span>);
+            <span class="ident">future</span>::<span class="ident">ok</span>::<span class="op">&lt;</span><span class="kw">_</span>, ()<span class="op">&gt;</span>(())
+        }));
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -2021,13 +2250,13 @@
         <span class="kw">let</span> <span class="ident">settings</span> <span class="op">=</span> <span class="ident">wrk_settings</span>();
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">reader</span> <span class="op">=</span> <span class="ident">H1Decoder</span>::<span class="ident">new</span>();
-        <span class="macro">assert</span><span class="macro">!</span>{ <span class="ident">reader</span>.<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>, <span class="kw-2">&amp;</span><span class="ident">settings</span>).<span class="ident">unwrap</span>().<span class="ident">is_none</span>() }
+        <span class="macro">assert</span><span class="macro">!</span> { <span class="ident">reader</span>.<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>, <span class="kw-2">&amp;</span><span class="ident">settings</span>).<span class="ident">unwrap</span>().<span class="ident">is_none</span>() }
 
         <span class="ident">buf</span>.<span class="ident">extend</span>(<span class="string">b&quot;t&quot;</span>);
-        <span class="macro">assert</span><span class="macro">!</span>{ <span class="ident">reader</span>.<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>, <span class="kw-2">&amp;</span><span class="ident">settings</span>).<span class="ident">unwrap</span>().<span class="ident">is_none</span>() }
+        <span class="macro">assert</span><span class="macro">!</span> { <span class="ident">reader</span>.<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>, <span class="kw-2">&amp;</span><span class="ident">settings</span>).<span class="ident">unwrap</span>().<span class="ident">is_none</span>() }
 
         <span class="ident">buf</span>.<span class="ident">extend</span>(<span class="string">b&quot;es&quot;</span>);
-        <span class="macro">assert</span><span class="macro">!</span>{ <span class="ident">reader</span>.<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>, <span class="kw-2">&amp;</span><span class="ident">settings</span>).<span class="ident">unwrap</span>().<span class="ident">is_none</span>() }
+        <span class="macro">assert</span><span class="macro">!</span> { <span class="ident">reader</span>.<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>, <span class="kw-2">&amp;</span><span class="ident">settings</span>).<span class="ident">unwrap</span>().<span class="ident">is_none</span>() }
 
         <span class="ident">buf</span>.<span class="ident">extend</span>(<span class="string">b&quot;t: value\r\n\r\n&quot;</span>);
         <span class="kw">match</span> <span class="ident">reader</span>.<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>, <span class="kw-2">&amp;</span><span class="ident">settings</span>) {
@@ -2089,6 +2318,14 @@
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="macro">parse_ready</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>);
 
         <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">req</span>.<span class="ident">keep_alive</span>());
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">BytesMut</span>::<span class="ident">from</span>(
+            <span class="string">&quot;GET /test HTTP/1.1\r\n\
+             connection: Close\r\n\r\n&quot;</span>,
+        );
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="macro">parse_ready</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>);
+
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">req</span>.<span class="ident">keep_alive</span>());
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -2100,10 +2337,26 @@
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="macro">parse_ready</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>);
 
         <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">req</span>.<span class="ident">keep_alive</span>());
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">BytesMut</span>::<span class="ident">from</span>(
+            <span class="string">&quot;GET /test HTTP/1.0\r\n\
+             connection: Close\r\n\r\n&quot;</span>,
+        );
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="macro">parse_ready</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>);
+
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">req</span>.<span class="ident">keep_alive</span>());
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_conn_keep_alive_1_0</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">BytesMut</span>::<span class="ident">from</span>(
+            <span class="string">&quot;GET /test HTTP/1.0\r\n\
+             connection: Keep-Alive\r\n\r\n&quot;</span>,
+        );
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="macro">parse_ready</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>);
+
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">keep_alive</span>());
+
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">BytesMut</span>::<span class="ident">from</span>(
             <span class="string">&quot;GET /test HTTP/1.0\r\n\
              connection: keep-alive\r\n\r\n&quot;</span>,
@@ -2152,6 +2405,15 @@
             <span class="string">&quot;GET /test HTTP/1.1\r\n\
              upgrade: websockets\r\n\
              connection: upgrade\r\n\r\n&quot;</span>,
+        );
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="macro">parse_ready</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>);
+
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">upgrade</span>());
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">BytesMut</span>::<span class="ident">from</span>(
+            <span class="string">&quot;GET /test HTTP/1.1\r\n\
+             upgrade: Websockets\r\n\
+             connection: Upgrade\r\n\r\n&quot;</span>,
         );
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="macro">parse_ready</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>);
 

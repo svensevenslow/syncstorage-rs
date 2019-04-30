@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/ring-0.13.2/src/aead/aes_gcm.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>aes_gcm.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/ring-0.13.5/src/aead/aes_gcm.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>aes_gcm.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../ring/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -192,6 +192,8 @@
 <span id="192">192</span>
 <span id="193">193</span>
 <span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2015-2016 Brian Smith.</span>
 <span class="comment">//</span>
@@ -207,7 +209,7 @@
 <span class="comment">// OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN</span>
 <span class="comment">// CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.</span>
 
-<span class="kw">use</span> {<span class="ident">aead</span>, <span class="ident">bssl</span>, <span class="ident">c</span>, <span class="ident">error</span>, <span class="ident">polyfill</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">aead</span>, <span class="ident">bssl</span>, <span class="ident">c</span>, <span class="ident">error</span>, <span class="ident">polyfill</span>};
 
 <span class="doccomment">/// AES-128 in GCM mode with 128-bit tags and 96 bit nonces.</span>
 <span class="doccomment">///</span>
@@ -239,7 +241,7 @@
 
 <span class="kw">fn</span> <span class="ident">aes_gcm_init</span>(<span class="ident">ctx_buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>], <span class="ident">key</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>])
                 <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">error</span>::<span class="ident">Unspecified</span><span class="op">&gt;</span> {
-    <span class="ident">bssl</span>::<span class="ident">map_result</span>(<span class="kw">unsafe</span> {
+    <span class="prelude-ty">Result</span>::<span class="ident">from</span>(<span class="kw">unsafe</span> {
         <span class="ident">GFp_aes_gcm_init</span>(<span class="ident">ctx_buf</span>.<span class="ident">as_mut_ptr</span>(), <span class="ident">ctx_buf</span>.<span class="ident">len</span>(), <span class="ident">key</span>.<span class="ident">as_ptr</span>(),
                          <span class="ident">key</span>.<span class="ident">len</span>())
     })
@@ -250,7 +252,7 @@
                 <span class="ident">tag</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>; <span class="ident">aead</span>::<span class="ident">TAG_LEN</span>])
                 <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">error</span>::<span class="ident">Unspecified</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">polyfill</span>::<span class="ident">slice</span>::<span class="ident">u64_as_u8</span>(<span class="ident">ctx</span>);
-    <span class="ident">bssl</span>::<span class="ident">map_result</span>(<span class="kw">unsafe</span> {
+    <span class="prelude-ty">Result</span>::<span class="ident">from</span>(<span class="kw">unsafe</span> {
         <span class="ident">GFp_aes_gcm_seal</span>(<span class="ident">ctx</span>.<span class="ident">as_ptr</span>(), <span class="ident">in_out</span>.<span class="ident">as_mut_ptr</span>(), <span class="ident">in_out</span>.<span class="ident">len</span>(), <span class="ident">tag</span>,
                          <span class="ident">nonce</span>, <span class="ident">ad</span>.<span class="ident">as_ptr</span>(), <span class="ident">ad</span>.<span class="ident">len</span>())
     })
@@ -261,7 +263,7 @@
                 <span class="ident">in_out</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>], <span class="ident">tag_out</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>; <span class="ident">aead</span>::<span class="ident">TAG_LEN</span>])
                 <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">error</span>::<span class="ident">Unspecified</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">polyfill</span>::<span class="ident">slice</span>::<span class="ident">u64_as_u8</span>(<span class="ident">ctx</span>);
-    <span class="ident">bssl</span>::<span class="ident">map_result</span>(<span class="kw">unsafe</span> {
+    <span class="prelude-ty">Result</span>::<span class="ident">from</span>(<span class="kw">unsafe</span> {
         <span class="ident">GFp_aes_gcm_open</span>(<span class="ident">ctx</span>.<span class="ident">as_ptr</span>(), <span class="ident">in_out</span>.<span class="ident">as_mut_ptr</span>(),
                          <span class="ident">in_out</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">in_prefix_len</span>, <span class="ident">tag_out</span>, <span class="ident">nonce</span>,
                          <span class="ident">in_out</span>[<span class="ident">in_prefix_len</span>..].<span class="ident">as_ptr</span>(), <span class="ident">ad</span>.<span class="ident">as_ptr</span>(),
@@ -294,25 +296,26 @@
 
 <span class="kw">extern</span> {
     <span class="kw">fn</span> <span class="ident">GFp_aes_gcm_init</span>(<span class="ident">ctx_buf</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>, <span class="ident">ctx_buf_len</span>: <span class="ident">c</span>::<span class="ident">size_t</span>,
-                        <span class="ident">key</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>, <span class="ident">key_len</span>: <span class="ident">c</span>::<span class="ident">size_t</span>) <span class="op">-&gt;</span> <span class="ident">c</span>::<span class="ident">int</span>;
+                        <span class="ident">key</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>, <span class="ident">key_len</span>: <span class="ident">c</span>::<span class="ident">size_t</span>) <span class="op">-&gt;</span> <span class="ident">bssl</span>::<span class="prelude-ty">Result</span>;
 
     <span class="kw">fn</span> <span class="ident">GFp_aes_gcm_seal</span>(<span class="ident">ctx_buf</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>, <span class="ident">in_out</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>,
                         <span class="ident">in_out_len</span>: <span class="ident">c</span>::<span class="ident">size_t</span>,
                         <span class="ident">tag_out</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>; <span class="ident">aead</span>::<span class="ident">TAG_LEN</span>],
                         <span class="ident">nonce</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>; <span class="ident">aead</span>::<span class="ident">NONCE_LEN</span>], <span class="ident">ad</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>,
-                        <span class="ident">ad_len</span>: <span class="ident">c</span>::<span class="ident">size_t</span>) <span class="op">-&gt;</span> <span class="ident">c</span>::<span class="ident">int</span>;
+                        <span class="ident">ad_len</span>: <span class="ident">c</span>::<span class="ident">size_t</span>) <span class="op">-&gt;</span> <span class="ident">bssl</span>::<span class="prelude-ty">Result</span>;
 
     <span class="kw">fn</span> <span class="ident">GFp_aes_gcm_open</span>(<span class="ident">ctx_buf</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>, <span class="ident">out</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>,
                         <span class="ident">in_out_len</span>: <span class="ident">c</span>::<span class="ident">size_t</span>,
                         <span class="ident">tag_out</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>; <span class="ident">aead</span>::<span class="ident">TAG_LEN</span>],
                         <span class="ident">nonce</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>; <span class="ident">aead</span>::<span class="ident">NONCE_LEN</span>], <span class="ident">in_</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>,
-                        <span class="ident">ad</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>, <span class="ident">ad_len</span>: <span class="ident">c</span>::<span class="ident">size_t</span>) <span class="op">-&gt;</span> <span class="ident">c</span>::<span class="ident">int</span>;
+                        <span class="ident">ad</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>, <span class="ident">ad_len</span>: <span class="ident">c</span>::<span class="ident">size_t</span>) <span class="op">-&gt;</span> <span class="ident">bssl</span>::<span class="prelude-ty">Result</span>;
 }
 
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> {<span class="ident">c</span>, <span class="ident">test</span>};
+    <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">c</span>, <span class="ident">test</span>};
+    <span class="kw">use</span> <span class="ident">bits</span>::<span class="ident">BitLength</span>;
     <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">AES_MAX_ROUNDS</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -327,15 +330,16 @@
                 <span class="macro">slice_as_array_ref</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="ident">expected_output</span>, <span class="ident">AES_BLOCK_SIZE</span>).<span class="ident">unwrap</span>();
 
             <span class="comment">// Key setup.</span>
+            <span class="kw">let</span> <span class="ident">key_bits</span> <span class="op">=</span> <span class="ident">BitLength</span>::<span class="ident">from_usize_bytes</span>(<span class="ident">key</span>.<span class="ident">len</span>()).<span class="ident">unwrap</span>();
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">key_bits</span> <span class="op">==</span> <span class="ident">BitLength</span>(<span class="number">128</span>) <span class="op">||</span> <span class="ident">key_bits</span> <span class="op">==</span> <span class="ident">BitLength</span>(<span class="number">256</span>));
+            <span class="kw">let</span> <span class="ident">key_bits</span> <span class="op">=</span> <span class="ident">key_bits</span>.<span class="ident">as_usize_bits</span>() <span class="kw">as</span> <span class="ident">c</span>::<span class="ident">uint</span>;
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">aes_key</span> <span class="op">=</span> <span class="ident">AES_KEY</span> {
                 <span class="ident">rd_key</span>: [<span class="number">0u32</span>; <span class="number">4</span> <span class="op">*</span> (<span class="ident">AES_MAX_ROUNDS</span> <span class="op">+</span> <span class="number">1</span>)],
                 <span class="ident">rounds</span>: <span class="number">0</span>,
             };
-            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-                <span class="ident">GFp_AES_set_encrypt_key</span>(<span class="ident">key</span>.<span class="ident">as_ptr</span>(), <span class="ident">key</span>.<span class="ident">len</span>() <span class="op">*</span> <span class="number">8</span>,
-                                        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">aes_key</span>)
-            };
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">res</span>, <span class="number">0</span>, <span class="string">&quot;GFp_AES_set_encrypt_key failed.&quot;</span>);
+            <span class="kw">unsafe</span> {
+                <span class="ident">GFp_AES_set_encrypt_key</span>(<span class="ident">key</span>.<span class="ident">as_ptr</span>(), <span class="ident">key_bits</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">aes_key</span>);
+            }
 
             <span class="comment">// Test encryption into a separate buffer.</span>
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output_buf</span> <span class="op">=</span> [<span class="number">0u8</span>; <span class="ident">AES_BLOCK_SIZE</span>];
@@ -363,12 +367,12 @@
     <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">C</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AES_KEY</span> {
         <span class="kw">pub</span> <span class="ident">rd_key</span>: [<span class="ident">u32</span>; <span class="number">4</span> <span class="op">*</span> (<span class="ident">AES_MAX_ROUNDS</span> <span class="op">+</span> <span class="number">1</span>)],
-        <span class="kw">pub</span> <span class="ident">rounds</span>: <span class="ident">usize</span>,
+        <span class="kw">pub</span> <span class="ident">rounds</span>: <span class="ident">c</span>::<span class="ident">uint</span>,
     }
 
     <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> {
-        <span class="kw">fn</span> <span class="ident">GFp_AES_set_encrypt_key</span>(<span class="ident">key</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>, <span class="ident">bits</span>: <span class="ident">usize</span>,
-                                   <span class="ident">aes_key</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">AES_KEY</span>) <span class="op">-&gt;</span> <span class="ident">c</span>::<span class="ident">int</span>;
+        <span class="kw">fn</span> <span class="ident">GFp_AES_set_encrypt_key</span>(<span class="ident">key</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>, <span class="ident">bits</span>: <span class="ident">c</span>::<span class="ident">uint</span>,
+                                   <span class="ident">aes_key</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">AES_KEY</span>);
         <span class="kw">fn</span> <span class="ident">GFp_AES_encrypt</span>(<span class="ident">in_</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>, <span class="ident">out</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>, <span class="ident">key</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">AES_KEY</span>);
     }
 

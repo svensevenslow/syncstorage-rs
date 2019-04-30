@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.4.0/src/rr/rr_set.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rr_set.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.5.0/src/rr/rr_set.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rr_set.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../trust_dns_proto/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -824,6 +824,153 @@
 <span id="824">824</span>
 <span id="825">825</span>
 <span id="826">826</span>
+<span id="827">827</span>
+<span id="828">828</span>
+<span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
+<span id="839">839</span>
+<span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
+<span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
+<span id="860">860</span>
+<span id="861">861</span>
+<span id="862">862</span>
+<span id="863">863</span>
+<span id="864">864</span>
+<span id="865">865</span>
+<span id="866">866</span>
+<span id="867">867</span>
+<span id="868">868</span>
+<span id="869">869</span>
+<span id="870">870</span>
+<span id="871">871</span>
+<span id="872">872</span>
+<span id="873">873</span>
+<span id="874">874</span>
+<span id="875">875</span>
+<span id="876">876</span>
+<span id="877">877</span>
+<span id="878">878</span>
+<span id="879">879</span>
+<span id="880">880</span>
+<span id="881">881</span>
+<span id="882">882</span>
+<span id="883">883</span>
+<span id="884">884</span>
+<span id="885">885</span>
+<span id="886">886</span>
+<span id="887">887</span>
+<span id="888">888</span>
+<span id="889">889</span>
+<span id="890">890</span>
+<span id="891">891</span>
+<span id="892">892</span>
+<span id="893">893</span>
+<span id="894">894</span>
+<span id="895">895</span>
+<span id="896">896</span>
+<span id="897">897</span>
+<span id="898">898</span>
+<span id="899">899</span>
+<span id="900">900</span>
+<span id="901">901</span>
+<span id="902">902</span>
+<span id="903">903</span>
+<span id="904">904</span>
+<span id="905">905</span>
+<span id="906">906</span>
+<span id="907">907</span>
+<span id="908">908</span>
+<span id="909">909</span>
+<span id="910">910</span>
+<span id="911">911</span>
+<span id="912">912</span>
+<span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
+<span id="921">921</span>
+<span id="922">922</span>
+<span id="923">923</span>
+<span id="924">924</span>
+<span id="925">925</span>
+<span id="926">926</span>
+<span id="927">927</span>
+<span id="928">928</span>
+<span id="929">929</span>
+<span id="930">930</span>
+<span id="931">931</span>
+<span id="932">932</span>
+<span id="933">933</span>
+<span id="934">934</span>
+<span id="935">935</span>
+<span id="936">936</span>
+<span id="937">937</span>
+<span id="938">938</span>
+<span id="939">939</span>
+<span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
+<span id="945">945</span>
+<span id="946">946</span>
+<span id="947">947</span>
+<span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
+<span id="963">963</span>
+<span id="964">964</span>
+<span id="965">965</span>
+<span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
+<span id="973">973</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2015-2016 Benjamin Fry &lt;benjaminfry@me.com&gt;</span>
 <span class="comment">//</span>
@@ -982,11 +1129,11 @@
     <span class="doccomment">/// * `supported_algorithms` - the RRSIGs will be filtered by the set of supported_algorithms,</span>
     <span class="doccomment">///                            and then only the maximal RRSIG algorithm will be returned.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dnssec&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">records</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">records</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="lifetime">&#39;s</span> <span class="self">self</span>,
         <span class="ident">and_rrsigs</span>: <span class="ident">bool</span>,
         <span class="ident">supported_algorithms</span>: <span class="ident">SupportedAlgorithms</span>,
-    ) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Record</span><span class="op">&gt;</span> {
+    ) <span class="op">-&gt;</span> <span class="ident">RrsetRecords</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">and_rrsigs</span> {
             <span class="self">self</span>.<span class="ident">records_with_rrsigs</span>(<span class="ident">supported_algorithms</span>)
         } <span class="kw">else</span> {
@@ -1001,42 +1148,32 @@
     <span class="doccomment">/// * `supported_algorithms` - the RRSIGs will be filtered by the set of supported_algorithms,</span>
     <span class="doccomment">///                            and then only the maximal RRSIG algorithm will be returned.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dnssec&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">records_with_rrsigs</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">supported_algorithms</span>: <span class="ident">SupportedAlgorithms</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Record</span><span class="op">&gt;</span> {
-        <span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">dnssec</span>::<span class="ident">Algorithm</span>;
-        <span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">dnssec</span>::<span class="ident">rdata</span>::<span class="ident">DNSSECRData</span>;
-
-        <span class="comment">// disable rfc 6975 when no supported_algorithms specified</span>
-        <span class="kw">if</span> <span class="ident">supported_algorithms</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">return</span> <span class="self">self</span>.<span class="ident">records</span>.<span class="ident">iter</span>().<span class="ident">chain</span>(<span class="self">self</span>.<span class="ident">rrsigs</span>.<span class="ident">iter</span>()).<span class="ident">collect</span>();
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">records_with_rrsigs</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="lifetime">&#39;s</span> <span class="self">self</span>,
+        <span class="ident">supported_algorithms</span>: <span class="ident">SupportedAlgorithms</span>,
+    ) <span class="op">-&gt;</span> <span class="ident">RrsetRecords</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">records</span>.<span class="ident">is_empty</span>() {
+            <span class="ident">RrsetRecords</span>::<span class="ident">Empty</span>
+        } <span class="kw">else</span> {
+            <span class="kw">let</span> <span class="ident">rrsigs</span> <span class="op">=</span> <span class="ident">RrsigsByAlgorithms</span> {
+                <span class="ident">rrsigs</span>: <span class="self">self</span>.<span class="ident">rrsigs</span>.<span class="ident">iter</span>(),
+                <span class="ident">supported_algorithms</span>,
+            };
+            <span class="ident">RrsetRecords</span>::<span class="ident">RecordsAndRrsigs</span>(<span class="ident">RecordsAndRrsigsIter</span>(<span class="self">self</span>.<span class="ident">records</span>.<span class="ident">iter</span>().<span class="ident">chain</span>(<span class="ident">rrsigs</span>)))
         }
-
-        <span class="kw">let</span> <span class="ident">rrsigs</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">rrsigs</span>
-            .<span class="ident">iter</span>()
-            .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">record</span><span class="op">|</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">RData</span>::<span class="ident">DNSSEC</span>(<span class="ident">DNSSECRData</span>::<span class="ident">SIG</span>(<span class="kw-2">ref</span> <span class="ident">rrsig</span>)) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">record</span>.<span class="ident">rdata</span>() {
-                    <span class="ident">supported_algorithms</span>.<span class="ident">has</span>(<span class="ident">rrsig</span>.<span class="ident">algorithm</span>())
-                } <span class="kw">else</span> {
-                    <span class="bool-val">false</span>
-                }
-            })
-            .<span class="ident">max_by_key</span>(<span class="op">|</span><span class="ident">record</span><span class="op">|</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">RData</span>::<span class="ident">DNSSEC</span>(<span class="ident">DNSSECRData</span>::<span class="ident">SIG</span>(<span class="kw-2">ref</span> <span class="ident">rrsig</span>)) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">record</span>.<span class="ident">rdata</span>() {
-                    <span class="ident">rrsig</span>.<span class="ident">algorithm</span>()
-                } <span class="kw">else</span> {
-                    <span class="ident">Algorithm</span>::<span class="ident">RSASHA1</span>
-                }
-            });
-
-        <span class="self">self</span>.<span class="ident">records</span>.<span class="ident">iter</span>().<span class="ident">chain</span>(<span class="ident">rrsigs</span>).<span class="ident">collect</span>()
     }
 
-
     <span class="doccomment">/// Returns a Vec of all records in the set, without any RRSIGs.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">records_without_rrsigs</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Record</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">records</span>.<span class="ident">iter</span>().<span class="ident">collect</span>()
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">records_without_rrsigs</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">RrsetRecords</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">records</span>.<span class="ident">is_empty</span>() {
+            <span class="ident">RrsetRecords</span>::<span class="ident">Empty</span>
+        } <span class="kw">else</span> {
+            <span class="ident">RrsetRecords</span>::<span class="ident">RecordsOnly</span>(<span class="self">self</span>.<span class="ident">records</span>.<span class="ident">iter</span>())
+        }
     }
 
     <span class="doccomment">/// Returns an iterator over the records in the set</span>
+    <span class="attribute">#[<span class="ident">deprecated</span>(<span class="ident">note</span> <span class="op">=</span> <span class="string">&quot;see `records_without_rrsigs`&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span>, <span class="ident">Record</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">records</span>.<span class="ident">iter</span>()
     }
@@ -1147,8 +1284,7 @@
                                 <span class="kw">if</span> <span class="ident">new_soa</span>.<span class="ident">serial</span>() <span class="op">&lt;=</span> <span class="ident">existing_soa</span>.<span class="ident">serial</span>() {
                                     <span class="macro">info</span><span class="macro">!</span>(
                                         <span class="string">&quot;update ignored serial out of data: {:?} &lt;= {:?}&quot;</span>,
-                                        <span class="ident">new_soa</span>,
-                                        <span class="ident">existing_soa</span>
+                                        <span class="ident">new_soa</span>, <span class="ident">existing_soa</span>
                                     );
                                     <span class="kw">return</span> <span class="bool-val">false</span>;
                                 }
@@ -1176,7 +1312,8 @@
         }
 
         <span class="comment">// collect any records to update based on rdata</span>
-        <span class="kw">let</span> <span class="ident">to_replace</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">records</span>
+        <span class="kw">let</span> <span class="ident">to_replace</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="self">self</span>
+            .<span class="ident">records</span>
             .<span class="ident">iter</span>()
             .<span class="ident">enumerate</span>()
             .<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="kw">_</span>, <span class="ident">rr</span>)<span class="op">|</span> <span class="ident">rr</span>.<span class="ident">rdata</span>() <span class="op">==</span> <span class="ident">record</span>.<span class="ident">rdata</span>())
@@ -1240,7 +1377,8 @@
         }
 
         <span class="comment">// remove the records, first collect all the indexes, then remove the records</span>
-        <span class="kw">let</span> <span class="ident">to_remove</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">records</span>
+        <span class="kw">let</span> <span class="ident">to_remove</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="self">self</span>
+            .<span class="ident">records</span>
             .<span class="ident">iter</span>()
             .<span class="ident">enumerate</span>()
             .<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="kw">_</span>, <span class="ident">rr</span>)<span class="op">|</span> <span class="ident">rr</span>.<span class="ident">rdata</span>() <span class="op">==</span> <span class="ident">record</span>.<span class="ident">rdata</span>())
@@ -1279,13 +1417,104 @@
     }
 }
 
+<span class="doccomment">/// An iterator over all the records and their signatures</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dnssec&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RecordsAndRrsigsIter</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span>(<span class="ident">Chain</span><span class="op">&lt;</span><span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span>, <span class="ident">Record</span><span class="op">&gt;</span>, <span class="ident">RrsigsByAlgorithms</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;&gt;</span>);
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dnssec&quot;</span>)]</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">RecordsAndRrsigsIter</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;r</span> <span class="ident">Record</span>;
+
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">next</span>()
+    }
+}
+
+<span class="doccomment">/// An iterator that limits the record signatures by SupportedAlgorithms</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dnssec&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RrsigsByAlgorithms</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> {
+    <span class="ident">rrsigs</span>: <span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span>, <span class="ident">Record</span><span class="op">&gt;</span>,
+    <span class="ident">supported_algorithms</span>: <span class="ident">SupportedAlgorithms</span>,
+}
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dnssec&quot;</span>)]</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">RrsigsByAlgorithms</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;r</span> <span class="ident">Record</span>;
+
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">dnssec</span>::<span class="ident">rdata</span>::<span class="ident">DNSSECRData</span>;
+        <span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">dnssec</span>::<span class="ident">Algorithm</span>;
+
+        <span class="kw">let</span> <span class="ident">supported_algorithms</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">supported_algorithms</span>;
+
+        <span class="comment">// disable rfc 6975 when no supported_algorithms specified</span>
+        <span class="kw">if</span> <span class="ident">supported_algorithms</span>.<span class="ident">is_empty</span>() {
+            <span class="self">self</span>.<span class="ident">rrsigs</span>.<span class="ident">next</span>()
+        } <span class="kw">else</span> {
+            <span class="self">self</span>.<span class="ident">rrsigs</span>
+                .<span class="ident">by_ref</span>()
+                .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">record</span><span class="op">|</span> {
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">RData</span>::<span class="ident">DNSSEC</span>(<span class="ident">DNSSECRData</span>::<span class="ident">SIG</span>(<span class="kw-2">ref</span> <span class="ident">rrsig</span>)) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">record</span>.<span class="ident">rdata</span>() {
+                        <span class="ident">supported_algorithms</span>.<span class="ident">has</span>(<span class="ident">rrsig</span>.<span class="ident">algorithm</span>())
+                    } <span class="kw">else</span> {
+                        <span class="bool-val">false</span>
+                    }
+                })
+                .<span class="ident">max_by_key</span>(<span class="op">|</span><span class="ident">record</span><span class="op">|</span> {
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">RData</span>::<span class="ident">DNSSEC</span>(<span class="ident">DNSSECRData</span>::<span class="ident">SIG</span>(<span class="kw-2">ref</span> <span class="ident">rrsig</span>)) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">record</span>.<span class="ident">rdata</span>() {
+                        <span class="ident">rrsig</span>.<span class="ident">algorithm</span>()
+                    } <span class="kw">else</span> {
+                        <span class="ident">Algorithm</span>::<span class="ident">RSASHA1</span>
+                    }
+                })
+        }
+    }
+}
+
+<span class="doccomment">/// An iterator over the RecordSet data</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">RrsetRecords</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// There are no records in the record set</span>
+    <span class="ident">Empty</span>,
+    <span class="doccomment">/// The records associated with the record set</span>
+    <span class="ident">RecordsOnly</span>(<span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span>, <span class="ident">Record</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// The records along with their signatures in the record set</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dnssec&quot;</span>)]</span>
+    <span class="ident">RecordsAndRrsigs</span>(<span class="ident">RecordsAndRrsigsIter</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span>),
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> <span class="ident">RrsetRecords</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// This is a best effort emptyness check</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+            <span class="ident">RrsetRecords</span>::<span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+        }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">RrsetRecords</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;r</span> <span class="ident">Record</span>;
+
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">RrsetRecords</span>::<span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+            <span class="ident">RrsetRecords</span>::<span class="ident">RecordsOnly</span>(<span class="ident">i</span>) <span class="op">=&gt;</span> <span class="ident">i</span>.<span class="ident">next</span>(),
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dnssec&quot;</span>)]</span>
+            <span class="ident">RrsetRecords</span>::<span class="ident">RecordsAndRrsigs</span>(<span class="ident">i</span>) <span class="op">=&gt;</span> <span class="ident">i</span>.<span class="ident">next</span>(),
+        }
+    }
+}
+
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span> {
-    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>::<span class="ident">FromStr</span>;
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">net</span>::<span class="ident">Ipv4Addr</span>;
+    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>::<span class="ident">FromStr</span>;
 
-    <span class="kw">use</span> <span class="ident">rr</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">rdata</span>::<span class="ident">SOA</span>;
+    <span class="kw">use</span> <span class="ident">rr</span>::<span class="kw-2">*</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_insert</span>() {
@@ -1302,13 +1531,23 @@
             .<span class="ident">clone</span>();
 
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">insert</span>(<span class="ident">insert</span>.<span class="ident">clone</span>(), <span class="number">0</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">len</span>(), <span class="number">1</span>);
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">count</span>(), <span class="number">1</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">rr_set</span>
+                .<span class="ident">records_without_rrsigs</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>)
+        );
 
         <span class="comment">// dups ignored</span>
         <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">rr_set</span>.<span class="ident">insert</span>(<span class="ident">insert</span>.<span class="ident">clone</span>(), <span class="number">0</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">len</span>(), <span class="number">1</span>);
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">count</span>(), <span class="number">1</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">rr_set</span>
+                .<span class="ident">records_without_rrsigs</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>)
+        );
 
         <span class="comment">// add one</span>
         <span class="kw">let</span> <span class="ident">insert1</span> <span class="op">=</span> <span class="ident">Record</span>::<span class="ident">new</span>()
@@ -1319,9 +1558,19 @@
             .<span class="ident">set_rdata</span>(<span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">93</span>, <span class="number">184</span>, <span class="number">216</span>, <span class="number">25</span>)))
             .<span class="ident">clone</span>();
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">insert</span>(<span class="ident">insert1</span>.<span class="ident">clone</span>(), <span class="number">0</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">len</span>(), <span class="number">2</span>);
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert1</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">count</span>(), <span class="number">2</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">rr_set</span>
+                .<span class="ident">records_without_rrsigs</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>)
+        );
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">rr_set</span>
+                .<span class="ident">records_without_rrsigs</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert1</span>)
+        );
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1377,19 +1626,49 @@
             .<span class="ident">clone</span>();
 
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">insert</span>(<span class="ident">insert</span>.<span class="ident">clone</span>(), <span class="number">0</span>));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">rr_set</span>
+                .<span class="ident">records_without_rrsigs</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>)
+        );
         <span class="comment">// same serial number</span>
         <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">rr_set</span>.<span class="ident">insert</span>(<span class="ident">same_serial</span>.<span class="ident">clone</span>(), <span class="number">0</span>));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">same_serial</span>,));
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">rr_set</span>
+                .<span class="ident">records_without_rrsigs</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>)
+        );
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="op">!</span><span class="ident">rr_set</span>
+                .<span class="ident">records_without_rrsigs</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">same_serial</span>,)
+        );
 
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">insert</span>(<span class="ident">new_serial</span>.<span class="ident">clone</span>(), <span class="number">0</span>));
         <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">rr_set</span>.<span class="ident">insert</span>(<span class="ident">same_serial</span>.<span class="ident">clone</span>(), <span class="number">0</span>));
         <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">rr_set</span>.<span class="ident">insert</span>(<span class="ident">insert</span>.<span class="ident">clone</span>(), <span class="number">0</span>));
 
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">new_serial</span>));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">same_serial</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">rr_set</span>
+                .<span class="ident">records_without_rrsigs</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">new_serial</span>)
+        );
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="op">!</span><span class="ident">rr_set</span>
+                .<span class="ident">records_without_rrsigs</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>)
+        );
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="op">!</span><span class="ident">rr_set</span>
+                .<span class="ident">records_without_rrsigs</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">same_serial</span>)
+        );
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1417,12 +1696,27 @@
             .<span class="ident">clone</span>();
 
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">insert</span>(<span class="ident">insert</span>.<span class="ident">clone</span>(), <span class="number">0</span>));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">rr_set</span>
+                .<span class="ident">records_without_rrsigs</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>)
+        );
 
         <span class="comment">// update the record</span>
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">insert</span>(<span class="ident">new_record</span>.<span class="ident">clone</span>(), <span class="number">0</span>));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">new_record</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="op">!</span><span class="ident">rr_set</span>
+                .<span class="ident">records_without_rrsigs</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>)
+        );
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">rr_set</span>
+                .<span class="ident">records_without_rrsigs</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">new_record</span>)
+        );
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1479,7 +1773,12 @@
 
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">insert</span>(<span class="ident">insert</span>.<span class="ident">clone</span>(), <span class="number">0</span>));
         <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">rr_set</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">insert</span>, <span class="number">0</span>));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rr_set</span>.<span class="ident">records_without_rrsigs</span>().<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">rr_set</span>
+                .<span class="ident">records_without_rrsigs</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">contains</span>(<span class="op">&amp;&amp;</span><span class="ident">insert</span>)
+        );
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1521,8 +1820,8 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dnssec&quot;</span>)]</span> <span class="comment">// This tests RFC 6975, a DNSSEC-specific feature.</span>
     <span class="kw">fn</span> <span class="ident">test_get_filter</span>() {
         <span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">dnssec</span>::<span class="ident">rdata</span>::<span class="ident">SIG</span>;
-        <span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">dnssec</span>::{<span class="ident">Algorithm</span>, <span class="ident">SupportedAlgorithms</span>};
         <span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">dnssec</span>::<span class="ident">rdata</span>::{<span class="ident">DNSSECRData</span>, <span class="ident">DNSSECRecordType</span>};
+        <span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">dnssec</span>::{<span class="ident">Algorithm</span>, <span class="ident">SupportedAlgorithms</span>};
 
         <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Name</span>::<span class="ident">root</span>();
         <span class="kw">let</span> <span class="ident">rsasha256</span> <span class="op">=</span> <span class="ident">SIG</span>::<span class="ident">new</span>(
@@ -1616,39 +1915,34 @@
         <span class="macro">assert</span><span class="macro">!</span>(
             <span class="ident">rrset</span>
                 .<span class="ident">records_with_rrsigs</span>(<span class="ident">SupportedAlgorithms</span>::<span class="ident">all</span>(),)
-                .<span class="ident">iter</span>()
-                .<span class="ident">any</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">RData</span>::<span class="ident">DNSSEC</span>(<span class="ident">DNSSECRData</span>::<span class="ident">SIG</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>)) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">r</span>.<span class="ident">rdata</span>() {
+                .<span class="ident">any</span>(
+                    <span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">RData</span>::<span class="ident">DNSSEC</span>(<span class="ident">DNSSECRData</span>::<span class="ident">SIG</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>)) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">r</span>.<span class="ident">rdata</span>() {
                         <span class="ident">sig</span>.<span class="ident">algorithm</span>() <span class="op">==</span> <span class="ident">Algorithm</span>::<span class="ident">ED25519</span>
                     } <span class="kw">else</span> {
                         <span class="bool-val">false</span>
-                    }
-                },)
+                    },
+                )
         );
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">supported_algorithms</span> <span class="op">=</span> <span class="ident">SupportedAlgorithms</span>::<span class="ident">new</span>();
         <span class="ident">supported_algorithms</span>.<span class="ident">set</span>(<span class="ident">Algorithm</span>::<span class="ident">ECDSAP384SHA384</span>);
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rrset</span>.<span class="ident">records_with_rrsigs</span>(<span class="ident">supported_algorithms</span>).<span class="ident">iter</span>().<span class="ident">any</span>(
-            <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">RData</span>::<span class="ident">DNSSEC</span>(<span class="ident">DNSSECRData</span>::<span class="ident">SIG</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>)) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">r</span>.<span class="ident">rdata</span>() {
-                    <span class="ident">sig</span>.<span class="ident">algorithm</span>() <span class="op">==</span> <span class="ident">Algorithm</span>::<span class="ident">ECDSAP384SHA384</span>
-                } <span class="kw">else</span> {
-                    <span class="bool-val">false</span>
-                }
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rrset</span>.<span class="ident">records_with_rrsigs</span>(<span class="ident">supported_algorithms</span>).<span class="ident">any</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">RData</span>::<span class="ident">DNSSEC</span>(<span class="ident">DNSSECRData</span>::<span class="ident">SIG</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>)) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">r</span>.<span class="ident">rdata</span>() {
+                <span class="ident">sig</span>.<span class="ident">algorithm</span>() <span class="op">==</span> <span class="ident">Algorithm</span>::<span class="ident">ECDSAP384SHA384</span>
+            } <span class="kw">else</span> {
+                <span class="bool-val">false</span>
             }
-        ));
+        }));
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">supported_algorithms</span> <span class="op">=</span> <span class="ident">SupportedAlgorithms</span>::<span class="ident">new</span>();
         <span class="ident">supported_algorithms</span>.<span class="ident">set</span>(<span class="ident">Algorithm</span>::<span class="ident">ED25519</span>);
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rrset</span>.<span class="ident">records_with_rrsigs</span>(<span class="ident">supported_algorithms</span>).<span class="ident">iter</span>().<span class="ident">any</span>(
-            <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">RData</span>::<span class="ident">DNSSEC</span>(<span class="ident">DNSSECRData</span>::<span class="ident">SIG</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>)) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">r</span>.<span class="ident">rdata</span>() {
-                    <span class="ident">sig</span>.<span class="ident">algorithm</span>() <span class="op">==</span> <span class="ident">Algorithm</span>::<span class="ident">ED25519</span>
-                } <span class="kw">else</span> {
-                    <span class="bool-val">false</span>
-                }
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rrset</span>.<span class="ident">records_with_rrsigs</span>(<span class="ident">supported_algorithms</span>).<span class="ident">any</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">RData</span>::<span class="ident">DNSSEC</span>(<span class="ident">DNSSECRData</span>::<span class="ident">SIG</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>)) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">r</span>.<span class="ident">rdata</span>() {
+                <span class="ident">sig</span>.<span class="ident">algorithm</span>() <span class="op">==</span> <span class="ident">Algorithm</span>::<span class="ident">ED25519</span>
+            } <span class="kw">else</span> {
+                <span class="bool-val">false</span>
             }
-        ));
+        }));
     }
 }
 </pre></div>

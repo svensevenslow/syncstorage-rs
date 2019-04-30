@@ -1,1 +1,0 @@
-initSidebarItems({"trait":[["BoxedDsl","The `into_boxed` method"]]});

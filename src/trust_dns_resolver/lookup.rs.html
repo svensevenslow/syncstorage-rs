@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-resolver-0.9.0/src/lookup.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lookup.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-resolver-0.10.3/src/lookup.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lookup.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../trust_dns_resolver/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -483,17 +483,6 @@
 <span id="483">483</span>
 <span id="484">484</span>
 <span id="485">485</span>
-<span id="486">486</span>
-<span id="487">487</span>
-<span id="488">488</span>
-<span id="489">489</span>
-<span id="490">490</span>
-<span id="491">491</span>
-<span id="492">492</span>
-<span id="493">493</span>
-<span id="494">494</span>
-<span id="495">495</span>
-<span id="496">496</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2015-2017 Benjamin Fry &lt;benjaminfry@me.com&gt;</span>
 <span class="comment">//</span>
@@ -505,29 +494,27 @@
 <span class="doccomment">//! Lookup result from a resolution of ipv4 and ipv6 records with a Resolver.</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">min</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">error</span>::<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">StdError</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">net</span>::{<span class="ident">Ipv4Addr</span>, <span class="ident">Ipv6Addr</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">Iter</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::{<span class="ident">Duration</span>, <span class="ident">Instant</span>};
 
-<span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">future</span>, <span class="ident">task</span>, <span class="ident">Async</span>, <span class="ident">Future</span>, <span class="ident">Poll</span>};
+<span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">future</span>, <span class="ident">Async</span>, <span class="ident">Future</span>, <span class="ident">Poll</span>};
 
-<span class="kw">use</span> <span class="ident">trust_dns_proto</span>::<span class="ident">op</span>::<span class="ident">Query</span>;
-<span class="kw">use</span> <span class="ident">trust_dns_proto</span>::<span class="ident">rr</span>::<span class="ident">rdata</span>;
-<span class="kw">use</span> <span class="ident">trust_dns_proto</span>::<span class="ident">rr</span>::{<span class="ident">Name</span>, <span class="ident">RData</span>, <span class="ident">RecordType</span>};
-<span class="kw">use</span> <span class="ident">trust_dns_proto</span>::<span class="ident">xfer</span>::{<span class="ident">DnsRequest</span>, <span class="ident">DnsRequestOptions</span>, <span class="ident">DnsResponse</span>};
+<span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">error</span>::<span class="ident">ProtoError</span>;
+<span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">op</span>::<span class="ident">Query</span>;
+<span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">rr</span>::<span class="ident">rdata</span>;
+<span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">rr</span>::{<span class="ident">Name</span>, <span class="ident">RData</span>, <span class="ident">RecordType</span>};
+<span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">xfer</span>::{<span class="ident">DnsRequest</span>, <span class="ident">DnsRequestOptions</span>, <span class="ident">DnsResponse</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dnssec&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">trust_dns_proto</span>::<span class="ident">SecureDnsHandle</span>;
-<span class="kw">use</span> <span class="ident">trust_dns_proto</span>::{<span class="ident">DnsHandle</span>, <span class="ident">RetryDnsHandle</span>};
+<span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">SecureDnsHandle</span>;
+<span class="kw">use</span> <span class="ident">proto</span>::{<span class="ident">DnsHandle</span>, <span class="ident">RetryDnsHandle</span>};
 
 <span class="kw">use</span> <span class="ident">dns_lru</span>::<span class="ident">MAX_TTL</span>;
 <span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">lookup_ip</span>::<span class="ident">LookupIpIter</span>;
 <span class="kw">use</span> <span class="ident">lookup_state</span>::<span class="ident">CachingClient</span>;
-<span class="kw">use</span> <span class="ident">name_server_pool</span>::{<span class="ident">ConnectionProvider</span>, <span class="ident">NameServerPool</span>, <span class="ident">StandardConnection</span>};
-<span class="kw">use</span> <span class="ident">resolver_future</span>::<span class="ident">BasicResolverHandle</span>;
+<span class="kw">use</span> <span class="ident">name_server_pool</span>::{<span class="ident">ConnectionHandle</span>, <span class="ident">ConnectionProvider</span>, <span class="ident">NameServerPool</span>, <span class="ident">StandardConnection</span>};
 
 <span class="doccomment">/// Result of a DNS query when querying for any record type supported by the TRust-DNS Proto library.</span>
 <span class="doccomment">///</span>
@@ -606,19 +593,14 @@
 <span class="doccomment">/// Different lookup options for the lookup attempts and validation</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LookupEither</span><span class="op">&lt;</span>
-    <span class="ident">C</span>: <span class="ident">DnsHandle</span><span class="op">&lt;</span><span class="ident">Error</span> <span class="op">=</span> <span class="ident">ResolveError</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-    <span class="ident">P</span>: <span class="ident">ConnectionProvider</span><span class="op">&lt;</span><span class="ident">ConnHandle</span> <span class="op">=</span> <span class="ident">C</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-<span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LookupEither</span><span class="op">&lt;</span><span class="ident">C</span>: <span class="ident">DnsHandle</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>, <span class="ident">P</span>: <span class="ident">ConnectionProvider</span><span class="op">&lt;</span><span class="ident">ConnHandle</span> <span class="op">=</span> <span class="ident">C</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
     <span class="ident">Retry</span>(<span class="ident">RetryDnsHandle</span><span class="op">&lt;</span><span class="ident">NameServerPool</span><span class="op">&lt;</span><span class="ident">C</span>, <span class="ident">P</span><span class="op">&gt;&gt;</span>),
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dnssec&quot;</span>)]</span>
     <span class="ident">Secure</span>(<span class="ident">SecureDnsHandle</span><span class="op">&lt;</span><span class="ident">RetryDnsHandle</span><span class="op">&lt;</span><span class="ident">NameServerPool</span><span class="op">&lt;</span><span class="ident">C</span>, <span class="ident">P</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>),
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">C</span>: <span class="ident">DnsHandle</span><span class="op">&lt;</span><span class="ident">Error</span> <span class="op">=</span> <span class="ident">ResolveError</span><span class="op">&gt;</span>, <span class="ident">P</span>: <span class="ident">ConnectionProvider</span><span class="op">&lt;</span><span class="ident">ConnHandle</span> <span class="op">=</span> <span class="ident">C</span><span class="op">&gt;&gt;</span> <span class="ident">DnsHandle</span>
-    <span class="kw">for</span> <span class="ident">LookupEither</span><span class="op">&lt;</span><span class="ident">C</span>, <span class="ident">P</span><span class="op">&gt;</span>
-{
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">ResolveError</span>;
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">C</span>: <span class="ident">DnsHandle</span>, <span class="ident">P</span>: <span class="ident">ConnectionProvider</span><span class="op">&lt;</span><span class="ident">ConnHandle</span> <span class="op">=</span> <span class="ident">C</span><span class="op">&gt;&gt;</span> <span class="ident">DnsHandle</span> <span class="kw">for</span> <span class="ident">LookupEither</span><span class="op">&lt;</span><span class="ident">C</span>, <span class="ident">P</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Response</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">DnsResponse</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">ProtoError</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span>;
 
     <span class="kw">fn</span> <span class="ident">is_verifying_dnssec</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
@@ -628,10 +610,7 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">send</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">DnsRequest</span><span class="op">&gt;&gt;</span>(
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-        <span class="ident">request</span>: <span class="ident">R</span>,
-    ) <span class="op">-&gt;</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">DnsResponse</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">send</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">DnsRequest</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">request</span>: <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Response</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
             <span class="ident">LookupEither</span>::<span class="ident">Retry</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">c</span>) <span class="op">=&gt;</span> <span class="ident">c</span>.<span class="ident">send</span>(<span class="ident">request</span>),
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dnssec&quot;</span>)]</span>
@@ -642,18 +621,18 @@
 
 <span class="doccomment">/// The Future returned from ResolverFuture when performing a lookup.</span>
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LookupFuture</span><span class="op">&lt;</span><span class="ident">C</span> <span class="op">=</span> <span class="ident">LookupEither</span><span class="op">&lt;</span><span class="ident">BasicResolverHandle</span>, <span class="ident">StandardConnection</span><span class="op">&gt;&gt;</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LookupFuture</span><span class="op">&lt;</span><span class="ident">C</span> <span class="op">=</span> <span class="ident">LookupEither</span><span class="op">&lt;</span><span class="ident">ConnectionHandle</span>, <span class="ident">StandardConnection</span><span class="op">&gt;&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">C</span>: <span class="ident">DnsHandle</span><span class="op">&lt;</span><span class="ident">Error</span> <span class="op">=</span> <span class="ident">ResolveError</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+    <span class="ident">C</span>: <span class="ident">DnsHandle</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
 {
     <span class="ident">client_cache</span>: <span class="ident">CachingClient</span><span class="op">&lt;</span><span class="ident">C</span><span class="op">&gt;</span>,
     <span class="ident">names</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Name</span><span class="op">&gt;</span>,
     <span class="ident">record_type</span>: <span class="ident">RecordType</span>,
     <span class="ident">options</span>: <span class="ident">DnsRequestOptions</span>,
-    <span class="ident">future</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">Lookup</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">ResolveError</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span>,
+    <span class="ident">query</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">Lookup</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">ResolveError</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">C</span>: <span class="ident">DnsHandle</span><span class="op">&lt;</span><span class="ident">Error</span> <span class="op">=</span> <span class="ident">ResolveError</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">LookupFuture</span><span class="op">&lt;</span><span class="ident">C</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">C</span>: <span class="ident">DnsHandle</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">LookupFuture</span><span class="op">&lt;</span><span class="ident">C</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Perform a lookup from a name and type to a set of RDatas</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Arguments</span>
@@ -684,57 +663,52 @@
             <span class="ident">names</span>,
             <span class="ident">record_type</span>,
             <span class="ident">options</span>,
-            <span class="ident">future</span>: <span class="ident">query</span>,
+            <span class="ident">query</span>,
         }
-    }
-
-    <span class="kw">fn</span> <span class="ident">next_lookup</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">FnOnce</span>() <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span><span class="ident">Lookup</span>, <span class="ident">ResolveError</span><span class="op">&gt;&gt;</span>(
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-        <span class="ident">otherwise</span>: <span class="ident">F</span>,
-    ) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span><span class="ident">Lookup</span>, <span class="ident">ResolveError</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">names</span>.<span class="ident">pop</span>();
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">name</span> {
-            <span class="kw">let</span> <span class="ident">query</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">client_cache</span>
-                .<span class="ident">lookup</span>(<span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">name</span>, <span class="self">self</span>.<span class="ident">record_type</span>), <span class="self">self</span>.<span class="ident">options</span>.<span class="ident">clone</span>());
-
-            <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">future</span>, <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">query</span>));
-            <span class="comment">// guarantee that we get scheduled for the next turn...</span>
-            <span class="ident">task</span>::<span class="ident">current</span>().<span class="ident">notify</span>();
-            <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>)
-        } <span class="kw">else</span> {
-            <span class="ident">otherwise</span>()
-        }
-    }
-
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">error</span><span class="op">&lt;</span><span class="ident">E</span>: <span class="ident">StdError</span><span class="op">&gt;</span>(<span class="ident">client_cache</span>: <span class="ident">CachingClient</span><span class="op">&lt;</span><span class="ident">C</span><span class="op">&gt;</span>, <span class="ident">error</span>: <span class="ident">E</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">return</span> <span class="ident">LookupFuture</span> {
-            <span class="comment">// errors on names don&#39;t need to be cheap... i.e. this clone is unfortunate in this case.</span>
-            <span class="ident">client_cache</span>,
-            <span class="ident">names</span>: <span class="macro">vec</span><span class="macro">!</span>[],
-            <span class="ident">record_type</span>: <span class="ident">RecordType</span>::<span class="ident">NULL</span>,
-            <span class="ident">options</span>: <span class="ident">DnsRequestOptions</span>::<span class="ident">default</span>(),
-            <span class="ident">future</span>: <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">future</span>::<span class="ident">err</span>(
-                <span class="ident">ResolveErrorKind</span>::<span class="ident">Msg</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">error</span>)).<span class="ident">into</span>(),
-            )),
-        };
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">C</span>: <span class="ident">DnsHandle</span><span class="op">&lt;</span><span class="ident">Error</span> <span class="op">=</span> <span class="ident">ResolveError</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">Future</span> <span class="kw">for</span> <span class="ident">LookupFuture</span><span class="op">&lt;</span><span class="ident">C</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">C</span>: <span class="ident">DnsHandle</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">Future</span> <span class="kw">for</span> <span class="ident">LookupFuture</span><span class="op">&lt;</span><span class="ident">C</span><span class="op">&gt;</span> {
     <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Lookup</span>;
     <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">ResolveError</span>;
 
     <span class="kw">fn</span> <span class="ident">poll</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">future</span>.<span class="ident">poll</span>() {
-            <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">lookup_ip</span>)) <span class="op">=&gt;</span> <span class="kw">if</span> <span class="ident">lookup_ip</span>.<span class="ident">rdatas</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span> {
-                <span class="kw">return</span> <span class="self">self</span>.<span class="ident">next_lookup</span>(<span class="op">||</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">lookup_ip</span>)));
-            } <span class="kw">else</span> {
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">lookup_ip</span>));
-            },
-            <span class="ident">p</span> @ <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> <span class="ident">p</span>,
-            <span class="ident">e</span> @ <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {
-                <span class="kw">return</span> <span class="self">self</span>.<span class="ident">next_lookup</span>(<span class="op">||</span> <span class="ident">e</span>);
+        <span class="kw">loop</span> {
+            <span class="comment">// Try polling the underlying DNS query.</span>
+            <span class="kw">let</span> <span class="ident">query</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">query</span>.<span class="ident">poll</span>();
+
+            <span class="comment">// Determine whether or not we will attempt to retry the query.</span>
+            <span class="kw">let</span> <span class="ident">should_retry</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">query</span> {
+                <span class="comment">// If the query is NotReady, yield immediately.</span>
+                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>),
+                <span class="comment">// If the query returned a successful lookup, we will attempt</span>
+                <span class="comment">// to retry if the lookup is empty. Otherwise, we will return</span>
+                <span class="comment">// that lookup.</span>
+                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="kw-2">ref</span> <span class="ident">lookup</span>)) <span class="op">=&gt;</span> <span class="ident">lookup</span>.<span class="ident">rdatas</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span>,
+                <span class="comment">// If the query failed, we will attempt to retry.</span>
+                <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            };
+
+            <span class="kw">if</span> <span class="ident">should_retry</span> {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">names</span>.<span class="ident">pop</span>() {
+                    <span class="comment">// If there&#39;s another name left to try, build a new query</span>
+                    <span class="comment">// for that next name and continue looping.</span>
+                    <span class="self">self</span>.<span class="ident">query</span> <span class="op">=</span> <span class="self">self</span>
+                        .<span class="ident">client_cache</span>
+                        .<span class="ident">lookup</span>(<span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">name</span>, <span class="self">self</span>.<span class="ident">record_type</span>), <span class="self">self</span>.<span class="ident">options</span>.<span class="ident">clone</span>());
+                    <span class="comment">// Continue looping with the new query. It will be polled</span>
+                    <span class="comment">// on the next iteration of the loop.</span>
+                    <span class="kw">continue</span>;
+                }
             }
+            <span class="comment">// If we didn&#39;t have to retry the query, or we weren&#39;t able to</span>
+            <span class="comment">// retry because we&#39;ve exhausted the names to search, return the</span>
+            <span class="comment">// current query.</span>
+            <span class="kw">return</span> <span class="ident">query</span>;
+            <span class="comment">// If we skipped retrying the  query, this will return the</span>
+            <span class="comment">// successful lookup, otherwise, if the retry failed, this will</span>
+            <span class="comment">// return the last  query result --- either an empty lookup or the</span>
+            <span class="comment">// last error we saw.</span>
         }
     }
 }
@@ -774,7 +748,8 @@
         <span class="ident">iter</span>.<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">rdata</span><span class="op">|</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">rdata</span> {
             <span class="ident">RData</span>::<span class="ident">SRV</span>(<span class="kw-2">ref</span> <span class="ident">data</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">data</span>),
             <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-        }).<span class="ident">next</span>()
+        })
+        .<span class="ident">next</span>()
     }
 }
 
@@ -831,7 +806,8 @@
                 <span class="ident">iter</span>.<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">rdata</span><span class="op">|</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">rdata</span> {
                     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>(<span class="kw-2">ref</span> <span class="ident">data</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">data</span>),
                     <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-                }).<span class="ident">next</span>()
+                })
+                .<span class="ident">next</span>()
             }
         }
 
@@ -897,31 +873,29 @@
 
     <span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">future</span>, <span class="ident">Future</span>};
 
-    <span class="kw">use</span> <span class="ident">trust_dns_proto</span>::<span class="ident">op</span>::<span class="ident">Message</span>;
-    <span class="kw">use</span> <span class="ident">trust_dns_proto</span>::<span class="ident">rr</span>::{<span class="ident">Name</span>, <span class="ident">RData</span>, <span class="ident">Record</span>, <span class="ident">RecordType</span>};
-    <span class="kw">use</span> <span class="ident">trust_dns_proto</span>::<span class="ident">xfer</span>::{<span class="ident">DnsRequest</span>, <span class="ident">DnsRequestOptions</span>};
+    <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">error</span>::{<span class="ident">ProtoErrorKind</span>, <span class="ident">ProtoResult</span>};
+    <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">op</span>::<span class="ident">Message</span>;
+    <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">rr</span>::{<span class="ident">Name</span>, <span class="ident">RData</span>, <span class="ident">Record</span>, <span class="ident">RecordType</span>};
+    <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">xfer</span>::{<span class="ident">DnsRequest</span>, <span class="ident">DnsRequestOptions</span>};
 
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MockDnsHandle</span> {
-        <span class="ident">messages</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ResolveResult</span><span class="op">&lt;</span><span class="ident">DnsResponse</span><span class="op">&gt;&gt;</span><span class="op">&gt;&gt;</span>,
+        <span class="ident">messages</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">DnsResponse</span><span class="op">&gt;&gt;</span><span class="op">&gt;&gt;</span>,
     }
 
     <span class="kw">impl</span> <span class="ident">DnsHandle</span> <span class="kw">for</span> <span class="ident">MockDnsHandle</span> {
-        <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">ResolveError</span>;
+        <span class="kw">type</span> <span class="ident">Response</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">DnsResponse</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">ProtoError</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span>;
 
-        <span class="kw">fn</span> <span class="ident">send</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">DnsRequest</span><span class="op">&gt;&gt;</span>(
-            <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-            <span class="kw">_</span>: <span class="ident">R</span>,
-        ) <span class="op">-&gt;</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">DnsResponse</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span> {
+        <span class="kw">fn</span> <span class="ident">send</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">DnsRequest</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw">_</span>: <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Response</span> {
             <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">future</span>::<span class="ident">result</span>(
                 <span class="self">self</span>.<span class="ident">messages</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">pop</span>().<span class="ident">unwrap_or</span>(<span class="ident">empty</span>()),
             ))
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">v4_message</span>() <span class="op">-&gt;</span> <span class="ident">ResolveResult</span><span class="op">&lt;</span><span class="ident">DnsResponse</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">v4_message</span>() <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">DnsResponse</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">message</span> <span class="op">=</span> <span class="ident">Message</span>::<span class="ident">new</span>();
         <span class="ident">message</span>.<span class="ident">insert_answers</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Record</span>::<span class="ident">from_rdata</span>(
             <span class="ident">Name</span>::<span class="ident">root</span>(),
@@ -932,15 +906,15 @@
         <span class="prelude-val">Ok</span>(<span class="ident">message</span>.<span class="ident">into</span>())
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">empty</span>() <span class="op">-&gt;</span> <span class="ident">ResolveResult</span><span class="op">&lt;</span><span class="ident">DnsResponse</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">empty</span>() <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">DnsResponse</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(<span class="ident">Message</span>::<span class="ident">new</span>().<span class="ident">into</span>())
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">error</span>() <span class="op">-&gt;</span> <span class="ident">ResolveResult</span><span class="op">&lt;</span><span class="ident">DnsResponse</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Err</span>(<span class="ident">ResolveErrorKind</span>::<span class="ident">Io</span>.<span class="ident">into</span>())
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">error</span>() <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">DnsResponse</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Err</span>(<span class="ident">ProtoErrorKind</span>::<span class="ident">Io</span>.<span class="ident">into</span>())
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mock</span>(<span class="ident">messages</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ResolveResult</span><span class="op">&lt;</span><span class="ident">DnsResponse</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="ident">MockDnsHandle</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mock</span>(<span class="ident">messages</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">DnsResponse</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="ident">MockDnsHandle</span> {
         <span class="ident">MockDnsHandle</span> {
             <span class="ident">messages</span>: <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="ident">messages</span>)),
         }
@@ -954,40 +928,44 @@
                 <span class="ident">RecordType</span>::<span class="ident">A</span>,
                 <span class="ident">DnsRequestOptions</span>::<span class="ident">default</span>(),
                 <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">v4_message</span>()])),
-            ).<span class="ident">wait</span>()
-                .<span class="ident">unwrap</span>()
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)]
         );
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_error</span>() {
-        <span class="macro">assert</span><span class="macro">!</span>(
-            <span class="ident">LookupFuture</span>::<span class="ident">lookup</span>(
-                <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Name</span>::<span class="ident">root</span>()],
-                <span class="ident">RecordType</span>::<span class="ident">A</span>,
-                <span class="ident">DnsRequestOptions</span>::<span class="ident">default</span>(),
-                <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">error</span>()])),
-            ).<span class="ident">wait</span>()
-                .<span class="ident">is_err</span>()
-        );
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">LookupFuture</span>::<span class="ident">lookup</span>(
+            <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Name</span>::<span class="ident">root</span>()],
+            <span class="ident">RecordType</span>::<span class="ident">A</span>,
+            <span class="ident">DnsRequestOptions</span>::<span class="ident">default</span>(),
+            <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">error</span>()])),
+        )
+        .<span class="ident">wait</span>()
+        .<span class="ident">is_err</span>());
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_empty_no_response</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(
-            <span class="ident">LookupFuture</span>::<span class="ident">lookup</span>(
+            <span class="kw-2">*</span><span class="ident">LookupFuture</span>::<span class="ident">lookup</span>(
                 <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Name</span>::<span class="ident">root</span>()],
                 <span class="ident">RecordType</span>::<span class="ident">A</span>,
                 <span class="ident">DnsRequestOptions</span>::<span class="ident">default</span>(),
                 <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">empty</span>()])),
-            ).<span class="ident">wait</span>()
-                .<span class="ident">unwrap_err</span>()
-                .<span class="ident">kind</span>(),
-            <span class="kw-2">&amp;</span><span class="ident">ResolveErrorKind</span>::<span class="ident">NoRecordsFound</span>(<span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">Name</span>::<span class="ident">root</span>(), <span class="ident">RecordType</span>::<span class="ident">A</span>))
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap_err</span>()
+            .<span class="ident">kind</span>(),
+            <span class="ident">ResolveErrorKind</span>::<span class="ident">NoRecordsFound</span> {
+                <span class="ident">query</span>: <span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">Name</span>::<span class="ident">root</span>(), <span class="ident">RecordType</span>::<span class="ident">A</span>),
+                <span class="ident">valid_until</span>: <span class="prelude-val">None</span>,
+            }
         );
     }
 }

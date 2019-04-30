@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["exists","Creates a SQL `EXISTS` expression."]],"struct":[["Exists",""]]});

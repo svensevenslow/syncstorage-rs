@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.4.0/src/xfer/retry_dns_handle.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>retry_dns_handle.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.5.0/src/xfer/retry_dns_handle.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>retry_dns_handle.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../trust_dns_proto/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -158,26 +158,6 @@
 <span id="158">158</span>
 <span id="159">159</span>
 <span id="160">160</span>
-<span id="161">161</span>
-<span id="162">162</span>
-<span id="163">163</span>
-<span id="164">164</span>
-<span id="165">165</span>
-<span id="166">166</span>
-<span id="167">167</span>
-<span id="168">168</span>
-<span id="169">169</span>
-<span id="170">170</span>
-<span id="171">171</span>
-<span id="172">172</span>
-<span id="173">173</span>
-<span id="174">174</span>
-<span id="175">175</span>
-<span id="176">176</span>
-<span id="177">177</span>
-<span id="178">178</span>
-<span id="179">179</span>
-<span id="180">180</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2015-2016 Benjamin Fry &lt;benjaminfry@me.com&gt;</span>
 <span class="comment">//</span>
@@ -190,7 +170,7 @@
 
 <span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">Future</span>, <span class="ident">Poll</span>};
 
-<span class="kw">use</span> <span class="ident">error</span>::<span class="ident">FromProtoError</span>;
+<span class="kw">use</span> <span class="ident">error</span>::<span class="ident">ProtoError</span>;
 <span class="kw">use</span> <span class="ident">xfer</span>::{<span class="ident">DnsRequest</span>, <span class="ident">DnsResponse</span>};
 <span class="kw">use</span> <span class="ident">DnsHandle</span>;
 
@@ -199,19 +179,12 @@
 <span class="doccomment">/// *note* Current value of this is not clear, it may be removed</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;queries can only be sent through a ClientHandle&quot;</span>]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RetryDnsHandle</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">DnsHandle</span><span class="op">&lt;</span><span class="ident">Error</span> <span class="op">=</span> <span class="ident">E</span><span class="op">&gt;</span>, <span class="ident">E</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">H</span> <span class="kw">as</span> <span class="ident">DnsHandle</span><span class="op">&gt;</span>::<span class="ident">Error</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">E</span>: <span class="ident">FromProtoError</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-{
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RetryDnsHandle</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">DnsHandle</span><span class="op">&gt;</span> {
     <span class="ident">handle</span>: <span class="ident">H</span>,
     <span class="ident">attempts</span>: <span class="ident">usize</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">H</span>, <span class="ident">E</span><span class="op">&gt;</span> <span class="ident">RetryDnsHandle</span><span class="op">&lt;</span><span class="ident">H</span>, <span class="ident">E</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">H</span>: <span class="ident">DnsHandle</span><span class="op">&lt;</span><span class="ident">Error</span> <span class="op">=</span> <span class="ident">E</span><span class="op">&gt;</span>,
-    <span class="ident">E</span>: <span class="ident">FromProtoError</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-{
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">DnsHandle</span><span class="op">&gt;</span> <span class="ident">RetryDnsHandle</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Creates a new Client handler for reattempting requests on failures.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Arguments</span>
@@ -223,17 +196,13 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">H</span>, <span class="ident">E</span><span class="op">&gt;</span> <span class="ident">DnsHandle</span> <span class="kw">for</span> <span class="ident">RetryDnsHandle</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span> <span class="ident">DnsHandle</span> <span class="kw">for</span> <span class="ident">RetryDnsHandle</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">H</span>: <span class="ident">DnsHandle</span><span class="op">&lt;</span><span class="ident">Error</span> <span class="op">=</span> <span class="ident">E</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-    <span class="ident">E</span>: <span class="ident">FromProtoError</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+    <span class="ident">H</span>: <span class="ident">DnsHandle</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
 {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">H</span> <span class="kw">as</span> <span class="ident">DnsHandle</span><span class="op">&gt;</span>::<span class="ident">Error</span>;
+    <span class="kw">type</span> <span class="ident">Response</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">DnsResponse</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">ProtoError</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span>;
 
-    <span class="kw">fn</span> <span class="ident">send</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">DnsRequest</span><span class="op">&gt;&gt;</span>(
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-        <span class="ident">request</span>: <span class="ident">R</span>,
-    ) <span class="op">-&gt;</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">DnsResponse</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">send</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">DnsRequest</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">request</span>: <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Response</span> {
         <span class="kw">let</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">request</span>.<span class="ident">into</span>();
 
         <span class="comment">// need to clone here so that the retry can resend if necessary...</span>
@@ -250,20 +219,16 @@
 }
 
 <span class="doccomment">/// A future for retrying (on failure, for the remaining number of times specified)</span>
-<span class="kw">struct</span> <span class="ident">RetrySendFuture</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">DnsHandle</span>, <span class="ident">E</span><span class="op">&gt;</span> {
+<span class="kw">struct</span> <span class="ident">RetrySendFuture</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">DnsHandle</span><span class="op">&gt;</span> {
     <span class="ident">request</span>: <span class="ident">DnsRequest</span>,
     <span class="ident">handle</span>: <span class="ident">H</span>,
-    <span class="ident">future</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">DnsResponse</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">E</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span>,
+    <span class="ident">future</span>: <span class="op">&lt;</span><span class="ident">H</span> <span class="kw">as</span> <span class="ident">DnsHandle</span><span class="op">&gt;</span>::<span class="ident">Response</span>,
     <span class="ident">remaining_attempts</span>: <span class="ident">usize</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">H</span>, <span class="ident">E</span><span class="op">&gt;</span> <span class="ident">Future</span> <span class="kw">for</span> <span class="ident">RetrySendFuture</span><span class="op">&lt;</span><span class="ident">H</span>, <span class="ident">E</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">H</span>: <span class="ident">DnsHandle</span><span class="op">&lt;</span><span class="ident">Error</span> <span class="op">=</span> <span class="ident">E</span><span class="op">&gt;</span>,
-    <span class="ident">E</span>: <span class="ident">FromProtoError</span>,
-{
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">DnsHandle</span><span class="op">&gt;</span> <span class="ident">Future</span> <span class="kw">for</span> <span class="ident">RetrySendFuture</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span> {
     <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">DnsResponse</span>;
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">H</span> <span class="kw">as</span> <span class="ident">DnsHandle</span><span class="op">&gt;</span>::<span class="ident">Error</span>;
+    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">ProtoError</span>;
 
     <span class="kw">fn</span> <span class="ident">poll</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="comment">// loop over the future, on errors, spawn a new future</span>
@@ -303,12 +268,9 @@
     }
 
     <span class="kw">impl</span> <span class="ident">DnsHandle</span> <span class="kw">for</span> <span class="ident">TestClient</span> {
-        <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">ProtoError</span>;
+        <span class="kw">type</span> <span class="ident">Response</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">DnsResponse</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">ProtoError</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span>;
 
-        <span class="kw">fn</span> <span class="ident">send</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">DnsRequest</span><span class="op">&gt;&gt;</span>(
-            <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-            <span class="kw">_</span>: <span class="ident">R</span>,
-        ) <span class="op">-&gt;</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">DnsResponse</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span> {
+        <span class="kw">fn</span> <span class="ident">send</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">DnsRequest</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw">_</span>: <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Response</span> {
             <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">attempts</span>.<span class="ident">get</span>();
 
             <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">retries</span> <span class="op">||</span> <span class="self">self</span>.<span class="ident">retries</span> <span class="op">-</span> <span class="ident">i</span> <span class="op">==</span> <span class="number">0</span> {
@@ -320,9 +282,7 @@
             }
 
             <span class="self">self</span>.<span class="ident">attempts</span>.<span class="ident">set</span>(<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>);
-            <span class="kw">return</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">failed</span>(
-                <span class="ident">ProtoErrorKind</span>::<span class="ident">Message</span>(<span class="string">&quot;last retry set to fail&quot;</span>).<span class="ident">into</span>(),
-            ));
+            <span class="kw">return</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">failed</span>(<span class="ident">ProtoError</span>::<span class="ident">from</span>(<span class="string">&quot;last retry set to fail&quot;</span>).<span class="ident">into</span>()));
         }
     }
 

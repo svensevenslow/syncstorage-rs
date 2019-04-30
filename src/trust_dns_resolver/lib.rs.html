@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-resolver-0.9.0/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-resolver-0.10.3/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../trust_dns_resolver/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -213,6 +213,34 @@
 <span id="213">213</span>
 <span id="214">214</span>
 <span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2015-2017 Benjamin Fry &lt;benjaminfry@me.com&gt;</span>
 <span class="comment">//</span>
@@ -237,7 +265,7 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```toml</span>
 <span class="doccomment">//! [dependency]</span>
-<span class="doccomment">//! trust-dns-resolver = &quot;^0.8&quot;</span>
+<span class="doccomment">//! trust-dns-resolver = &quot;^0.9&quot;</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ## Extern the crate for usage in the library</span>
@@ -298,17 +326,21 @@
 <span class="doccomment">//! # fn main() {</span>
 <span class="doccomment">//! use std::net::*;</span>
 <span class="doccomment">//! use tokio::runtime::current_thread::Runtime;</span>
-<span class="doccomment">//! use trust_dns_resolver::ResolverFuture;</span>
+<span class="doccomment">//! use trust_dns_resolver::AsyncResolver;</span>
 <span class="doccomment">//! use trust_dns_resolver::config::*;</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! // We need a Tokio reactor::Core to run the resolver</span>
+<span class="doccomment">//! // We need a Tokio Runtime to run the resolver</span>
 <span class="doccomment">//! //  this is responsible for running all Future tasks and registering interest in IO channels</span>
 <span class="doccomment">//! let mut io_loop = Runtime::new().unwrap();</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Construct a new Resolver with default configuration options</span>
-<span class="doccomment">//! let resolver = ResolverFuture::new(ResolverConfig::default(), ResolverOpts::default());</span>
-<span class="doccomment">//! // The resolver we just constructed is a Future wait for the actual Resolver</span>
-<span class="doccomment">//! let resolver = io_loop.block_on(resolver).unwrap();</span>
+<span class="doccomment">//! let (resolver, background) = AsyncResolver::new(</span>
+<span class="doccomment">//!     ResolverConfig::default(),</span>
+<span class="doccomment">//!     ResolverOpts::default()</span>
+<span class="doccomment">//! );</span>
+<span class="doccomment">//! // AsyncResolver::new returns a handle for sending resolve requests and a background task</span>
+<span class="doccomment">//! // that must be spawned on an executor.</span>
+<span class="doccomment">//! io_loop.spawn(background);</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Lookup the IP addresses associated with a name.</span>
 <span class="doccomment">//! // This returns a future that will lookup the IP addresses, it must be run in the Core to</span>
@@ -375,13 +407,13 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Multicast DNS is an experimental feature in TRust-DNS at the moment. It&#39;s support on different platforms is not yet ideal. Initial support is only for IPv4 mDNS, as there are some complexities to figure out with IPv6. Once enabled, an mDNS `NameServer` will automatically be added to the `Resolver` and used for any lookups performed in the `.local.` zone.</span>
 
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
+<span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>)]</span>
+<span class="attribute">#![<span class="ident">recursion_limit</span> <span class="op">=</span> <span class="string">&quot;128&quot;</span>]</span>
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-tls&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">cfg_if</span>;
-<span class="attribute">#[<span class="ident">macro_use</span>]</span>
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">error_chain</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">failure</span>;
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">futures</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;windows&quot;</span>)]</span>
@@ -392,38 +424,62 @@
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">log</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">lru_cache</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">resolv_conf</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde-config&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serde_derive</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde-config&quot;</span>)]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serde</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">smallvec</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">tokio</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-https&quot;</span>)]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">trust_dns_https</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-native-tls&quot;</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">trust_dns_native_tls</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-openssl&quot;</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">trust_dns_openssl</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">trust_dns_proto</span>;
+<span class="kw">pub</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">trust_dns_proto</span> <span class="kw">as</span> <span class="ident">proto</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-rustls&quot;</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">trust_dns_rustls</span>;
 
+<span class="kw">mod</span> <span class="ident">async_resolver</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">config</span>;
 <span class="kw">mod</span> <span class="ident">dns_lru</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">dns_sd</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">error</span>;
 <span class="kw">mod</span> <span class="ident">hosts</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-https&quot;</span>)]</span>
+<span class="kw">mod</span> <span class="ident">https</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">lookup</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">lookup_ip</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">lookup_state</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">name_server_pool</span>;
 <span class="kw">mod</span> <span class="ident">resolver</span>;
-<span class="kw">mod</span> <span class="ident">resolver_future</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">system_conf</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-tls&quot;</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tls</span>;
 
 <span class="comment">// reexports from proto</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">trust_dns_proto</span>::<span class="ident">rr</span>::{<span class="ident">IntoName</span>, <span class="ident">Name</span>, <span class="ident">TryParseIp</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">proto</span>::<span class="ident">rr</span>::{<span class="ident">IntoName</span>, <span class="ident">Name</span>, <span class="ident">TryParseIp</span>};
 
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">async_resolver</span>::{<span class="ident">AsyncResolver</span>, <span class="ident">Background</span>, <span class="ident">BackgroundLookup</span>, <span class="ident">BackgroundLookupIp</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">hosts</span>::<span class="ident">Hosts</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">resolver</span>::<span class="ident">Resolver</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">resolver_future</span>::<span class="ident">ResolverFuture</span>;
+
+<span class="doccomment">/// This is an alias for [`AsyncResolver`], which replaced the type previously</span>
+<span class="doccomment">/// called `ResolverFuture`.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Note</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// For users of `ResolverFuture`, the return type for `ResolverFuture::new`</span>
+<span class="doccomment">/// has changed since version 0.9 of `trust-dns-resolver`. It now returns</span>
+<span class="doccomment">/// a tuple of an [`AsyncResolver`] _and_ a background future, which must</span>
+<span class="doccomment">/// be spawned on a reactor before any lookup futures will run.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// See the [`AsyncResolver`] documentation for more information on how to</span>
+<span class="doccomment">/// use the background future.</span>
+<span class="attribute">#[<span class="ident">deprecated</span>(<span class="ident">note</span> <span class="op">=</span> <span class="string">&quot;use [`trust_dns_resolver::AsyncResolver`] instead&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ResolverFuture</span> <span class="op">=</span> <span class="ident">AsyncResolver</span>;
 
 <span class="doccomment">/// returns a version as specified in Cargo.toml</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">version</span>() <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.7.1/src/arbiter.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>arbiter.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.7.9/src/arbiter.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>arbiter.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../actix/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -313,6 +313,20 @@
 <span id="313">313</span>
 <span id="314">314</span>
 <span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cell</span>::{<span class="ident">Cell</span>, <span class="ident">RefCell</span>};
@@ -321,11 +335,12 @@
 <span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">sync</span>::<span class="ident">oneshot</span>::{<span class="ident">channel</span>, <span class="ident">Sender</span>};
 <span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">future</span>, <span class="ident">Future</span>, <span class="ident">IntoFuture</span>};
 <span class="kw">use</span> <span class="ident">tokio</span>::<span class="ident">executor</span>::<span class="ident">current_thread</span>::<span class="ident">spawn</span>;
-<span class="kw">use</span> <span class="ident">tokio</span>::<span class="ident">runtime</span>::<span class="ident">current_thread</span>::<span class="ident">Runtime</span>;
+<span class="kw">use</span> <span class="ident">tokio</span>::<span class="ident">runtime</span>::<span class="ident">current_thread</span>::<span class="ident">Builder</span> <span class="kw">as</span> <span class="ident">RuntimeBuilder</span>;
 <span class="kw">use</span> <span class="ident">uuid</span>::<span class="ident">Uuid</span>;
 
 <span class="kw">use</span> <span class="ident">actor</span>::<span class="ident">Actor</span>;
 <span class="kw">use</span> <span class="ident">address</span>::{<span class="ident">channel</span>, <span class="ident">Addr</span>, <span class="ident">AddressReceiver</span>};
+<span class="kw">use</span> <span class="ident">clock</span>::<span class="ident">Clock</span>;
 <span class="kw">use</span> <span class="ident">context</span>::<span class="ident">Context</span>;
 <span class="kw">use</span> <span class="ident">handler</span>::<span class="ident">Handler</span>;
 <span class="kw">use</span> <span class="ident">mailbox</span>::<span class="ident">DEFAULT_CAPACITY</span>;
@@ -343,7 +358,7 @@
 
 <span class="doccomment">/// Event loop controller</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// Arbiter controls event loop in it&#39;s thread. Each arbiter runs in separate</span>
+<span class="doccomment">/// Arbiter controls event loop in its thread. Each arbiter runs in separate</span>
 <span class="doccomment">/// thread. Arbiter provides several api for event loop access. Each arbiter</span>
 <span class="doccomment">/// can belongs to specific `System` actor.</span>
 <span class="doccomment">///</span>
@@ -351,6 +366,7 @@
 <span class="doccomment">/// unless the panic is in the System actor. Users of Arbiter can opt into</span>
 <span class="doccomment">/// shutting down the system on panic by using `Arbiter::builder()` and enabling</span>
 <span class="doccomment">/// `stop_system_on_panic`.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Arbiter</span> {
     <span class="ident">stop</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Sender</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;&gt;</span>,
     <span class="ident">stop_system_on_panic</span>: <span class="ident">bool</span>,
@@ -386,19 +402,18 @@
 
     <span class="doccomment">/// Spawn new thread and run event loop in spawned thread.</span>
     <span class="doccomment">/// Returns address of newly created arbiter.</span>
-    <span class="kw">fn</span> <span class="ident">new_with_builder</span>(<span class="ident">builder</span>: <span class="ident">Builder</span>) <span class="op">-&gt;</span> <span class="ident">Addr</span><span class="op">&lt;</span><span class="ident">Arbiter</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">new_with_builder</span>(<span class="kw-2">mut</span> <span class="ident">builder</span>: <span class="ident">Builder</span>) <span class="op">-&gt;</span> <span class="ident">Addr</span><span class="op">&lt;</span><span class="ident">Arbiter</span><span class="op">&gt;</span> {
         <span class="kw">let</span> (<span class="ident">tx</span>, <span class="ident">rx</span>) <span class="op">=</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">mpsc</span>::<span class="ident">channel</span>();
-
         <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">Uuid</span>::<span class="ident">new_v4</span>();
         <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(
             <span class="string">&quot;arbiter:{}:{}&quot;</span>,
-            <span class="ident">id</span>.<span class="ident">hyphenated</span>().<span class="ident">to_string</span>(),
-            <span class="ident">builder</span>.<span class="ident">name</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap_or</span>(<span class="kw-2">&amp;</span><span class="string">&quot;actor&quot;</span>.<span class="ident">into</span>())
+            <span class="ident">id</span>.<span class="ident">to_hyphenated_ref</span>().<span class="ident">to_string</span>(),
+            <span class="ident">builder</span>.<span class="ident">name</span>.<span class="ident">take</span>().<span class="ident">unwrap_or_else</span>(<span class="op">||</span> <span class="string">&quot;actor&quot;</span>.<span class="ident">into</span>())
         );
         <span class="kw">let</span> <span class="ident">sys</span> <span class="op">=</span> <span class="ident">System</span>::<span class="ident">current</span>();
 
         <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">thread</span>::<span class="ident">Builder</span>::<span class="ident">new</span>().<span class="ident">name</span>(<span class="ident">name</span>.<span class="ident">clone</span>()).<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">||</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rt</span> <span class="op">=</span> <span class="ident">Runtime</span>::<span class="ident">new</span>().<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rt</span> <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">runtime</span>.<span class="ident">build</span>().<span class="ident">unwrap</span>();
 
             <span class="kw">let</span> (<span class="ident">stop</span>, <span class="ident">stop_rx</span>) <span class="op">=</span> <span class="ident">channel</span>();
             <span class="ident">NAME</span>.<span class="ident">with</span>(<span class="op">|</span><span class="ident">cell</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">cell</span>.<span class="ident">borrow_mut</span>() <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>));
@@ -408,8 +423,8 @@
             <span class="ident">System</span>::<span class="ident">set_current</span>(<span class="ident">sys</span>);
 
             <span class="comment">// start arbiter</span>
-            <span class="kw">let</span> <span class="ident">addr</span> <span class="op">=</span>
-                <span class="ident">rt</span>.<span class="ident">block_on</span>(<span class="ident">future</span>::<span class="ident">lazy</span>(<span class="kw">move</span> <span class="op">||</span> {
+            <span class="kw">let</span> <span class="ident">addr</span> <span class="op">=</span> <span class="ident">rt</span>
+                .<span class="ident">block_on</span>(<span class="ident">future</span>::<span class="ident">lazy</span>(<span class="kw">move</span> <span class="op">||</span> {
                     <span class="kw">let</span> <span class="ident">addr</span> <span class="op">=</span> <span class="ident">Actor</span>::<span class="ident">start</span>(<span class="ident">Arbiter</span> {
                         <span class="ident">stop</span>: <span class="prelude-val">Some</span>(<span class="ident">stop</span>),
                         <span class="ident">stop_system_on_panic</span>: <span class="ident">builder</span>.<span class="ident">stop_system_on_panic</span>,
@@ -419,9 +434,10 @@
             <span class="ident">ADDR</span>.<span class="ident">with</span>(<span class="op">|</span><span class="ident">cell</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">cell</span>.<span class="ident">borrow_mut</span>() <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">addr</span>.<span class="ident">clone</span>()));
 
             <span class="comment">// register arbiter</span>
-            <span class="ident">System</span>::<span class="ident">current</span>()
-                .<span class="ident">sys</span>()
-                .<span class="ident">do_send</span>(<span class="ident">RegisterArbiter</span>(<span class="ident">id</span>.<span class="ident">simple</span>().<span class="ident">to_string</span>(), <span class="ident">addr</span>.<span class="ident">clone</span>()));
+            <span class="ident">System</span>::<span class="ident">current</span>().<span class="ident">sys</span>().<span class="ident">do_send</span>(<span class="ident">RegisterArbiter</span>(
+                <span class="ident">id</span>.<span class="ident">to_simple_ref</span>().<span class="ident">to_string</span>(),
+                <span class="ident">addr</span>.<span class="ident">clone</span>(),
+            ));
 
             <span class="kw">if</span> <span class="ident">tx</span>.<span class="ident">send</span>(<span class="ident">addr</span>).<span class="ident">is_err</span>() {
                 <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Can not start Arbiter, remote side is dead&quot;</span>);
@@ -436,7 +452,7 @@
             <span class="comment">// unregister arbiter</span>
             <span class="ident">System</span>::<span class="ident">current</span>()
                 .<span class="ident">sys</span>()
-                .<span class="ident">do_send</span>(<span class="ident">UnregisterArbiter</span>(<span class="ident">id</span>.<span class="ident">simple</span>().<span class="ident">to_string</span>()));
+                .<span class="ident">do_send</span>(<span class="ident">UnregisterArbiter</span>(<span class="ident">id</span>.<span class="ident">to_simple_ref</span>().<span class="ident">to_string</span>()));
         });
 
         <span class="ident">rx</span>.<span class="ident">recv</span>().<span class="ident">unwrap</span>()
@@ -522,17 +538,17 @@
     <span class="doccomment">/// Start new arbiter and then start actor in created arbiter.</span>
     <span class="doccomment">/// Returns `Addr&lt;Syn, A&gt;` of created actor.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">start</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">Addr</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&lt;</span><span class="ident">Context</span> <span class="op">=</span> <span class="ident">Context</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>,
-            <span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">A</span>::<span class="ident">Context</span>) <span class="op">-&gt;</span> <span class="ident">A</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+    <span class="kw">where</span>
+        <span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&lt;</span><span class="ident">Context</span> <span class="op">=</span> <span class="ident">Context</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>,
+        <span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">A</span>::<span class="ident">Context</span>) <span class="op">-&gt;</span> <span class="ident">A</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
         <span class="ident">Arbiter</span>::<span class="ident">builder</span>().<span class="ident">start</span>(<span class="ident">f</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">start_with_builder</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">builder</span>: <span class="ident">Builder</span>, <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">Addr</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&lt;</span><span class="ident">Context</span> <span class="op">=</span> <span class="ident">Context</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>,
-            <span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">A</span>::<span class="ident">Context</span>) <span class="op">-&gt;</span> <span class="ident">A</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+    <span class="kw">where</span>
+        <span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&lt;</span><span class="ident">Context</span> <span class="op">=</span> <span class="ident">Context</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>,
+        <span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">A</span>::<span class="ident">Context</span>) <span class="op">-&gt;</span> <span class="ident">A</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
         <span class="kw">let</span> (<span class="ident">stx</span>, <span class="ident">srx</span>) <span class="op">=</span> <span class="ident">channel</span>::<span class="ident">channel</span>(<span class="ident">DEFAULT_CAPACITY</span>);
 
@@ -588,6 +604,9 @@
 
     <span class="doccomment">/// Whether the Arbiter will stop the whole System on uncaught panic. Defaults to false.</span>
     <span class="ident">stop_system_on_panic</span>: <span class="ident">bool</span>,
+
+    <span class="doccomment">/// Tokio runtime builder.</span>
+    <span class="ident">runtime</span>: <span class="ident">RuntimeBuilder</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Builder</span> {
@@ -595,6 +614,7 @@
         <span class="ident">Builder</span> {
             <span class="ident">name</span>: <span class="prelude-val">None</span>,
             <span class="ident">stop_system_on_panic</span>: <span class="bool-val">false</span>,
+            <span class="ident">runtime</span>: <span class="ident">RuntimeBuilder</span>::<span class="ident">new</span>(),
         }
     }
 
@@ -613,6 +633,14 @@
         <span class="self">self</span>
     }
 
+    <span class="doccomment">/// Set the Clock instance that will be used by this Arbiter.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Defaults to the clock used by the actix `System`, which defaults to the system clock.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clock</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">clock</span>: <span class="ident">Clock</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">runtime</span>.<span class="ident">clock</span>(<span class="ident">clock</span>);
+        <span class="self">self</span>
+    }
+
     <span class="doccomment">/// Spawn new thread and run event loop in spawned thread.</span>
     <span class="doccomment">/// Returns address of newly created arbiter.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Addr</span><span class="op">&lt;</span><span class="ident">Arbiter</span><span class="op">&gt;</span> {
@@ -622,9 +650,9 @@
     <span class="doccomment">/// Start new arbiter and then start actor in created arbiter.</span>
     <span class="doccomment">/// Returns `Addr&lt;Syn, A&gt;` of created actor.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">start</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">Addr</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&lt;</span><span class="ident">Context</span> <span class="op">=</span> <span class="ident">Context</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>,
-            <span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">A</span>::<span class="ident">Context</span>) <span class="op">-&gt;</span> <span class="ident">A</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+    <span class="kw">where</span>
+        <span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&lt;</span><span class="ident">Context</span> <span class="op">=</span> <span class="ident">Context</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>,
+        <span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">A</span>::<span class="ident">Context</span>) <span class="op">-&gt;</span> <span class="ident">A</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
         <span class="ident">Arbiter</span>::<span class="ident">start_with_builder</span>(<span class="self">self</span>, <span class="ident">f</span>)
     }

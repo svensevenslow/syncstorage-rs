@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-resolver-0.9.0/src/config.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>config.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-resolver-0.10.3/src/config.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>config.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../trust_dns_resolver/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -456,6 +456,117 @@
 <span id="456">456</span>
 <span id="457">457</span>
 <span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2015-2017 Benjamin Fry &lt;benjaminfry@me.com&gt;</span>
 <span class="comment">//</span>
@@ -469,10 +580,11 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::{<span class="ident">Deref</span>, <span class="ident">DerefMut</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::<span class="ident">Duration</span>;
 
-<span class="kw">use</span> <span class="ident">trust_dns_proto</span>::<span class="ident">rr</span>::<span class="ident">Name</span>;
+<span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">rr</span>::<span class="ident">Name</span>;
 
 <span class="doccomment">/// Configuration for the upstream nameservers to use for resolution</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde-config&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ResolverConfig</span> {
     <span class="comment">// base search domain</span>
     <span class="ident">domain</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Name</span><span class="op">&gt;</span>,
@@ -533,6 +645,21 @@
             <span class="ident">domain</span>: <span class="prelude-val">None</span>,
             <span class="ident">search</span>: <span class="macro">vec</span><span class="macro">!</span>[],
             <span class="ident">name_servers</span>: <span class="ident">NameServerConfigGroup</span>::<span class="ident">cloudflare_tls</span>(),
+        }
+    }
+
+    <span class="doccomment">/// Creates a configuration, using `1.1.1.1`, `1.0.0.1` and `2606:4700:4700::1111`, `2606:4700:4700::1001` (thank you, Cloudflare). This limits the registered connections to just HTTPS lookups</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Please see: https://www.cloudflare.com/dns/</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// NameServerConfigGroups can be combined to use a set of different providers, see `NameServerConfigGroup` and `ResolverConfig::from_parts`</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-https&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cloudflare_https</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">ResolverConfig</span> {
+            <span class="comment">// TODO: this should get the hostname and use the basename as the default</span>
+            <span class="ident">domain</span>: <span class="prelude-val">None</span>,
+            <span class="ident">search</span>: <span class="macro">vec</span><span class="macro">!</span>[],
+            <span class="ident">name_servers</span>: <span class="ident">NameServerConfigGroup</span>::<span class="ident">cloudflare_https</span>(),
         }
     }
 
@@ -632,6 +759,7 @@
 
 <span class="doccomment">/// The protocol on which a NameServer should be communicated with</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde-config&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Protocol</span> {
     <span class="doccomment">/// UDP is the traditional DNS port, this is generally the correct choice</span>
     <span class="ident">Udp</span>,
@@ -640,6 +768,9 @@
     <span class="doccomment">/// Tls for DNS over TLS</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-tls&quot;</span>)]</span>
     <span class="ident">Tls</span>,
+    <span class="doccomment">/// Https for DNS over HTTPS</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-https&quot;</span>)]</span>
+    <span class="ident">Https</span>,
     <span class="doccomment">/// mDNS protocol for performing multicast lookups</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;mdns&quot;</span>)]</span>
     <span class="ident">Mdns</span>,
@@ -653,6 +784,8 @@
             <span class="ident">Protocol</span>::<span class="ident">Tcp</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-tls&quot;</span>)]</span>
             <span class="ident">Protocol</span>::<span class="ident">Tls</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-https&quot;</span>)]</span>
+            <span class="ident">Protocol</span>::<span class="ident">Https</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;mdns&quot;</span>)]</span>
             <span class="ident">Protocol</span>::<span class="ident">Mdns</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
         }
@@ -662,10 +795,25 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_stream</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="op">!</span><span class="self">self</span>.<span class="ident">is_datagram</span>()
     }
+
+    <span class="doccomment">/// Is this an encrypted protocol, i.e. TLS or HTTPS</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_encrypted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+            <span class="ident">Protocol</span>::<span class="ident">Udp</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            <span class="ident">Protocol</span>::<span class="ident">Tcp</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-tls&quot;</span>)]</span>
+            <span class="ident">Protocol</span>::<span class="ident">Tls</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-https&quot;</span>)]</span>
+            <span class="ident">Protocol</span>::<span class="ident">Https</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;mdns&quot;</span>)]</span>
+            <span class="ident">Protocol</span>::<span class="ident">Mdns</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+        }
+    }
 }
 
 <span class="doccomment">/// Configuration for the NameServer</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde-config&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NameServerConfig</span> {
     <span class="doccomment">/// The address which the DNS NameServer is registered at.</span>
     <span class="kw">pub</span> <span class="ident">socket_addr</span>: <span class="ident">SocketAddr</span>,
@@ -677,6 +825,7 @@
 
 <span class="doccomment">/// A set of name_servers to associate with a ResolverConfiguration</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde-config&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NameServerConfigGroup</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NameServerConfig</span><span class="op">&gt;</span>);
 
 <span class="kw">impl</span> <span class="ident">NameServerConfigGroup</span> {
@@ -692,7 +841,10 @@
         <span class="ident">NameServerConfigGroup</span>(<span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="ident">capacity</span>))
     }
 
-    <span class="kw">fn</span> <span class="ident">from_ips_clear</span>(<span class="ident">ips</span>: <span class="kw-2">&amp;</span>[<span class="ident">IpAddr</span>], <span class="ident">port</span>: <span class="ident">u16</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+    <span class="doccomment">/// Configure a NameServer address and port</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This will create UDP and TCP connections, using the same port.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_ips_clear</span>(<span class="ident">ips</span>: <span class="kw-2">&amp;</span>[<span class="ident">IpAddr</span>], <span class="ident">port</span>: <span class="ident">u16</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">name_servers</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">with_capacity</span>(<span class="ident">ips</span>.<span class="ident">len</span>());
 
         <span class="kw">for</span> <span class="ident">ip</span> <span class="kw">in</span> <span class="ident">ips</span> {
@@ -714,14 +866,21 @@
         <span class="ident">name_servers</span>
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-tls&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">from_ips_tls</span>(<span class="ident">ips</span>: <span class="kw-2">&amp;</span>[<span class="ident">IpAddr</span>], <span class="ident">port</span>: <span class="ident">u16</span>, <span class="ident">tls_dns_name</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-tls&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-https&quot;</span>))]</span>
+    <span class="kw">fn</span> <span class="ident">from_ips_encrypted</span>(
+        <span class="ident">ips</span>: <span class="kw-2">&amp;</span>[<span class="ident">IpAddr</span>],
+        <span class="ident">port</span>: <span class="ident">u16</span>,
+        <span class="ident">tls_dns_name</span>: <span class="ident">String</span>,
+        <span class="ident">protocol</span>: <span class="ident">Protocol</span>,
+    ) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">protocol</span>.<span class="ident">is_encrypted</span>());
+
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">name_servers</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">with_capacity</span>(<span class="ident">ips</span>.<span class="ident">len</span>());
 
         <span class="kw">for</span> <span class="ident">ip</span> <span class="kw">in</span> <span class="ident">ips</span> {
             <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">NameServerConfig</span> {
                 <span class="ident">socket_addr</span>: <span class="ident">SocketAddr</span>::<span class="ident">new</span>(<span class="ident">ip</span>.<span class="ident">clone</span>(), <span class="ident">port</span>),
-                <span class="ident">protocol</span>: <span class="ident">Protocol</span>::<span class="ident">Tls</span>,
+                <span class="ident">protocol</span>,
                 <span class="ident">tls_dns_name</span>: <span class="prelude-val">Some</span>(<span class="ident">tls_dns_name</span>.<span class="ident">clone</span>()),
             };
 
@@ -729,6 +888,22 @@
         }
 
         <span class="ident">name_servers</span>
+    }
+
+    <span class="doccomment">/// Configure a NameServer address and port for DNS-over-TLS</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This will create a TLS connections.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-tls&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_ips_tls</span>(<span class="ident">ips</span>: <span class="kw-2">&amp;</span>[<span class="ident">IpAddr</span>], <span class="ident">port</span>: <span class="ident">u16</span>, <span class="ident">tls_dns_name</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span>::<span class="ident">from_ips_encrypted</span>(<span class="ident">ips</span>, <span class="ident">port</span>, <span class="ident">tls_dns_name</span>, <span class="ident">Protocol</span>::<span class="ident">Tls</span>)
+    }
+
+    <span class="doccomment">/// Configure a NameServer address and port for DNS-over-HTTPS</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This will create a HTTPS connections.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-https&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_ips_https</span>(<span class="ident">ips</span>: <span class="kw-2">&amp;</span>[<span class="ident">IpAddr</span>], <span class="ident">port</span>: <span class="ident">u16</span>, <span class="ident">tls_dns_name</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span>::<span class="ident">from_ips_encrypted</span>(<span class="ident">ips</span>, <span class="ident">port</span>, <span class="ident">tls_dns_name</span>, <span class="ident">Protocol</span>::<span class="ident">Https</span>)
     }
 
     <span class="doccomment">/// Creates a default configuration, using `8.8.8.8`, `8.8.4.4` and `2001:4860:4860::8888`, `2001:4860:4860::8844` (thank you, Google).</span>
@@ -774,6 +949,23 @@
                 <span class="ident">IpAddr</span>::<span class="ident">V6</span>(<span class="ident">Ipv6Addr</span>::<span class="ident">new</span>(<span class="number">0x2606</span>, <span class="number">0x4700</span>, <span class="number">0x4700</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0x1001</span>)),
             ],
             <span class="number">853</span>,
+            <span class="string">&quot;cloudflare-dns.com&quot;</span>.<span class="ident">to_string</span>(),
+        )
+    }
+
+    <span class="doccomment">/// Creates a configuration, using `1.1.1.1`, `1.0.0.1` and `2606:4700:4700::1111`, `2606:4700:4700::1001` (thank you, Cloudflare). This limits the registered connections to just TLS lookups</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Please see: https://www.cloudflare.com/dns/</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-https&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cloudflare_https</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span>::<span class="ident">from_ips_https</span>(
+            <span class="kw-2">&amp;</span>[
+                <span class="ident">IpAddr</span>::<span class="ident">V4</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)),
+                <span class="ident">IpAddr</span>::<span class="ident">V4</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)),
+                <span class="ident">IpAddr</span>::<span class="ident">V6</span>(<span class="ident">Ipv6Addr</span>::<span class="ident">new</span>(<span class="number">0x2606</span>, <span class="number">0x4700</span>, <span class="number">0x4700</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0x1111</span>)),
+                <span class="ident">IpAddr</span>::<span class="ident">V6</span>(<span class="ident">Ipv6Addr</span>::<span class="ident">new</span>(<span class="number">0x2606</span>, <span class="number">0x4700</span>, <span class="number">0x4700</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0x1001</span>)),
+            ],
+            <span class="number">443</span>,
             <span class="string">&quot;cloudflare-dns.com&quot;</span>.<span class="ident">to_string</span>(),
         )
     }
@@ -846,6 +1038,7 @@
 
 <span class="doccomment">/// The lookup ip strategy</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde-config&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LookupIpStrategy</span> {
     <span class="doccomment">/// Only query for A (Ipv4) records</span>
     <span class="ident">Ipv4Only</span>,
@@ -868,6 +1061,7 @@
 
 <span class="doccomment">/// Configuration for the Resolver</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde-config&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span> <span class="comment">// TODO: remove after all params are supported</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ResolverOpts</span> {
     <span class="doccomment">/// Sets the number of dots that must appear (unless it&#39;s a final dot representing the root)</span>
@@ -894,6 +1088,30 @@
     <span class="kw">pub</span> <span class="ident">cache_size</span>: <span class="ident">usize</span>,
     <span class="doccomment">/// Check /ect/hosts file before dns requery (only works for unix like OS)</span>
     <span class="kw">pub</span> <span class="ident">use_hosts_file</span>: <span class="ident">bool</span>,
+    <span class="doccomment">/// Optional minimum TTL for positive responses.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// If this is set, any positive responses with a TTL lower than this value will have a TTL of</span>
+    <span class="doccomment">/// `positive_min_ttl` instead. Otherwise, this will default to 0 seconds.</span>
+    <span class="kw">pub</span> <span class="ident">positive_min_ttl</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Optional minimum TTL for negative (`NXDOMAIN`) responses.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// If this is set, any positive responses with a TTL lower than this value will have a TTL of</span>
+    <span class="doccomment">/// `negative_min_ttl` instead. Otherwise, this will default to 0 seconds.</span>
+    <span class="kw">pub</span> <span class="ident">negative_min_ttl</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Optional maximum TTL for positive responses.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// If this is set, any positive responses with a TTL higher than this value will have a TTL of</span>
+    <span class="doccomment">/// `positive_max_ttl` instead. Otherwise, this will default to [`MAX_TTL`] seconds.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`MAX_TTL`]: ../dns_lru/const.MAX_TTL.html</span>
+    <span class="kw">pub</span> <span class="ident">positive_max_ttl</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Optional maximum TTL for negative (`NXDOMAIN`) responses.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// If this is set, any positive responses with a TTL higher than this value will have a TTL of</span>
+    <span class="doccomment">/// `negative_max_ttl` instead. Otherwise, this will default to [`MAX_TTL`] seconds.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`MAX_TTL`]: ../dns_lru/const.MAX_TTL.html</span>
+    <span class="kw">pub</span> <span class="ident">negative_max_ttl</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">ResolverOpts</span> {
@@ -912,6 +1130,10 @@
             <span class="ident">ip_strategy</span>: <span class="ident">LookupIpStrategy</span>::<span class="ident">default</span>(),
             <span class="ident">cache_size</span>: <span class="number">32</span>,
             <span class="ident">use_hosts_file</span>: <span class="bool-val">true</span>,
+            <span class="ident">positive_min_ttl</span>: <span class="prelude-val">None</span>,
+            <span class="ident">negative_min_ttl</span>: <span class="prelude-val">None</span>,
+            <span class="ident">positive_max_ttl</span>: <span class="prelude-val">None</span>,
+            <span class="ident">negative_max_ttl</span>: <span class="prelude-val">None</span>,
         }
     }
 }

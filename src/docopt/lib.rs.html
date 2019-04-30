@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/docopt-1.0.0/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/docopt-1.1.0/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../docopt/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -207,19 +207,6 @@
 <span id="207">207</span>
 <span id="208">208</span>
 <span id="209">209</span>
-<span id="210">210</span>
-<span id="211">211</span>
-<span id="212">212</span>
-<span id="213">213</span>
-<span id="214">214</span>
-<span id="215">215</span>
-<span id="216">216</span>
-<span id="217">217</span>
-<span id="218">218</span>
-<span id="219">219</span>
-<span id="220">220</span>
-<span id="221">221</span>
-<span id="222">222</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Docopt for Rust. This implementation conforms to the</span>
 <span class="doccomment">//! [official description of Docopt](http://docopt.org/) and</span>
@@ -269,11 +256,9 @@
 <span class="doccomment">//! Here is the same example as above using type based decoding:</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust</span>
-<span class="doccomment">//! # extern crate docopt;</span>
-<span class="doccomment">//! #[macro_use]</span>
-<span class="doccomment">//! extern crate serde_derive;</span>
 <span class="doccomment">//! # fn main() {</span>
 <span class="doccomment">//! use docopt::Docopt;</span>
+<span class="doccomment">//! use serde::Deserialize;</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Write the Docopt usage string.</span>
 <span class="doccomment">//! const USAGE: &amp;&#39;static str = &quot;</span>
@@ -294,8 +279,8 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let argv = || vec![&quot;cp&quot;, &quot;-a&quot;, &quot;file1&quot;, &quot;file2&quot;, &quot;dest/&quot;];</span>
 <span class="doccomment">//! let args: Args = Docopt::new(USAGE)</span>
-<span class="doccomment">//!                         .and_then(|d| d.argv(argv().into_iter()).deserialize())</span>
-<span class="doccomment">//!                         .unwrap_or_else(|e| e.exit());</span>
+<span class="doccomment">//!     .and_then(|d| d.argv(argv().into_iter()).deserialize())</span>
+<span class="doccomment">//!     .unwrap_or_else(|e| e.exit());</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Now access your argv values.</span>
 <span class="doccomment">//! fn s(x: &amp;str) -&gt; String { x.to_string() }</span>
@@ -312,14 +297,13 @@
 <span class="doccomment">//! shows more of Docopt and some of the benefits of type based decoding.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust</span>
-<span class="doccomment">//! # extern crate docopt;</span>
-<span class="doccomment">//! #[macro_use]</span>
-<span class="doccomment">//! extern crate serde_derive;</span>
-<span class="doccomment">//! extern crate serde;</span>
 <span class="doccomment">//! # fn main() {</span>
 <span class="doccomment">//! # #![allow(non_snake_case)]</span>
-<span class="doccomment">//! use docopt::Docopt;</span>
 <span class="doccomment">//! use std::fmt;</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! use serde::Deserialize;</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! use docopt::Docopt;</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Write the Docopt usage string.</span>
 <span class="doccomment">//! const USAGE: &amp;&#39;static str = &quot;</span>
@@ -408,19 +392,9 @@
 
 <span class="attribute">#![<span class="ident">crate_name</span> <span class="op">=</span> <span class="string">&quot;docopt&quot;</span>]</span>
 <span class="attribute">#![<span class="ident">doc</span>(<span class="ident">html_root_url</span> <span class="op">=</span> <span class="string">&quot;http://burntsushi.net/rustdoc/docopt&quot;</span>)]</span>
-
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
 
-<span class="attribute">#[<span class="ident">macro_use</span>]</span>
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">lazy_static</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">regex</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">strsim</span>;
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_imports</span>)]</span>
-<span class="attribute">#[<span class="ident">macro_use</span>]</span>
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serde_derive</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serde</span>;
-
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">dopt</span>::{<span class="ident">ArgvMap</span>, <span class="ident">Deserializer</span>, <span class="ident">Docopt</span>, <span class="ident">Error</span>, <span class="ident">Value</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">dopt</span>::{<span class="ident">ArgvMap</span>, <span class="ident">Deserializer</span>, <span class="ident">Docopt</span>, <span class="ident">Error</span>, <span class="ident">Value</span>};
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">werr</span>(
     ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">arg</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> ({
@@ -430,7 +404,7 @@
 );
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">regex</span>(
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> (::<span class="ident">regex</span>::<span class="ident">Regex</span>::<span class="ident">new</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>).<span class="ident">unwrap</span>());
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> (<span class="ident">regex</span>::<span class="ident">Regex</span>::<span class="ident">new</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>).<span class="ident">unwrap</span>());
 );
 
 <span class="kw">fn</span> <span class="ident">cap_or_empty</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span>(<span class="ident">caps</span>: <span class="kw-2">&amp;</span><span class="ident">regex</span>::<span class="ident">Captures</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;t</span> <span class="ident">str</span> {

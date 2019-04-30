@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.7.1/src/contextimpl.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>contextimpl.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.7.9/src/contextimpl.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>contextimpl.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../actix/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -412,9 +412,40 @@
 <span id="412">412</span>
 <span id="413">413</span>
 <span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">Async</span>, <span class="ident">Future</span>, <span class="ident">Poll</span>};
 <span class="kw">use</span> <span class="ident">smallvec</span>::<span class="ident">SmallVec</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 
 <span class="kw">use</span> <span class="ident">actor</span>::{
     <span class="ident">Actor</span>, <span class="ident">ActorContext</span>, <span class="ident">ActorState</span>, <span class="ident">AsyncContext</span>, <span class="ident">Running</span>, <span class="ident">SpawnHandle</span>, <span class="ident">Supervised</span>,
@@ -457,6 +488,18 @@
     <span class="ident">wait</span>: <span class="ident">SmallVec</span><span class="op">&lt;</span>[<span class="ident">ActorWaitItem</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>; <span class="number">2</span>]<span class="op">&gt;</span>,
     <span class="ident">items</span>: <span class="ident">SmallVec</span><span class="op">&lt;</span>[<span class="ident">Item</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>; <span class="number">3</span>]<span class="op">&gt;</span>,
     <span class="ident">handles</span>: <span class="ident">SmallVec</span><span class="op">&lt;</span>[<span class="ident">SpawnHandle</span>; <span class="number">2</span>]<span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">ContextParts</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">A</span>: <span class="ident">Actor</span>,
+    <span class="ident">A</span>::<span class="ident">Context</span>: <span class="ident">AsyncContext</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>,
+{
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+        <span class="ident">fmt</span>.<span class="ident">debug_struct</span>(<span class="string">&quot;ContextParts&quot;</span>)
+            .<span class="ident">field</span>(<span class="string">&quot;flags&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">flags</span>)
+            .<span class="ident">finish</span>()
+    }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">ContextParts</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
@@ -598,6 +641,16 @@
     <span class="ident">mailbox</span>: <span class="ident">Mailbox</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>,
     <span class="ident">wait</span>: <span class="ident">SmallVec</span><span class="op">&lt;</span>[<span class="ident">ActorWaitItem</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>; <span class="number">2</span>]<span class="op">&gt;</span>,
     <span class="ident">items</span>: <span class="ident">SmallVec</span><span class="op">&lt;</span>[<span class="ident">Item</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>; <span class="number">3</span>]<span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">C</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">ContextFut</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">C</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">C</span>: <span class="ident">AsyncContextParts</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>,
+    <span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&lt;</span><span class="ident">Context</span> <span class="op">=</span> <span class="ident">C</span><span class="op">&gt;</span>,
+{
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;ContextFut {{ /* omitted */ }}&quot;</span>)
+    }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">C</span><span class="op">&gt;</span> <span class="ident">ContextFut</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">C</span><span class="op">&gt;</span>
@@ -791,8 +844,15 @@
             }
             <span class="self">self</span>.<span class="ident">ctx</span>.<span class="ident">parts</span>().<span class="ident">handles</span>[<span class="number">1</span>] <span class="op">=</span> <span class="ident">SpawnHandle</span>::<span class="ident">default</span>();
 
-            <span class="comment">// merge returns true if context contains new items</span>
+            <span class="comment">// merge returns true if context contains new items or handles to be cancelled</span>
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">merge</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">ctx</span>.<span class="ident">parts</span>().<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">ContextFlags</span>::<span class="ident">STOPPING</span>) {
+                <span class="comment">// if we have no item to process, cancelled handles wouldn&#39;t be</span>
+                <span class="comment">// reaped in the above loop. this means self.merge() will never</span>
+                <span class="comment">// be false and the poll() never ends. so, discard the handles</span>
+                <span class="comment">// as we&#39;re sure there are no more items to be cancelled.</span>
+                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">items</span>.<span class="ident">is_empty</span>() {
+                    <span class="self">self</span>.<span class="ident">ctx</span>.<span class="ident">parts</span>().<span class="ident">handles</span>.<span class="ident">truncate</span>(<span class="number">2</span>);
+                }
                 <span class="kw">continue</span>;
             }
 

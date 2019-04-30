@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/im-12.2.0/./src/nodes/rrb.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rrb.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/im-12.3.4/./src/nodes/rrb.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rrb.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../im/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
 <span id="2">   2</span>
 <span id="3">   3</span>
 <span id="4">   4</span>
@@ -1000,6 +1000,124 @@
 <span id="1000">1000</span>
 <span id="1001">1001</span>
 <span id="1002">1002</span>
+<span id="1003">1003</span>
+<span id="1004">1004</span>
+<span id="1005">1005</span>
+<span id="1006">1006</span>
+<span id="1007">1007</span>
+<span id="1008">1008</span>
+<span id="1009">1009</span>
+<span id="1010">1010</span>
+<span id="1011">1011</span>
+<span id="1012">1012</span>
+<span id="1013">1013</span>
+<span id="1014">1014</span>
+<span id="1015">1015</span>
+<span id="1016">1016</span>
+<span id="1017">1017</span>
+<span id="1018">1018</span>
+<span id="1019">1019</span>
+<span id="1020">1020</span>
+<span id="1021">1021</span>
+<span id="1022">1022</span>
+<span id="1023">1023</span>
+<span id="1024">1024</span>
+<span id="1025">1025</span>
+<span id="1026">1026</span>
+<span id="1027">1027</span>
+<span id="1028">1028</span>
+<span id="1029">1029</span>
+<span id="1030">1030</span>
+<span id="1031">1031</span>
+<span id="1032">1032</span>
+<span id="1033">1033</span>
+<span id="1034">1034</span>
+<span id="1035">1035</span>
+<span id="1036">1036</span>
+<span id="1037">1037</span>
+<span id="1038">1038</span>
+<span id="1039">1039</span>
+<span id="1040">1040</span>
+<span id="1041">1041</span>
+<span id="1042">1042</span>
+<span id="1043">1043</span>
+<span id="1044">1044</span>
+<span id="1045">1045</span>
+<span id="1046">1046</span>
+<span id="1047">1047</span>
+<span id="1048">1048</span>
+<span id="1049">1049</span>
+<span id="1050">1050</span>
+<span id="1051">1051</span>
+<span id="1052">1052</span>
+<span id="1053">1053</span>
+<span id="1054">1054</span>
+<span id="1055">1055</span>
+<span id="1056">1056</span>
+<span id="1057">1057</span>
+<span id="1058">1058</span>
+<span id="1059">1059</span>
+<span id="1060">1060</span>
+<span id="1061">1061</span>
+<span id="1062">1062</span>
+<span id="1063">1063</span>
+<span id="1064">1064</span>
+<span id="1065">1065</span>
+<span id="1066">1066</span>
+<span id="1067">1067</span>
+<span id="1068">1068</span>
+<span id="1069">1069</span>
+<span id="1070">1070</span>
+<span id="1071">1071</span>
+<span id="1072">1072</span>
+<span id="1073">1073</span>
+<span id="1074">1074</span>
+<span id="1075">1075</span>
+<span id="1076">1076</span>
+<span id="1077">1077</span>
+<span id="1078">1078</span>
+<span id="1079">1079</span>
+<span id="1080">1080</span>
+<span id="1081">1081</span>
+<span id="1082">1082</span>
+<span id="1083">1083</span>
+<span id="1084">1084</span>
+<span id="1085">1085</span>
+<span id="1086">1086</span>
+<span id="1087">1087</span>
+<span id="1088">1088</span>
+<span id="1089">1089</span>
+<span id="1090">1090</span>
+<span id="1091">1091</span>
+<span id="1092">1092</span>
+<span id="1093">1093</span>
+<span id="1094">1094</span>
+<span id="1095">1095</span>
+<span id="1096">1096</span>
+<span id="1097">1097</span>
+<span id="1098">1098</span>
+<span id="1099">1099</span>
+<span id="1100">1100</span>
+<span id="1101">1101</span>
+<span id="1102">1102</span>
+<span id="1103">1103</span>
+<span id="1104">1104</span>
+<span id="1105">1105</span>
+<span id="1106">1106</span>
+<span id="1107">1107</span>
+<span id="1108">1108</span>
+<span id="1109">1109</span>
+<span id="1110">1110</span>
+<span id="1111">1111</span>
+<span id="1112">1112</span>
+<span id="1113">1113</span>
+<span id="1114">1114</span>
+<span id="1115">1115</span>
+<span id="1116">1116</span>
+<span id="1117">1117</span>
+<span id="1118">1118</span>
+<span id="1119">1119</span>
+<span id="1120">1120</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="comment">// License, v. 2.0. If a copy of the MPL was not distributed with this</span>
@@ -1009,8 +1127,8 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">replace</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Range</span>;
 
-<span class="kw">use</span> <span class="ident">nodes</span>::<span class="ident">chunk</span>::{<span class="ident">Chunk</span>, <span class="ident">CHUNK_SIZE</span>};
-<span class="kw">use</span> <span class="ident">util</span>::{
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">nodes</span>::<span class="ident">chunk</span>::{<span class="ident">Chunk</span>, <span class="ident">CHUNK_SIZE</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">util</span>::{
     <span class="ident">clone_ref</span>, <span class="ident">Ref</span>,
     <span class="ident">Side</span>::{<span class="self">self</span>, <span class="ident">Left</span>, <span class="ident">Right</span>},
 };
@@ -1070,7 +1188,7 @@
             <span class="ident">Size</span>::<span class="ident">Size</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">size</span>) <span class="op">=&gt;</span> <span class="kw-2">*</span><span class="ident">size</span> <span class="op">+=</span> <span class="ident">value</span>,
             <span class="ident">Size</span>::<span class="ident">Table</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">size_ref</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">size_table</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">size_ref</span>);
-                <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">size_table</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">NODE_SIZE</span>);
+                <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">size_table</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">NODE_SIZE</span>);
                 <span class="kw">match</span> <span class="ident">side</span> {
                     <span class="ident">Left</span> <span class="op">=&gt;</span> {
                         <span class="kw">for</span> <span class="ident">entry</span> <span class="kw">in</span> <span class="ident">size_table</span>.<span class="ident">iter_mut</span>() {
@@ -1094,12 +1212,17 @@
                 <span class="kw">let</span> <span class="ident">size_table</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">size_ref</span>);
                 <span class="kw">match</span> <span class="ident">side</span> {
                     <span class="ident">Left</span> <span class="op">=&gt;</span> {
-                        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">value</span>, <span class="ident">size_table</span>.<span class="ident">pop_front</span>());
+                        <span class="kw">let</span> <span class="ident">first</span> <span class="op">=</span> <span class="ident">size_table</span>.<span class="ident">pop_front</span>();
+                        <span class="macro">debug_assert_eq</span><span class="macro">!</span>(<span class="ident">value</span>, <span class="ident">first</span>);
                         <span class="kw">for</span> <span class="ident">entry</span> <span class="kw">in</span> <span class="ident">size_table</span>.<span class="ident">iter_mut</span>() {
                             <span class="kw-2">*</span><span class="ident">entry</span> <span class="op">-=</span> <span class="ident">value</span>;
                         }
                     }
-                    <span class="ident">Right</span> <span class="op">=&gt;</span> <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">value</span>, <span class="ident">size_table</span>.<span class="ident">pop_back</span>()),
+                    <span class="ident">Right</span> <span class="op">=&gt;</span> {
+                        <span class="kw">let</span> <span class="ident">pop</span> <span class="op">=</span> <span class="ident">size_table</span>.<span class="ident">pop_back</span>();
+                        <span class="kw">let</span> <span class="ident">last</span> <span class="op">=</span> <span class="ident">size_table</span>.<span class="ident">last</span>().<span class="ident">unwrap_or</span>(<span class="kw-2">&amp;</span><span class="number">0</span>);
+                        <span class="macro">debug_assert_eq</span><span class="macro">!</span>(<span class="ident">value</span>, <span class="ident">pop</span> <span class="op">-</span> <span class="ident">last</span>);
+                    }
                 }
             }
         }
@@ -1119,7 +1242,7 @@
 }
 
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">PushResult</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
-    <span class="ident">Full</span>(<span class="ident">A</span>),
+    <span class="ident">Full</span>(<span class="ident">A</span>, <span class="ident">usize</span>),
     <span class="ident">Done</span>,
 }
 
@@ -1259,7 +1382,10 @@
                 <span class="kw">match</span> <span class="ident">it</span>.<span class="ident">next</span>() {
                     <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">break</span>,
                     <span class="prelude-val">Some</span>(<span class="ident">child</span>) <span class="op">=&gt;</span> {
-                        <span class="kw">if</span> <span class="ident">size</span>.<span class="ident">is_size</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">child</span>.<span class="ident">is_full</span>() <span class="op">&amp;&amp;</span> <span class="ident">it</span>.<span class="ident">peek</span>().<span class="ident">is_some</span>() {
+                        <span class="kw">if</span> <span class="ident">size</span>.<span class="ident">is_size</span>()
+                            <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">child</span>.<span class="ident">is_completely_dense</span>(<span class="ident">level</span> <span class="op">-</span> <span class="number">1</span>)
+                            <span class="op">&amp;&amp;</span> <span class="ident">it</span>.<span class="ident">peek</span>().<span class="ident">is_some</span>()
+                        {
                             <span class="ident">size</span> <span class="op">=</span> <span class="ident">Size</span>::<span class="ident">table_from_size</span>(<span class="ident">level</span>, <span class="ident">size</span>.<span class="ident">size</span>());
                         }
                         <span class="ident">size</span>.<span class="ident">push</span>(<span class="ident">Right</span>, <span class="ident">child</span>.<span class="ident">len</span>())
@@ -1288,7 +1414,7 @@
         <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">node</span>.<span class="ident">is_dense</span>() {
             <span class="ident">Size</span>::<span class="ident">Size</span>(<span class="ident">node</span>.<span class="ident">len</span>())
         } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">size_table</span> <span class="op">=</span> <span class="ident">Chunk</span>::<span class="ident">unit</span>(<span class="ident">node</span>.<span class="ident">len</span>());
+            <span class="kw">let</span> <span class="ident">size_table</span> <span class="op">=</span> <span class="ident">Chunk</span>::<span class="ident">unit</span>(<span class="ident">node</span>.<span class="ident">len</span>());
             <span class="ident">Size</span>::<span class="ident">Table</span>(<span class="ident">Ref</span>::<span class="ident">from</span>(<span class="ident">size_table</span>))
         };
         <span class="kw">let</span> <span class="ident">children</span> <span class="op">=</span> <span class="ident">Chunk</span>::<span class="ident">unit</span>(<span class="ident">node</span>);
@@ -1336,7 +1462,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">children</span> {
             <span class="ident">Entry</span>::<span class="ident">Nodes</span>(<span class="ident">Size</span>::<span class="ident">Size</span>(<span class="ident">size</span>), <span class="kw">_</span>) <span class="op">=&gt;</span> <span class="ident">size</span>,
-            <span class="ident">Entry</span>::<span class="ident">Nodes</span>(<span class="ident">Size</span>::<span class="ident">Table</span>(<span class="kw-2">ref</span> <span class="ident">size_table</span>), <span class="kw">_</span>) <span class="op">=&gt;</span> <span class="kw-2">*</span>(<span class="ident">size_table</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>()),
+            <span class="ident">Entry</span>::<span class="ident">Nodes</span>(<span class="ident">Size</span>::<span class="ident">Table</span>(<span class="kw-2">ref</span> <span class="ident">size_table</span>), <span class="kw">_</span>) <span class="op">=&gt;</span> <span class="kw-2">*</span>(<span class="ident">size_table</span>.<span class="ident">last</span>().<span class="ident">unwrap_or</span>(<span class="kw-2">&amp;</span><span class="number">0</span>)),
             <span class="ident">Entry</span>::<span class="ident">Values</span>(<span class="kw-2">ref</span> <span class="ident">values</span>) <span class="op">=&gt;</span> <span class="ident">values</span>.<span class="ident">len</span>(),
             <span class="ident">Entry</span>::<span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="number">0</span>,
         }
@@ -1352,6 +1478,10 @@
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_full</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">children</span>.<span class="ident">is_full</span>()
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">number_of_children</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        <span class="self">self</span>.<span class="ident">children</span>.<span class="ident">len</span>()
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">first_child</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">Ref</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
@@ -1426,7 +1556,7 @@
             <span class="kw">return</span> <span class="prelude-val">None</span>;
         }
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Entry</span>::<span class="ident">Nodes</span>(<span class="ident">Size</span>::<span class="ident">Table</span>(<span class="kw-2">ref</span> <span class="ident">size_table</span>), <span class="kw">_</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">children</span> {
-            <span class="kw">if</span> <span class="ident">size_table</span>[<span class="ident">target_idx</span>] <span class="op">&lt;</span> <span class="ident">index</span> {
+            <span class="kw">while</span> <span class="ident">size_table</span>[<span class="ident">target_idx</span>] <span class="op">&lt;=</span> <span class="ident">index</span> {
                 <span class="ident">target_idx</span> <span class="op">+=</span> <span class="number">1</span>;
                 <span class="kw">if</span> <span class="ident">target_idx</span> <span class="op">&gt;=</span> <span class="ident">size_table</span>.<span class="ident">len</span>() {
                     <span class="kw">return</span> <span class="prelude-val">None</span>;
@@ -1519,8 +1649,11 @@
         <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
         <span class="ident">level</span>: <span class="ident">usize</span>,
         <span class="ident">side</span>: <span class="ident">Side</span>,
-        <span class="ident">chunk</span>: <span class="ident">Ref</span><span class="op">&lt;</span><span class="ident">Chunk</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>,
+        <span class="kw-2">mut</span> <span class="ident">chunk</span>: <span class="ident">Ref</span><span class="op">&lt;</span><span class="ident">Chunk</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>,
     ) <span class="op">-&gt;</span> <span class="ident">PushResult</span><span class="op">&lt;</span><span class="ident">Ref</span><span class="op">&lt;</span><span class="ident">Chunk</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="ident">chunk</span>.<span class="ident">is_empty</span>() {
+            <span class="kw">return</span> <span class="ident">PushResult</span>::<span class="ident">Done</span>;
+        }
         <span class="kw">let</span> <span class="ident">is_full</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">is_full</span>();
         <span class="kw">if</span> <span class="ident">level</span> <span class="op">==</span> <span class="number">0</span> {
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">children</span>.<span class="ident">is_empty_node</span>() {
@@ -1528,15 +1661,73 @@
                 <span class="self">self</span>.<span class="ident">children</span> <span class="op">=</span> <span class="ident">Values</span>(<span class="ident">chunk</span>);
                 <span class="ident">PushResult</span>::<span class="ident">Done</span>
             } <span class="kw">else</span> {
-                <span class="ident">PushResult</span>::<span class="ident">Full</span>(<span class="ident">chunk</span>)
+                <span class="kw">let</span> <span class="ident">values</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">children</span>.<span class="ident">unwrap_values_mut</span>();
+                <span class="kw">if</span> <span class="ident">values</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">chunk</span>.<span class="ident">len</span>() <span class="op">&lt;=</span> <span class="ident">NODE_SIZE</span> {
+                    <span class="kw">let</span> <span class="ident">chunk</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">chunk</span>);
+                    <span class="kw">match</span> <span class="ident">side</span> {
+                        <span class="ident">Side</span>::<span class="ident">Left</span> <span class="op">=&gt;</span> {
+                            <span class="ident">chunk</span>.<span class="ident">append</span>(<span class="ident">values</span>);
+                            <span class="ident">values</span>.<span class="ident">append</span>(<span class="ident">chunk</span>);
+                        }
+                        <span class="ident">Side</span>::<span class="ident">Right</span> <span class="op">=&gt;</span> <span class="ident">values</span>.<span class="ident">append</span>(<span class="ident">chunk</span>),
+                    }
+                    <span class="ident">PushResult</span>::<span class="ident">Done</span>
+                } <span class="kw">else</span> {
+                    <span class="ident">PushResult</span>::<span class="ident">Full</span>(<span class="ident">chunk</span>, <span class="number">0</span>)
+                }
             }
         } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">level</span> <span class="op">==</span> <span class="number">1</span> {
-            <span class="comment">// TODO see if we can merge with existing rightmost chunk</span>
+            <span class="comment">// If rightmost existing node has any room, merge as much as</span>
+            <span class="comment">// possible over from the new node.</span>
+            <span class="kw">let</span> <span class="ident">num_drained</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">side</span> {
+                <span class="ident">Side</span>::<span class="ident">Right</span> <span class="op">=&gt;</span> {
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Entry</span>::<span class="ident">Nodes</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">size</span>, <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">children</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">children</span> {
+                        <span class="kw">let</span> <span class="ident">rightmost</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">children</span>).<span class="ident">last_mut</span>().<span class="ident">unwrap</span>());
+                        <span class="kw">let</span> <span class="ident">old_size</span> <span class="op">=</span> <span class="ident">rightmost</span>.<span class="ident">len</span>();
+                        <span class="kw">let</span> <span class="ident">chunk</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">chunk</span>);
+                        <span class="kw">let</span> <span class="ident">values</span> <span class="op">=</span> <span class="ident">rightmost</span>.<span class="ident">children</span>.<span class="ident">unwrap_values_mut</span>();
+                        <span class="kw">let</span> <span class="ident">to_drain</span> <span class="op">=</span> <span class="ident">chunk</span>.<span class="ident">len</span>().<span class="ident">min</span>(<span class="ident">NODE_SIZE</span> <span class="op">-</span> <span class="ident">values</span>.<span class="ident">len</span>());
+                        <span class="ident">values</span>.<span class="ident">drain_from_front</span>(<span class="ident">chunk</span>, <span class="ident">to_drain</span>);
+                        <span class="ident">size</span>.<span class="ident">pop</span>(<span class="ident">Side</span>::<span class="ident">Right</span>, <span class="ident">old_size</span>);
+                        <span class="ident">size</span>.<span class="ident">push</span>(<span class="ident">Side</span>::<span class="ident">Right</span>, <span class="ident">values</span>.<span class="ident">len</span>());
+                        <span class="ident">to_drain</span>
+                    } <span class="kw">else</span> {
+                        <span class="number">0</span>
+                    }
+                }
+                <span class="ident">Side</span>::<span class="ident">Left</span> <span class="op">=&gt;</span> {
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Entry</span>::<span class="ident">Nodes</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">size</span>, <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">children</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">children</span> {
+                        <span class="kw">let</span> <span class="ident">leftmost</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">children</span>).<span class="ident">first_mut</span>().<span class="ident">unwrap</span>());
+                        <span class="kw">let</span> <span class="ident">old_size</span> <span class="op">=</span> <span class="ident">leftmost</span>.<span class="ident">len</span>();
+                        <span class="kw">let</span> <span class="ident">chunk</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">chunk</span>);
+                        <span class="kw">let</span> <span class="ident">values</span> <span class="op">=</span> <span class="ident">leftmost</span>.<span class="ident">children</span>.<span class="ident">unwrap_values_mut</span>();
+                        <span class="kw">let</span> <span class="ident">to_drain</span> <span class="op">=</span> <span class="ident">chunk</span>.<span class="ident">len</span>().<span class="ident">min</span>(<span class="ident">NODE_SIZE</span> <span class="op">-</span> <span class="ident">values</span>.<span class="ident">len</span>());
+                        <span class="ident">values</span>.<span class="ident">drain_from_back</span>(<span class="ident">chunk</span>, <span class="ident">to_drain</span>);
+                        <span class="ident">size</span>.<span class="ident">pop</span>(<span class="ident">Side</span>::<span class="ident">Left</span>, <span class="ident">old_size</span>);
+                        <span class="ident">size</span>.<span class="ident">push</span>(<span class="ident">Side</span>::<span class="ident">Left</span>, <span class="ident">values</span>.<span class="ident">len</span>());
+                        <span class="ident">to_drain</span>
+                    } <span class="kw">else</span> {
+                        <span class="number">0</span>
+                    }
+                }
+            };
             <span class="kw">if</span> <span class="ident">is_full</span> {
-                <span class="ident">PushResult</span>::<span class="ident">Full</span>(<span class="ident">chunk</span>)
+                <span class="ident">PushResult</span>::<span class="ident">Full</span>(<span class="ident">chunk</span>, <span class="ident">num_drained</span>)
             } <span class="kw">else</span> {
-                <span class="self">self</span>.<span class="ident">push_size</span>(<span class="ident">side</span>, <span class="ident">chunk</span>.<span class="ident">len</span>());
-                <span class="self">self</span>.<span class="ident">push_child_node</span>(<span class="ident">side</span>, <span class="ident">Ref</span>::<span class="ident">new</span>(<span class="ident">Node</span>::<span class="ident">from_chunk</span>(<span class="number">0</span>, <span class="ident">chunk</span>)));
+                <span class="comment">// If the chunk is empty after being drained, there might be</span>
+                <span class="comment">// more space in existing chunks. To keep the middle dense, we</span>
+                <span class="comment">// do not add it here.</span>
+                <span class="kw">if</span> <span class="op">!</span><span class="ident">chunk</span>.<span class="ident">is_empty</span>() {
+                    <span class="kw">if</span> <span class="ident">side</span> <span class="op">==</span> <span class="ident">Left</span> <span class="op">&amp;&amp;</span> <span class="ident">chunk</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">NODE_SIZE</span> {
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Entry</span>::<span class="ident">Nodes</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">size</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">children</span> {
+                            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Size</span>::<span class="ident">Size</span>(<span class="ident">value</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">size</span> {
+                                <span class="kw-2">*</span><span class="ident">size</span> <span class="op">=</span> <span class="ident">Size</span>::<span class="ident">table_from_size</span>(<span class="ident">level</span>, <span class="ident">value</span>);
+                            }
+                        }
+                    }
+                    <span class="self">self</span>.<span class="ident">push_size</span>(<span class="ident">side</span>, <span class="ident">chunk</span>.<span class="ident">len</span>());
+                    <span class="self">self</span>.<span class="ident">push_child_node</span>(<span class="ident">side</span>, <span class="ident">Ref</span>::<span class="ident">new</span>(<span class="ident">Node</span>::<span class="ident">from_chunk</span>(<span class="number">0</span>, <span class="ident">chunk</span>)));
+                }
                 <span class="ident">PushResult</span>::<span class="ident">Done</span>
             }
         } <span class="kw">else</span> {
@@ -1550,9 +1741,28 @@
                 <span class="kw">let</span> <span class="ident">child</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">children</span>[<span class="ident">index</span>]);
                 <span class="kw">match</span> <span class="ident">child</span>.<span class="ident">push_chunk</span>(<span class="ident">level</span> <span class="op">-</span> <span class="number">1</span>, <span class="ident">side</span>, <span class="ident">chunk</span>) {
                     <span class="ident">PushResult</span>::<span class="ident">Done</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-                    <span class="ident">PushResult</span>::<span class="ident">Full</span>(<span class="ident">chunk</span>) <span class="op">=&gt;</span> {
+                    <span class="ident">PushResult</span>::<span class="ident">Full</span>(<span class="ident">chunk</span>, <span class="ident">num_drained</span>) <span class="op">=&gt;</span> {
+                        <span class="comment">// Our chunk was too large for `child`, so it could not</span>
+                        <span class="comment">// be pushed there. However, exactly `num_drained`</span>
+                        <span class="comment">// elements were added to the child. We need to reflect</span>
+                        <span class="comment">// that change in the size field of the node.</span>
+                        <span class="kw">match</span> <span class="ident">side</span> {
+                            <span class="ident">Right</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">children</span> {
+                                <span class="ident">Entry</span>::<span class="ident">Nodes</span>(<span class="ident">Size</span>::<span class="ident">Table</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">sizes</span>), <span class="kw">_</span>) <span class="op">=&gt;</span> {
+                                    <span class="kw">let</span> <span class="ident">sizes</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">sizes</span>);
+                                    <span class="ident">sizes</span>[<span class="ident">index</span>] <span class="op">+=</span> <span class="ident">num_drained</span>;
+                                }
+                                <span class="ident">Entry</span>::<span class="ident">Nodes</span>(<span class="ident">Size</span>::<span class="ident">Size</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">size</span>), <span class="kw">_</span>) <span class="op">=&gt;</span> {
+                                    <span class="kw-2">*</span><span class="ident">size</span> <span class="op">+=</span> <span class="ident">num_drained</span>;
+                                }
+                                <span class="ident">Entry</span>::<span class="ident">Values</span>(<span class="kw">_</span>) <span class="op">|</span> <span class="ident">Entry</span>::<span class="ident">Empty</span> <span class="op">=&gt;</span> (),
+                            },
+                            <span class="ident">Left</span> <span class="op">=&gt;</span> {
+                                <span class="self">self</span>.<span class="ident">update_size</span>(<span class="number">0</span>, <span class="ident">num_drained</span> <span class="kw">as</span> <span class="ident">isize</span>);
+                            }
+                        }
                         <span class="kw">if</span> <span class="ident">is_full</span> {
-                            <span class="kw">return</span> <span class="ident">PushResult</span>::<span class="ident">Full</span>(<span class="ident">chunk</span>);
+                            <span class="kw">return</span> <span class="ident">PushResult</span>::<span class="ident">Full</span>(<span class="ident">chunk</span>, <span class="number">0</span>);
                         } <span class="kw">else</span> {
                             <span class="prelude-val">Some</span>(<span class="ident">Node</span>::<span class="ident">from_chunk</span>(<span class="ident">level</span> <span class="op">-</span> <span class="number">1</span>, <span class="ident">chunk</span>))
                         }
@@ -1637,55 +1847,10 @@
         }
     }
 
-    <span class="comment">// pub fn push(&amp;mut self, level: usize, side: Side, value: A) -&gt; PushResult&lt;A&gt; {</span>
-    <span class="comment">//     let is_full = self.is_full();</span>
-    <span class="comment">//     if level == 0 {</span>
-    <span class="comment">//         if is_full {</span>
-    <span class="comment">//             PushResult::Full(value)</span>
-    <span class="comment">//         } else {</span>
-    <span class="comment">//             self.push_child_value(side, value);</span>
-    <span class="comment">//             self.push_size(side, 1);</span>
-    <span class="comment">//             PushResult::Done</span>
-    <span class="comment">//         }</span>
-    <span class="comment">//     } else {</span>
-    <span class="comment">//         let index = match side {</span>
-    <span class="comment">//             Right =&gt; self.children.len() - 1,</span>
-    <span class="comment">//             Left =&gt; 0,</span>
-    <span class="comment">//         };</span>
-    <span class="comment">//         let new_child = {</span>
-    <span class="comment">//             let children = Ref::make_mut(&amp;mut self.children).unwrap_nodes_mut();</span>
-    <span class="comment">//             let child = Ref::make_mut(&amp;mut children[index]);</span>
-    <span class="comment">//             match child.push(level - 1, side, value) {</span>
-    <span class="comment">//                 PushResult::Done =&gt; None,</span>
-    <span class="comment">//                 PushResult::Full(value) =&gt; {</span>
-    <span class="comment">//                     if is_full {</span>
-    <span class="comment">//                         return PushResult::Full(value);</span>
-    <span class="comment">//                     } else {</span>
-    <span class="comment">//                         Some(Node::single(level - 1, value))</span>
-    <span class="comment">//                     }</span>
-    <span class="comment">//                 }</span>
-    <span class="comment">//             }</span>
-    <span class="comment">//         };</span>
-    <span class="comment">//         match new_child {</span>
-    <span class="comment">//             None =&gt; {</span>
-    <span class="comment">//                 self.update_size(index, 1);</span>
-    <span class="comment">//                 PushResult::Done</span>
-    <span class="comment">//             }</span>
-    <span class="comment">//             Some(child) =&gt; {</span>
-    <span class="comment">//                 if side == Left {</span>
-    <span class="comment">//                     if let Size::Size(size) = self.size {</span>
-    <span class="comment">//                         self.size = Size::table_from_size(level, size);</span>
-    <span class="comment">//                     }</span>
-    <span class="comment">//                 }</span>
-    <span class="comment">//                 self.push_size(side, child.len());</span>
-    <span class="comment">//                 self.push_child_node(side, Ref::from(child));</span>
-    <span class="comment">//                 PushResult::Done</span>
-    <span class="comment">//             }</span>
-    <span class="comment">//         }</span>
-    <span class="comment">//     }</span>
-    <span class="comment">// }</span>
-
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">split</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">level</span>: <span class="ident">usize</span>, <span class="ident">drop_side</span>: <span class="ident">Side</span>, <span class="ident">index</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">SplitResult</span> {
+        <span class="kw">if</span> <span class="ident">index</span> <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">drop_side</span> <span class="op">==</span> <span class="ident">Side</span>::<span class="ident">Left</span> {
+            <span class="kw">return</span> <span class="ident">SplitResult</span>::<span class="ident">Dropped</span>(<span class="number">0</span>);
+        }
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dropped</span>;
         <span class="kw">if</span> <span class="ident">level</span> <span class="op">==</span> <span class="number">0</span> {
             <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">children</span>.<span class="ident">len</span>();
@@ -1702,7 +1867,6 @@
                 <span class="ident">Right</span> <span class="op">=&gt;</span> <span class="ident">len</span> <span class="op">-</span> <span class="ident">index</span>,
             })
         } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">target_idx</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">index_in</span>(<span class="ident">level</span>, <span class="ident">index</span>) {
-            <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">children</span>.<span class="ident">len</span>();
             <span class="kw">let</span> <span class="ident">size_up_to</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">size_up_to</span>(<span class="ident">level</span>, <span class="ident">target_idx</span>);
             <span class="kw">let</span> (<span class="ident">size</span>, <span class="ident">children</span>) <span class="op">=</span>
                 <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Entry</span>::<span class="ident">Nodes</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">size</span>, <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">children</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">children</span> {
@@ -1710,19 +1874,21 @@
                 } <span class="kw">else</span> {
                     <span class="macro">unreachable</span><span class="macro">!</span>()
                 };
-            <span class="kw">match</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">children</span>[<span class="ident">target_idx</span>]).<span class="ident">split</span>(
-                <span class="ident">level</span> <span class="op">-</span> <span class="number">1</span>,
-                <span class="ident">drop_side</span>,
-                <span class="ident">index</span> <span class="op">-</span> <span class="ident">size_up_to</span>,
-            ) {
-                <span class="ident">SplitResult</span>::<span class="ident">OutOfBounds</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">SplitResult</span>::<span class="ident">OutOfBounds</span>,
-                <span class="ident">SplitResult</span>::<span class="ident">Dropped</span>(<span class="ident">amount</span>) <span class="op">=&gt;</span> <span class="ident">dropped</span> <span class="op">=</span> <span class="ident">amount</span>,
-            }
+            <span class="kw">let</span> <span class="ident">child_gone</span> <span class="op">=</span> <span class="number">0</span> <span class="op">==</span> {
+                <span class="kw">let</span> <span class="ident">child_node</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">children</span>[<span class="ident">target_idx</span>]);
+                <span class="kw">match</span> <span class="ident">child_node</span>.<span class="ident">split</span>(<span class="ident">level</span> <span class="op">-</span> <span class="number">1</span>, <span class="ident">drop_side</span>, <span class="ident">index</span> <span class="op">-</span> <span class="ident">size_up_to</span>) {
+                    <span class="ident">SplitResult</span>::<span class="ident">OutOfBounds</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">SplitResult</span>::<span class="ident">OutOfBounds</span>,
+                    <span class="ident">SplitResult</span>::<span class="ident">Dropped</span>(<span class="ident">amount</span>) <span class="op">=&gt;</span> <span class="ident">dropped</span> <span class="op">=</span> <span class="ident">amount</span>,
+                }
+                <span class="ident">child_node</span>.<span class="ident">len</span>()
+            };
             <span class="kw">match</span> <span class="ident">drop_side</span> {
                 <span class="ident">Left</span> <span class="op">=&gt;</span> {
-                    <span class="kw">if</span> <span class="ident">target_idx</span> <span class="op">&gt;</span> <span class="number">0</span> {
-                        <span class="ident">children</span>.<span class="ident">drop_left</span>(<span class="ident">target_idx</span>);
+                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">drop_from</span> <span class="op">=</span> <span class="ident">target_idx</span>;
+                    <span class="kw">if</span> <span class="ident">child_gone</span> {
+                        <span class="ident">drop_from</span> <span class="op">+=</span> <span class="number">1</span>;
                     }
+                    <span class="ident">children</span>.<span class="ident">drop_left</span>(<span class="ident">drop_from</span>);
                     <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Size</span>::<span class="ident">Size</span>(<span class="ident">value</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">size</span> {
                         <span class="kw-2">*</span><span class="ident">size</span> <span class="op">=</span> <span class="ident">Size</span>::<span class="ident">table_from_size</span>(<span class="ident">level</span>, <span class="ident">value</span>);
                     }
@@ -1737,15 +1903,19 @@
                         <span class="number">0</span>
                     };
                     <span class="ident">dropped</span> <span class="op">+=</span> <span class="ident">dropped_size</span>;
-                    <span class="ident">size_table</span>.<span class="ident">drop_left</span>(<span class="ident">target_idx</span>);
+                    <span class="ident">size_table</span>.<span class="ident">drop_left</span>(<span class="ident">drop_from</span>);
                     <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">size_table</span>.<span class="ident">iter_mut</span>() {
                         <span class="kw-2">*</span><span class="ident">i</span> <span class="op">-=</span> <span class="ident">dropped</span>;
                     }
                 }
                 <span class="ident">Right</span> <span class="op">=&gt;</span> {
-                    <span class="kw">let</span> <span class="ident">at_last</span> <span class="op">=</span> <span class="ident">target_idx</span> <span class="op">==</span> (<span class="ident">len</span> <span class="op">-</span> <span class="number">1</span>);
-                    <span class="kw">if</span> <span class="op">!</span><span class="ident">at_last</span> {
-                        <span class="ident">children</span>.<span class="ident">drop_right</span>(<span class="ident">target_idx</span> <span class="op">+</span> <span class="number">1</span>);
+                    <span class="kw">let</span> <span class="ident">at_last</span> <span class="op">=</span> <span class="ident">target_idx</span> <span class="op">==</span> <span class="ident">children</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>;
+                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">drop_from</span> <span class="op">=</span> <span class="ident">target_idx</span> <span class="op">+</span> <span class="number">1</span>;
+                    <span class="kw">if</span> <span class="ident">child_gone</span> {
+                        <span class="ident">drop_from</span> <span class="op">-=</span> <span class="number">1</span>;
+                    }
+                    <span class="kw">if</span> <span class="ident">drop_from</span> <span class="op">&lt;</span> <span class="ident">children</span>.<span class="ident">len</span>() {
+                        <span class="ident">children</span>.<span class="ident">drop_right</span>(<span class="ident">drop_from</span>);
                     }
                     <span class="kw">match</span> <span class="ident">size</span> {
                         <span class="ident">Size</span>::<span class="ident">Size</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">size</span>) <span class="kw">if</span> <span class="ident">at_last</span> <span class="op">=&gt;</span> {
@@ -1760,15 +1930,14 @@
                         }
                         <span class="ident">Size</span>::<span class="ident">Table</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">size_ref</span>) <span class="op">=&gt;</span> {
                             <span class="kw">let</span> <span class="ident">size_table</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">size_ref</span>);
-                            <span class="kw">let</span> <span class="ident">dropped_size</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">at_last</span> {
-                                <span class="number">0</span>
-                            } <span class="kw">else</span> {
-                                <span class="ident">size_table</span>.<span class="ident">iter</span>().<span class="ident">skip</span>(<span class="ident">target_idx</span>).<span class="ident">sum</span>()
-                            };
-                            <span class="kw">if</span> <span class="op">!</span><span class="ident">at_last</span> {
-                                <span class="ident">size_table</span>.<span class="ident">drop_right</span>(<span class="ident">target_idx</span> <span class="op">+</span> <span class="number">1</span>);
+                            <span class="kw">let</span> <span class="ident">dropped_size</span> <span class="op">=</span>
+                                <span class="ident">size_table</span>[<span class="ident">size_table</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>] <span class="op">-</span> <span class="ident">size_table</span>[<span class="ident">target_idx</span>];
+                            <span class="kw">if</span> <span class="ident">drop_from</span> <span class="op">&lt;</span> <span class="ident">size_table</span>.<span class="ident">len</span>() {
+                                <span class="ident">size_table</span>.<span class="ident">drop_right</span>(<span class="ident">drop_from</span>);
                             }
-                            <span class="ident">size_table</span>[<span class="ident">target_idx</span>] <span class="op">-=</span> <span class="ident">dropped</span>;
+                            <span class="kw">if</span> <span class="op">!</span><span class="ident">child_gone</span> {
+                                <span class="ident">size_table</span>[<span class="ident">target_idx</span>] <span class="op">-=</span> <span class="ident">dropped</span>;
+                            }
                             <span class="ident">dropped</span> <span class="op">+=</span> <span class="ident">dropped_size</span>;
                         }
                     }
@@ -1791,13 +1960,21 @@
             {
                 <span class="kw">let</span> <span class="ident">left_node</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">left</span>);
                 <span class="kw">let</span> <span class="ident">right_node</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">right</span>);
-                <span class="kw">let</span> <span class="ident">values</span> <span class="op">=</span> <span class="ident">left_node</span>.<span class="ident">children</span>.<span class="ident">unwrap_values_mut</span>();
-                <span class="ident">values</span>.<span class="ident">append</span>(<span class="ident">right_node</span>.<span class="ident">children</span>.<span class="ident">unwrap_values_mut</span>());
+                <span class="kw">let</span> <span class="ident">left_vals</span> <span class="op">=</span> <span class="ident">left_node</span>.<span class="ident">children</span>.<span class="ident">unwrap_values_mut</span>();
+                <span class="kw">let</span> <span class="ident">left_len</span> <span class="op">=</span> <span class="ident">left_vals</span>.<span class="ident">len</span>();
+                <span class="kw">let</span> <span class="ident">right_vals</span> <span class="op">=</span> <span class="ident">right_node</span>.<span class="ident">children</span>.<span class="ident">unwrap_values_mut</span>();
+                <span class="kw">let</span> <span class="ident">right_len</span> <span class="op">=</span> <span class="ident">right_vals</span>.<span class="ident">len</span>();
+                <span class="kw">if</span> <span class="ident">left_len</span> <span class="op">+</span> <span class="ident">right_len</span> <span class="op">&lt;=</span> <span class="ident">NODE_SIZE</span> {
+                    <span class="ident">left_vals</span>.<span class="ident">append</span>(<span class="ident">right_vals</span>);
+                } <span class="kw">else</span> {
+                    <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">right_len</span>.<span class="ident">min</span>(<span class="ident">NODE_SIZE</span> <span class="op">-</span> <span class="ident">left_len</span>);
+                    <span class="ident">left_vals</span>.<span class="ident">drain_from_front</span>(<span class="ident">right_vals</span>, <span class="ident">count</span>);
+                }
             }
-            <span class="kw">if</span> <span class="ident">right</span>.<span class="ident">children</span>.<span class="ident">is_empty</span>() {
-                <span class="self">Self</span>::<span class="ident">single_parent</span>(<span class="ident">left</span>.<span class="ident">clone</span>())
+            <span class="kw">if</span> <span class="ident">right</span>.<span class="ident">is_empty</span>() {
+                <span class="self">Self</span>::<span class="ident">single_parent</span>(<span class="ident">left</span>)
             } <span class="kw">else</span> {
-                <span class="self">Self</span>::<span class="ident">join_dense</span>(<span class="ident">left</span>.<span class="ident">clone</span>(), <span class="ident">right</span>.<span class="ident">clone</span>())
+                <span class="self">Self</span>::<span class="ident">join_dense</span>(<span class="ident">left</span>, <span class="ident">right</span>)
             }
         }
     }
@@ -1813,12 +1990,16 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">root</span> <span class="op">=</span> <span class="ident">Chunk</span>::<span class="ident">new</span>();
 
         <span class="kw">for</span> <span class="ident">subtree</span> <span class="kw">in</span> <span class="ident">left_nodes</span>.<span class="ident">chain</span>(<span class="ident">middle_nodes</span>).<span class="ident">chain</span>(<span class="ident">right_nodes</span>) {
+            <span class="kw">if</span> <span class="ident">subtree</span>.<span class="ident">is_empty</span>() {
+                <span class="kw">continue</span>;
+            }
             <span class="kw">if</span> <span class="ident">subtree</span>.<span class="ident">is_completely_dense</span>(<span class="ident">level</span>) <span class="op">&amp;&amp;</span> <span class="ident">subtree_still_balanced</span> {
                 <span class="ident">root</span>.<span class="ident">push_back</span>(<span class="ident">subtree</span>);
                 <span class="kw">continue</span>;
             }
-            <span class="kw">let</span> <span class="ident">child</span> <span class="op">=</span> <span class="ident">clone_ref</span>(<span class="ident">subtree</span>);
             <span class="ident">subtree_still_balanced</span> <span class="op">=</span> <span class="bool-val">false</span>;
+
+            <span class="kw">let</span> <span class="ident">child</span> <span class="op">=</span> <span class="ident">clone_ref</span>(<span class="ident">subtree</span>);
             <span class="kw">if</span> <span class="ident">level</span> <span class="op">==</span> <span class="number">1</span> {
                 <span class="kw">for</span> <span class="ident">value</span> <span class="kw">in</span> <span class="ident">child</span>.<span class="ident">children</span>.<span class="ident">values</span>() {
                     <span class="ident">next_leaf</span>.<span class="ident">push_back</span>(<span class="ident">value</span>);
@@ -1870,25 +2051,72 @@
         } <span class="kw">else</span> {
             <span class="kw">let</span> <span class="ident">merged</span> <span class="op">=</span> {
                 <span class="kw">if</span> <span class="ident">level</span> <span class="op">==</span> <span class="number">1</span> {
-                    <span class="comment">// We&#39;re going to rebalance all the leaves anyway, there&#39;s no need for a middle at level 1</span>
+                    <span class="comment">// We&#39;re going to rebalance all the leaves anyway, there&#39;s</span>
+                    <span class="comment">// no need for a middle at level 1</span>
                     <span class="ident">Node</span>::<span class="ident">parent</span>(<span class="number">0</span>, <span class="ident">Chunk</span>::<span class="ident">new</span>())
                 } <span class="kw">else</span> {
                     <span class="kw">let</span> <span class="ident">left_node</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">left</span>);
                     <span class="kw">let</span> <span class="ident">right_node</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">right</span>);
-                    <span class="kw">let</span> <span class="ident">left_children</span> <span class="op">=</span> <span class="ident">left_node</span>.<span class="ident">children</span>.<span class="ident">unwrap_nodes_mut</span>();
-                    <span class="kw">let</span> <span class="ident">right_children</span> <span class="op">=</span> <span class="ident">right_node</span>.<span class="ident">children</span>.<span class="ident">unwrap_nodes_mut</span>();
-                    <span class="kw">let</span> <span class="ident">left_last</span> <span class="op">=</span> <span class="ident">left_children</span>.<span class="ident">pop_back</span>();
-                    <span class="kw">let</span> <span class="ident">right_first</span> <span class="op">=</span> <span class="ident">right_children</span>.<span class="ident">pop_front</span>();
+                    <span class="kw">let</span> <span class="ident">left_last</span> <span class="op">=</span>
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Entry</span>::<span class="ident">Nodes</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">size</span>, <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">children</span>) <span class="op">=</span> <span class="ident">left_node</span>.<span class="ident">children</span> {
+                            <span class="kw">let</span> <span class="ident">node</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">children</span>).<span class="ident">pop_back</span>();
+                            <span class="ident">size</span>.<span class="ident">pop</span>(<span class="ident">Side</span>::<span class="ident">Right</span>, <span class="ident">node</span>.<span class="ident">len</span>());
+                            <span class="ident">node</span>
+                        } <span class="kw">else</span> {
+                            <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;expected nodes, found entries or empty&quot;</span>);
+                        };
+                    <span class="kw">let</span> <span class="ident">right_first</span> <span class="op">=</span>
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Entry</span>::<span class="ident">Nodes</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">size</span>, <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">children</span>) <span class="op">=</span> <span class="ident">right_node</span>.<span class="ident">children</span> {
+                            <span class="kw">let</span> <span class="ident">node</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">children</span>).<span class="ident">pop_front</span>();
+                            <span class="ident">size</span>.<span class="ident">pop</span>(<span class="ident">Side</span>::<span class="ident">Left</span>, <span class="ident">node</span>.<span class="ident">len</span>());
+                            <span class="ident">node</span>
+                        } <span class="kw">else</span> {
+                            <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;expected nodes, found entries or empty&quot;</span>);
+                        };
                     <span class="self">Self</span>::<span class="ident">merge</span>(<span class="ident">left_last</span>, <span class="ident">right_first</span>, <span class="ident">level</span> <span class="op">-</span> <span class="number">1</span>)
                 }
             };
             <span class="self">Self</span>::<span class="ident">merge_rebalance</span>(<span class="ident">level</span>, <span class="ident">left</span>, <span class="ident">merged</span>, <span class="ident">right</span>)
         }
     }
-    <span class="comment">//</span>
-    <span class="comment">// pub fn print(&amp;self, f: &amp;mut Formatter, indent: usize, level: usize) -&gt; Result&lt;(), Error&gt;</span>
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">assert_invariants</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        <span class="comment">// Verifies that the size table matches reality.</span>
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">children</span> {
+            <span class="ident">Entry</span>::<span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="number">0</span>,
+            <span class="ident">Entry</span>::<span class="ident">Values</span>(<span class="kw-2">ref</span> <span class="ident">values</span>) <span class="op">=&gt;</span> {
+                <span class="comment">// An empty value node is pointless and should never occur.</span>
+                <span class="macro">assert_ne</span><span class="macro">!</span>(<span class="number">0</span>, <span class="ident">values</span>.<span class="ident">len</span>());
+                <span class="ident">values</span>.<span class="ident">len</span>()
+            }
+            <span class="ident">Entry</span>::<span class="ident">Nodes</span>(<span class="kw-2">ref</span> <span class="ident">size</span>, <span class="kw-2">ref</span> <span class="ident">children</span>) <span class="op">=&gt;</span> {
+                <span class="comment">// A parent node with no children should never occur.</span>
+                <span class="macro">assert_ne</span><span class="macro">!</span>(<span class="number">0</span>, <span class="ident">children</span>.<span class="ident">len</span>());
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lengths</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+                <span class="kw">for</span> <span class="ident">child</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">children</span> {
+                    <span class="ident">lengths</span>.<span class="ident">push</span>(<span class="ident">child</span>.<span class="ident">assert_invariants</span>());
+                }
+                <span class="kw">match</span> <span class="ident">size</span> {
+                    <span class="ident">Size</span>::<span class="ident">Size</span>(<span class="ident">size</span>) <span class="op">=&gt;</span> {
+                        <span class="kw">let</span> <span class="ident">total</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">lengths</span>.<span class="ident">iter</span>().<span class="ident">sum</span>();
+                        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw-2">*</span><span class="ident">size</span>, <span class="ident">total</span>);
+                    }
+                    <span class="ident">Size</span>::<span class="ident">Table</span>(<span class="kw-2">ref</span> <span class="ident">table</span>) <span class="op">=&gt;</span> {
+                        <span class="kw">for</span> (<span class="ident">index</span>, <span class="ident">current</span>) <span class="kw">in</span> <span class="ident">table</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
+                            <span class="kw">let</span> <span class="ident">expected</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">lengths</span>.<span class="ident">iter</span>().<span class="ident">take</span>(<span class="ident">index</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">sum</span>();
+                            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">expected</span>, <span class="kw-2">*</span><span class="ident">current</span>);
+                        }
+                    }
+                }
+                <span class="ident">lengths</span>.<span class="ident">iter</span>().<span class="ident">sum</span>()
+            }
+        }
+    }
+
+    <span class="comment">// pub fn print&lt;W&gt;(&amp;self, f: &amp;mut W, indent: usize, level: usize) -&gt; Result&lt;(), fmt::Error&gt;</span>
     <span class="comment">// where</span>
-    <span class="comment">//     A: Debug,</span>
+    <span class="comment">//     W: fmt::Write,</span>
+    <span class="comment">//     A: fmt::Debug,</span>
     <span class="comment">// {</span>
     <span class="comment">//     print_indent(f, indent)?;</span>
     <span class="comment">//     if level == 0 {</span>
@@ -1898,16 +2126,24 @@
     <span class="comment">//             writeln!(f, &quot;Leaf: {:?}&quot;, self.children.unwrap_values())</span>
     <span class="comment">//         }</span>
     <span class="comment">//     } else {</span>
-    <span class="comment">//         writeln!(f, &quot;Node level {} size_table {:?}&quot;, level, self.size)?;</span>
-    <span class="comment">//         for child in self.children.unwrap_nodes().iter() {</span>
-    <span class="comment">//             child.print(f, indent + 4, level - 1)?;</span>
+    <span class="comment">//         match &amp;self.children {</span>
+    <span class="comment">//             Entry::Nodes(size, children) =&gt; {</span>
+    <span class="comment">//                 writeln!(f, &quot;Node level {} size_table {:?}&quot;, level, size)?;</span>
+    <span class="comment">//                 for child in children.iter() {</span>
+    <span class="comment">//                     child.print(f, indent + 4, level - 1)?;</span>
+    <span class="comment">//                 }</span>
+    <span class="comment">//                 Ok(())</span>
+    <span class="comment">//             }</span>
+    <span class="comment">//             _ =&gt; unreachable!(),</span>
     <span class="comment">//         }</span>
-    <span class="comment">//         Ok(())</span>
     <span class="comment">//     }</span>
     <span class="comment">// }</span>
 }
 
-<span class="comment">// fn print_indent(f: &amp;mut Formatter, indent: usize) -&gt; Result&lt;(), Error&gt; {</span>
+<span class="comment">// fn print_indent&lt;W&gt;(f: &amp;mut W, indent: usize) -&gt; Result&lt;(), fmt::Error&gt;</span>
+<span class="comment">// where</span>
+<span class="comment">//     W: fmt::Write,</span>
+<span class="comment">// {</span>
 <span class="comment">//     for _i in 0..indent {</span>
 <span class="comment">//         write!(f, &quot; &quot;)?;</span>
 <span class="comment">//     }</span>

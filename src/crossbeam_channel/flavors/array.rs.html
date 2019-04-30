@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/crossbeam-channel-0.2.3/src/flavors/array.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>array.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/crossbeam-channel-0.3.8/src/flavors/array.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>array.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../crossbeam_channel/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -557,37 +557,120 @@
 <span id="557">557</span>
 <span id="558">558</span>
 <span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
+<span id="614">614</span>
+<span id="615">615</span>
+<span id="616">616</span>
+<span id="617">617</span>
+<span id="618">618</span>
+<span id="619">619</span>
+<span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+<span id="624">624</span>
+<span id="625">625</span>
+<span id="626">626</span>
+<span id="627">627</span>
+<span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Bounded channel based on a preallocated array.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This flavor has a fixed, positive capacity.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! The implementation is based on Dmitry Vyukov&#39;s bounded MPMC queue.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Source:</span>
+<span class="doccomment">//!   - http://www.1024cores.net/home/lock-free-algorithms/queues/bounded-mpmc-queue</span>
+<span class="doccomment">//!   - https://docs.google.com/document/d/1yIAYmbvL3JxOKOjuCyon7JhW4cSv1wy5hC0ApeGMV9s/pub</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Copyright &amp; License:</span>
+<span class="doccomment">//!   - Copyright (c) 2010-2011 Dmitry Vyukov</span>
+<span class="doccomment">//!   - Simplified BSD License and Apache License, Version 2.0</span>
+<span class="doccomment">//!   - http://www.1024cores.net/home/code-license</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cell</span>::<span class="ident">UnsafeCell</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ptr</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">AtomicUsize</span>, <span class="ident">Ordering</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">atomic</span>::{<span class="self">self</span>, <span class="ident">AtomicUsize</span>, <span class="ident">Ordering</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::<span class="ident">Instant</span>;
 
-<span class="kw">use</span> <span class="ident">crossbeam_utils</span>::<span class="ident">cache_padded</span>::<span class="ident">CachePadded</span>;
+<span class="kw">use</span> <span class="ident">crossbeam_utils</span>::{<span class="ident">Backoff</span>, <span class="ident">CachePadded</span>};
 
-<span class="kw">use</span> <span class="ident">internal</span>::<span class="ident">channel</span>::<span class="ident">RecvNonblocking</span>;
-<span class="kw">use</span> <span class="ident">internal</span>::<span class="ident">context</span>;
-<span class="kw">use</span> <span class="ident">internal</span>::<span class="ident">select</span>::{<span class="ident">Operation</span>, <span class="ident">Select</span>, <span class="ident">SelectHandle</span>, <span class="ident">Token</span>};
-<span class="kw">use</span> <span class="ident">internal</span>::<span class="ident">utils</span>::<span class="ident">Backoff</span>;
-<span class="kw">use</span> <span class="ident">internal</span>::<span class="ident">waker</span>::<span class="ident">SyncWaker</span>;
+<span class="kw">use</span> <span class="ident">context</span>::<span class="ident">Context</span>;
+<span class="kw">use</span> <span class="ident">err</span>::{<span class="ident">RecvTimeoutError</span>, <span class="ident">SendTimeoutError</span>, <span class="ident">TryRecvError</span>, <span class="ident">TrySendError</span>};
+<span class="kw">use</span> <span class="ident">select</span>::{<span class="ident">Operation</span>, <span class="ident">SelectHandle</span>, <span class="ident">Selected</span>, <span class="ident">Token</span>};
+<span class="kw">use</span> <span class="ident">waker</span>::<span class="ident">SyncWaker</span>;
 
 <span class="doccomment">/// A slot in a channel.</span>
 <span class="kw">struct</span> <span class="ident">Slot</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="doccomment">/// The current stamp.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If the stamp equals the tail, this node will be next written to. If it equals the head,</span>
-    <span class="doccomment">/// this node will be next read from.</span>
     <span class="ident">stamp</span>: <span class="ident">AtomicUsize</span>,
 
     <span class="doccomment">/// The message in this slot.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If the lap in the stamp is odd, this value contains a message. Otherwise, it is empty.</span>
     <span class="ident">msg</span>: <span class="ident">UnsafeCell</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
 }
 
@@ -611,26 +694,21 @@
 }
 
 <span class="doccomment">/// Bounded channel based on a preallocated array.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The implementation is based on Dmitry Vyukov&#39;s bounded MPMC queue:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// - http://www.1024cores.net/home/lock-free-algorithms/queues/bounded-mpmc-queue</span>
-<span class="doccomment">/// - https://docs.google.com/document/d/1yIAYmbvL3JxOKOjuCyon7JhW4cSv1wy5hC0ApeGMV9s/pub</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Channel</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="doccomment">/// The head of the channel.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// This value is a &quot;stamp&quot; consisting of an index into the buffer and a lap, but packed into a</span>
-    <span class="doccomment">/// single `usize`. The lower bits represent the index, while the upper bits represent the lap.</span>
-    <span class="doccomment">/// The lap in the head is always an odd number.</span>
+    <span class="doccomment">/// This value is a &quot;stamp&quot; consisting of an index into the buffer, a mark bit, and a lap, but</span>
+    <span class="doccomment">/// packed into a single `usize`. The lower bits represent the index, while the upper bits</span>
+    <span class="doccomment">/// represent the lap. The mark bit in the head is always zero.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Messages are popped from the head of the channel.</span>
     <span class="ident">head</span>: <span class="ident">CachePadded</span><span class="op">&lt;</span><span class="ident">AtomicUsize</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// The tail of the channel.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// This value is a &quot;stamp&quot; consisting of an index into the buffer and a lap, but packed into a</span>
-    <span class="doccomment">/// single `usize`. The lower bits represent the index, while the upper bits represent the lap.</span>
-    <span class="doccomment">/// The lap in the tail is always an even number.</span>
+    <span class="doccomment">/// This value is a &quot;stamp&quot; consisting of an index into the buffer, a mark bit, and a lap, but</span>
+    <span class="doccomment">/// packed into a single `usize`. The lower bits represent the index, while the upper bits</span>
+    <span class="doccomment">/// represent the lap. The mark bit indicates that the channel is disconnected.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Messages are pushed into the tail of the channel.</span>
     <span class="ident">tail</span>: <span class="ident">CachePadded</span><span class="op">&lt;</span><span class="ident">AtomicUsize</span><span class="op">&gt;</span>,
@@ -641,16 +719,16 @@
     <span class="doccomment">/// The channel capacity.</span>
     <span class="ident">cap</span>: <span class="ident">usize</span>,
 
-    <span class="doccomment">/// A stamp with the value of `{ lap: 1, index: 0 }`.</span>
+    <span class="doccomment">/// A stamp with the value of `{ lap: 1, mark: 0, index: 0 }`.</span>
     <span class="ident">one_lap</span>: <span class="ident">usize</span>,
 
-    <span class="doccomment">/// Equals `true` when the channel is closed.</span>
-    <span class="ident">is_closed</span>: <span class="ident">AtomicBool</span>,
+    <span class="doccomment">/// If this bit is set in the tail, that means the channel is disconnected.</span>
+    <span class="ident">mark_bit</span>: <span class="ident">usize</span>,
 
     <span class="doccomment">/// Senders waiting while the channel is full.</span>
     <span class="ident">senders</span>: <span class="ident">SyncWaker</span>,
 
-    <span class="doccomment">/// Receivers waiting while the channel is empty and not closed.</span>
+    <span class="doccomment">/// Receivers waiting while the channel is empty and not disconnected.</span>
     <span class="ident">receivers</span>: <span class="ident">SyncWaker</span>,
 
     <span class="doccomment">/// Indicates that dropping a `Channel&lt;T&gt;` may drop values of type `T`.</span>
@@ -658,17 +736,17 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Channel</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Creates a bounded channel with capacity of `cap`.</span>
+    <span class="doccomment">/// Creates a bounded channel of capacity `cap`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Panics</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// Panics if the capacity is not in the range `1 .. usize::max_value() / 4`.</span>
+    <span class="doccomment">/// Panics if the capacity is not in the range `1 ..= usize::max_value() / 4`.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_capacity</span>(<span class="ident">cap</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">cap</span> <span class="op">&gt;</span> <span class="number">0</span>, <span class="string">&quot;capacity must be positive&quot;</span>);
 
-        <span class="comment">// Make sure there are at least two most significant bits to encode laps. If we can&#39;t</span>
-        <span class="comment">// reserve two bits, then panic. In that case, the buffer is likely too large to allocate</span>
-        <span class="comment">// anyway.</span>
+        <span class="comment">// Make sure there are at least two most significant bits: one to encode laps and one more</span>
+        <span class="comment">// to indicate that the channel is disconnected. If we can&#39;t reserve two bits, then panic.</span>
+        <span class="comment">// In that case, the buffer is likely too large to allocate anyway.</span>
         <span class="kw">let</span> <span class="ident">cap_limit</span> <span class="op">=</span> <span class="ident">usize</span>::<span class="ident">max_value</span>() <span class="op">/</span> <span class="number">4</span>;
         <span class="macro">assert</span><span class="macro">!</span>(
             <span class="ident">cap</span> <span class="op">&lt;=</span> <span class="ident">cap_limit</span>,
@@ -677,12 +755,13 @@
             <span class="ident">cap_limit</span>
         );
 
-        <span class="comment">// One lap is the smallest power of two greater than or equal to `cap`.</span>
-        <span class="kw">let</span> <span class="ident">one_lap</span> <span class="op">=</span> <span class="ident">cap</span>.<span class="ident">next_power_of_two</span>();
+        <span class="comment">// Compute constants `mark_bit` and `one_lap`.</span>
+        <span class="kw">let</span> <span class="ident">mark_bit</span> <span class="op">=</span> (<span class="ident">cap</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">next_power_of_two</span>();
+        <span class="kw">let</span> <span class="ident">one_lap</span> <span class="op">=</span> <span class="ident">mark_bit</span> <span class="op">*</span> <span class="number">2</span>;
 
-        <span class="comment">// Head is initialized to `{ lap: 1, index: 0 }`.</span>
-        <span class="comment">// Tail is initialized to `{ lap: 0, index: 0 }`.</span>
-        <span class="kw">let</span> <span class="ident">head</span> <span class="op">=</span> <span class="ident">one_lap</span>;
+        <span class="comment">// Head is initialized to `{ lap: 0, mark: 0, index: 0 }`.</span>
+        <span class="kw">let</span> <span class="ident">head</span> <span class="op">=</span> <span class="number">0</span>;
+        <span class="comment">// Tail is initialized to `{ lap: 0, mark: 0, index: 0 }`.</span>
         <span class="kw">let</span> <span class="ident">tail</span> <span class="op">=</span> <span class="number">0</span>;
 
         <span class="comment">// Allocate a buffer of `cap` slots.</span>
@@ -696,7 +775,7 @@
         <span class="comment">// Initialize stamps in the slots.</span>
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">cap</span> {
             <span class="kw">unsafe</span> {
-                <span class="comment">// Set the stamp to `{ lap: 0, index: i }`.</span>
+                <span class="comment">// Set the stamp to `{ lap: 0, mark: 0, index: i }`.</span>
                 <span class="kw">let</span> <span class="ident">slot</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">add</span>(<span class="ident">i</span>);
                 <span class="ident">ptr</span>::<span class="ident">write</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> (<span class="kw-2">*</span><span class="ident">slot</span>).<span class="ident">stamp</span>, <span class="ident">AtomicUsize</span>::<span class="ident">new</span>(<span class="ident">i</span>));
             }
@@ -706,7 +785,7 @@
             <span class="ident">buffer</span>,
             <span class="ident">cap</span>,
             <span class="ident">one_lap</span>,
-            <span class="ident">is_closed</span>: <span class="ident">AtomicBool</span>::<span class="ident">new</span>(<span class="bool-val">false</span>),
+            <span class="ident">mark_bit</span>,
             <span class="ident">head</span>: <span class="ident">CachePadded</span>::<span class="ident">new</span>(<span class="ident">AtomicUsize</span>::<span class="ident">new</span>(<span class="ident">head</span>)),
             <span class="ident">tail</span>: <span class="ident">CachePadded</span>::<span class="ident">new</span>(<span class="ident">AtomicUsize</span>::<span class="ident">new</span>(<span class="ident">tail</span>)),
             <span class="ident">senders</span>: <span class="ident">SyncWaker</span>::<span class="ident">new</span>(),
@@ -726,11 +805,20 @@
     }
 
     <span class="doccomment">/// Attempts to reserve a slot for sending a message.</span>
-    <span class="kw">fn</span> <span class="ident">start_send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>, <span class="ident">backoff</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Backoff</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">start_send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">let</span> <span class="ident">backoff</span> <span class="op">=</span> <span class="ident">Backoff</span>::<span class="ident">new</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tail</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tail</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Relaxed</span>);
+
         <span class="kw">loop</span> {
-            <span class="comment">// Load the tail and deconstruct it.</span>
-            <span class="kw">let</span> <span class="ident">tail</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tail</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">SeqCst</span>);
-            <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">tail</span> <span class="op">&amp;</span> (<span class="self">self</span>.<span class="ident">one_lap</span> <span class="op">-</span> <span class="number">1</span>);
+            <span class="comment">// Check if the channel is disconnected.</span>
+            <span class="kw">if</span> <span class="ident">tail</span> <span class="op">&amp;</span> <span class="self">self</span>.<span class="ident">mark_bit</span> <span class="op">!=</span> <span class="number">0</span> {
+                <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">slot</span> <span class="op">=</span> <span class="ident">ptr</span>::<span class="ident">null</span>();
+                <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">stamp</span> <span class="op">=</span> <span class="number">0</span>;
+                <span class="kw">return</span> <span class="bool-val">true</span>;
+            }
+
+            <span class="comment">// Deconstruct the tail.</span>
+            <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">tail</span> <span class="op">&amp;</span> (<span class="self">self</span>.<span class="ident">mark_bit</span> <span class="op">-</span> <span class="number">1</span>);
             <span class="kw">let</span> <span class="ident">lap</span> <span class="op">=</span> <span class="ident">tail</span> <span class="op">&amp;</span> <span class="op">!</span>(<span class="self">self</span>.<span class="ident">one_lap</span> <span class="op">-</span> <span class="number">1</span>);
 
             <span class="comment">// Inspect the corresponding slot.</span>
@@ -741,42 +829,57 @@
             <span class="kw">if</span> <span class="ident">tail</span> <span class="op">==</span> <span class="ident">stamp</span> {
                 <span class="kw">let</span> <span class="ident">new_tail</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">index</span> <span class="op">+</span> <span class="number">1</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">cap</span> {
                     <span class="comment">// Same lap, incremented index.</span>
-                    <span class="comment">// Set to `{ lap: lap, index: index + 1 }`.</span>
+                    <span class="comment">// Set to `{ lap: lap, mark: 0, index: index + 1 }`.</span>
                     <span class="ident">tail</span> <span class="op">+</span> <span class="number">1</span>
                 } <span class="kw">else</span> {
-                    <span class="comment">// Two laps forward, index wraps around to zero.</span>
-                    <span class="comment">// Set to `{ lap: lap.wrapping_add(2), index: 0 }`.</span>
-                    <span class="ident">lap</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>.<span class="ident">wrapping_mul</span>(<span class="number">2</span>))
+                    <span class="comment">// One lap forward, index wraps around to zero.</span>
+                    <span class="comment">// Set to `{ lap: lap.wrapping_add(1), mark: 0, index: 0 }`.</span>
+                    <span class="ident">lap</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>)
                 };
 
                 <span class="comment">// Try moving the tail.</span>
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tail</span>
+                <span class="kw">match</span> <span class="self">self</span>
+                    .<span class="ident">tail</span>
                     .<span class="ident">compare_exchange_weak</span>(<span class="ident">tail</span>, <span class="ident">new_tail</span>, <span class="ident">Ordering</span>::<span class="ident">SeqCst</span>, <span class="ident">Ordering</span>::<span class="ident">Relaxed</span>)
-                    .<span class="ident">is_ok</span>()
                 {
-                    <span class="comment">// Prepare the token for the follow-up call to `write`.</span>
-                    <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">slot</span> <span class="op">=</span> <span class="ident">slot</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">Slot</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>;
-                    <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">stamp</span> <span class="op">=</span> <span class="ident">stamp</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>);
-                    <span class="kw">return</span> <span class="bool-val">true</span>;
+                    <span class="prelude-val">Ok</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {
+                        <span class="comment">// Prepare the token for the follow-up call to `write`.</span>
+                        <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">slot</span> <span class="op">=</span> <span class="ident">slot</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">Slot</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>;
+                        <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">stamp</span> <span class="op">=</span> <span class="ident">tail</span> <span class="op">+</span> <span class="number">1</span>;
+                        <span class="kw">return</span> <span class="bool-val">true</span>;
+                    }
+                    <span class="prelude-val">Err</span>(<span class="ident">t</span>) <span class="op">=&gt;</span> {
+                        <span class="ident">tail</span> <span class="op">=</span> <span class="ident">t</span>;
+                        <span class="ident">backoff</span>.<span class="ident">spin</span>();
+                    }
                 }
-            <span class="comment">// But if the slot lags one lap behind the tail...</span>
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">stamp</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>) <span class="op">==</span> <span class="ident">tail</span> {
-                <span class="kw">let</span> <span class="ident">head</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">head</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">SeqCst</span>);
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">stamp</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>) <span class="op">==</span> <span class="ident">tail</span> <span class="op">+</span> <span class="number">1</span> {
+                <span class="ident">atomic</span>::<span class="ident">fence</span>(<span class="ident">Ordering</span>::<span class="ident">SeqCst</span>);
+                <span class="kw">let</span> <span class="ident">head</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">head</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Relaxed</span>);
 
-                <span class="comment">// ...and if the head lags one lap behind the tail as well...</span>
+                <span class="comment">// If the head lags one lap behind the tail as well...</span>
                 <span class="kw">if</span> <span class="ident">head</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>) <span class="op">==</span> <span class="ident">tail</span> {
                     <span class="comment">// ...then the channel is full.</span>
                     <span class="kw">return</span> <span class="bool-val">false</span>;
                 }
-            }
 
-            <span class="ident">backoff</span>.<span class="ident">step</span>();
+                <span class="ident">backoff</span>.<span class="ident">spin</span>();
+                <span class="ident">tail</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tail</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Relaxed</span>);
+            } <span class="kw">else</span> {
+                <span class="comment">// Snooze because we need to wait for the stamp to get updated.</span>
+                <span class="ident">backoff</span>.<span class="ident">snooze</span>();
+                <span class="ident">tail</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tail</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Relaxed</span>);
+            }
         }
     }
 
     <span class="doccomment">/// Writes a message into the channel.</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">write</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>, <span class="ident">msg</span>: <span class="ident">T</span>) {
-        <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">slot</span>.<span class="ident">is_null</span>());
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">write</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>, <span class="ident">msg</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">T</span><span class="op">&gt;</span> {
+        <span class="comment">// If there is no slot, the channel is disconnected.</span>
+        <span class="kw">if</span> <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">slot</span>.<span class="ident">is_null</span>() {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">msg</span>);
+        }
+
         <span class="kw">let</span> <span class="ident">slot</span>: <span class="kw-2">&amp;</span><span class="ident">Slot</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span>(<span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">slot</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">Slot</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
 
         <span class="comment">// Write the message into the slot and update the stamp.</span>
@@ -784,75 +887,85 @@
         <span class="ident">slot</span>.<span class="ident">stamp</span>.<span class="ident">store</span>(<span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">stamp</span>, <span class="ident">Ordering</span>::<span class="ident">Release</span>);
 
         <span class="comment">// Wake a sleeping receiver.</span>
-        <span class="self">self</span>.<span class="ident">receivers</span>.<span class="ident">wake_one</span>();
+        <span class="self">self</span>.<span class="ident">receivers</span>.<span class="ident">notify</span>();
+        <span class="prelude-val">Ok</span>(())
     }
 
     <span class="doccomment">/// Attempts to reserve a slot for receiving a message.</span>
-    <span class="kw">fn</span> <span class="ident">start_recv</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>, <span class="ident">backoff</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Backoff</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">start_recv</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">let</span> <span class="ident">backoff</span> <span class="op">=</span> <span class="ident">Backoff</span>::<span class="ident">new</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">head</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">head</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Relaxed</span>);
+
         <span class="kw">loop</span> {
-            <span class="comment">// Load the head and deconstruct it.</span>
-            <span class="kw">let</span> <span class="ident">head</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">head</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">SeqCst</span>);
-            <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">head</span> <span class="op">&amp;</span> (<span class="self">self</span>.<span class="ident">one_lap</span> <span class="op">-</span> <span class="number">1</span>);
+            <span class="comment">// Deconstruct the head.</span>
+            <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">head</span> <span class="op">&amp;</span> (<span class="self">self</span>.<span class="ident">mark_bit</span> <span class="op">-</span> <span class="number">1</span>);
             <span class="kw">let</span> <span class="ident">lap</span> <span class="op">=</span> <span class="ident">head</span> <span class="op">&amp;</span> <span class="op">!</span>(<span class="self">self</span>.<span class="ident">one_lap</span> <span class="op">-</span> <span class="number">1</span>);
 
             <span class="comment">// Inspect the corresponding slot.</span>
             <span class="kw">let</span> <span class="ident">slot</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">add</span>(<span class="ident">index</span>) };
             <span class="kw">let</span> <span class="ident">stamp</span> <span class="op">=</span> <span class="ident">slot</span>.<span class="ident">stamp</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Acquire</span>);
 
-            <span class="comment">// If the the head and the stamp match, we may attempt to pop.</span>
-            <span class="kw">if</span> <span class="ident">head</span> <span class="op">==</span> <span class="ident">stamp</span> {
+            <span class="comment">// If the the stamp is ahead of the head by 1, we may attempt to pop.</span>
+            <span class="kw">if</span> <span class="ident">head</span> <span class="op">+</span> <span class="number">1</span> <span class="op">==</span> <span class="ident">stamp</span> {
                 <span class="kw">let</span> <span class="ident">new</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">index</span> <span class="op">+</span> <span class="number">1</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">cap</span> {
                     <span class="comment">// Same lap, incremented index.</span>
-                    <span class="comment">// Set to `{ lap: lap, index: index + 1 }`.</span>
+                    <span class="comment">// Set to `{ lap: lap, mark: 0, index: index + 1 }`.</span>
                     <span class="ident">head</span> <span class="op">+</span> <span class="number">1</span>
                 } <span class="kw">else</span> {
-                    <span class="comment">// Two laps forward, index wraps around to zero.</span>
-                    <span class="comment">// Set to `{ lap: lap.wrapping_add(2), index: 0 }`.</span>
-                    <span class="ident">lap</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>.<span class="ident">wrapping_mul</span>(<span class="number">2</span>))
+                    <span class="comment">// One lap forward, index wraps around to zero.</span>
+                    <span class="comment">// Set to `{ lap: lap.wrapping_add(1), mark: 0, index: 0 }`.</span>
+                    <span class="ident">lap</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>)
                 };
 
                 <span class="comment">// Try moving the head.</span>
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">head</span>
+                <span class="kw">match</span> <span class="self">self</span>
+                    .<span class="ident">head</span>
                     .<span class="ident">compare_exchange_weak</span>(<span class="ident">head</span>, <span class="ident">new</span>, <span class="ident">Ordering</span>::<span class="ident">SeqCst</span>, <span class="ident">Ordering</span>::<span class="ident">Relaxed</span>)
-                    .<span class="ident">is_ok</span>()
                 {
-                    <span class="comment">// Prepare the token for the follow-up call to `read`.</span>
-                    <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">slot</span> <span class="op">=</span> <span class="ident">slot</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">Slot</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>;
-                    <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">stamp</span> <span class="op">=</span> <span class="ident">stamp</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>);
-                    <span class="kw">return</span> <span class="bool-val">true</span>;
+                    <span class="prelude-val">Ok</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {
+                        <span class="comment">// Prepare the token for the follow-up call to `read`.</span>
+                        <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">slot</span> <span class="op">=</span> <span class="ident">slot</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">Slot</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>;
+                        <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">stamp</span> <span class="op">=</span> <span class="ident">head</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>);
+                        <span class="kw">return</span> <span class="bool-val">true</span>;
+                    }
+                    <span class="prelude-val">Err</span>(<span class="ident">h</span>) <span class="op">=&gt;</span> {
+                        <span class="ident">head</span> <span class="op">=</span> <span class="ident">h</span>;
+                        <span class="ident">backoff</span>.<span class="ident">spin</span>();
+                    }
                 }
-            <span class="comment">// But if the slot lags one lap behind the head...</span>
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">stamp</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>) <span class="op">==</span> <span class="ident">head</span> {
-                <span class="kw">let</span> <span class="ident">tail</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tail</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">SeqCst</span>);
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">stamp</span> <span class="op">==</span> <span class="ident">head</span> {
+                <span class="ident">atomic</span>::<span class="ident">fence</span>(<span class="ident">Ordering</span>::<span class="ident">SeqCst</span>);
+                <span class="kw">let</span> <span class="ident">tail</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tail</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Relaxed</span>);
 
-                <span class="comment">// ...and if the tail lags one lap behind the head as well, that means the channel</span>
-                <span class="comment">// is empty.</span>
-                <span class="kw">if</span> <span class="ident">tail</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>) <span class="op">==</span> <span class="ident">head</span> {
-                    <span class="comment">// If the channel is closed...</span>
-                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_closed</span>() {
-                        <span class="comment">// ...and still empty...</span>
-                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tail</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">SeqCst</span>) <span class="op">==</span> <span class="ident">tail</span> {
-                            <span class="comment">// ...then receive `None`.</span>
-                            <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">slot</span> <span class="op">=</span> <span class="ident">ptr</span>::<span class="ident">null</span>();
-                            <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">stamp</span> <span class="op">=</span> <span class="number">0</span>;
-                            <span class="kw">return</span> <span class="bool-val">true</span>;
-                        }
+                <span class="comment">// If the tail equals the head, that means the channel is empty.</span>
+                <span class="kw">if</span> (<span class="ident">tail</span> <span class="op">&amp;</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">mark_bit</span>) <span class="op">==</span> <span class="ident">head</span> {
+                    <span class="comment">// If the channel is disconnected...</span>
+                    <span class="kw">if</span> <span class="ident">tail</span> <span class="op">&amp;</span> <span class="self">self</span>.<span class="ident">mark_bit</span> <span class="op">!=</span> <span class="number">0</span> {
+                        <span class="comment">// ...then receive an error.</span>
+                        <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">slot</span> <span class="op">=</span> <span class="ident">ptr</span>::<span class="ident">null</span>();
+                        <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">stamp</span> <span class="op">=</span> <span class="number">0</span>;
+                        <span class="kw">return</span> <span class="bool-val">true</span>;
                     } <span class="kw">else</span> {
                         <span class="comment">// Otherwise, the receive operation is not ready.</span>
                         <span class="kw">return</span> <span class="bool-val">false</span>;
                     }
                 }
-            }
 
-            <span class="ident">backoff</span>.<span class="ident">step</span>();
+                <span class="ident">backoff</span>.<span class="ident">spin</span>();
+                <span class="ident">head</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">head</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Relaxed</span>);
+            } <span class="kw">else</span> {
+                <span class="comment">// Snooze because we need to wait for the stamp to get updated.</span>
+                <span class="ident">backoff</span>.<span class="ident">snooze</span>();
+                <span class="ident">head</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">head</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Relaxed</span>);
+            }
         }
     }
 
     <span class="doccomment">/// Reads a message from the channel.</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">read</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">read</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, ()<span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">slot</span>.<span class="ident">is_null</span>() {
-            <span class="comment">// The channel is closed.</span>
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+            <span class="comment">// The channel is disconnected.</span>
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(());
         }
 
         <span class="kw">let</span> <span class="ident">slot</span>: <span class="kw-2">&amp;</span><span class="ident">Slot</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span>(<span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">slot</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">Slot</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
@@ -862,103 +975,128 @@
         <span class="ident">slot</span>.<span class="ident">stamp</span>.<span class="ident">store</span>(<span class="ident">token</span>.<span class="ident">array</span>.<span class="ident">stamp</span>, <span class="ident">Ordering</span>::<span class="ident">Release</span>);
 
         <span class="comment">// Wake a sleeping sender.</span>
-        <span class="self">self</span>.<span class="ident">senders</span>.<span class="ident">wake_one</span>();
-
-        <span class="prelude-val">Some</span>(<span class="ident">msg</span>)
+        <span class="self">self</span>.<span class="ident">senders</span>.<span class="ident">notify</span>();
+        <span class="prelude-val">Ok</span>(<span class="ident">msg</span>)
     }
 
-    <span class="doccomment">/// Sends a message into the channel.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">T</span>) {
+    <span class="doccomment">/// Attempts to send a message into the channel.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">try_send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">TrySendError</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="ident">token</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>::<span class="ident">default</span>();
-        <span class="kw">let</span> <span class="ident">oper</span> <span class="op">=</span> <span class="ident">Operation</span>::<span class="ident">hook</span>(<span class="ident">token</span>);
-        <span class="kw">loop</span> {
-            <span class="comment">// Try sending a message several times.</span>
-            <span class="kw">let</span> <span class="ident">backoff</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Backoff</span>::<span class="ident">new</span>();
-            <span class="kw">loop</span> {
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">start_send</span>(<span class="ident">token</span>, <span class="ident">backoff</span>) {
-                    <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">write</span>(<span class="ident">token</span>, <span class="ident">msg</span>); }
-                    <span class="kw">return</span>;
-                }
-                <span class="kw">if</span> <span class="op">!</span><span class="ident">backoff</span>.<span class="ident">step</span>() {
-                    <span class="kw">break</span>;
-                }
-            }
-
-            <span class="comment">// Prepare for blocking until a receiver wakes us up.</span>
-            <span class="ident">context</span>::<span class="ident">current_reset</span>();
-            <span class="self">self</span>.<span class="ident">senders</span>.<span class="ident">register</span>(<span class="ident">oper</span>);
-
-            <span class="comment">// Has the channel become ready just now?</span>
-            <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_full</span>() {
-                <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">context</span>::<span class="ident">current_try_select</span>(<span class="ident">Select</span>::<span class="ident">Aborted</span>);
-            }
-
-            <span class="comment">// Block the current thread.</span>
-            <span class="kw">let</span> <span class="ident">sel</span> <span class="op">=</span> <span class="ident">context</span>::<span class="ident">current_wait_until</span>(<span class="prelude-val">None</span>);
-
-            <span class="kw">match</span> <span class="ident">sel</span> {
-                <span class="ident">Select</span>::<span class="ident">Waiting</span> <span class="op">|</span> <span class="ident">Select</span>::<span class="ident">Closed</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
-                <span class="ident">Select</span>::<span class="ident">Aborted</span> <span class="op">=&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">senders</span>.<span class="ident">unregister</span>(<span class="ident">oper</span>).<span class="ident">unwrap</span>();
-                },
-                <span class="ident">Select</span>::<span class="ident">Operation</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {}
-            }
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">start_send</span>(<span class="ident">token</span>) {
+            <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">write</span>(<span class="ident">token</span>, <span class="ident">msg</span>).<span class="ident">map_err</span>(<span class="ident">TrySendError</span>::<span class="ident">Disconnected</span>) }
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(<span class="ident">TrySendError</span>::<span class="ident">Full</span>(<span class="ident">msg</span>))
         }
     }
 
-    <span class="doccomment">/// Receives a message from the channel.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">recv</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Sends a message into the channel.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">T</span>, <span class="ident">deadline</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Instant</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">SendTimeoutError</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="ident">token</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>::<span class="ident">default</span>();
-        <span class="kw">let</span> <span class="ident">oper</span> <span class="op">=</span> <span class="ident">Operation</span>::<span class="ident">hook</span>(<span class="ident">token</span>);
         <span class="kw">loop</span> {
-            <span class="comment">// Try receiving a message several times.</span>
-            <span class="kw">let</span> <span class="ident">backoff</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Backoff</span>::<span class="ident">new</span>();
+            <span class="comment">// Try sending a message several times.</span>
+            <span class="kw">let</span> <span class="ident">backoff</span> <span class="op">=</span> <span class="ident">Backoff</span>::<span class="ident">new</span>();
             <span class="kw">loop</span> {
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">start_recv</span>(<span class="ident">token</span>, <span class="ident">backoff</span>) {
-                    <span class="kw">unsafe</span> {
-                        <span class="kw">return</span> <span class="self">self</span>.<span class="ident">read</span>(<span class="ident">token</span>);
-                    }
+                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">start_send</span>(<span class="ident">token</span>) {
+                    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">write</span>(<span class="ident">token</span>, <span class="ident">msg</span>) };
+                    <span class="kw">return</span> <span class="ident">res</span>.<span class="ident">map_err</span>(<span class="ident">SendTimeoutError</span>::<span class="ident">Disconnected</span>);
                 }
-                <span class="kw">if</span> <span class="op">!</span><span class="ident">backoff</span>.<span class="ident">step</span>() {
+
+                <span class="kw">if</span> <span class="ident">backoff</span>.<span class="ident">is_completed</span>() {
                     <span class="kw">break</span>;
+                } <span class="kw">else</span> {
+                    <span class="ident">backoff</span>.<span class="ident">snooze</span>();
                 }
             }
 
-            <span class="comment">// Prepare for blocking until a sender wakes us up.</span>
-            <span class="ident">context</span>::<span class="ident">current_reset</span>();
-            <span class="self">self</span>.<span class="ident">receivers</span>.<span class="ident">register</span>(<span class="ident">oper</span>);
+            <span class="ident">Context</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">cx</span><span class="op">|</span> {
+                <span class="comment">// Prepare for blocking until a receiver wakes us up.</span>
+                <span class="kw">let</span> <span class="ident">oper</span> <span class="op">=</span> <span class="ident">Operation</span>::<span class="ident">hook</span>(<span class="ident">token</span>);
+                <span class="self">self</span>.<span class="ident">senders</span>.<span class="ident">register</span>(<span class="ident">oper</span>, <span class="ident">cx</span>);
 
-            <span class="comment">// Has the channel become ready just now?</span>
-            <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_empty</span>() <span class="op">||</span> <span class="self">self</span>.<span class="ident">is_closed</span>() {
-                <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">context</span>::<span class="ident">current_try_select</span>(<span class="ident">Select</span>::<span class="ident">Aborted</span>);
-            }
+                <span class="comment">// Has the channel become ready just now?</span>
+                <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_full</span>() <span class="op">||</span> <span class="self">self</span>.<span class="ident">is_disconnected</span>() {
+                    <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">try_select</span>(<span class="ident">Selected</span>::<span class="ident">Aborted</span>);
+                }
 
-            <span class="comment">// Block the current thread.</span>
-            <span class="kw">let</span> <span class="ident">sel</span> <span class="op">=</span> <span class="ident">context</span>::<span class="ident">current_wait_until</span>(<span class="prelude-val">None</span>);
+                <span class="comment">// Block the current thread.</span>
+                <span class="kw">let</span> <span class="ident">sel</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">wait_until</span>(<span class="ident">deadline</span>);
 
-            <span class="kw">match</span> <span class="ident">sel</span> {
-                <span class="ident">Select</span>::<span class="ident">Waiting</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
-                <span class="ident">Select</span>::<span class="ident">Aborted</span> <span class="op">|</span> <span class="ident">Select</span>::<span class="ident">Closed</span> <span class="op">=&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">receivers</span>.<span class="ident">unregister</span>(<span class="ident">oper</span>).<span class="ident">unwrap</span>();
-                    <span class="comment">// If the channel was closed, we still have to check for remaining messages.</span>
-                },
-                <span class="ident">Select</span>::<span class="ident">Operation</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {}
+                <span class="kw">match</span> <span class="ident">sel</span> {
+                    <span class="ident">Selected</span>::<span class="ident">Waiting</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
+                    <span class="ident">Selected</span>::<span class="ident">Aborted</span> <span class="op">|</span> <span class="ident">Selected</span>::<span class="ident">Disconnected</span> <span class="op">=&gt;</span> {
+                        <span class="self">self</span>.<span class="ident">senders</span>.<span class="ident">unregister</span>(<span class="ident">oper</span>).<span class="ident">unwrap</span>();
+                    }
+                    <span class="ident">Selected</span>::<span class="ident">Operation</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {}
+                }
+            });
+
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">d</span>) <span class="op">=</span> <span class="ident">deadline</span> {
+                <span class="kw">if</span> <span class="ident">Instant</span>::<span class="ident">now</span>() <span class="op">&gt;=</span> <span class="ident">d</span> {
+                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">SendTimeoutError</span>::<span class="ident">Timeout</span>(<span class="ident">msg</span>));
+                }
             }
         }
     }
 
     <span class="doccomment">/// Attempts to receive a message without blocking.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">recv_nonblocking</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">RecvNonblocking</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">try_recv</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">TryRecvError</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">token</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>::<span class="ident">default</span>();
-        <span class="kw">let</span> <span class="ident">backoff</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Backoff</span>::<span class="ident">new</span>();
 
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">start_recv</span>(<span class="ident">token</span>, <span class="ident">backoff</span>) {
-            <span class="kw">match</span> <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">read</span>(<span class="ident">token</span>) } {
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">RecvNonblocking</span>::<span class="ident">Closed</span>,
-                <span class="prelude-val">Some</span>(<span class="ident">msg</span>) <span class="op">=&gt;</span> <span class="ident">RecvNonblocking</span>::<span class="ident">Message</span>(<span class="ident">msg</span>),
-            }
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">start_recv</span>(<span class="ident">token</span>) {
+            <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">read</span>(<span class="ident">token</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">TryRecvError</span>::<span class="ident">Disconnected</span>) }
         } <span class="kw">else</span> {
-            <span class="ident">RecvNonblocking</span>::<span class="ident">Empty</span>
+            <span class="prelude-val">Err</span>(<span class="ident">TryRecvError</span>::<span class="ident">Empty</span>)
+        }
+    }
+
+    <span class="doccomment">/// Receives a message from the channel.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">recv</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">deadline</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Instant</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">RecvTimeoutError</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">token</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>::<span class="ident">default</span>();
+        <span class="kw">loop</span> {
+            <span class="comment">// Try receiving a message several times.</span>
+            <span class="kw">let</span> <span class="ident">backoff</span> <span class="op">=</span> <span class="ident">Backoff</span>::<span class="ident">new</span>();
+            <span class="kw">loop</span> {
+                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">start_recv</span>(<span class="ident">token</span>) {
+                    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">read</span>(<span class="ident">token</span>) };
+                    <span class="kw">return</span> <span class="ident">res</span>.<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">RecvTimeoutError</span>::<span class="ident">Disconnected</span>);
+                }
+
+                <span class="kw">if</span> <span class="ident">backoff</span>.<span class="ident">is_completed</span>() {
+                    <span class="kw">break</span>;
+                } <span class="kw">else</span> {
+                    <span class="ident">backoff</span>.<span class="ident">snooze</span>();
+                }
+            }
+
+            <span class="ident">Context</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">cx</span><span class="op">|</span> {
+                <span class="comment">// Prepare for blocking until a sender wakes us up.</span>
+                <span class="kw">let</span> <span class="ident">oper</span> <span class="op">=</span> <span class="ident">Operation</span>::<span class="ident">hook</span>(<span class="ident">token</span>);
+                <span class="self">self</span>.<span class="ident">receivers</span>.<span class="ident">register</span>(<span class="ident">oper</span>, <span class="ident">cx</span>);
+
+                <span class="comment">// Has the channel become ready just now?</span>
+                <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_empty</span>() <span class="op">||</span> <span class="self">self</span>.<span class="ident">is_disconnected</span>() {
+                    <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">try_select</span>(<span class="ident">Selected</span>::<span class="ident">Aborted</span>);
+                }
+
+                <span class="comment">// Block the current thread.</span>
+                <span class="kw">let</span> <span class="ident">sel</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">wait_until</span>(<span class="ident">deadline</span>);
+
+                <span class="kw">match</span> <span class="ident">sel</span> {
+                    <span class="ident">Selected</span>::<span class="ident">Waiting</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
+                    <span class="ident">Selected</span>::<span class="ident">Aborted</span> <span class="op">|</span> <span class="ident">Selected</span>::<span class="ident">Disconnected</span> <span class="op">=&gt;</span> {
+                        <span class="self">self</span>.<span class="ident">receivers</span>.<span class="ident">unregister</span>(<span class="ident">oper</span>).<span class="ident">unwrap</span>();
+                        <span class="comment">// If the channel was disconnected, we still have to check for remaining</span>
+                        <span class="comment">// messages.</span>
+                    }
+                    <span class="ident">Selected</span>::<span class="ident">Operation</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {}
+                }
+            });
+
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">d</span>) <span class="op">=</span> <span class="ident">deadline</span> {
+                <span class="kw">if</span> <span class="ident">Instant</span>::<span class="ident">now</span>() <span class="op">&gt;=</span> <span class="ident">d</span> {
+                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">RecvTimeoutError</span>::<span class="ident">Timeout</span>);
+                }
+            }
         }
     }
 
@@ -971,14 +1109,14 @@
 
             <span class="comment">// If the tail didn&#39;t change, we&#39;ve got consistent values to work with.</span>
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tail</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">SeqCst</span>) <span class="op">==</span> <span class="ident">tail</span> {
-                <span class="kw">let</span> <span class="ident">hix</span> <span class="op">=</span> <span class="ident">head</span> <span class="op">&amp;</span> (<span class="self">self</span>.<span class="ident">one_lap</span> <span class="op">-</span> <span class="number">1</span>);
-                <span class="kw">let</span> <span class="ident">tix</span> <span class="op">=</span> <span class="ident">tail</span> <span class="op">&amp;</span> (<span class="self">self</span>.<span class="ident">one_lap</span> <span class="op">-</span> <span class="number">1</span>);
+                <span class="kw">let</span> <span class="ident">hix</span> <span class="op">=</span> <span class="ident">head</span> <span class="op">&amp;</span> (<span class="self">self</span>.<span class="ident">mark_bit</span> <span class="op">-</span> <span class="number">1</span>);
+                <span class="kw">let</span> <span class="ident">tix</span> <span class="op">=</span> <span class="ident">tail</span> <span class="op">&amp;</span> (<span class="self">self</span>.<span class="ident">mark_bit</span> <span class="op">-</span> <span class="number">1</span>);
 
                 <span class="kw">return</span> <span class="kw">if</span> <span class="ident">hix</span> <span class="op">&lt;</span> <span class="ident">tix</span> {
                     <span class="ident">tix</span> <span class="op">-</span> <span class="ident">hix</span>
                 } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">hix</span> <span class="op">&gt;</span> <span class="ident">tix</span> {
                     <span class="self">self</span>.<span class="ident">cap</span> <span class="op">-</span> <span class="ident">hix</span> <span class="op">+</span> <span class="ident">tix</span>
-                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">tail</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>) <span class="op">==</span> <span class="ident">head</span> {
+                } <span class="kw">else</span> <span class="kw">if</span> (<span class="ident">tail</span> <span class="op">&amp;</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">mark_bit</span>) <span class="op">==</span> <span class="ident">head</span> {
                     <span class="number">0</span>
                 } <span class="kw">else</span> {
                     <span class="self">self</span>.<span class="ident">cap</span>
@@ -992,19 +1130,19 @@
         <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">cap</span>)
     }
 
-    <span class="doccomment">/// Closes the channel and wakes up all blocked receivers.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">close</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_closed</span>.<span class="ident">swap</span>(<span class="bool-val">true</span>, <span class="ident">Ordering</span>::<span class="ident">SeqCst</span>) {
-            <span class="self">self</span>.<span class="ident">receivers</span>.<span class="ident">close</span>();
-            <span class="bool-val">true</span>
-        } <span class="kw">else</span> {
-            <span class="bool-val">false</span>
+    <span class="doccomment">/// Disconnects the channel and wakes up all blocked receivers.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">disconnect</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+        <span class="kw">let</span> <span class="ident">tail</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tail</span>.<span class="ident">fetch_or</span>(<span class="self">self</span>.<span class="ident">mark_bit</span>, <span class="ident">Ordering</span>::<span class="ident">SeqCst</span>);
+
+        <span class="kw">if</span> <span class="ident">tail</span> <span class="op">&amp;</span> <span class="self">self</span>.<span class="ident">mark_bit</span> <span class="op">==</span> <span class="number">0</span> {
+            <span class="self">self</span>.<span class="ident">senders</span>.<span class="ident">disconnect</span>();
+            <span class="self">self</span>.<span class="ident">receivers</span>.<span class="ident">disconnect</span>();
         }
     }
 
-    <span class="doccomment">/// Returns `true` if the channel is closed.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_closed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">is_closed</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">SeqCst</span>)
+    <span class="doccomment">/// Returns `true` if the channel is disconnected.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_disconnected</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">tail</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">SeqCst</span>) <span class="op">&amp;</span> <span class="self">self</span>.<span class="ident">mark_bit</span> <span class="op">!=</span> <span class="number">0</span>
     }
 
     <span class="doccomment">/// Returns `true` if the channel is empty.</span>
@@ -1012,11 +1150,11 @@
         <span class="kw">let</span> <span class="ident">head</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">head</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">SeqCst</span>);
         <span class="kw">let</span> <span class="ident">tail</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tail</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">SeqCst</span>);
 
-        <span class="comment">// Is the tail lagging one lap behind head?</span>
+        <span class="comment">// Is the tail equal to the head?</span>
         <span class="comment">//</span>
         <span class="comment">// Note: If the head changes just before we load the tail, that means there was a moment</span>
         <span class="comment">// when the channel was not empty, so it is safe to just return `false`.</span>
-        <span class="ident">tail</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>) <span class="op">==</span> <span class="ident">head</span>
+        (<span class="ident">tail</span> <span class="op">&amp;</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">mark_bit</span>) <span class="op">==</span> <span class="ident">head</span>
     }
 
     <span class="doccomment">/// Returns `true` if the channel is full.</span>
@@ -1026,16 +1164,16 @@
 
         <span class="comment">// Is the head lagging one lap behind tail?</span>
         <span class="comment">//</span>
-        <span class="comment">// note: If the tail changes just before we load the head, that means there was a moment</span>
+        <span class="comment">// Note: If the tail changes just before we load the head, that means there was a moment</span>
         <span class="comment">// when the channel was not full, so it is safe to just return `false`.</span>
-        <span class="ident">head</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>) <span class="op">==</span> <span class="ident">tail</span>
+        <span class="ident">head</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">one_lap</span>) <span class="op">==</span> <span class="ident">tail</span> <span class="op">&amp;</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">mark_bit</span>
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">Channel</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="comment">// Get the index of the head.</span>
-        <span class="kw">let</span> <span class="ident">hix</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">head</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Relaxed</span>) <span class="op">&amp;</span> (<span class="self">self</span>.<span class="ident">one_lap</span> <span class="op">-</span> <span class="number">1</span>);
+        <span class="kw">let</span> <span class="ident">hix</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">head</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Relaxed</span>) <span class="op">&amp;</span> (<span class="self">self</span>.<span class="ident">mark_bit</span> <span class="op">-</span> <span class="number">1</span>);
 
         <span class="comment">// Loop over all slots that hold a message and drop them.</span>
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="self">self</span>.<span class="ident">len</span>() {
@@ -1065,56 +1203,74 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Sender</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Channel</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">SelectHandle</span> <span class="kw">for</span> <span class="ident">Receiver</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">try</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">start_recv</span>(<span class="ident">token</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Backoff</span>::<span class="ident">new</span>())
-    }
-
-    <span class="kw">fn</span> <span class="ident">retry</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">start_recv</span>(<span class="ident">token</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Backoff</span>::<span class="ident">new</span>())
+    <span class="kw">fn</span> <span class="ident">try_select</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">start_recv</span>(<span class="ident">token</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">deadline</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Instant</span><span class="op">&gt;</span> {
         <span class="prelude-val">None</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">register</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>, <span class="ident">oper</span>: <span class="ident">Operation</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">receivers</span>.<span class="ident">register</span>(<span class="ident">oper</span>);
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">is_empty</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="self">self</span>.<span class="number">0</span>.<span class="ident">is_closed</span>()
+    <span class="kw">fn</span> <span class="ident">register</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">oper</span>: <span class="ident">Operation</span>, <span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">receivers</span>.<span class="ident">register</span>(<span class="ident">oper</span>, <span class="ident">cx</span>);
+        <span class="self">self</span>.<span class="ident">is_ready</span>()
     }
 
     <span class="kw">fn</span> <span class="ident">unregister</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">oper</span>: <span class="ident">Operation</span>) {
         <span class="self">self</span>.<span class="number">0</span>.<span class="ident">receivers</span>.<span class="ident">unregister</span>(<span class="ident">oper</span>);
     }
 
-    <span class="kw">fn</span> <span class="ident">accept</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">start_recv</span>(<span class="ident">token</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Backoff</span>::<span class="ident">new</span>())
+    <span class="kw">fn</span> <span class="ident">accept</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>, <span class="ident">_cx</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">try_select</span>(<span class="ident">token</span>)
+    }
+
+    <span class="kw">fn</span> <span class="ident">is_ready</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="op">!</span><span class="self">self</span>.<span class="number">0</span>.<span class="ident">is_empty</span>() <span class="op">||</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">is_disconnected</span>()
+    }
+
+    <span class="kw">fn</span> <span class="ident">watch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">oper</span>: <span class="ident">Operation</span>, <span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">receivers</span>.<span class="ident">watch</span>(<span class="ident">oper</span>, <span class="ident">cx</span>);
+        <span class="self">self</span>.<span class="ident">is_ready</span>()
+    }
+
+    <span class="kw">fn</span> <span class="ident">unwatch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">oper</span>: <span class="ident">Operation</span>) {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">receivers</span>.<span class="ident">unwatch</span>(<span class="ident">oper</span>);
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">SelectHandle</span> <span class="kw">for</span> <span class="ident">Sender</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">try</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">start_send</span>(<span class="ident">token</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Backoff</span>::<span class="ident">new</span>())
-    }
-
-    <span class="kw">fn</span> <span class="ident">retry</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">start_send</span>(<span class="ident">token</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Backoff</span>::<span class="ident">new</span>())
+    <span class="kw">fn</span> <span class="ident">try_select</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">start_send</span>(<span class="ident">token</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">deadline</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Instant</span><span class="op">&gt;</span> {
         <span class="prelude-val">None</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">register</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>, <span class="ident">oper</span>: <span class="ident">Operation</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">senders</span>.<span class="ident">register</span>(<span class="ident">oper</span>);
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">is_full</span>()
+    <span class="kw">fn</span> <span class="ident">register</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">oper</span>: <span class="ident">Operation</span>, <span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">senders</span>.<span class="ident">register</span>(<span class="ident">oper</span>, <span class="ident">cx</span>);
+        <span class="self">self</span>.<span class="ident">is_ready</span>()
     }
 
     <span class="kw">fn</span> <span class="ident">unregister</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">oper</span>: <span class="ident">Operation</span>) {
         <span class="self">self</span>.<span class="number">0</span>.<span class="ident">senders</span>.<span class="ident">unregister</span>(<span class="ident">oper</span>);
     }
 
-    <span class="kw">fn</span> <span class="ident">accept</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">start_send</span>(<span class="ident">token</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Backoff</span>::<span class="ident">new</span>())
+    <span class="kw">fn</span> <span class="ident">accept</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Token</span>, <span class="ident">_cx</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">try_select</span>(<span class="ident">token</span>)
+    }
+
+    <span class="kw">fn</span> <span class="ident">is_ready</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="op">!</span><span class="self">self</span>.<span class="number">0</span>.<span class="ident">is_full</span>() <span class="op">||</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">is_disconnected</span>()
+    }
+
+    <span class="kw">fn</span> <span class="ident">watch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">oper</span>: <span class="ident">Operation</span>, <span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">senders</span>.<span class="ident">watch</span>(<span class="ident">oper</span>, <span class="ident">cx</span>);
+        <span class="self">self</span>.<span class="ident">is_ready</span>()
+    }
+
+    <span class="kw">fn</span> <span class="ident">unwatch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">oper</span>: <span class="ident">Operation</span>) {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">senders</span>.<span class="ident">unwatch</span>(<span class="ident">oper</span>);
     }
 }
 </pre></div>

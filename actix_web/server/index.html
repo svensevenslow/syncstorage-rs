@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `server` mod in crate `actix_web`."><meta name="keywords" content="rust, rustlang, rust-lang, server"><title>actix_web::server - Rust</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><p class='location'>Module server</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'><a href='../index.html'>actix_web</a></p><script>window.sidebarCurrent = {name: 'server', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../../src/actix_web/server/mod.rs.html#1-464' title='goto source code'>[src]</a></span><span class='in-band'>Module <a href='../index.html'>actix_web</a>::<wbr><a class="mod" href=''>server</a></span></h1><div class='docblock'><p>Http server module</p>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `server` mod in crate `actix_web`."><meta name="keywords" content="rust, rustlang, rust-lang, server"><title>actix_web::server - Rust</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../actix_web/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a><p class='location'>Module server</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'><a href='../index.html'>actix_web</a></p><script>window.sidebarCurrent = {name: 'server', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../../src/actix_web/server/mod.rs.html#1-370' title='goto source code'>[src]</a></span><span class='in-band'>Module <a href='../index.html'>actix_web</a>::<wbr><a class="mod" href=''>server</a></span></h1><div class='docblock'><p>Http server module</p>
 <p>The module contains everything necessary to setup
 HTTP server.</p>
 <p>In order to start HTTP server, first you need to create and configure it
@@ -7,7 +7,7 @@ using factory that can be supplied to <a href="fn.new.html">new</a>.</p>
 <p>Factory is a function that returns Application, describing how
 to serve incoming HTTP requests.</p>
 <p>As the server uses worker pool, the factory function is restricted to trait bounds
-<code>Sync + Send + 'static</code> so that each worker would be able to accept Application
+<code>Send + Clone + 'static</code> so that each worker would be able to accept Application
 without a need for synchronization.</p>
 <p>If you wish to share part of state among all workers you should
 wrap it in <code>Arc</code> and potentially synchronization primitive like
@@ -19,11 +19,8 @@ and you should minimize all locks in your request handlers</p>
 <p>Actix-web provides support for major crates that provides TLS.
 Each TLS implementation is provided with <a href="trait.AcceptorService.html">AcceptorService</a>
 that describes how HTTP Server accepts connections.</p>
-<p>For <code>bind</code> and <code>listen</code> there are corresponding <code>bind_with</code> and <code>listen_with</code> that accepts
+<p>For <code>bind</code> and <code>listen</code> there are corresponding <code>bind_ssl|tls|rustls</code> and <code>listen_ssl|tls|rustls</code> that accepts
 these services.</p>
-<p>By default, acceptor would work with both HTTP2 and HTTP1 protocols.
-But it can be controlled using <a href="struct.ServerFlags.html">ServerFlags</a> which
-can be supplied when creating <code>AcceptorService</code>.</p>
 <p><strong>NOTE:</strong> <code>native-tls</code> doesn't support <code>HTTP2</code> yet</p>
 <h2 id="signal-handling-and-shutdown" class="section-header"><a href="#signal-handling-and-shutdown">Signal handling and shutdown</a></h2>
 <p>By default HTTP Server listens for system signals
@@ -69,17 +66,13 @@ it is forcibly dropped.</p>
    <span class="comment">// load ssl keys</span>
    <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">load_ssl</span>();
 
-    <span class="comment">// Create acceptor service for only HTTP1 protocol</span>
-    <span class="comment">// You can use ::new(config) to leave defaults</span>
-    <span class="kw">let</span> <span class="ident">acceptor</span> <span class="op">=</span> <span class="ident">server</span>::<span class="ident">RustlsAcceptor</span>::<span class="ident">with_flags</span>(<span class="ident">config</span>, <span class="ident">actix_web</span>::<span class="ident">server</span>::<span class="ident">ServerFlags</span>::<span class="ident">HTTP1</span>);
-
     <span class="comment">// create and start server at once</span>
     <span class="ident">server</span>::<span class="ident">new</span>(<span class="op">||</span> {
         <span class="ident">App</span>::<span class="ident">new</span>()
             <span class="comment">// register simple handler, handle all methods</span>
             .<span class="ident">resource</span>(<span class="string">&quot;/index.html&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">f</span>(<span class="ident">index</span>))
             }))
-    }).<span class="ident">bind_with</span>(<span class="string">&quot;127.0.0.1:8080&quot;</span>, <span class="ident">acceptor</span>)
+    }).<span class="ident">bind_rustls</span>(<span class="string">&quot;127.0.0.1:8443&quot;</span>, <span class="ident">config</span>)
     .<span class="ident">unwrap</span>()
     .<span class="ident">start</span>();
 
@@ -96,7 +89,9 @@ it is forcibly dropped.</p>
 </td></tr><tr class='module-item'><td><a class="struct" href="struct.ServerSettings.html" title='actix_web::server::ServerSettings struct'>ServerSettings</a></td><td class='docblock-short'><p>Various server settings</p>
 </td></tr><tr class='module-item'><td><a class="struct" href="struct.StopServer.html" title='actix_web::server::StopServer struct'>StopServer</a></td><td class='docblock-short'><p>Stop incoming connection processing, stop all workers and exit.</p>
 </td></tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
-<table><tr class='module-item'><td><a class="enum" href="enum.KeepAlive.html" title='actix_web::server::KeepAlive enum'>KeepAlive</a></td><td class='docblock-short'><p>Server keep-alive setting</p>
+<table><tr class='module-item'><td><a class="enum" href="enum.AcceptorError.html" title='actix_web::server::AcceptorError enum'>AcceptorError</a></td><td class='docblock-short'><p>Errors produced by <code>AcceptorError</code> service.</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.HttpDispatchError.html" title='actix_web::server::HttpDispatchError enum'>HttpDispatchError</a></td><td class='docblock-short'><p>A set of errors that can occur during dispatching http requests</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.KeepAlive.html" title='actix_web::server::KeepAlive enum'>KeepAlive</a></td><td class='docblock-short'><p>Server keep-alive setting</p>
 </td></tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table><tr class='module-item'><td><a class="trait" href="trait.HttpHandler.html" title='actix_web::server::HttpHandler trait'>HttpHandler</a></td><td class='docblock-short'><p>Low level http request handler</p>
 </td></tr><tr class='module-item'><td><a class="trait" href="trait.HttpHandlerTask.html" title='actix_web::server::HttpHandlerTask trait'>HttpHandlerTask</a></td><td class='docblock-short'><p>Low level http request handler</p>

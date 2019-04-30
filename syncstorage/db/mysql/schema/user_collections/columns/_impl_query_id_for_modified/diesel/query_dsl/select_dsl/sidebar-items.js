@@ -1,1 +1,0 @@
-initSidebarItems({"trait":[["SelectDsl","The `select` method"]]});

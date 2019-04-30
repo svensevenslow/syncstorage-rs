@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.4.0/src/rr/rdata/caa.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>caa.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../../light.css" id="themeStyle"><script src="../../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../../settings.html"><img src="../../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.5.0/src/rr/rdata/caa.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>caa.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../../light.css" id="themeStyle"><script src="../../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../../trust_dns_proto/index.html'><img src='../../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../../settings.html"><img src="../../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
 <span id="2">   2</span>
 <span id="3">   3</span>
 <span id="4">   4</span>
@@ -1025,6 +1025,36 @@
 <span id="1025">1025</span>
 <span id="1026">1026</span>
 <span id="1027">1027</span>
+<span id="1028">1028</span>
+<span id="1029">1029</span>
+<span id="1030">1030</span>
+<span id="1031">1031</span>
+<span id="1032">1032</span>
+<span id="1033">1033</span>
+<span id="1034">1034</span>
+<span id="1035">1035</span>
+<span id="1036">1036</span>
+<span id="1037">1037</span>
+<span id="1038">1038</span>
+<span id="1039">1039</span>
+<span id="1040">1040</span>
+<span id="1041">1041</span>
+<span id="1042">1042</span>
+<span id="1043">1043</span>
+<span id="1044">1044</span>
+<span id="1045">1045</span>
+<span id="1046">1046</span>
+<span id="1047">1047</span>
+<span id="1048">1048</span>
+<span id="1049">1049</span>
+<span id="1050">1050</span>
+<span id="1051">1051</span>
+<span id="1052">1052</span>
+<span id="1053">1053</span>
+<span id="1054">1054</span>
+<span id="1055">1055</span>
+<span id="1056">1056</span>
+<span id="1057">1057</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2015-2017 Benjamin Fry &lt;benjaminfry@me.com&gt;</span>
 <span class="comment">//</span>
@@ -1156,9 +1186,12 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CAA</span> {
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span> <span class="kw">pub</span> <span class="ident">issuer_critical</span>: <span class="ident">bool</span>,
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span> <span class="kw">pub</span> <span class="ident">tag</span>: <span class="ident">Property</span>,
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span> <span class="kw">pub</span> <span class="ident">value</span>: <span class="ident">Value</span>,
+    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">issuer_critical</span>: <span class="ident">bool</span>,
+    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">tag</span>: <span class="ident">Property</span>,
+    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">value</span>: <span class="ident">Value</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">CAA</span> {
@@ -1312,7 +1345,10 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Property</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">tag</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">Property</span> {
-        <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">tag</span> <span class="kw">as</span> <span class="kw-2">&amp;</span><span class="ident">str</span> {
+        <span class="comment">// RFC6488 section 5.1 states that &quot;Matching of tag values is case</span>
+        <span class="comment">// insensitive.&quot;</span>
+        <span class="kw">let</span> <span class="ident">lower</span> <span class="op">=</span> <span class="ident">tag</span>.<span class="ident">to_ascii_lowercase</span>();
+        <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">lower</span> <span class="kw">as</span> <span class="kw-2">&amp;</span><span class="ident">str</span> {
             <span class="string">&quot;issue&quot;</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">Property</span>::<span class="ident">Issue</span>,
             <span class="string">&quot;issuewild&quot;</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">Property</span>::<span class="ident">IssueWild</span>,
             <span class="string">&quot;iodef&quot;</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">Property</span>::<span class="ident">Iodef</span>,
@@ -1369,19 +1405,22 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">read_value</span>(<span class="ident">tag</span>: <span class="kw-2">&amp;</span><span class="ident">Property</span>, <span class="ident">decoder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">BinDecoder</span>, <span class="ident">value_len</span>: <span class="ident">u16</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">read_value</span>(<span class="ident">tag</span>: <span class="kw-2">&amp;</span><span class="ident">Property</span>, <span class="ident">decoder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">BinDecoder</span>, <span class="ident">value_len</span>: <span class="ident">Restrict</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="ident">value_len</span> <span class="op">=</span> <span class="ident">value_len</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">u</span><span class="op">|</span> <span class="ident">u</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">unverified</span>(<span class="comment">/*used purely as length safely*/</span>);
     <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">tag</span> {
         <span class="ident">Property</span>::<span class="ident">Issue</span> <span class="op">|</span> <span class="ident">Property</span>::<span class="ident">IssueWild</span> <span class="op">=&gt;</span> {
-            <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_slice</span>(<span class="ident">value_len</span> <span class="kw">as</span> <span class="ident">usize</span>)<span class="question-mark">?</span>;
+            <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_slice</span>(<span class="ident">value_len</span>)<span class="question-mark">?</span>.<span class="ident">unverified</span>(<span class="comment">/*read_issuer verified as safe*/</span>);
             <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">read_issuer</span>(<span class="ident">slice</span>)<span class="question-mark">?</span>;
             <span class="prelude-val">Ok</span>(<span class="ident">Value</span>::<span class="ident">Issuer</span>(<span class="ident">value</span>.<span class="number">0</span>, <span class="ident">value</span>.<span class="number">1</span>))
         }
         <span class="ident">Property</span>::<span class="ident">Iodef</span> <span class="op">=&gt;</span> {
-            <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_slice</span>(<span class="ident">value_len</span> <span class="kw">as</span> <span class="ident">usize</span>)<span class="question-mark">?</span>;
+            <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_slice</span>(<span class="ident">value_len</span>)<span class="question-mark">?</span>.<span class="ident">unverified</span>(<span class="comment">/*read_iodef verified as safe*/</span>);
             <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">read_iodef</span>(<span class="ident">url</span>)<span class="question-mark">?</span>;
             <span class="prelude-val">Ok</span>(<span class="ident">Value</span>::<span class="ident">Url</span>(<span class="ident">url</span>))
         }
-        <span class="ident">Property</span>::<span class="ident">Unknown</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">Value</span>::<span class="ident">Unknown</span>(<span class="ident">decoder</span>.<span class="ident">read_vec</span>(<span class="ident">value_len</span> <span class="kw">as</span> <span class="ident">usize</span>)<span class="question-mark">?</span>)),
+        <span class="ident">Property</span>::<span class="ident">Unknown</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">Value</span>::<span class="ident">Unknown</span>(
+            <span class="ident">decoder</span>.<span class="ident">read_vec</span>(<span class="ident">value_len</span>)<span class="question-mark">?</span>.<span class="ident">unverified</span>(<span class="comment">/*unknown will fail in usage*/</span>),
+        )),
     }
 }
 
@@ -1421,6 +1460,7 @@
 <span class="kw">enum</span> <span class="ident">ParseNameKeyPairState</span> {
     <span class="ident">BeforeKey</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">KeyValue</span><span class="op">&gt;</span>),
     <span class="ident">Key</span> {
+        <span class="ident">first_char</span>: <span class="ident">bool</span>,
         <span class="ident">key</span>: <span class="ident">String</span>,
         <span class="ident">key_values</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">KeyValue</span><span class="op">&gt;</span>,
     },
@@ -1499,6 +1539,15 @@
 <span class="doccomment">///    The semantics of issuer-parameters are determined by the issuer</span>
 <span class="doccomment">///    alone.</span>
 <span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Updated parsing rules:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// [RFC 6844bis, CAA Resource Record, May 2018](https://tools.ietf.org/html/draft-ietf-lamps-rfc6844bis-00)</span>
+<span class="doccomment">/// [RFC 6844, CAA Record Extensions, May 2018](https://tools.ietf.org/html/draft-ietf-acme-caa-04)</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This explicitly allows `-` in key names, diverging from the original RFC. To support this, key names will</span>
+<span class="doccomment">/// allow `-` as non-starting characters. Additionally, this significantly relaxes the characters allowed in the value</span>
+<span class="doccomment">/// to allow URL like characters (it does not validate URL syntax).</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_issuer</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Name</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">KeyValue</span><span class="op">&gt;</span>)<span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">byte_iter</span> <span class="op">=</span> <span class="ident">bytes</span>.<span class="ident">iter</span>();
 
@@ -1531,17 +1580,17 @@
                         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
                         <span class="ident">key</span>.<span class="ident">push</span>(<span class="ident">ch</span>);
 
-                        <span class="ident">state</span> <span class="op">=</span> <span class="ident">ParseNameKeyPairState</span>::<span class="ident">Key</span> { <span class="ident">key</span>, <span class="ident">key_values</span> }
+                        <span class="ident">state</span> <span class="op">=</span> <span class="ident">ParseNameKeyPairState</span>::<span class="ident">Key</span> {
+                            <span class="ident">first_char</span>: <span class="bool-val">true</span>,
+                            <span class="ident">key</span>,
+                            <span class="ident">key_values</span>,
+                        }
                     }
-                    <span class="ident">ch</span> <span class="op">=&gt;</span> {
-                        <span class="kw">return</span> <span class="prelude-val">Err</span>(
-                            <span class="ident">ProtoErrorKind</span>::<span class="ident">Msg</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;bad character in CAA issuer key: {}&quot;</span>, <span class="ident">ch</span>))
-                                .<span class="ident">into</span>(),
-                        )
-                    }
+                    <span class="ident">ch</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;bad character in CAA issuer key: {}&quot;</span>, <span class="ident">ch</span>).<span class="ident">into</span>()),
                 }
             }
             <span class="ident">ParseNameKeyPairState</span>::<span class="ident">Key</span> {
+                <span class="kw-2">mut</span> <span class="ident">first_char</span>,
                 <span class="kw-2">mut</span> <span class="ident">key</span>,
                 <span class="ident">key_values</span>,
             } <span class="op">=&gt;</span> {
@@ -1556,17 +1605,18 @@
                         }
                     }
                     <span class="comment">// push onto the existing key</span>
-                    <span class="ident">ch</span> <span class="kw">if</span> <span class="ident">ch</span>.<span class="ident">is_alphanumeric</span>() <span class="op">&amp;&amp;</span> <span class="ident">ch</span> <span class="op">!=</span> <span class="string">&#39;=&#39;</span> <span class="op">&amp;&amp;</span> <span class="ident">ch</span> <span class="op">!=</span> <span class="string">&#39;;&#39;</span> <span class="op">=&gt;</span> {
+                    <span class="ident">ch</span> <span class="kw">if</span> (<span class="ident">ch</span>.<span class="ident">is_alphanumeric</span>() <span class="op">||</span> (<span class="op">!</span><span class="ident">first_char</span> <span class="op">&amp;&amp;</span> <span class="ident">ch</span> <span class="op">==</span> <span class="string">&#39;-&#39;</span>))
+                        <span class="op">&amp;&amp;</span> <span class="ident">ch</span> <span class="op">!=</span> <span class="string">&#39;=&#39;</span>
+                        <span class="op">&amp;&amp;</span> <span class="ident">ch</span> <span class="op">!=</span> <span class="string">&#39;;&#39;</span> <span class="op">=&gt;</span>
+                    {
                         <span class="ident">key</span>.<span class="ident">push</span>(<span class="ident">ch</span>);
-
-                        <span class="ident">state</span> <span class="op">=</span> <span class="ident">ParseNameKeyPairState</span>::<span class="ident">Key</span> { <span class="ident">key</span>, <span class="ident">key_values</span> }
+                        <span class="ident">state</span> <span class="op">=</span> <span class="ident">ParseNameKeyPairState</span>::<span class="ident">Key</span> {
+                            <span class="ident">first_char</span>: <span class="bool-val">false</span>,
+                            <span class="ident">key</span>,
+                            <span class="ident">key_values</span>,
+                        }
                     }
-                    <span class="ident">ch</span> <span class="op">=&gt;</span> {
-                        <span class="kw">return</span> <span class="prelude-val">Err</span>(
-                            <span class="ident">ProtoErrorKind</span>::<span class="ident">Msg</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;bad character in CAA issuer key: {}&quot;</span>, <span class="ident">ch</span>))
-                                .<span class="ident">into</span>(),
-                        )
-                    }
+                    <span class="ident">ch</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;bad character in CAA issuer key: {}&quot;</span>, <span class="ident">ch</span>).<span class="ident">into</span>()),
                 }
             }
             <span class="ident">ParseNameKeyPairState</span>::<span class="ident">Value</span> {
@@ -1581,7 +1631,7 @@
                         <span class="ident">state</span> <span class="op">=</span> <span class="ident">ParseNameKeyPairState</span>::<span class="ident">BeforeKey</span>(<span class="ident">key_values</span>);
                     }
                     <span class="comment">// push onto the existing key</span>
-                    <span class="ident">ch</span> <span class="kw">if</span> <span class="ident">ch</span>.<span class="ident">is_alphanumeric</span>() <span class="op">=&gt;</span> {
+                    <span class="ident">ch</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">ch</span>.<span class="ident">is_control</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">ch</span>.<span class="ident">is_whitespace</span>() <span class="op">=&gt;</span> {
                         <span class="ident">value</span>.<span class="ident">push</span>(<span class="ident">ch</span>);
 
                         <span class="ident">state</span> <span class="op">=</span> <span class="ident">ParseNameKeyPairState</span>::<span class="ident">Value</span> {
@@ -1590,13 +1640,7 @@
                             <span class="ident">key_values</span>,
                         }
                     }
-                    <span class="ident">ch</span> <span class="op">=&gt;</span> {
-                        <span class="kw">return</span> <span class="prelude-val">Err</span>(
-                            <span class="ident">ProtoErrorKind</span>::<span class="ident">Msg</span>(
-                                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;bad character in CAA issuer value: {}&quot;</span>, <span class="ident">ch</span>),
-                            ).<span class="ident">into</span>(),
-                        )
-                    }
+                    <span class="ident">ch</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;bad character in CAA issuer value: &#39;{}&#39;&quot;</span>, <span class="ident">ch</span>).<span class="ident">into</span>()),
                 }
             }
         }
@@ -1615,7 +1659,7 @@
             <span class="ident">key_values</span>
         }
         <span class="ident">ParseNameKeyPairState</span>::<span class="ident">Key</span> { <span class="ident">key</span>, .. } <span class="op">=&gt;</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ProtoErrorKind</span>::<span class="ident">Msg</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;key missing value: {}&quot;</span>, <span class="ident">key</span>)).<span class="ident">into</span>())
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;key missing value: {}&quot;</span>, <span class="ident">key</span>).<span class="ident">into</span>())
         }
     };
 
@@ -1675,7 +1719,7 @@
     }
 }
 
-<span class="doccomment">/// Read the bincary CAA format</span>
+<span class="doccomment">/// Read the binary CAA format</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// [RFC 6844, DNS Certification Authority Authorization, January 2013](https://tools.ietf.org/html/rfc6844#section-5.1)</span>
 <span class="doccomment">///</span>
@@ -1753,11 +1797,15 @@
 <span class="doccomment">///      The length of the value field is specified implicitly as the</span>
 <span class="doccomment">///      remaining length of the enclosing Resource Record data field.</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read</span>(<span class="ident">decoder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">BinDecoder</span>, <span class="ident">rdata_length</span>: <span class="ident">u16</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">CAA</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read</span>(<span class="ident">decoder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">BinDecoder</span>, <span class="ident">rdata_length</span>: <span class="ident">Restrict</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">CAA</span><span class="op">&gt;</span> {
     <span class="comment">// the spec declares that other flags should be ignored for future compatability...</span>
-    <span class="kw">let</span> <span class="ident">issuer_critical</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> <span class="op">&amp;</span> <span class="number">0b1000_0000</span> <span class="op">!=</span> <span class="number">0</span>;
-    <span class="kw">let</span> <span class="ident">tag_len</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">value_len</span> <span class="op">=</span> (<span class="ident">rdata_length</span> <span class="op">-</span> <span class="ident">u16</span>::<span class="ident">from</span>(<span class="ident">tag_len</span>)) <span class="op">-</span> <span class="number">2</span>;
+    <span class="kw">let</span> <span class="ident">issuer_critical</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>.<span class="ident">unverified</span>(<span class="comment">/*used as bitfield*/</span>) <span class="op">&amp;</span> <span class="number">0b1000_0000</span> <span class="op">!=</span> <span class="number">0</span>;
+
+    <span class="kw">let</span> <span class="ident">tag_len</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>; 
+    <span class="kw">let</span> <span class="ident">value_len</span>: <span class="ident">Restrict</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">rdata_length</span>
+        .<span class="ident">checked_sub</span>(<span class="ident">u16</span>::<span class="ident">from</span>(<span class="ident">tag_len</span>.<span class="ident">unverified</span>(<span class="comment">/*safe usage here*/</span>)))
+        .<span class="ident">checked_sub</span>(<span class="number">2</span>)
+        .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ProtoError</span>::<span class="ident">from</span>(<span class="string">&quot;CAA tag character(s) out of bounds&quot;</span>))<span class="question-mark">?</span>;
 
     <span class="kw">let</span> <span class="ident">tag</span> <span class="op">=</span> <span class="ident">read_tag</span>(<span class="ident">decoder</span>, <span class="ident">tag_len</span>)<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">tag</span> <span class="op">=</span> <span class="ident">Property</span>::<span class="ident">from</span>(<span class="ident">tag</span>);
@@ -1771,21 +1819,23 @@
 }
 
 <span class="comment">// TODO: change this to return &amp;str</span>
-<span class="kw">fn</span> <span class="ident">read_tag</span>(<span class="ident">decoder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">BinDecoder</span>, <span class="ident">len</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="ident">len</span> <span class="op">==</span> <span class="number">0</span> <span class="op">||</span> <span class="ident">len</span> <span class="op">&gt;</span> <span class="number">15</span> {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ProtoErrorKind</span>::<span class="ident">Message</span>(<span class="string">&quot;CAA tag length out of bounds, 1-15&quot;</span>).<span class="ident">into</span>());
-    }
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tag</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">with_capacity</span>(<span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>);
+<span class="kw">fn</span> <span class="ident">read_tag</span>(<span class="ident">decoder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">BinDecoder</span>, <span class="ident">len</span>: <span class="ident">Restrict</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">len</span>
+        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">len</span><span class="op">|</span> <span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>)
+        .<span class="ident">verify_unwrap</span>(<span class="op">|</span><span class="ident">len</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">len</span> <span class="op">&gt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="kw-2">*</span><span class="ident">len</span> <span class="op">&lt;=</span> <span class="number">15</span>)
+        .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ProtoError</span>::<span class="ident">from</span>(<span class="string">&quot;CAA tag length out of bounds, 1-15&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tag</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">with_capacity</span>(<span class="ident">len</span>);
 
     <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">len</span> {
-        <span class="kw">let</span> <span class="ident">ch</span> <span class="op">=</span> <span class="ident">char</span>::<span class="ident">from</span>(<span class="ident">decoder</span>.<span class="ident">pop</span>()<span class="question-mark">?</span>);
+        <span class="kw">let</span> <span class="ident">ch</span> <span class="op">=</span> <span class="ident">decoder</span>
+            .<span class="ident">pop</span>()<span class="question-mark">?</span>
+            .<span class="ident">map</span>(<span class="ident">char</span>::<span class="ident">from</span>)
+            .<span class="ident">verify_unwrap</span>(<span class="op">|</span><span class="ident">ch</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">ch</span> {
+                <span class="string">&#39;a&#39;</span>...<span class="string">&#39;z&#39;</span> <span class="op">|</span> <span class="string">&#39;A&#39;</span>...<span class="string">&#39;Z&#39;</span> <span class="op">|</span> <span class="string">&#39;0&#39;</span>...<span class="string">&#39;9&#39;</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            }).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ProtoError</span>::<span class="ident">from</span>(<span class="string">&quot;CAA tag character(s) out of bounds&quot;</span>))<span class="question-mark">?</span>;
 
-        <span class="kw">match</span> <span class="ident">ch</span> {
-            <span class="ident">ch</span> @ <span class="string">&#39;a&#39;</span>...<span class="string">&#39;z&#39;</span> <span class="op">|</span> <span class="ident">ch</span> @ <span class="string">&#39;A&#39;</span>...<span class="string">&#39;Z&#39;</span> <span class="op">|</span> <span class="ident">ch</span> @ <span class="string">&#39;0&#39;</span>...<span class="string">&#39;9&#39;</span> <span class="op">=&gt;</span> {
-                <span class="ident">tag</span>.<span class="ident">push</span>(<span class="ident">ch</span>);
-            }
-            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ProtoErrorKind</span>::<span class="ident">Message</span>(<span class="string">&quot;CAA tag character(s) out of bounds&quot;</span>).<span class="ident">into</span>()),
-        }
+        <span class="ident">tag</span>.<span class="ident">push</span>(<span class="ident">ch</span>);
     }
 
     <span class="prelude-val">Ok</span>(<span class="ident">tag</span>)
@@ -1798,16 +1848,14 @@
 
     <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">property</span>.<span class="ident">len</span>();
     <span class="kw">if</span> <span class="ident">len</span> <span class="op">&gt;</span> ::<span class="ident">std</span>::<span class="ident">u8</span>::<span class="ident">MAX</span> <span class="kw">as</span> <span class="ident">usize</span> {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ProtoErrorKind</span>::<span class="ident">Msg</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;CAA property too long: {}&quot;</span>, <span class="ident">len</span>)).<span class="ident">into</span>());
+        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;CAA property too long: {}&quot;</span>, <span class="ident">len</span>).<span class="ident">into</span>());
     }
     <span class="kw">if</span> <span class="ident">buf</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">len</span> {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(
-            <span class="ident">ProtoErrorKind</span>::<span class="ident">Msg</span>(<span class="macro">format</span><span class="macro">!</span>(
-                <span class="string">&quot;insufficient capacity in CAA buffer: {} for tag: {}&quot;</span>,
-                <span class="ident">buf</span>.<span class="ident">len</span>(),
-                <span class="ident">len</span>
-            )).<span class="ident">into</span>(),
-        );
+        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(
+            <span class="string">&quot;insufficient capacity in CAA buffer: {} for tag: {}&quot;</span>,
+            <span class="ident">buf</span>.<span class="ident">len</span>(),
+            <span class="ident">len</span>
+        ).<span class="ident">into</span>());
     }
 
     <span class="comment">// copy into the buffer</span>
@@ -1840,15 +1888,15 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>;
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_read_tag</span>() {
         <span class="kw">let</span> <span class="ident">ok_under15</span> <span class="op">=</span> <span class="string">b&quot;abcxyzABCXYZ019&quot;</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">BinDecoder</span>::<span class="ident">new</span>(<span class="ident">ok_under15</span>);
 
-        <span class="kw">let</span> <span class="ident">read</span> <span class="op">=</span> <span class="ident">read_tag</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">decoder</span>, <span class="ident">ok_under15</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u8</span>).<span class="ident">expect</span>(<span class="string">&quot;failed to read tag&quot;</span>);
+        <span class="kw">let</span> <span class="ident">read</span> <span class="op">=</span> <span class="ident">read_tag</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">decoder</span>, <span class="ident">Restrict</span>::<span class="ident">new</span>(<span class="ident">ok_under15</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u8</span>)).<span class="ident">expect</span>(<span class="string">&quot;failed to read tag&quot;</span>);
 
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">str</span>::<span class="ident">from_utf8</span>(<span class="ident">ok_under15</span>).<span class="ident">unwrap</span>(), <span class="ident">read</span>);
     }
@@ -1858,7 +1906,7 @@
         <span class="kw">let</span> <span class="ident">bad_under15</span> <span class="op">=</span> <span class="string">b&quot;-&quot;</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">BinDecoder</span>::<span class="ident">new</span>(<span class="ident">bad_under15</span>);
 
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">read_tag</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">decoder</span>, <span class="ident">bad_under15</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u8</span>).<span class="ident">is_err</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">read_tag</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">decoder</span>, <span class="ident">Restrict</span>::<span class="ident">new</span>(<span class="ident">bad_under15</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u8</span>)).<span class="ident">is_err</span>());
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1866,7 +1914,7 @@
         <span class="kw">let</span> <span class="ident">too_short</span> <span class="op">=</span> <span class="string">b&quot;&quot;</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">BinDecoder</span>::<span class="ident">new</span>(<span class="ident">too_short</span>);
 
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">read_tag</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">decoder</span>, <span class="ident">too_short</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u8</span>).<span class="ident">is_err</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">read_tag</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">decoder</span>, <span class="ident">Restrict</span>::<span class="ident">new</span>(<span class="ident">too_short</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u8</span>)).<span class="ident">is_err</span>());
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1874,13 +1922,13 @@
         <span class="kw">let</span> <span class="ident">too_long</span> <span class="op">=</span> <span class="string">b&quot;0123456789abcdef&quot;</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">BinDecoder</span>::<span class="ident">new</span>(<span class="ident">too_long</span>);
 
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">read_tag</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">decoder</span>, <span class="ident">too_long</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u8</span>).<span class="ident">is_err</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">read_tag</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">decoder</span>, <span class="ident">Restrict</span>::<span class="ident">new</span>(<span class="ident">too_long</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u8</span>)).<span class="ident">is_err</span>());
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_from_str_property</span>() {
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Property</span>::<span class="ident">from</span>(<span class="string">&quot;issue&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">Property</span>::<span class="ident">Issue</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Property</span>::<span class="ident">from</span>(<span class="string">&quot;issuewild&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">Property</span>::<span class="ident">IssueWild</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Property</span>::<span class="ident">from</span>(<span class="string">&quot;Issue&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">Property</span>::<span class="ident">Issue</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Property</span>::<span class="ident">from</span>(<span class="string">&quot;issueWild&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">Property</span>::<span class="ident">IssueWild</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Property</span>::<span class="ident">from</span>(<span class="string">&quot;iodef&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">Property</span>::<span class="ident">Iodef</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(
             <span class="ident">Property</span>::<span class="ident">from</span>(<span class="string">&quot;unknown&quot;</span>.<span class="ident">to_string</span>()),
@@ -1895,12 +1943,10 @@
             <span class="ident">read_issuer</span>(<span class="string">b&quot;ca.example.net; account=230123&quot;</span>).<span class="ident">unwrap</span>(),
             (
                 <span class="prelude-val">Some</span>(<span class="ident">Name</span>::<span class="ident">parse</span>(<span class="string">&quot;ca.example.net&quot;</span>, <span class="prelude-val">None</span>).<span class="ident">unwrap</span>()),
-                <span class="macro">vec</span><span class="macro">!</span>[
-                    <span class="ident">KeyValue</span> {
-                        <span class="ident">key</span>: <span class="string">&quot;account&quot;</span>.<span class="ident">to_string</span>(),
-                        <span class="ident">value</span>: <span class="string">&quot;230123&quot;</span>.<span class="ident">to_string</span>(),
-                    },
-                ],
+                <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">KeyValue</span> {
+                    <span class="ident">key</span>: <span class="string">&quot;account&quot;</span>.<span class="ident">to_string</span>(),
+                    <span class="ident">value</span>: <span class="string">&quot;230123&quot;</span>.<span class="ident">to_string</span>(),
+                }],
             )
         );
 
@@ -1912,12 +1958,10 @@
             <span class="ident">read_issuer</span>(<span class="string">b&quot;ca.example.net; policy=ev&quot;</span>).<span class="ident">unwrap</span>(),
             (
                 <span class="prelude-val">Some</span>(<span class="ident">Name</span>::<span class="ident">parse</span>(<span class="string">&quot;ca.example.net&quot;</span>, <span class="prelude-val">None</span>).<span class="ident">unwrap</span>(),),
-                <span class="macro">vec</span><span class="macro">!</span>[
-                    <span class="ident">KeyValue</span> {
-                        <span class="ident">key</span>: <span class="string">&quot;policy&quot;</span>.<span class="ident">to_string</span>(),
-                        <span class="ident">value</span>: <span class="string">&quot;ev&quot;</span>.<span class="ident">to_string</span>(),
-                    },
-                ],
+                <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">KeyValue</span> {
+                    <span class="ident">key</span>: <span class="string">&quot;policy&quot;</span>.<span class="ident">to_string</span>(),
+                    <span class="ident">value</span>: <span class="string">&quot;ev&quot;</span>.<span class="ident">to_string</span>(),
+                }],
             )
         );
         <span class="macro">assert_eq</span><span class="macro">!</span>(
@@ -1932,6 +1976,22 @@
                     <span class="ident">KeyValue</span> {
                         <span class="ident">key</span>: <span class="string">&quot;policy&quot;</span>.<span class="ident">to_string</span>(),
                         <span class="ident">value</span>: <span class="string">&quot;ev&quot;</span>.<span class="ident">to_string</span>(),
+                    },
+                ],
+            )
+        );
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">read_issuer</span>(<span class="string">b&quot;example.net; account-uri=https://example.net/account/1234; validation-methods=dns-01&quot;</span>).<span class="ident">unwrap</span>(),
+            (
+                <span class="prelude-val">Some</span>(<span class="ident">Name</span>::<span class="ident">parse</span>(<span class="string">&quot;example.net&quot;</span>, <span class="prelude-val">None</span>).<span class="ident">unwrap</span>(),),
+                <span class="macro">vec</span><span class="macro">!</span>[
+                    <span class="ident">KeyValue</span> {
+                        <span class="ident">key</span>: <span class="string">&quot;account-uri&quot;</span>.<span class="ident">to_string</span>(),
+                        <span class="ident">value</span>: <span class="string">&quot;https://example.net/account/1234&quot;</span>.<span class="ident">to_string</span>(),
+                    },
+                    <span class="ident">KeyValue</span> {
+                        <span class="ident">key</span>: <span class="string">&quot;validation-methods&quot;</span>.<span class="ident">to_string</span>(),
+                        <span class="ident">value</span>: <span class="string">&quot;dns-01&quot;</span>.<span class="ident">to_string</span>(),
                     },
                 ],
             )
@@ -1960,7 +2020,7 @@
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;bytes: {:?}&quot;</span>, <span class="ident">bytes</span>);
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span>: <span class="ident">BinDecoder</span> <span class="op">=</span> <span class="ident">BinDecoder</span>::<span class="ident">new</span>(<span class="ident">bytes</span>);
-        <span class="kw">let</span> <span class="ident">read_rdata</span> <span class="op">=</span> <span class="ident">read</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">decoder</span>, <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u16</span>).<span class="ident">expect</span>(<span class="string">&quot;failed to read back&quot;</span>);
+        <span class="kw">let</span> <span class="ident">read_rdata</span> <span class="op">=</span> <span class="ident">read</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">decoder</span>, <span class="ident">Restrict</span>::<span class="ident">new</span>(<span class="ident">bytes</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u16</span>)).<span class="ident">expect</span>(<span class="string">&quot;failed to read back&quot;</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rdata</span>, <span class="ident">read_rdata</span>);
     }
 

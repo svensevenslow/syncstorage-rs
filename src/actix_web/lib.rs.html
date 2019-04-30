@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-web-0.7.7/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-web-0.7.19/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../actix_web/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -290,9 +290,6 @@
 <span id="290">290</span>
 <span id="291">291</span>
 <span id="292">292</span>
-<span id="293">293</span>
-<span id="294">294</span>
-<span id="295">295</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Actix web is a small, pragmatic, and extremely fast web framework</span>
 <span class="doccomment">//! for Rust.</span>
@@ -360,8 +357,8 @@
 <span class="doccomment">//! ## Package feature</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! * `tls` - enables ssl support via `native-tls` crate</span>
-<span class="doccomment">//! * `alpn` - enables ssl support via `openssl` crate, require for `http/2`</span>
-<span class="doccomment">//!    support</span>
+<span class="doccomment">//! * `ssl` - enables ssl support via `openssl` crate, supports `http/2`</span>
+<span class="doccomment">//! * `rust-tls` - enables ssl support via `rustls` crate, supports `http/2`</span>
 <span class="doccomment">//! * `uds` - enables support for making client requests via Unix Domain Sockets.</span>
 <span class="doccomment">//!   Unix only. Not necessary for *serving* requests.</span>
 <span class="doccomment">//! * `session` - enables session support, includes `ring` crate as</span>
@@ -376,11 +373,8 @@
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">actix_nightly</span>, <span class="ident">feature</span>(
     <span class="ident">specialization</span>, <span class="comment">// for impl ErrorResponse for std::error::Error</span>
     <span class="ident">extern_prelude</span>,
+    <span class="ident">tool_lints</span>,
 ))]</span>
-<span class="attribute">#![<span class="ident">cfg_attr</span>(
-    <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cargo-clippy&quot;</span>,
-    <span class="ident">allow</span>(<span class="ident">decimal_literal_representation</span>, <span class="ident">suspicious_arithmetic_impl</span>)
-)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>)]</span>
 
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
@@ -401,7 +395,6 @@
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">futures</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">cookie</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">futures_cpupool</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">htmlescape</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">http</span> <span class="kw">as</span> <span class="ident">modhttp</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">httparse</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">language_tags</span>;
@@ -436,6 +429,9 @@
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">percent_encoding</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serde_json</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">smallvec</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">v_htmlescape</span>;
+
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">actix_net</span>;
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">actix</span> <span class="kw">as</span> <span class="ident">actix_inner</span>;
 
@@ -514,14 +510,12 @@
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">actix</span> {
     <span class="doccomment">//! Re-exports [actix&#39;s](https://docs.rs/actix/) prelude</span>
-
-    <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">actix</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">actix</span>::<span class="ident">actors</span>::<span class="ident">resolver</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">actix</span>::<span class="ident">actors</span>::<span class="ident">signal</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">actix</span>::<span class="ident">fut</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">actix</span>::<span class="ident">msgs</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">actix</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">actix</span>::{<span class="ident">run</span>, <span class="ident">spawn</span>};
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">actix_inner</span>::<span class="ident">actors</span>::<span class="ident">resolver</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">actix_inner</span>::<span class="ident">actors</span>::<span class="ident">signal</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">actix_inner</span>::<span class="ident">fut</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">actix_inner</span>::<span class="ident">msgs</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">actix_inner</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">actix_inner</span>::{<span class="ident">run</span>, <span class="ident">spawn</span>};
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;openssl&quot;</span>)]</span>
@@ -552,7 +546,7 @@
 
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">body</span>::<span class="ident">BodyStream</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">context</span>::<span class="ident">Drain</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extractor</span>::{<span class="ident">FormConfig</span>, <span class="ident">PayloadConfig</span>};
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extractor</span>::{<span class="ident">FormConfig</span>, <span class="ident">PayloadConfig</span>, <span class="ident">QueryConfig</span>, <span class="ident">PathConfig</span>, <span class="ident">EitherConfig</span>, <span class="ident">EitherCollisionStrategy</span>};
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">handler</span>::{<span class="ident">AsyncResult</span>, <span class="ident">Handler</span>};
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">httpmessage</span>::{<span class="ident">MessageBody</span>, <span class="ident">Readlines</span>, <span class="ident">UrlEncoded</span>};
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">httpresponse</span>::<span class="ident">HttpResponseBuilder</span>;

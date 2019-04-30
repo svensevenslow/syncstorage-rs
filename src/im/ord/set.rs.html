@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/im-12.2.0/./src/ord/set.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>set.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/im-12.3.4/./src/ord/set.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>set.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../im/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
 <span id="2">   2</span>
 <span id="3">   3</span>
 <span id="4">   4</span>
@@ -1140,6 +1140,24 @@
 <span id="1140">1140</span>
 <span id="1141">1141</span>
 <span id="1142">1142</span>
+<span id="1143">1143</span>
+<span id="1144">1144</span>
+<span id="1145">1145</span>
+<span id="1146">1146</span>
+<span id="1147">1147</span>
+<span id="1148">1148</span>
+<span id="1149">1149</span>
+<span id="1150">1150</span>
+<span id="1151">1151</span>
+<span id="1152">1152</span>
+<span id="1153">1153</span>
+<span id="1154">1154</span>
+<span id="1155">1155</span>
+<span id="1156">1156</span>
+<span id="1157">1157</span>
+<span id="1158">1158</span>
+<span id="1159">1159</span>
+<span id="1160">1160</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="comment">// License, v. 2.0. If a copy of the MPL was not distributed with this</span>
@@ -1168,16 +1186,16 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">iter</span>::{<span class="ident">FromIterator</span>, <span class="ident">IntoIterator</span>, <span class="ident">Sum</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::{<span class="ident">Add</span>, <span class="ident">Deref</span>, <span class="ident">Mul</span>, <span class="ident">RangeBounds</span>};
 
-<span class="kw">use</span> <span class="ident">hashset</span>::<span class="ident">HashSet</span>;
-<span class="kw">use</span> <span class="ident">nodes</span>::<span class="ident">btree</span>::{
-    <span class="ident">BTreeValue</span>, <span class="ident">ConsumingIter</span> <span class="kw">as</span> <span class="ident">ConsumingNodeIter</span>, <span class="ident">DiffItem</span> <span class="kw">as</span> <span class="ident">NodeDiffItem</span>,
-    <span class="ident">DiffIter</span> <span class="kw">as</span> <span class="ident">NodeDiffIter</span>, <span class="ident">Insert</span>, <span class="ident">Iter</span> <span class="kw">as</span> <span class="ident">NodeIter</span>, <span class="ident">Node</span>, <span class="ident">Remove</span>,
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">hashset</span>::<span class="ident">HashSet</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">nodes</span>::<span class="ident">btree</span>::{
+    <span class="ident">BTreeValue</span>, <span class="ident">ConsumingIter</span> <span class="kw">as</span> <span class="ident">ConsumingNodeIter</span>, <span class="ident">DiffIter</span> <span class="kw">as</span> <span class="ident">NodeDiffIter</span>, <span class="ident">Insert</span>,
+    <span class="ident">Iter</span> <span class="kw">as</span> <span class="ident">NodeIter</span>, <span class="ident">Node</span>, <span class="ident">Remove</span>,
 };
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">has_specialisation</span>)]</span>
-<span class="kw">use</span> <span class="ident">util</span>::<span class="ident">linear_search_by</span>;
-<span class="kw">use</span> <span class="ident">util</span>::<span class="ident">Ref</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">util</span>::<span class="ident">linear_search_by</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">util</span>::<span class="ident">Ref</span>;
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">DiffItem</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">NodeDiffItem</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">nodes</span>::<span class="ident">btree</span>::<span class="ident">DiffItem</span>;
 
 <span class="doccomment">/// Construct a set from a sequence of values.</span>
 <span class="doccomment">///</span>
@@ -1219,7 +1237,7 @@
 <span class="comment">// FIXME lacking specialisation, we can&#39;t simply implement `BTreeValue`</span>
 <span class="comment">// for `A`, we have to use the `Value&lt;A&gt;` indirection.</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">has_specialisation</span>))]</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">BTreeValue</span> <span class="kw">for</span> <span class="ident">Value</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">BTreeValue</span> <span class="kw">for</span> <span class="ident">Value</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">type</span> <span class="ident">Key</span> <span class="op">=</span> <span class="ident">A</span>;
 
     <span class="kw">fn</span> <span class="ident">ptr_eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
@@ -1252,7 +1270,7 @@
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">has_specialisation</span>)]</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">BTreeValue</span> <span class="kw">for</span> <span class="ident">Value</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">BTreeValue</span> <span class="kw">for</span> <span class="ident">Value</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">type</span> <span class="ident">Key</span> <span class="op">=</span> <span class="ident">A</span>;
 
     <span class="kw">fn</span> <span class="ident">ptr_eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
@@ -1285,7 +1303,7 @@
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">has_specialisation</span>)]</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Copy</span><span class="op">&gt;</span> <span class="ident">BTreeValue</span> <span class="kw">for</span> <span class="ident">Value</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Copy</span><span class="op">&gt;</span> <span class="ident">BTreeValue</span> <span class="kw">for</span> <span class="ident">Value</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">search_key</span><span class="op">&lt;</span><span class="ident">BK</span><span class="op">&gt;</span>(<span class="ident">slice</span>: <span class="kw-2">&amp;</span>[<span class="self">Self</span>], <span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">BK</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">usize</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">BK</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span>,
@@ -1318,10 +1336,7 @@
     <span class="ident">root</span>: <span class="ident">Ref</span><span class="op">&lt;</span><span class="ident">Node</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span>,
-{
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Construct an empty set.</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
@@ -1333,18 +1348,31 @@
 
     <span class="doccomment">/// Construct a set with a single value.</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// This method has been deprecated; use [`unit`][unit] instead.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [unit]: #method.unit</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="attribute">#[<span class="ident">deprecated</span>(<span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;12.3.0&quot;</span>, <span class="ident">note</span> <span class="op">=</span> <span class="string">&quot;renamed to `unit` for consistency&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">singleton</span>(<span class="ident">a</span>: <span class="ident">A</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span>::<span class="ident">unit</span>(<span class="ident">a</span>)
+    }
+
+    <span class="doccomment">/// Construct a set with a single value.</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # #[macro_use] extern crate im;</span>
     <span class="doccomment">/// # use im::ordset::OrdSet;</span>
     <span class="doccomment">/// # fn main() {</span>
-    <span class="doccomment">/// let set = OrdSet::singleton(123);</span>
+    <span class="doccomment">/// let set = OrdSet::unit(123);</span>
     <span class="doccomment">/// assert!(set.contains(&amp;123));</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">singleton</span>(<span class="ident">a</span>: <span class="ident">A</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unit</span>(<span class="ident">a</span>: <span class="ident">A</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="ident">OrdSet</span> {
             <span class="ident">size</span>: <span class="number">1</span>,
             <span class="ident">root</span>: <span class="ident">Ref</span>::<span class="ident">from</span>(<span class="ident">Node</span>::<span class="ident">unit</span>(<span class="ident">Value</span>(<span class="ident">a</span>))),
@@ -1394,6 +1422,36 @@
         <span class="self">self</span>.<span class="ident">size</span>
     }
 
+    <span class="doccomment">/// Discard all elements from the set.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This leaves you with an empty set, and all elements that</span>
+    <span class="doccomment">/// were previously inside it are dropped.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Time: O(n)</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #[macro_use] extern crate im;</span>
+    <span class="doccomment">/// # use im::OrdSet;</span>
+    <span class="doccomment">/// # fn main() {</span>
+    <span class="doccomment">/// let mut set = ordset![1, 2, 3];</span>
+    <span class="doccomment">/// set.clear();</span>
+    <span class="doccomment">/// assert!(set.is_empty());</span>
+    <span class="doccomment">/// # }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clear</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_empty</span>() {
+            <span class="self">self</span>.<span class="ident">root</span> <span class="op">=</span> <span class="ident">Default</span>::<span class="ident">default</span>();
+            <span class="self">self</span>.<span class="ident">size</span> <span class="op">=</span> <span class="number">0</span>;
+        }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">A</span>: <span class="ident">Ord</span>,
+{
     <span class="doccomment">/// Get the smallest value in a set.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// If the set is empty, returns `None`.</span>
@@ -1474,6 +1532,37 @@
         <span class="self">self</span>.<span class="ident">root</span>.<span class="ident">lookup</span>(<span class="ident">a</span>).<span class="ident">is_some</span>()
     }
 
+    <span class="doccomment">/// Test whether a set is a subset of another set, meaning that</span>
+    <span class="doccomment">/// all values in our set must also be in the other set.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Time: O(n log n)</span>
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_subset</span><span class="op">&lt;</span><span class="ident">RS</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="ident">RS</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>
+    <span class="kw">where</span>
+        <span class="ident">RS</span>: <span class="ident">Borrow</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>,
+    {
+        <span class="kw">let</span> <span class="ident">o</span> <span class="op">=</span> <span class="ident">other</span>.<span class="ident">borrow</span>();
+        <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">o</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">a</span>))
+    }
+
+    <span class="doccomment">/// Test whether a set is a proper subset of another set, meaning</span>
+    <span class="doccomment">/// that all values in our set must also be in the other set. A</span>
+    <span class="doccomment">/// proper subset must also be smaller than the other set.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Time: O(n log n)</span>
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_proper_subset</span><span class="op">&lt;</span><span class="ident">RS</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="ident">RS</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>
+    <span class="kw">where</span>
+        <span class="ident">RS</span>: <span class="ident">Borrow</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>,
+    {
+        <span class="self">self</span>.<span class="ident">len</span>() <span class="op">!=</span> <span class="ident">other</span>.<span class="ident">borrow</span>().<span class="ident">len</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">is_subset</span>(<span class="ident">other</span>)
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span>,
+{
     <span class="doccomment">/// Insert a value into a set.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Time: O(log n)</span>
@@ -1563,31 +1652,6 @@
         }
         .<span class="ident">clone</span>();
         <span class="self">self</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>)
-    }
-
-    <span class="doccomment">/// Discard all elements from the set.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This leaves you with an empty set, and all elements that</span>
-    <span class="doccomment">/// were previously inside it are dropped.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Time: O(n)</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # #[macro_use] extern crate im;</span>
-    <span class="doccomment">/// # use im::OrdSet;</span>
-    <span class="doccomment">/// # fn main() {</span>
-    <span class="doccomment">/// let mut set = ordset![1, 2, 3];</span>
-    <span class="doccomment">/// set.clear();</span>
-    <span class="doccomment">/// assert!(set.is_empty());</span>
-    <span class="doccomment">/// # }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clear</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_empty</span>() {
-            <span class="self">self</span>.<span class="ident">root</span> <span class="op">=</span> <span class="ident">Default</span>::<span class="ident">default</span>();
-            <span class="self">self</span>.<span class="ident">size</span> <span class="op">=</span> <span class="number">0</span>;
-        }
     }
 
     <span class="doccomment">/// Construct a new set from the current set with the given value</span>
@@ -1686,7 +1750,7 @@
     <span class="kw">where</span>
         <span class="ident">I</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="self">Self</span><span class="op">&gt;</span>,
     {
-        <span class="ident">i</span>.<span class="ident">into_iter</span>().<span class="ident">fold</span>(<span class="self">Self</span>::<span class="ident">default</span>(), <span class="op">|</span><span class="ident">a</span>, <span class="ident">b</span><span class="op">|</span> <span class="ident">a</span>.<span class="ident">union</span>(<span class="ident">b</span>))
+        <span class="ident">i</span>.<span class="ident">into_iter</span>().<span class="ident">fold</span>(<span class="self">Self</span>::<span class="ident">default</span>(), <span class="self">Self</span>::<span class="ident">union</span>)
     }
 
     <span class="doccomment">/// Construct the difference between two sets.</span>
@@ -1740,32 +1804,6 @@
             }
         }
         <span class="ident">out</span>
-    }
-
-    <span class="doccomment">/// Test whether a set is a subset of another set, meaning that</span>
-    <span class="doccomment">/// all values in our set must also be in the other set.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Time: O(n log n)</span>
-    <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_subset</span><span class="op">&lt;</span><span class="ident">RS</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="ident">RS</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>
-    <span class="kw">where</span>
-        <span class="ident">RS</span>: <span class="ident">Borrow</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>,
-    {
-        <span class="kw">let</span> <span class="ident">o</span> <span class="op">=</span> <span class="ident">other</span>.<span class="ident">borrow</span>();
-        <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">o</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">a</span>))
-    }
-
-    <span class="doccomment">/// Test whether a set is a proper subset of another set, meaning</span>
-    <span class="doccomment">/// that all values in our set must also be in the other set. A</span>
-    <span class="doccomment">/// proper subset must also be smaller than the other set.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Time: O(n log n)</span>
-    <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_proper_subset</span><span class="op">&lt;</span><span class="ident">RS</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="ident">RS</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>
-    <span class="kw">where</span>
-        <span class="ident">RS</span>: <span class="ident">Borrow</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>,
-    {
-        <span class="self">self</span>.<span class="ident">len</span>() <span class="op">!=</span> <span class="ident">other</span>.<span class="ident">borrow</span>().<span class="ident">len</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">is_subset</span>(<span class="ident">other</span>)
     }
 
     <span class="doccomment">/// Split a set into two, with the left hand set containing values</span>
@@ -1849,28 +1887,28 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="ident">Ref</span>::<span class="ident">ptr_eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">root</span>, <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">root</span>)
             <span class="op">||</span> (<span class="self">self</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="ident">other</span>.<span class="ident">len</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">diff</span>(<span class="ident">other</span>).<span class="ident">next</span>().<span class="ident">is_none</span>())
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {}
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Eq</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {}
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ordering</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">partial_cmp</span>(<span class="ident">other</span>.<span class="ident">iter</span>())
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-&gt;</span> <span class="ident">Ordering</span> {
         <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">cmp</span>(<span class="ident">other</span>.<span class="ident">iter</span>())
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Hash</span><span class="op">&gt;</span> <span class="ident">Hash</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Hash</span><span class="op">&gt;</span> <span class="ident">Hash</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">hash</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">H</span>)
     <span class="kw">where</span>
         <span class="ident">H</span>: <span class="ident">Hasher</span>,
@@ -1881,10 +1919,7 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span>,
-{
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="ident">OrdSet</span>::<span class="ident">new</span>()
     }
@@ -1945,7 +1980,7 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="ident">f</span>.<span class="ident">debug_set</span>().<span class="ident">entries</span>(<span class="self">self</span>.<span class="ident">iter</span>()).<span class="ident">finish</span>()
     }
@@ -1963,7 +1998,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">A</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span>,
+    <span class="ident">A</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="ident">Ord</span>,
 {
     <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">A</span>;
 
@@ -1978,14 +2013,14 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span> <span class="ident">DoubleEndedIterator</span> <span class="kw">for</span> <span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">A</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span>,
+    <span class="ident">A</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="ident">Ord</span>,
 {
     <span class="kw">fn</span> <span class="ident">next_back</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">it</span>.<span class="ident">next_back</span>().<span class="ident">map</span>(<span class="ident">Deref</span>::<span class="ident">deref</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span> <span class="ident">ExactSizeIterator</span> <span class="kw">for</span> <span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">A</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span> {}
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span> <span class="ident">ExactSizeIterator</span> <span class="kw">for</span> <span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">A</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="ident">Ord</span> {}
 
 <span class="comment">// A ranged iterator over the elements of a set.</span>
 <span class="comment">//</span>
@@ -2001,7 +2036,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">RangedIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">A</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span>,
+    <span class="ident">A</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="ident">Ord</span>,
 {
     <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">A</span>;
 
@@ -2016,7 +2051,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span> <span class="ident">DoubleEndedIterator</span> <span class="kw">for</span> <span class="ident">RangedIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">A</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span>,
+    <span class="ident">A</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="ident">Ord</span>,
 {
     <span class="kw">fn</span> <span class="ident">next_back</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">it</span>.<span class="ident">next_back</span>().<span class="ident">map</span>(<span class="ident">Deref</span>::<span class="ident">deref</span>)
@@ -2046,18 +2081,18 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">DiffIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">A</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">PartialEq</span>,
+    <span class="ident">A</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">PartialEq</span>,
 {
     <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">DiffItem</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span>;
 
     <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">it</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">item</span> {
-            <span class="ident">NodeDiffItem</span>::<span class="ident">Add</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="ident">NodeDiffItem</span>::<span class="ident">Add</span>(<span class="ident">v</span>.<span class="ident">deref</span>()),
-            <span class="ident">NodeDiffItem</span>::<span class="ident">Update</span> { <span class="ident">old</span>, <span class="ident">new</span> } <span class="op">=&gt;</span> <span class="ident">NodeDiffItem</span>::<span class="ident">Update</span> {
+            <span class="ident">DiffItem</span>::<span class="ident">Add</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="ident">DiffItem</span>::<span class="ident">Add</span>(<span class="ident">v</span>.<span class="ident">deref</span>()),
+            <span class="ident">DiffItem</span>::<span class="ident">Update</span> { <span class="ident">old</span>, <span class="ident">new</span> } <span class="op">=&gt;</span> <span class="ident">DiffItem</span>::<span class="ident">Update</span> {
                 <span class="ident">old</span>: <span class="ident">old</span>.<span class="ident">deref</span>(),
                 <span class="ident">new</span>: <span class="ident">new</span>.<span class="ident">deref</span>(),
             },
-            <span class="ident">NodeDiffItem</span>::<span class="ident">Remove</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="ident">NodeDiffItem</span>::<span class="ident">Remove</span>(<span class="ident">v</span>.<span class="ident">deref</span>()),
+            <span class="ident">DiffItem</span>::<span class="ident">Remove</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="ident">DiffItem</span>::<span class="ident">Remove</span>(<span class="ident">v</span>.<span class="ident">deref</span>()),
         })
     }
 }
@@ -2080,7 +2115,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">A</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span>,
+    <span class="ident">A</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="ident">Ord</span>,
 {
     <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">A</span>;
     <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span>;
@@ -2133,7 +2168,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">vec</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">vec</span>.<span class="ident">into_iter</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>()
+        <span class="ident">vec</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>()
     }
 }
 
@@ -2145,7 +2180,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Hash</span> <span class="op">+</span> <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">collections</span>::<span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">hash_set</span>: <span class="kw-2">&amp;</span><span class="ident">collections</span>::<span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">hash_set</span>.<span class="ident">into_iter</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>()
+        <span class="ident">hash_set</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>()
     }
 }
 
@@ -2157,7 +2192,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">collections</span>::<span class="ident">BTreeSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">OrdSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">btree_set</span>: <span class="kw-2">&amp;</span><span class="ident">collections</span>::<span class="ident">BTreeSet</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">btree_set</span>.<span class="ident">into_iter</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>()
+        <span class="ident">btree_set</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>()
     }
 }
 
@@ -2190,7 +2225,7 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;proptest&quot;</span>))]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">proptest</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">proptest</span>::<span class="ident">strategy</span>::{<span class="ident">BoxedStrategy</span>, <span class="ident">Strategy</span>, <span class="ident">ValueTree</span>};
+    <span class="kw">use</span> ::<span class="ident">proptest</span>::<span class="ident">strategy</span>::{<span class="ident">BoxedStrategy</span>, <span class="ident">Strategy</span>, <span class="ident">ValueTree</span>};
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Range</span>;
 
     <span class="doccomment">/// A strategy for a set of a given size.</span>
@@ -2226,6 +2261,7 @@
 <span class="kw">mod</span> <span class="ident">test</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">proptest</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> ::<span class="ident">proptest</span>::<span class="ident">proptest</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">match_strings_with_string_slices</span>() {

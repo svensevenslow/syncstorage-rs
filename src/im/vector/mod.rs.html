@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/im-12.2.0/./src/vector/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/im-12.3.4/./src/vector/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../im/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
 <span id="2">   2</span>
 <span id="3">   3</span>
 <span id="4">   4</span>
@@ -2560,6 +2560,290 @@
 <span id="2560">2560</span>
 <span id="2561">2561</span>
 <span id="2562">2562</span>
+<span id="2563">2563</span>
+<span id="2564">2564</span>
+<span id="2565">2565</span>
+<span id="2566">2566</span>
+<span id="2567">2567</span>
+<span id="2568">2568</span>
+<span id="2569">2569</span>
+<span id="2570">2570</span>
+<span id="2571">2571</span>
+<span id="2572">2572</span>
+<span id="2573">2573</span>
+<span id="2574">2574</span>
+<span id="2575">2575</span>
+<span id="2576">2576</span>
+<span id="2577">2577</span>
+<span id="2578">2578</span>
+<span id="2579">2579</span>
+<span id="2580">2580</span>
+<span id="2581">2581</span>
+<span id="2582">2582</span>
+<span id="2583">2583</span>
+<span id="2584">2584</span>
+<span id="2585">2585</span>
+<span id="2586">2586</span>
+<span id="2587">2587</span>
+<span id="2588">2588</span>
+<span id="2589">2589</span>
+<span id="2590">2590</span>
+<span id="2591">2591</span>
+<span id="2592">2592</span>
+<span id="2593">2593</span>
+<span id="2594">2594</span>
+<span id="2595">2595</span>
+<span id="2596">2596</span>
+<span id="2597">2597</span>
+<span id="2598">2598</span>
+<span id="2599">2599</span>
+<span id="2600">2600</span>
+<span id="2601">2601</span>
+<span id="2602">2602</span>
+<span id="2603">2603</span>
+<span id="2604">2604</span>
+<span id="2605">2605</span>
+<span id="2606">2606</span>
+<span id="2607">2607</span>
+<span id="2608">2608</span>
+<span id="2609">2609</span>
+<span id="2610">2610</span>
+<span id="2611">2611</span>
+<span id="2612">2612</span>
+<span id="2613">2613</span>
+<span id="2614">2614</span>
+<span id="2615">2615</span>
+<span id="2616">2616</span>
+<span id="2617">2617</span>
+<span id="2618">2618</span>
+<span id="2619">2619</span>
+<span id="2620">2620</span>
+<span id="2621">2621</span>
+<span id="2622">2622</span>
+<span id="2623">2623</span>
+<span id="2624">2624</span>
+<span id="2625">2625</span>
+<span id="2626">2626</span>
+<span id="2627">2627</span>
+<span id="2628">2628</span>
+<span id="2629">2629</span>
+<span id="2630">2630</span>
+<span id="2631">2631</span>
+<span id="2632">2632</span>
+<span id="2633">2633</span>
+<span id="2634">2634</span>
+<span id="2635">2635</span>
+<span id="2636">2636</span>
+<span id="2637">2637</span>
+<span id="2638">2638</span>
+<span id="2639">2639</span>
+<span id="2640">2640</span>
+<span id="2641">2641</span>
+<span id="2642">2642</span>
+<span id="2643">2643</span>
+<span id="2644">2644</span>
+<span id="2645">2645</span>
+<span id="2646">2646</span>
+<span id="2647">2647</span>
+<span id="2648">2648</span>
+<span id="2649">2649</span>
+<span id="2650">2650</span>
+<span id="2651">2651</span>
+<span id="2652">2652</span>
+<span id="2653">2653</span>
+<span id="2654">2654</span>
+<span id="2655">2655</span>
+<span id="2656">2656</span>
+<span id="2657">2657</span>
+<span id="2658">2658</span>
+<span id="2659">2659</span>
+<span id="2660">2660</span>
+<span id="2661">2661</span>
+<span id="2662">2662</span>
+<span id="2663">2663</span>
+<span id="2664">2664</span>
+<span id="2665">2665</span>
+<span id="2666">2666</span>
+<span id="2667">2667</span>
+<span id="2668">2668</span>
+<span id="2669">2669</span>
+<span id="2670">2670</span>
+<span id="2671">2671</span>
+<span id="2672">2672</span>
+<span id="2673">2673</span>
+<span id="2674">2674</span>
+<span id="2675">2675</span>
+<span id="2676">2676</span>
+<span id="2677">2677</span>
+<span id="2678">2678</span>
+<span id="2679">2679</span>
+<span id="2680">2680</span>
+<span id="2681">2681</span>
+<span id="2682">2682</span>
+<span id="2683">2683</span>
+<span id="2684">2684</span>
+<span id="2685">2685</span>
+<span id="2686">2686</span>
+<span id="2687">2687</span>
+<span id="2688">2688</span>
+<span id="2689">2689</span>
+<span id="2690">2690</span>
+<span id="2691">2691</span>
+<span id="2692">2692</span>
+<span id="2693">2693</span>
+<span id="2694">2694</span>
+<span id="2695">2695</span>
+<span id="2696">2696</span>
+<span id="2697">2697</span>
+<span id="2698">2698</span>
+<span id="2699">2699</span>
+<span id="2700">2700</span>
+<span id="2701">2701</span>
+<span id="2702">2702</span>
+<span id="2703">2703</span>
+<span id="2704">2704</span>
+<span id="2705">2705</span>
+<span id="2706">2706</span>
+<span id="2707">2707</span>
+<span id="2708">2708</span>
+<span id="2709">2709</span>
+<span id="2710">2710</span>
+<span id="2711">2711</span>
+<span id="2712">2712</span>
+<span id="2713">2713</span>
+<span id="2714">2714</span>
+<span id="2715">2715</span>
+<span id="2716">2716</span>
+<span id="2717">2717</span>
+<span id="2718">2718</span>
+<span id="2719">2719</span>
+<span id="2720">2720</span>
+<span id="2721">2721</span>
+<span id="2722">2722</span>
+<span id="2723">2723</span>
+<span id="2724">2724</span>
+<span id="2725">2725</span>
+<span id="2726">2726</span>
+<span id="2727">2727</span>
+<span id="2728">2728</span>
+<span id="2729">2729</span>
+<span id="2730">2730</span>
+<span id="2731">2731</span>
+<span id="2732">2732</span>
+<span id="2733">2733</span>
+<span id="2734">2734</span>
+<span id="2735">2735</span>
+<span id="2736">2736</span>
+<span id="2737">2737</span>
+<span id="2738">2738</span>
+<span id="2739">2739</span>
+<span id="2740">2740</span>
+<span id="2741">2741</span>
+<span id="2742">2742</span>
+<span id="2743">2743</span>
+<span id="2744">2744</span>
+<span id="2745">2745</span>
+<span id="2746">2746</span>
+<span id="2747">2747</span>
+<span id="2748">2748</span>
+<span id="2749">2749</span>
+<span id="2750">2750</span>
+<span id="2751">2751</span>
+<span id="2752">2752</span>
+<span id="2753">2753</span>
+<span id="2754">2754</span>
+<span id="2755">2755</span>
+<span id="2756">2756</span>
+<span id="2757">2757</span>
+<span id="2758">2758</span>
+<span id="2759">2759</span>
+<span id="2760">2760</span>
+<span id="2761">2761</span>
+<span id="2762">2762</span>
+<span id="2763">2763</span>
+<span id="2764">2764</span>
+<span id="2765">2765</span>
+<span id="2766">2766</span>
+<span id="2767">2767</span>
+<span id="2768">2768</span>
+<span id="2769">2769</span>
+<span id="2770">2770</span>
+<span id="2771">2771</span>
+<span id="2772">2772</span>
+<span id="2773">2773</span>
+<span id="2774">2774</span>
+<span id="2775">2775</span>
+<span id="2776">2776</span>
+<span id="2777">2777</span>
+<span id="2778">2778</span>
+<span id="2779">2779</span>
+<span id="2780">2780</span>
+<span id="2781">2781</span>
+<span id="2782">2782</span>
+<span id="2783">2783</span>
+<span id="2784">2784</span>
+<span id="2785">2785</span>
+<span id="2786">2786</span>
+<span id="2787">2787</span>
+<span id="2788">2788</span>
+<span id="2789">2789</span>
+<span id="2790">2790</span>
+<span id="2791">2791</span>
+<span id="2792">2792</span>
+<span id="2793">2793</span>
+<span id="2794">2794</span>
+<span id="2795">2795</span>
+<span id="2796">2796</span>
+<span id="2797">2797</span>
+<span id="2798">2798</span>
+<span id="2799">2799</span>
+<span id="2800">2800</span>
+<span id="2801">2801</span>
+<span id="2802">2802</span>
+<span id="2803">2803</span>
+<span id="2804">2804</span>
+<span id="2805">2805</span>
+<span id="2806">2806</span>
+<span id="2807">2807</span>
+<span id="2808">2808</span>
+<span id="2809">2809</span>
+<span id="2810">2810</span>
+<span id="2811">2811</span>
+<span id="2812">2812</span>
+<span id="2813">2813</span>
+<span id="2814">2814</span>
+<span id="2815">2815</span>
+<span id="2816">2816</span>
+<span id="2817">2817</span>
+<span id="2818">2818</span>
+<span id="2819">2819</span>
+<span id="2820">2820</span>
+<span id="2821">2821</span>
+<span id="2822">2822</span>
+<span id="2823">2823</span>
+<span id="2824">2824</span>
+<span id="2825">2825</span>
+<span id="2826">2826</span>
+<span id="2827">2827</span>
+<span id="2828">2828</span>
+<span id="2829">2829</span>
+<span id="2830">2830</span>
+<span id="2831">2831</span>
+<span id="2832">2832</span>
+<span id="2833">2833</span>
+<span id="2834">2834</span>
+<span id="2835">2835</span>
+<span id="2836">2836</span>
+<span id="2837">2837</span>
+<span id="2838">2838</span>
+<span id="2839">2839</span>
+<span id="2840">2840</span>
+<span id="2841">2841</span>
+<span id="2842">2842</span>
+<span id="2843">2843</span>
+<span id="2844">2844</span>
+<span id="2845">2845</span>
+<span id="2846">2846</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="comment">// License, v. 2.0. If a copy of the MPL was not distributed with this</span>
@@ -2615,12 +2899,14 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>::{<span class="ident">replace</span>, <span class="ident">swap</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::{<span class="ident">Add</span>, <span class="ident">Index</span>, <span class="ident">IndexMut</span>, <span class="ident">RangeBounds</span>};
 
-<span class="kw">use</span> <span class="ident">nodes</span>::<span class="ident">chunk</span>::{<span class="ident">Chunk</span>, <span class="ident">Iter</span> <span class="kw">as</span> <span class="ident">ChunkIter</span>, <span class="ident">CHUNK_SIZE</span>};
-<span class="kw">use</span> <span class="ident">nodes</span>::<span class="ident">rrb</span>::{<span class="ident">ConsumingIter</span> <span class="kw">as</span> <span class="ident">ConsumingNodeIter</span>, <span class="ident">Node</span>, <span class="ident">PopResult</span>, <span class="ident">PushResult</span>, <span class="ident">SplitResult</span>};
-<span class="kw">use</span> <span class="ident">sort</span>;
-<span class="kw">use</span> <span class="ident">util</span>::{<span class="ident">clone_ref</span>, <span class="ident">swap_indices</span>, <span class="ident">to_range</span>, <span class="ident">Ref</span>, <span class="ident">Side</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">nodes</span>::<span class="ident">chunk</span>::{<span class="ident">Chunk</span>, <span class="ident">Iter</span> <span class="kw">as</span> <span class="ident">ChunkIter</span>, <span class="ident">CHUNK_SIZE</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">nodes</span>::<span class="ident">rrb</span>::{
+    <span class="ident">ConsumingIter</span> <span class="kw">as</span> <span class="ident">ConsumingNodeIter</span>, <span class="ident">Node</span>, <span class="ident">PopResult</span>, <span class="ident">PushResult</span>, <span class="ident">SplitResult</span>,
+};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">sort</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">util</span>::{<span class="ident">clone_ref</span>, <span class="ident">swap_indices</span>, <span class="ident">to_range</span>, <span class="ident">Ref</span>, <span class="ident">Side</span>};
 
-<span class="kw">use</span> <span class="self">self</span>::<span class="ident">Vector</span>::{<span class="ident">Full</span>, <span class="ident">Single</span>};
+<span class="kw">use</span> <span class="self">self</span>::<span class="ident">Vector</span>::{<span class="ident">Empty</span>, <span class="ident">Full</span>, <span class="ident">Single</span>};
 
 <span class="kw">mod</span> <span class="ident">focus</span>;
 
@@ -2699,6 +2985,8 @@
 <span class="doccomment">/// [VecDeque]: https://doc.rust-lang.org/std/collections/struct.VecDeque.html</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+    <span class="ident">Empty</span>,
+    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="ident">Single</span>(<span class="ident">Ref</span><span class="op">&lt;</span><span class="ident">Chunk</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>),
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="ident">Full</span>(<span class="ident">RRB</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>),
@@ -2730,18 +3018,28 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// True if a vector is a full single chunk, ie. must be promoted to grow</span>
-    <span class="doccomment">/// further.</span>
+    <span class="doccomment">/// True if a vector is empty or a full single chunk, ie. must be promoted</span>
+    <span class="doccomment">/// to grow further.</span>
     <span class="kw">fn</span> <span class="ident">needs_promotion</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
             <span class="ident">Single</span>(<span class="ident">chunk</span>) <span class="kw">if</span> <span class="ident">chunk</span>.<span class="ident">is_full</span>() <span class="op">=&gt;</span> <span class="bool-val">true</span>,
             <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
         }
     }
 
-    <span class="doccomment">/// Promote a single to a full, with the single chunk becomming inner_f.</span>
+    <span class="doccomment">/// Promote an empty to a single.</span>
+    <span class="kw">fn</span> <span class="ident">promote_empty</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Empty</span> <span class="op">=</span> <span class="self">self</span> {
+            <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="ident">Single</span>(<span class="ident">Ref</span>::<span class="ident">new</span>(<span class="ident">Chunk</span>::<span class="ident">new</span>()))
+        }
+    }
+
+    <span class="doccomment">/// Promote a single to a full, with the single chunk becomming inner_f, or</span>
+    <span class="doccomment">/// promote an empty to a single.</span>
     <span class="kw">fn</span> <span class="ident">promote_front</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="kw">let</span> <span class="ident">chunk</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="self">self</span>.<span class="ident">promote_empty</span>(),
             <span class="ident">Single</span>(<span class="ident">chunk</span>) <span class="op">=&gt;</span> <span class="ident">chunk</span>.<span class="ident">clone</span>(),
             <span class="kw">_</span> <span class="op">=&gt;</span> <span class="kw">return</span>,
         };
@@ -2756,9 +3054,11 @@
         })
     }
 
-    <span class="doccomment">/// Promote a single to a full, with the single chunk becomming inner_b.</span>
+    <span class="doccomment">/// Promote a single to a full, with the single chunk becomming inner_b, or</span>
+    <span class="doccomment">/// promote an empty to a single.</span>
     <span class="kw">fn</span> <span class="ident">promote_back</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="kw">let</span> <span class="ident">chunk</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="self">self</span>.<span class="ident">promote_empty</span>(),
             <span class="ident">Single</span>(<span class="ident">chunk</span>) <span class="op">=&gt;</span> <span class="ident">chunk</span>.<span class="ident">clone</span>(),
             <span class="kw">_</span> <span class="op">=&gt;</span> <span class="kw">return</span>,
         };
@@ -2776,13 +3076,7 @@
     <span class="doccomment">/// Construct an empty vector.</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">Single</span>(<span class="ident">Ref</span>::<span class="ident">new</span>(<span class="ident">Chunk</span>::<span class="ident">new</span>()))
-    }
-
-    <span class="doccomment">/// Construct a vector with a single value.</span>
-    <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">singleton</span>(<span class="ident">a</span>: <span class="ident">A</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">Single</span>(<span class="ident">Ref</span>::<span class="ident">new</span>(<span class="ident">Chunk</span>::<span class="ident">unit</span>(<span class="ident">a</span>)))
+        <span class="ident">Empty</span>
     }
 
     <span class="doccomment">/// Get the length of a vector.</span>
@@ -2801,6 +3095,7 @@
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
         <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="number">0</span>,
             <span class="ident">Single</span>(<span class="ident">chunk</span>) <span class="op">=&gt;</span> <span class="ident">chunk</span>.<span class="ident">len</span>(),
             <span class="ident">Full</span>(<span class="ident">tree</span>) <span class="op">=&gt;</span> <span class="ident">tree</span>.<span class="ident">length</span>,
         }
@@ -2847,19 +3142,65 @@
 
     <span class="doccomment">/// Get an iterator over the leaf nodes of a vector.</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// This method has been deprecated; use [`leaves`][leaves] instead.</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// Time: O(1)</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [leaves]: #method.leaves</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="attribute">#[<span class="ident">deprecated</span>(
+        <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;12.3.0&quot;</span>,
+        <span class="ident">note</span> <span class="op">=</span> <span class="string">&quot;renamed to `leaves` to avoid confusion with Vec::chunks&quot;</span>
+    )]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">chunks</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Chunks</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">A</span><span class="op">&gt;</span> {
         <span class="ident">Chunks</span>::<span class="ident">new</span>(<span class="self">self</span>)
     }
 
     <span class="doccomment">/// Get a mutable iterator over the leaf nodes of a vector.</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// This method has been deprecated; use [`leaves_mut`][leaves_mut] instead.</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// Time: O(1)</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [leaves_mut]: #method.leaves_mut</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="attribute">#[<span class="ident">deprecated</span>(
+        <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;12.3.0&quot;</span>,
+        <span class="ident">note</span> <span class="op">=</span> <span class="string">&quot;renamed to `leaves_mut` to avoid confusion with Vec::chunks&quot;</span>
+    )]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">chunks_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ChunksMut</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">A</span><span class="op">&gt;</span> {
+        <span class="ident">ChunksMut</span>::<span class="ident">new</span>(<span class="self">self</span>)
+    }
+
+    <span class="doccomment">/// Get an iterator over the leaf nodes of a vector.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This returns an iterator over the [`Chunk`s][Chunk] at the leaves of the</span>
+    <span class="doccomment">/// RRB tree. These are useful for efficient parallelisation of work on</span>
+    <span class="doccomment">/// the vector, but should not be used for basic iteration.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Time: O(1)</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [Chunk]: ../chunk/struct.Chunk.html</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">leaves</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Chunks</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">A</span><span class="op">&gt;</span> {
+        <span class="ident">Chunks</span>::<span class="ident">new</span>(<span class="self">self</span>)
+    }
+
+    <span class="doccomment">/// Get a mutable iterator over the leaf nodes of a vector.</span>
+    <span class="comment">//</span>
+    <span class="doccomment">/// This returns an iterator over the [`Chunk`s][Chunk] at the leaves of the</span>
+    <span class="doccomment">/// RRB tree. These are useful for efficient parallelisation of work on</span>
+    <span class="doccomment">/// the vector, but should not be used for basic iteration.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Time: O(1)</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [Chunk]: ../chunk/struct.Chunk.html</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">leaves_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ChunksMut</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">A</span><span class="op">&gt;</span> {
         <span class="ident">ChunksMut</span>::<span class="ident">new</span>(<span class="self">self</span>)
     }
 
@@ -2909,6 +3250,7 @@
         }
 
         <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             <span class="ident">Single</span>(<span class="ident">chunk</span>) <span class="op">=&gt;</span> <span class="ident">chunk</span>.<span class="ident">get</span>(<span class="ident">index</span>),
             <span class="ident">Full</span>(<span class="ident">tree</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">local_index</span> <span class="op">=</span> <span class="ident">index</span>;
@@ -2967,6 +3309,7 @@
         }
 
         <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             <span class="ident">Single</span>(<span class="ident">chunk</span>) <span class="op">=&gt;</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">chunk</span>).<span class="ident">get_mut</span>(<span class="ident">index</span>),
             <span class="ident">Full</span>(<span class="ident">tree</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">local_index</span> <span class="op">=</span> <span class="ident">index</span>;
@@ -3142,6 +3485,133 @@
         <span class="self">self</span>.<span class="ident">index_of</span>(<span class="ident">value</span>).<span class="ident">is_some</span>()
     }
 
+    <span class="doccomment">/// Discard all elements from the vector.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This leaves you with an empty vector, and all elements that</span>
+    <span class="doccomment">/// were previously inside it are dropped.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Time: O(n)</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clear</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_empty</span>() {
+            <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="ident">Single</span>(<span class="ident">Ref</span>::<span class="ident">new</span>(<span class="ident">Chunk</span>::<span class="ident">new</span>()));
+        }
+    }
+
+    <span class="doccomment">/// Binary search a sorted vector for a given element using a comparator</span>
+    <span class="doccomment">/// function.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Assumes the vector has already been sorted using the same comparator</span>
+    <span class="doccomment">/// function, eg. by using [`sort_by`][sort_by].</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// If the value is found, it returns `Ok(index)` where `index` is the index</span>
+    <span class="doccomment">/// of the element. If the value isn&#39;t found, it returns `Err(index)` where</span>
+    <span class="doccomment">/// `index` is the index at which the element would need to be inserted to</span>
+    <span class="doccomment">/// maintain sorted order.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Time: O(log n)</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [sort_by]: #method.sort_by</span>
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">binary_search_by</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">usize</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">A</span>) <span class="op">-&gt;</span> <span class="ident">Ordering</span>,
+    {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>();
+        <span class="kw">if</span> <span class="ident">size</span> <span class="op">==</span> <span class="number">0</span> {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="number">0</span>);
+        }
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">base</span> <span class="op">=</span> <span class="number">0</span>;
+        <span class="kw">while</span> <span class="ident">size</span> <span class="op">&gt;</span> <span class="number">1</span> {
+            <span class="kw">let</span> <span class="ident">half</span> <span class="op">=</span> <span class="ident">size</span> <span class="op">/</span> <span class="number">2</span>;
+            <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="ident">base</span> <span class="op">+</span> <span class="ident">half</span>;
+            <span class="ident">base</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">f</span>(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="ident">mid</span>]) {
+                <span class="ident">Ordering</span>::<span class="ident">Greater</span> <span class="op">=&gt;</span> <span class="ident">base</span>,
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">mid</span>,
+            };
+            <span class="ident">size</span> <span class="op">-=</span> <span class="ident">half</span>;
+        }
+        <span class="kw">match</span> <span class="ident">f</span>(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="ident">base</span>]) {
+            <span class="ident">Ordering</span>::<span class="ident">Equal</span> <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">base</span>),
+            <span class="ident">Ordering</span>::<span class="ident">Greater</span> <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">base</span>),
+            <span class="ident">Ordering</span>::<span class="ident">Less</span> <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">base</span> <span class="op">+</span> <span class="number">1</span>),
+        }
+    }
+
+    <span class="doccomment">/// Binary search a sorted vector for a given element.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// If the value is found, it returns `Ok(index)` where `index` is the index</span>
+    <span class="doccomment">/// of the element. If the value isn&#39;t found, it returns `Err(index)` where</span>
+    <span class="doccomment">/// `index` is the index at which the element would need to be inserted to</span>
+    <span class="doccomment">/// maintain sorted order.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Time: O(log n)</span>
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">binary_search</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">A</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">usize</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">A</span>: <span class="ident">Ord</span>,
+    {
+        <span class="self">self</span>.<span class="ident">binary_search_by</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">cmp</span>(<span class="ident">value</span>))
+    }
+
+    <span class="doccomment">/// Binary search a sorted vector for a given element with a key extract</span>
+    <span class="doccomment">/// function.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Assumes the vector has already been sorted using the same key extract</span>
+    <span class="doccomment">/// function, eg. by using [`sort_by_key`][sort_by_key].</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// If the value is found, it returns `Ok(index)` where `index` is the index</span>
+    <span class="doccomment">/// of the element. If the value isn&#39;t found, it returns `Err(index)` where</span>
+    <span class="doccomment">/// `index` is the index at which the element would need to be inserted to</span>
+    <span class="doccomment">/// maintain sorted order.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Time: O(log n)</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [sort_by_key]: #method.sort_by_key</span>
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">binary_search_by_key</span><span class="op">&lt;</span><span class="ident">B</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">b</span>: <span class="kw-2">&amp;</span><span class="ident">B</span>, <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">usize</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">A</span>) <span class="op">-&gt;</span> <span class="ident">B</span>,
+        <span class="ident">B</span>: <span class="ident">Ord</span>,
+    {
+        <span class="self">self</span>.<span class="ident">binary_search_by</span>(<span class="op">|</span><span class="ident">k</span><span class="op">|</span> <span class="ident">f</span>(<span class="ident">k</span>).<span class="ident">cmp</span>(<span class="ident">b</span>))
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Construct a vector with a single value.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This method has been deprecated; use [`unit`][unit] instead.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [unit]: #method.unit</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="attribute">#[<span class="ident">deprecated</span>(<span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;12.3.0&quot;</span>, <span class="ident">note</span> <span class="op">=</span> <span class="string">&quot;renamed to `unit` for consistency&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">singleton</span>(<span class="ident">a</span>: <span class="ident">A</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span>::<span class="ident">unit</span>(<span class="ident">a</span>)
+    }
+
+    <span class="doccomment">/// Construct a vector with a single value.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #[macro_use] extern crate im;</span>
+    <span class="doccomment">/// # use im::vector::Vector;</span>
+    <span class="doccomment">/// # fn main() {</span>
+    <span class="doccomment">/// let vec = Vector::unit(1337);</span>
+    <span class="doccomment">/// assert_eq!(1, vec.len());</span>
+    <span class="doccomment">/// assert_eq!(</span>
+    <span class="doccomment">///   vec.get(0),</span>
+    <span class="doccomment">///   Some(&amp;1337)</span>
+    <span class="doccomment">/// );</span>
+    <span class="doccomment">/// # }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unit</span>(<span class="ident">a</span>: <span class="ident">A</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">Single</span>(<span class="ident">Ref</span>::<span class="ident">new</span>(<span class="ident">Chunk</span>::<span class="ident">unit</span>(<span class="ident">a</span>)))
+    }
+
     <span class="doccomment">/// Create a new vector with the value at index `index` updated.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Panics if the index is out of bounds.</span>
@@ -3204,6 +3674,7 @@
             <span class="self">self</span>.<span class="ident">promote_back</span>();
         }
         <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(<span class="string">&quot;promote should have promoted the Empty&quot;</span>),
             <span class="ident">Single</span>(<span class="ident">chunk</span>) <span class="op">=&gt;</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">chunk</span>).<span class="ident">push_front</span>(<span class="ident">value</span>),
             <span class="ident">Full</span>(<span class="ident">tree</span>) <span class="op">=&gt;</span> <span class="ident">tree</span>.<span class="ident">push_front</span>(<span class="ident">value</span>),
         }
@@ -3229,6 +3700,7 @@
             <span class="self">self</span>.<span class="ident">promote_front</span>();
         }
         <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(<span class="string">&quot;promote should have promoted the Empty&quot;</span>),
             <span class="ident">Single</span>(<span class="ident">chunk</span>) <span class="op">=&gt;</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">chunk</span>).<span class="ident">push_back</span>(<span class="ident">value</span>),
             <span class="ident">Full</span>(<span class="ident">tree</span>) <span class="op">=&gt;</span> <span class="ident">tree</span>.<span class="ident">push_back</span>(<span class="ident">value</span>),
         }
@@ -3254,6 +3726,7 @@
             <span class="prelude-val">None</span>
         } <span class="kw">else</span> {
             <span class="kw">match</span> <span class="self">self</span> {
+                <span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
                 <span class="ident">Single</span>(<span class="ident">chunk</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">chunk</span>).<span class="ident">pop_front</span>()),
                 <span class="ident">Full</span>(<span class="ident">tree</span>) <span class="op">=&gt;</span> <span class="ident">tree</span>.<span class="ident">pop_front</span>(),
             }
@@ -3280,6 +3753,7 @@
             <span class="prelude-val">None</span>
         } <span class="kw">else</span> {
             <span class="kw">match</span> <span class="self">self</span> {
+                <span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
                 <span class="ident">Single</span>(<span class="ident">chunk</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">chunk</span>).<span class="ident">pop_back</span>()),
                 <span class="ident">Full</span>(<span class="ident">tree</span>) <span class="op">=&gt;</span> <span class="ident">tree</span>.<span class="ident">pop_back</span>(),
             }
@@ -3317,6 +3791,7 @@
             .<span class="ident">expect</span>(<span class="string">&quot;Vector length overflow&quot;</span>);
 
         <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(<span class="string">&quot;empty vecs are handled before this&quot;</span>),
             <span class="ident">Single</span>(<span class="ident">left</span>) <span class="op">=&gt;</span> {
                 <span class="kw">match</span> <span class="ident">other</span> {
                     <span class="comment">// If both are single chunks and left has room for right: directly</span>
@@ -3376,7 +3851,7 @@
 
                     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">middle1</span> <span class="op">=</span> <span class="ident">clone_ref</span>(<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">left</span>.<span class="ident">middle</span>, <span class="ident">Ref</span>::<span class="ident">from</span>(<span class="ident">Node</span>::<span class="ident">new</span>())));
                     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">middle2</span> <span class="op">=</span> <span class="ident">clone_ref</span>(<span class="ident">right</span>.<span class="ident">middle</span>);
-                    <span class="ident">left</span>.<span class="ident">middle_level</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">left</span>.<span class="ident">middle_level</span> <span class="op">&gt;</span> <span class="ident">right</span>.<span class="ident">middle_level</span> {
+                    <span class="kw">let</span> <span class="ident">normalised_middle</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">left</span>.<span class="ident">middle_level</span> <span class="op">&gt;</span> <span class="ident">right</span>.<span class="ident">middle_level</span> {
                         <span class="ident">middle2</span> <span class="op">=</span> <span class="ident">middle2</span>.<span class="ident">elevate</span>(<span class="ident">left</span>.<span class="ident">middle_level</span> <span class="op">-</span> <span class="ident">right</span>.<span class="ident">middle_level</span>);
                         <span class="ident">left</span>.<span class="ident">middle_level</span>
                     } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">left</span>.<span class="ident">middle_level</span> <span class="op">&lt;</span> <span class="ident">right</span>.<span class="ident">middle_level</span> {
@@ -3384,12 +3859,13 @@
                         <span class="ident">right</span>.<span class="ident">middle_level</span>
                     } <span class="kw">else</span> {
                         <span class="ident">left</span>.<span class="ident">middle_level</span>
-                    } <span class="op">+</span> <span class="number">1</span>;
+                    };
                     <span class="ident">left</span>.<span class="ident">middle</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">new</span>(<span class="ident">Node</span>::<span class="ident">merge</span>(
                         <span class="ident">Ref</span>::<span class="ident">from</span>(<span class="ident">middle1</span>),
                         <span class="ident">Ref</span>::<span class="ident">from</span>(<span class="ident">middle2</span>),
-                        <span class="ident">left</span>.<span class="ident">middle_level</span> <span class="op">-</span> <span class="number">1</span>,
+                        <span class="ident">normalised_middle</span>,
                     ));
+                    <span class="ident">left</span>.<span class="ident">middle_level</span> <span class="op">=</span> <span class="ident">normalised_middle</span> <span class="op">+</span> <span class="number">1</span>;
 
                     <span class="ident">left</span>.<span class="ident">inner_b</span> <span class="op">=</span> <span class="ident">right</span>.<span class="ident">inner_b</span>;
                     <span class="ident">left</span>.<span class="ident">outer_b</span> <span class="op">=</span> <span class="ident">right</span>.<span class="ident">outer_b</span>;
@@ -3482,6 +3958,7 @@
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">index</span> <span class="op">&lt;=</span> <span class="self">self</span>.<span class="ident">len</span>());
 
         <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="ident">Empty</span>,
             <span class="ident">Single</span>(<span class="ident">chunk</span>) <span class="op">=&gt;</span> <span class="ident">Single</span>(<span class="ident">Ref</span>::<span class="ident">new</span>(<span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="ident">chunk</span>).<span class="ident">split_off</span>(<span class="ident">index</span>))),
             <span class="ident">Full</span>(<span class="ident">tree</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">local_index</span> <span class="op">=</span> <span class="ident">index</span>;
@@ -3720,97 +4197,6 @@
         }
     }
 
-    <span class="doccomment">/// Discard all elements from the vector.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This leaves you with an empty vector, and all elements that</span>
-    <span class="doccomment">/// were previously inside it are dropped.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Time: O(n)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clear</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_empty</span>() {
-            <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="ident">Single</span>(<span class="ident">Ref</span>::<span class="ident">new</span>(<span class="ident">Chunk</span>::<span class="ident">new</span>()));
-        }
-    }
-
-    <span class="doccomment">/// Binary search a sorted vector for a given element using a comparator</span>
-    <span class="doccomment">/// function.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Assumes the vector has already been sorted using the same comparator</span>
-    <span class="doccomment">/// function, eg. by using [`sort_by`][sort_by].</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If the value is found, it returns `Ok(index)` where `index` is the index</span>
-    <span class="doccomment">/// of the element. If the value isn&#39;t found, it returns `Err(index)` where</span>
-    <span class="doccomment">/// `index` is the index at which the element would need to be inserted to</span>
-    <span class="doccomment">/// maintain sorted order.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Time: O(log n)</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [sort_by]: #method.sort_by</span>
-    <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">binary_search_by</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">usize</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">A</span>) <span class="op">-&gt;</span> <span class="ident">Ordering</span>,
-    {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>();
-        <span class="kw">if</span> <span class="ident">size</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="number">0</span>);
-        }
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">base</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">while</span> <span class="ident">size</span> <span class="op">&gt;</span> <span class="number">1</span> {
-            <span class="kw">let</span> <span class="ident">half</span> <span class="op">=</span> <span class="ident">size</span> <span class="op">/</span> <span class="number">2</span>;
-            <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="ident">base</span> <span class="op">+</span> <span class="ident">half</span>;
-            <span class="ident">base</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">f</span>(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="ident">mid</span>]) {
-                <span class="ident">Ordering</span>::<span class="ident">Greater</span> <span class="op">=&gt;</span> <span class="ident">base</span>,
-                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">mid</span>,
-            };
-            <span class="ident">size</span> <span class="op">-=</span> <span class="ident">half</span>;
-        }
-        <span class="kw">match</span> <span class="ident">f</span>(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="ident">base</span>]) {
-            <span class="ident">Ordering</span>::<span class="ident">Equal</span> <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">base</span>),
-            <span class="ident">Ordering</span>::<span class="ident">Greater</span> <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">base</span>),
-            <span class="ident">Ordering</span>::<span class="ident">Less</span> <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">base</span> <span class="op">+</span> <span class="number">1</span>),
-        }
-    }
-
-    <span class="doccomment">/// Binary search a sorted vector for a given element.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If the value is found, it returns `Ok(index)` where `index` is the index</span>
-    <span class="doccomment">/// of the element. If the value isn&#39;t found, it returns `Err(index)` where</span>
-    <span class="doccomment">/// `index` is the index at which the element would need to be inserted to</span>
-    <span class="doccomment">/// maintain sorted order.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Time: O(log n)</span>
-    <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">binary_search</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">A</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">usize</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">A</span>: <span class="ident">Ord</span>,
-    {
-        <span class="self">self</span>.<span class="ident">binary_search_by</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">cmp</span>(<span class="ident">value</span>))
-    }
-
-    <span class="doccomment">/// Binary search a sorted vector for a given element with a key extract</span>
-    <span class="doccomment">/// function.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Assumes the vector has already been sorted using the same key extract</span>
-    <span class="doccomment">/// function, eg. by using [`sort_by_key`][sort_by_key].</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If the value is found, it returns `Ok(index)` where `index` is the index</span>
-    <span class="doccomment">/// of the element. If the value isn&#39;t found, it returns `Err(index)` where</span>
-    <span class="doccomment">/// `index` is the index at which the element would need to be inserted to</span>
-    <span class="doccomment">/// maintain sorted order.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Time: O(log n)</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [sort_by_key]: #method.sort_by_key</span>
-    <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">binary_search_by_key</span><span class="op">&lt;</span><span class="ident">B</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">b</span>: <span class="kw-2">&amp;</span><span class="ident">B</span>, <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">usize</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">A</span>) <span class="op">-&gt;</span> <span class="ident">B</span>,
-        <span class="ident">B</span>: <span class="ident">Ord</span>,
-    {
-        <span class="self">self</span>.<span class="ident">binary_search_by</span>(<span class="op">|</span><span class="ident">k</span><span class="op">|</span> <span class="ident">f</span>(<span class="ident">k</span>).<span class="ident">cmp</span>(<span class="ident">b</span>))
-    }
-
     <span class="doccomment">/// Insert an element into a sorted vector.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Insert an element into a vector in sorted order, assuming the vector is</span>
@@ -3885,6 +4271,13 @@
             <span class="ident">sort</span>::<span class="ident">quicksort</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">focus_mut</span>(), <span class="number">0</span>, <span class="ident">len</span> <span class="op">-</span> <span class="number">1</span>, <span class="kw-2">&amp;</span><span class="ident">cmp</span>);
         }
     }
+
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">assert_invariants</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Vector</span>::<span class="ident">Full</span>(<span class="kw-2">ref</span> <span class="ident">tree</span>) <span class="op">=</span> <span class="self">self</span> {
+            <span class="ident">tree</span>.<span class="ident">middle</span>.<span class="ident">assert_invariants</span>();
+        }
+    }
 }
 
 <span class="comment">// Implementation details</span>
@@ -3921,9 +4314,14 @@
     }
 
     <span class="kw">fn</span> <span class="ident">prune</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
-        <span class="kw">while</span> <span class="self">self</span>.<span class="ident">middle_level</span> <span class="op">&gt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">middle</span>.<span class="ident">is_single</span>() {
-            <span class="self">self</span>.<span class="ident">middle</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">middle</span>.<span class="ident">first_child</span>().<span class="ident">clone</span>();
-            <span class="self">self</span>.<span class="ident">middle_level</span> <span class="op">-=</span> <span class="number">1</span>;
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">middle</span>.<span class="ident">is_empty</span>() {
+            <span class="self">self</span>.<span class="ident">middle</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">new</span>(<span class="ident">Node</span>::<span class="ident">new</span>());
+            <span class="self">self</span>.<span class="ident">middle_level</span> <span class="op">=</span> <span class="number">0</span>;
+        } <span class="kw">else</span> {
+            <span class="kw">while</span> <span class="self">self</span>.<span class="ident">middle_level</span> <span class="op">&gt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">middle</span>.<span class="ident">is_single</span>() {
+                <span class="self">self</span>.<span class="ident">middle</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">middle</span>.<span class="ident">first_child</span>().<span class="ident">clone</span>();
+                <span class="self">self</span>.<span class="ident">middle_level</span> <span class="op">-=</span> <span class="number">1</span>;
+            }
         }
     }
 
@@ -4004,11 +4402,14 @@
     }
 
     <span class="kw">fn</span> <span class="ident">push_middle</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">side</span>: <span class="ident">Side</span>, <span class="ident">chunk</span>: <span class="ident">Ref</span><span class="op">&lt;</span><span class="ident">Chunk</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>) {
+        <span class="kw">if</span> <span class="ident">chunk</span>.<span class="ident">is_empty</span>() {
+            <span class="kw">return</span>;
+        }
         <span class="kw">let</span> <span class="ident">new_middle</span> <span class="op">=</span> {
             <span class="kw">let</span> <span class="ident">middle</span> <span class="op">=</span> <span class="ident">Ref</span>::<span class="ident">make_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">middle</span>);
             <span class="kw">match</span> <span class="ident">middle</span>.<span class="ident">push_chunk</span>(<span class="self">self</span>.<span class="ident">middle_level</span>, <span class="ident">side</span>, <span class="ident">chunk</span>) {
                 <span class="ident">PushResult</span>::<span class="ident">Done</span> <span class="op">=&gt;</span> <span class="kw">return</span>,
-                <span class="ident">PushResult</span>::<span class="ident">Full</span>(<span class="ident">chunk</span>) <span class="op">=&gt;</span> <span class="ident">Ref</span>::<span class="ident">from</span>({
+                <span class="ident">PushResult</span>::<span class="ident">Full</span>(<span class="ident">chunk</span>, <span class="ident">_num_drained</span>) <span class="op">=&gt;</span> <span class="ident">Ref</span>::<span class="ident">from</span>({
                     <span class="kw">match</span> <span class="ident">side</span> {
                         <span class="ident">Side</span>::<span class="ident">Left</span> <span class="op">=&gt;</span> <span class="ident">Node</span>::<span class="ident">from_chunk</span>(<span class="self">self</span>.<span class="ident">middle_level</span>, <span class="ident">chunk</span>)
                             .<span class="ident">join_branches</span>(<span class="ident">middle</span>.<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">middle_level</span>),
@@ -4057,6 +4458,7 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="ident">Empty</span>,
             <span class="ident">Single</span>(<span class="ident">chunk</span>) <span class="op">=&gt;</span> <span class="ident">Single</span>(<span class="ident">chunk</span>.<span class="ident">clone</span>()),
             <span class="ident">Full</span>(<span class="ident">tree</span>) <span class="op">=&gt;</span> <span class="ident">Full</span>(<span class="ident">tree</span>.<span class="ident">clone</span>()),
         }
@@ -4066,6 +4468,14 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="ident">f</span>.<span class="ident">debug_list</span>().<span class="ident">entries</span>(<span class="self">self</span>.<span class="ident">iter</span>()).<span class="ident">finish</span>()
+        <span class="comment">// match self {</span>
+        <span class="comment">//     Full(rrb) =&gt; {</span>
+        <span class="comment">//         writeln!(f, &quot;Head: {:?} {:?}&quot;, rrb.outer_f, rrb.inner_f)?;</span>
+        <span class="comment">//         rrb.middle.print(f, 0, rrb.middle_level)?;</span>
+        <span class="comment">//         writeln!(f, &quot;Tail: {:?} {:?}&quot;, rrb.inner_b, rrb.outer_b)</span>
+        <span class="comment">//     }</span>
+        <span class="comment">//     Single(_) =&gt; write!(f, &quot;nowt&quot;),</span>
+        <span class="comment">// }</span>
     }
 }
 
@@ -4258,7 +4668,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span>: <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">A</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">slice</span>: <span class="kw-2">&amp;</span>[<span class="ident">A</span>]) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">slice</span>.<span class="ident">into_iter</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>()
+        <span class="ident">slice</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>()
     }
 }
 
@@ -4280,7 +4690,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// [vec]: https://doc.rust-lang.org/std/vec/struct.Vec.html</span>
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">vec</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">vec</span>.<span class="ident">into_iter</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>()
+        <span class="ident">vec</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>()
     }
 }
 
@@ -4444,6 +4854,7 @@
 
 <span class="doccomment">/// A consuming iterator over vectors with values of type `A`.</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ConsumingIter</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
+    <span class="ident">Empty</span>,
     <span class="ident">Single</span>(<span class="ident">ChunkIter</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>),
     <span class="ident">Full</span>(
         <span class="ident">Chain</span><span class="op">&lt;</span>
@@ -4456,6 +4867,7 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">ConsumingIter</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">seq</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="kw">match</span> <span class="ident">seq</span> {
+            <span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="ident">ConsumingIter</span>::<span class="ident">Empty</span>,
             <span class="ident">Single</span>(<span class="ident">chunk</span>) <span class="op">=&gt;</span> <span class="ident">ConsumingIter</span>::<span class="ident">Single</span>(<span class="ident">clone_ref</span>(<span class="ident">chunk</span>).<span class="ident">into_iter</span>()),
             <span class="ident">Full</span>(<span class="ident">tree</span>) <span class="op">=&gt;</span> <span class="ident">ConsumingIter</span>::<span class="ident">Full</span>(<span class="ident">tree</span>.<span class="ident">into_iter</span>()),
         }
@@ -4470,6 +4882,7 @@
     <span class="doccomment">/// Time: O(1)*</span>
     <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">ConsumingIter</span>::<span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             <span class="ident">ConsumingIter</span>::<span class="ident">Single</span>(<span class="ident">iter</span>) <span class="op">=&gt;</span> <span class="ident">iter</span>.<span class="ident">next</span>(),
             <span class="ident">ConsumingIter</span>::<span class="ident">Full</span>(<span class="ident">iter</span>) <span class="op">=&gt;</span> <span class="ident">iter</span>.<span class="ident">next</span>(),
         }
@@ -4477,6 +4890,7 @@
 
     <span class="kw">fn</span> <span class="ident">size_hint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> (<span class="ident">usize</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) {
         <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">ConsumingIter</span>::<span class="ident">Empty</span> <span class="op">=&gt;</span> (<span class="number">0</span>, <span class="prelude-val">Some</span>(<span class="number">0</span>)),
             <span class="ident">ConsumingIter</span>::<span class="ident">Single</span>(<span class="ident">iter</span>) <span class="op">=&gt;</span> <span class="ident">iter</span>.<span class="ident">size_hint</span>(),
             <span class="ident">ConsumingIter</span>::<span class="ident">Full</span>(<span class="ident">iter</span>) <span class="op">=&gt;</span> <span class="ident">iter</span>.<span class="ident">size_hint</span>(),
         }
@@ -4489,6 +4903,7 @@
     <span class="doccomment">/// Time: O(1)*</span>
     <span class="kw">fn</span> <span class="ident">next_back</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">ConsumingIter</span>::<span class="ident">Empty</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             <span class="ident">ConsumingIter</span>::<span class="ident">Single</span>(<span class="ident">iter</span>) <span class="op">=&gt;</span> <span class="ident">iter</span>.<span class="ident">next_back</span>(),
             <span class="ident">ConsumingIter</span>::<span class="ident">Full</span>(<span class="ident">iter</span>) <span class="op">=&gt;</span> <span class="ident">iter</span>.<span class="ident">next_back</span>(),
         }
@@ -4622,8 +5037,10 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rayon</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
-    <span class="kw">use</span> <span class="ident">rayon</span>::<span class="ident">iter</span>::<span class="ident">plumbing</span>::{<span class="ident">bridge</span>, <span class="ident">Consumer</span>, <span class="ident">Producer</span>, <span class="ident">ProducerCallback</span>, <span class="ident">UnindexedConsumer</span>};
-    <span class="kw">use</span> <span class="ident">rayon</span>::<span class="ident">iter</span>::{
+    <span class="kw">use</span> ::<span class="ident">rayon</span>::<span class="ident">iter</span>::<span class="ident">plumbing</span>::{
+        <span class="ident">bridge</span>, <span class="ident">Consumer</span>, <span class="ident">Producer</span>, <span class="ident">ProducerCallback</span>, <span class="ident">UnindexedConsumer</span>,
+    };
+    <span class="kw">use</span> ::<span class="ident">rayon</span>::<span class="ident">iter</span>::{
         <span class="ident">IndexedParallelIterator</span>, <span class="ident">IntoParallelRefIterator</span>, <span class="ident">IntoParallelRefMutIterator</span>,
         <span class="ident">ParallelIterator</span>,
     };
@@ -4802,10 +5219,13 @@
     <span class="kw">mod</span> <span class="ident">test</span> {
         <span class="kw">use</span> <span class="kw">super</span>::<span class="kw">super</span>::<span class="kw-2">*</span>;
         <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">proptest</span>::<span class="ident">vector</span>;
-        <span class="kw">use</span> <span class="ident">proptest</span>::<span class="ident">num</span>::<span class="ident">i32</span>;
-        <span class="kw">use</span> <span class="ident">rayon</span>::<span class="ident">iter</span>::{<span class="ident">IntoParallelRefIterator</span>, <span class="ident">IntoParallelRefMutIterator</span>, <span class="ident">ParallelIterator</span>};
+        <span class="kw">use</span> ::<span class="ident">proptest</span>::<span class="ident">num</span>::<span class="ident">i32</span>;
+        <span class="kw">use</span> ::<span class="ident">proptest</span>::<span class="ident">proptest</span>;
+        <span class="kw">use</span> ::<span class="ident">rayon</span>::<span class="ident">iter</span>::{
+            <span class="ident">IntoParallelRefIterator</span>, <span class="ident">IntoParallelRefMutIterator</span>, <span class="ident">ParallelIterator</span>,
+        };
 
-        <span class="macro">proptest</span><span class="macro">!</span>{
+        <span class="macro">proptest</span><span class="macro">!</span> {
             <span class="attribute">#[<span class="ident">test</span>]</span>
             <span class="kw">fn</span> <span class="ident">par_iter</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">input</span> <span class="kw">in</span> <span class="ident">vector</span>(<span class="ident">i32</span>::<span class="ident">ANY</span>, <span class="number">0</span>..<span class="number">10000</span>)) {
                 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">input</span>.<span class="ident">iter</span>().<span class="ident">max</span>(), <span class="ident">input</span>.<span class="ident">par_iter</span>().<span class="ident">max</span>())
@@ -4814,8 +5234,8 @@
             <span class="attribute">#[<span class="ident">test</span>]</span>
             <span class="kw">fn</span> <span class="ident">par_mut_iter</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">input</span> <span class="kw">in</span> <span class="ident">vector</span>(<span class="ident">i32</span>::<span class="ident">ANY</span>, <span class="number">0</span>..<span class="number">10000</span>)) {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">clone</span>();
-                <span class="ident">vec</span>.<span class="ident">par_iter_mut</span>().<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">i</span> <span class="op">+=</span> <span class="number">1</span>);
-                <span class="kw">let</span> <span class="ident">expected</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">clone</span>().<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">collect</span>();
+                <span class="ident">vec</span>.<span class="ident">par_iter_mut</span>().<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">i</span> <span class="op">=</span> <span class="ident">i</span>.<span class="ident">overflowing_add</span>(<span class="number">1</span>).<span class="number">0</span>);
+                <span class="kw">let</span> <span class="ident">expected</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">clone</span>().<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">overflowing_add</span>(<span class="number">1</span>).<span class="number">0</span>).<span class="ident">collect</span>();
                 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">expected</span>, <span class="ident">vec</span>);
             }
         }
@@ -4838,8 +5258,8 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;proptest&quot;</span>))]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">proptest</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">proptest</span>::<span class="ident">collection</span>::<span class="ident">vec</span>;
-    <span class="kw">use</span> <span class="ident">proptest</span>::<span class="ident">strategy</span>::{<span class="ident">BoxedStrategy</span>, <span class="ident">Strategy</span>, <span class="ident">ValueTree</span>};
+    <span class="kw">use</span> ::<span class="ident">proptest</span>::<span class="ident">collection</span>::<span class="ident">vec</span>;
+    <span class="kw">use</span> ::<span class="ident">proptest</span>::<span class="ident">strategy</span>::{<span class="ident">BoxedStrategy</span>, <span class="ident">Strategy</span>, <span class="ident">ValueTree</span>};
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Range</span>;
 
     <span class="doccomment">/// A strategy for generating a vector of a certain size.</span>
@@ -4872,27 +5292,9 @@
 <span class="kw">mod</span> <span class="ident">test</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">proptest</span>::<span class="ident">vector</span>;
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">proptest</span>::<span class="ident">collection</span>::<span class="ident">vec</span>;
-    <span class="kw">use</span> <span class="ident">proptest</span>::<span class="ident">num</span>::{<span class="ident">i32</span>, <span class="ident">usize</span>};
-
-    <span class="comment">// #[test]</span>
-    <span class="comment">// fn push_and_pop_things() {</span>
-    <span class="comment">//     let mut seq = Vector::new();</span>
-    <span class="comment">//     for i in 0..1000 {</span>
-    <span class="comment">//         seq.push_back(i);</span>
-    <span class="comment">//     }</span>
-    <span class="comment">//     for i in 0..1000 {</span>
-    <span class="comment">//         assert_eq!(Some(i), seq.pop_front());</span>
-    <span class="comment">//     }</span>
-    <span class="comment">//     assert!(seq.is_empty());</span>
-    <span class="comment">//     for i in 0..1000 {</span>
-    <span class="comment">//         seq.push_front(i);</span>
-    <span class="comment">//     }</span>
-    <span class="comment">//     for i in 0..1000 {</span>
-    <span class="comment">//         assert_eq!(Some(i), seq.pop_back());</span>
-    <span class="comment">//     }</span>
-    <span class="comment">//     assert!(seq.is_empty());</span>
-    <span class="comment">// }</span>
+    <span class="kw">use</span> ::<span class="ident">proptest</span>::<span class="ident">collection</span>::<span class="ident">vec</span>;
+    <span class="kw">use</span> ::<span class="ident">proptest</span>::<span class="ident">num</span>::{<span class="ident">i32</span>, <span class="ident">usize</span>};
+    <span class="kw">use</span> ::<span class="ident">proptest</span>::<span class="ident">proptest</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">macro_allows_trailing_comma</span>() {
@@ -4936,6 +5338,143 @@
         }
         <span class="kw">let</span> <span class="ident">expected</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">clone</span>().<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">collect</span>();
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">expected</span>, <span class="ident">vec</span>);
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">issue_55_fwd</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">l</span> <span class="op">=</span> <span class="ident">Vector</span>::<span class="ident">new</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4098</span> {
+            <span class="ident">l</span>.<span class="ident">append</span>(<span class="ident">Vector</span>::<span class="ident">unit</span>(<span class="ident">i</span>));
+        }
+        <span class="ident">l</span>.<span class="ident">append</span>(<span class="ident">Vector</span>::<span class="ident">unit</span>(<span class="number">4098</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">4097</span>), <span class="ident">l</span>.<span class="ident">get</span>(<span class="number">4097</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">4096</span>), <span class="ident">l</span>.<span class="ident">get</span>(<span class="number">4096</span>));
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">issue_55_back</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">l</span> <span class="op">=</span> <span class="ident">Vector</span>::<span class="ident">unit</span>(<span class="number">0</span>);
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4099</span> {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">Vector</span>::<span class="ident">unit</span>(<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>);
+            <span class="ident">tmp</span>.<span class="ident">append</span>(<span class="ident">l</span>);
+            <span class="ident">l</span> <span class="op">=</span> <span class="ident">tmp</span>;
+        }
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">4098</span>), <span class="ident">l</span>.<span class="ident">get</span>(<span class="number">1</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">4097</span>), <span class="ident">l</span>.<span class="ident">get</span>(<span class="number">2</span>));
+        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">l</span>.<span class="ident">len</span>();
+        <span class="ident">l</span>.<span class="ident">slice</span>(<span class="number">2</span>..<span class="ident">len</span>);
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">issue_55_append</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec1</span> <span class="op">=</span> <span class="ident">Vector</span>::<span class="ident">from_iter</span>(<span class="number">0</span>..<span class="number">92</span>);
+        <span class="kw">let</span> <span class="ident">vec2</span> <span class="op">=</span> <span class="ident">Vector</span>::<span class="ident">from_iter</span>(<span class="number">0</span>..<span class="number">165</span>);
+        <span class="ident">vec1</span>.<span class="ident">append</span>(<span class="ident">vec2</span>);
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">issue_70</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">Vector</span>::<span class="ident">new</span>();
+        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">262</span> {
+            <span class="ident">x</span>.<span class="ident">push_back</span>(<span class="number">0</span>);
+        }
+        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">97</span> {
+            <span class="ident">x</span>.<span class="ident">pop_front</span>();
+        }
+        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">offset</span> <span class="kw">in</span> <span class="kw-2">&amp;</span>[<span class="number">160</span>, <span class="number">163</span>, <span class="number">160</span>] {
+            <span class="ident">x</span>.<span class="ident">remove</span>(<span class="ident">offset</span>);
+        }
+        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">64</span> {
+            <span class="ident">x</span>.<span class="ident">push_back</span>(<span class="number">0</span>);
+        }
+        <span class="comment">// At this point middle contains three chunks of size 64, 64 and 1</span>
+        <span class="comment">// respectively. Previously the next `push_back()` would append another</span>
+        <span class="comment">// zero-sized chunk to middle even though there is enough space left.</span>
+        <span class="kw">match</span> <span class="ident">x</span> {
+            <span class="ident">Vector</span>::<span class="ident">Full</span>(<span class="kw-2">ref</span> <span class="ident">tree</span>) <span class="op">=&gt;</span> {
+                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">129</span>, <span class="ident">tree</span>.<span class="ident">middle</span>.<span class="ident">len</span>());
+                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">tree</span>.<span class="ident">middle</span>.<span class="ident">number_of_children</span>());
+            }
+            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
+        }
+        <span class="ident">x</span>.<span class="ident">push_back</span>(<span class="number">0</span>);
+        <span class="kw">match</span> <span class="ident">x</span> {
+            <span class="ident">Vector</span>::<span class="ident">Full</span>(<span class="kw-2">ref</span> <span class="ident">tree</span>) <span class="op">=&gt;</span> {
+                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">131</span>, <span class="ident">tree</span>.<span class="ident">middle</span>.<span class="ident">len</span>());
+                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">tree</span>.<span class="ident">middle</span>.<span class="ident">number_of_children</span>())
+            }
+            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
+        }
+        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">64</span> {
+            <span class="ident">x</span>.<span class="ident">push_back</span>(<span class="number">0</span>);
+        }
+        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="ident">x</span>.<span class="ident">iter</span>() {}
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">issue_67</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">l</span> <span class="op">=</span> <span class="ident">Vector</span>::<span class="ident">unit</span>(<span class="number">4100</span>);
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="number">4099</span>).<span class="ident">rev</span>() {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">Vector</span>::<span class="ident">unit</span>(<span class="ident">i</span>);
+            <span class="ident">tmp</span>.<span class="ident">append</span>(<span class="ident">l</span>);
+            <span class="ident">l</span> <span class="op">=</span> <span class="ident">tmp</span>;
+        }
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">4100</span>, <span class="ident">l</span>.<span class="ident">len</span>());
+        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">l</span>.<span class="ident">len</span>();
+        <span class="kw">let</span> <span class="ident">tail</span> <span class="op">=</span> <span class="ident">l</span>.<span class="ident">slice</span>(<span class="number">1</span>..<span class="ident">len</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">l</span>.<span class="ident">len</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">4099</span>, <span class="ident">tail</span>.<span class="ident">len</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">0</span>), <span class="ident">l</span>.<span class="ident">get</span>(<span class="number">0</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">1</span>), <span class="ident">tail</span>.<span class="ident">get</span>(<span class="number">0</span>));
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">issue_74_simple_size</span>() {
+        <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">nodes</span>::<span class="ident">rrb</span>::<span class="ident">NODE_SIZE</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">Vector</span>::<span class="ident">new</span>();
+        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..(<span class="ident">CHUNK_SIZE</span>
+            <span class="op">*</span> (
+                <span class="number">1</span> <span class="comment">// inner_f</span>
+                <span class="op">+</span> (<span class="number">2</span> <span class="op">*</span> <span class="ident">NODE_SIZE</span>) <span class="comment">// middle: two full Entry::Nodes (4096 elements each)</span>
+                <span class="op">+</span> <span class="number">1</span> <span class="comment">// inner_b</span>
+                <span class="op">+</span> <span class="number">1</span>
+                <span class="comment">// outer_b</span>
+            ))
+        {
+            <span class="ident">x</span>.<span class="ident">push_back</span>(<span class="number">0u32</span>);
+        }
+        <span class="kw">let</span> <span class="ident">middle_first_node_start</span> <span class="op">=</span> <span class="ident">CHUNK_SIZE</span>;
+        <span class="kw">let</span> <span class="ident">middle_second_node_start</span> <span class="op">=</span> <span class="ident">middle_first_node_start</span> <span class="op">+</span> <span class="ident">NODE_SIZE</span> <span class="op">*</span> <span class="ident">CHUNK_SIZE</span>;
+        <span class="comment">// This reduces the size of the second node to 4095.</span>
+        <span class="ident">x</span>.<span class="ident">remove</span>(<span class="ident">middle_second_node_start</span>);
+        <span class="comment">// As outer_b is full, this will cause inner_b (length 64) to be pushed</span>
+        <span class="comment">// to middle. The first element will be merged into the second node, the</span>
+        <span class="comment">// remaining 63 elements will end up in a new node.</span>
+        <span class="ident">x</span>.<span class="ident">push_back</span>(<span class="number">0u32</span>);
+        <span class="kw">match</span> <span class="ident">x</span> {
+            <span class="ident">Vector</span>::<span class="ident">Full</span>(<span class="ident">tree</span>) <span class="op">=&gt;</span> {
+                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">tree</span>.<span class="ident">middle</span>.<span class="ident">number_of_children</span>());
+                <span class="macro">assert_eq</span><span class="macro">!</span>(
+                    <span class="number">2</span> <span class="op">*</span> <span class="ident">NODE_SIZE</span> <span class="op">*</span> <span class="ident">CHUNK_SIZE</span> <span class="op">+</span> <span class="ident">CHUNK_SIZE</span> <span class="op">-</span> <span class="number">1</span>,
+                    <span class="ident">tree</span>.<span class="ident">middle</span>.<span class="ident">len</span>()
+                );
+            }
+            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
+        }
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">issue_77</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">Vector</span>::<span class="ident">new</span>();
+        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">44</span> { <span class="ident">x</span>.<span class="ident">push_back</span>(<span class="number">0</span>); }
+        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">20</span> { <span class="ident">x</span>.<span class="ident">insert</span>(<span class="number">0</span>, <span class="number">0</span>); }
+        <span class="ident">x</span>.<span class="ident">insert</span>(<span class="number">1</span>, <span class="number">0</span>);
+        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">441</span> { <span class="ident">x</span>.<span class="ident">push_back</span>(<span class="number">0</span>); }
+        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">58</span> { <span class="ident">x</span>.<span class="ident">insert</span>(<span class="number">0</span>, <span class="number">0</span>); }
+        <span class="ident">x</span>.<span class="ident">insert</span>(<span class="number">514</span>, <span class="number">0</span>);
+        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">73</span> { <span class="ident">x</span>.<span class="ident">push_back</span>(<span class="number">0</span>); }
+        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">10</span> { <span class="ident">x</span>.<span class="ident">insert</span>(<span class="number">0</span>, <span class="number">0</span>); }
+        <span class="ident">x</span>.<span class="ident">insert</span>(<span class="number">514</span>, <span class="number">0</span>);
     }
 
     <span class="macro">proptest</span><span class="macro">!</span> {
@@ -5058,10 +5597,10 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">clone</span>();
             {
                 <span class="kw">for</span> <span class="ident">p</span> <span class="kw">in</span> <span class="ident">vec</span>.<span class="ident">iter_mut</span>() {
-                    <span class="kw-2">*</span><span class="ident">p</span> <span class="op">+=</span> <span class="number">1</span>;
+                    <span class="kw-2">*</span><span class="ident">p</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">overflowing_add</span>(<span class="number">1</span>).<span class="number">0</span>;
                 }
             }
-            <span class="kw">let</span> <span class="ident">expected</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">clone</span>().<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span><span class="op">+</span><span class="number">1</span>).<span class="ident">collect</span>();
+            <span class="kw">let</span> <span class="ident">expected</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">clone</span>().<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">overflowing_add</span>(<span class="number">1</span>).<span class="number">0</span>).<span class="ident">collect</span>();
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">expected</span>, <span class="ident">vec</span>);
         }
 
@@ -5072,10 +5611,10 @@
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">focus</span> <span class="op">=</span> <span class="ident">vec</span>.<span class="ident">focus_mut</span>();
                 <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">input</span>.<span class="ident">len</span>() {
                     <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">focus</span>.<span class="ident">index_mut</span>(<span class="ident">i</span>);
-                    <span class="kw-2">*</span><span class="ident">p</span> <span class="op">+=</span> <span class="number">1</span>;
+                    <span class="kw-2">*</span><span class="ident">p</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">overflowing_add</span>(<span class="number">1</span>).<span class="number">0</span>;
                 }
             }
-            <span class="kw">let</span> <span class="ident">expected</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">clone</span>().<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span><span class="op">+</span><span class="number">1</span>).<span class="ident">collect</span>();
+            <span class="kw">let</span> <span class="ident">expected</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">clone</span>().<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">overflowing_add</span>(<span class="number">1</span>).<span class="number">0</span>).<span class="ident">collect</span>();
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">expected</span>, <span class="ident">vec</span>);
         }
 
@@ -5087,7 +5626,7 @@
                 <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">focus</span>.<span class="ident">len</span>();
                 <span class="kw">if</span> <span class="ident">len</span> <span class="op">&lt;</span> <span class="number">8</span> {
                     <span class="kw">for</span> <span class="ident">p</span> <span class="kw">in</span> <span class="ident">focus</span> {
-                        <span class="kw-2">*</span><span class="ident">p</span> <span class="op">+=</span> <span class="number">1</span>;
+                        <span class="kw-2">*</span><span class="ident">p</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">overflowing_add</span>(<span class="number">1</span>).<span class="number">0</span>;
                     }
                 } <span class="kw">else</span> {
                     <span class="kw">let</span> (<span class="ident">left</span>, <span class="ident">right</span>) <span class="op">=</span> <span class="ident">focus</span>.<span class="ident">split_at</span>(<span class="ident">len</span> <span class="op">/</span> <span class="number">2</span>);
@@ -5098,29 +5637,58 @@
 
             <span class="ident">split_down</span>(<span class="ident">vec</span>.<span class="ident">focus_mut</span>());
 
-            <span class="kw">let</span> <span class="ident">expected</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">clone</span>().<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span><span class="op">+</span><span class="number">1</span>).<span class="ident">collect</span>();
+            <span class="kw">let</span> <span class="ident">expected</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">clone</span>().<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">overflowing_add</span>(<span class="number">1</span>).<span class="number">0</span>).<span class="ident">collect</span>();
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">expected</span>, <span class="ident">vec</span>);
         }
 
         <span class="attribute">#[<span class="ident">test</span>]</span>
         <span class="kw">fn</span> <span class="ident">chunks</span>(<span class="kw-2">ref</span> <span class="ident">input</span> <span class="kw">in</span> <span class="ident">vector</span>(<span class="ident">i32</span>::<span class="ident">ANY</span>, <span class="number">0</span>..<span class="number">10000</span>)) {
-            <span class="kw">let</span> <span class="ident">output</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">chunks</span>().<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span><span class="ident">a</span>).<span class="ident">cloned</span>().<span class="ident">collect</span>();
+            <span class="kw">let</span> <span class="ident">output</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">leaves</span>().<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span><span class="ident">a</span>).<span class="ident">cloned</span>().<span class="ident">collect</span>();
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">input</span>, <span class="kw-2">&amp;</span><span class="ident">output</span>);
             <span class="kw">let</span> <span class="ident">rev_in</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">iter</span>().<span class="ident">rev</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>();
-            <span class="kw">let</span> <span class="ident">rev_out</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">chunks</span>().<span class="ident">rev</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">iter</span>().<span class="ident">rev</span>()).<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span><span class="ident">a</span>).<span class="ident">cloned</span>().<span class="ident">collect</span>();
+            <span class="kw">let</span> <span class="ident">rev_out</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">leaves</span>().<span class="ident">rev</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">iter</span>().<span class="ident">rev</span>()).<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span><span class="ident">a</span>).<span class="ident">cloned</span>().<span class="ident">collect</span>();
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rev_in</span>, <span class="ident">rev_out</span>);
         }
 
         <span class="attribute">#[<span class="ident">test</span>]</span>
         <span class="kw">fn</span> <span class="ident">chunks_mut</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">input_src</span> <span class="kw">in</span> <span class="ident">vector</span>(<span class="ident">i32</span>::<span class="ident">ANY</span>, <span class="number">0</span>..<span class="number">10000</span>)) {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">input</span> <span class="op">=</span> <span class="ident">input_src</span>.<span class="ident">clone</span>();
-            <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cargo-clippy&quot;</span>, <span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">map_clone</span>))]</span>
-            <span class="kw">let</span> <span class="ident">output</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">chunks_mut</span>().<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">a</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">v</span>).<span class="ident">collect</span>();
+            <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">map_clone</span>)]</span>
+            <span class="kw">let</span> <span class="ident">output</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">leaves_mut</span>().<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">a</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">v</span>).<span class="ident">collect</span>();
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">input</span>, <span class="ident">output</span>);
             <span class="kw">let</span> <span class="ident">rev_in</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">iter</span>().<span class="ident">rev</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>();
-            <span class="kw">let</span> <span class="ident">rev_out</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">chunks_mut</span>().<span class="ident">rev</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">iter</span>().<span class="ident">rev</span>()).<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span><span class="ident">a</span>).<span class="ident">cloned</span>().<span class="ident">collect</span>();
+            <span class="kw">let</span> <span class="ident">rev_out</span>: <span class="ident">Vector</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">leaves_mut</span>().<span class="ident">rev</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">iter</span>().<span class="ident">rev</span>()).<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span><span class="ident">a</span>).<span class="ident">cloned</span>().<span class="ident">collect</span>();
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rev_in</span>, <span class="ident">rev_out</span>);
         }
+
+        <span class="comment">// The following two tests are very slow and there are unit tests above</span>
+        <span class="comment">// which test for regression of issue #55.  It would still be good to</span>
+        <span class="comment">// run them occasionally.</span>
+
+        <span class="comment">// #[test]</span>
+        <span class="comment">// fn issue55_back(count in 0..10000, slice_at in usize::ANY) {</span>
+        <span class="comment">//     let count = count as usize;</span>
+        <span class="comment">//     let slice_at = slice_at % count;</span>
+        <span class="comment">//     let mut l = Vector::unit(0);</span>
+        <span class="comment">//     for _ in 0..count {</span>
+        <span class="comment">//         let mut tmp = Vector::unit(0);</span>
+        <span class="comment">//         tmp.append(l);</span>
+        <span class="comment">//         l = tmp;</span>
+        <span class="comment">//     }</span>
+        <span class="comment">//     let len = l.len();</span>
+        <span class="comment">//     l.slice(slice_at..len);</span>
+        <span class="comment">// }</span>
+
+        <span class="comment">// #[test]</span>
+        <span class="comment">// fn issue55_fwd(count in 0..10000, slice_at in usize::ANY) {</span>
+        <span class="comment">//     let count = count as usize;</span>
+        <span class="comment">//     let slice_at = slice_at % count;</span>
+        <span class="comment">//     let mut l = Vector::new();</span>
+        <span class="comment">//     for i in 0..count {</span>
+        <span class="comment">//         l.append(Vector::unit(i));</span>
+        <span class="comment">//     }</span>
+        <span class="comment">//     assert_eq!(Some(&amp;slice_at), l.get(slice_at));</span>
+        <span class="comment">// }</span>
     }
 }
 </pre></div>

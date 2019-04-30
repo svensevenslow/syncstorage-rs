@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/docopt-1.0.0/src/parse.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parse.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/docopt-1.1.0/src/parse.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parse.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../docopt/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
 <span id="2">   2</span>
 <span id="3">   3</span>
 <span id="4">   4</span>
@@ -1486,6 +1486,8 @@
 <span id="1486">1486</span>
 <span id="1487">1487</span>
 <span id="1488">1488</span>
+<span id="1489">1489</span>
+<span id="1490">1490</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// I am overall pretty displeased with the quality of code in this module.</span>
 <span class="comment">// I wrote it while simultaneously trying to build a mental model of Docopt&#39;s</span>
@@ -1527,22 +1529,24 @@
 <span class="comment">//</span>
 <span class="comment">//   - Write a specification for Docopt.</span>
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">Argument</span>::{<span class="ident">Zero</span>, <span class="ident">One</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">Atom</span>::{<span class="ident">Short</span>, <span class="ident">Long</span>, <span class="ident">Command</span>, <span class="ident">Positional</span>};
-<span class="kw">use</span> <span class="self">self</span>::<span class="ident">Pattern</span>::{<span class="ident">Alternates</span>, <span class="ident">Sequence</span>, <span class="ident">Optional</span>, <span class="ident">Repeat</span>, <span class="ident">PatAtom</span>};
-
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">borrow</span>::<span class="ident">ToOwned</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::{<span class="ident">HashMap</span>, <span class="ident">HashSet</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">hash_map</span>::<span class="ident">Entry</span>::{<span class="ident">Vacant</span>, <span class="ident">Occupied</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">Ordering</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
+
+<span class="kw">use</span> <span class="ident">lazy_static</span>::<span class="ident">lazy_static</span>;
 <span class="kw">use</span> <span class="ident">regex</span>;
 <span class="kw">use</span> <span class="ident">regex</span>::<span class="ident">Regex</span>;
 <span class="kw">use</span> <span class="ident">strsim</span>::<span class="ident">levenshtein</span>;
 
-<span class="kw">use</span> <span class="ident">dopt</span>::<span class="ident">Value</span>::{<span class="self">self</span>, <span class="ident">Switch</span>, <span class="ident">Counted</span>, <span class="ident">Plain</span>, <span class="ident">List</span>};
-<span class="kw">use</span> <span class="ident">synonym</span>::<span class="ident">SynonymMap</span>;
-<span class="kw">use</span> <span class="ident">cap_or_empty</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">dopt</span>::<span class="ident">Value</span>::{<span class="self">self</span>, <span class="ident">Switch</span>, <span class="ident">Counted</span>, <span class="ident">Plain</span>, <span class="ident">List</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">synonym</span>::<span class="ident">SynonymMap</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">cap_or_empty</span>;
+
+<span class="kw">use</span> <span class="self">self</span>::<span class="ident">Argument</span>::{<span class="ident">Zero</span>, <span class="ident">One</span>};
+<span class="kw">use</span> <span class="self">self</span>::<span class="ident">Atom</span>::{<span class="ident">Short</span>, <span class="ident">Long</span>, <span class="ident">Command</span>, <span class="ident">Positional</span>};
+<span class="kw">use</span> <span class="self">self</span>::<span class="ident">Pattern</span>::{<span class="ident">Alternates</span>, <span class="ident">Sequence</span>, <span class="ident">Optional</span>, <span class="ident">Repeat</span>, <span class="ident">PatAtom</span>};
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">err</span>(
     ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">arg</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> (<span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">arg</span>)<span class="kw-2">*</span>)))
@@ -1572,7 +1576,7 @@
         <span class="prelude-val">Ok</span>(<span class="ident">d</span>)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">matches</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">argv</span>: <span class="kw-2">&amp;</span><span class="ident">Argv</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SynonymMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Value</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">matches</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">argv</span>: <span class="kw-2">&amp;</span><span class="ident">Argv</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SynonymMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Value</span><span class="op">&gt;&gt;</span> {
         <span class="kw">for</span> <span class="ident">usage</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">usages</span> {
             <span class="kw">match</span> <span class="ident">Matcher</span>::<span class="ident">matches</span>(<span class="ident">argv</span>, <span class="ident">usage</span>) {
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">continue</span>,
@@ -1583,7 +1587,7 @@
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse_argv</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">argv</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">options_first</span>: <span class="ident">bool</span>)
-                         <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Argv</span>, <span class="ident">String</span><span class="op">&gt;</span> {
+                         <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Argv</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>, <span class="ident">String</span><span class="op">&gt;</span> {
         <span class="ident">Argv</span>::<span class="ident">new</span>(<span class="self">self</span>, <span class="ident">argv</span>, <span class="ident">options_first</span>)
     }
 }
@@ -1818,7 +1822,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Parser</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">fmt</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">fmt</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">fn</span> <span class="ident">sorted</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="ident">xs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
             <span class="ident">xs</span>.<span class="ident">sort</span>(); <span class="ident">xs</span>
         }
@@ -2332,7 +2336,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">Atom</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
             <span class="ident">Short</span>(<span class="ident">c</span>) <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;-{}&quot;</span>, <span class="ident">c</span>),
             <span class="ident">Long</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;--{}&quot;</span>, <span class="ident">s</span>),
@@ -2540,7 +2544,7 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Argv</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">fmt</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">fmt</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Positional: {:?}&quot;</span>, <span class="self">self</span>.<span class="ident">positional</span>)<span class="question-mark">?</span>;
         <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Flags: {:?}&quot;</span>, <span class="self">self</span>.<span class="ident">flags</span>)<span class="question-mark">?</span>;
         <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Counts: {:?}&quot;</span>, <span class="self">self</span>.<span class="ident">counts</span>)<span class="question-mark">?</span>;
@@ -2665,7 +2669,7 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span> <span class="ident">Matcher</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">matches</span>(<span class="ident">argv</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Argv</span>, <span class="ident">pat</span>: <span class="kw-2">&amp;</span><span class="ident">Pattern</span>)
+    <span class="kw">fn</span> <span class="ident">matches</span>(<span class="ident">argv</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Argv</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>, <span class="ident">pat</span>: <span class="kw-2">&amp;</span><span class="ident">Pattern</span>)
               <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SynonymMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Value</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">Matcher</span> { <span class="ident">argv</span>: <span class="ident">argv</span> };
         <span class="kw">let</span> <span class="ident">init</span> <span class="op">=</span> <span class="ident">MState</span> {

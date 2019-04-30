@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["ResolveErrorKind",""]],"struct":[["ResolveError",""]],"trait":[["ResolveChainErr",""]],"type":[["ResolveResult",""]]});
+initSidebarItems({"enum":[["ResolveErrorKind","The error kind for errors that get returned in the crate"]],"struct":[["ResolveError","The error type for errors that get returned in the crate"]],"type":[["ResolveResult","An alias for results returned by functions of this crate"]]});

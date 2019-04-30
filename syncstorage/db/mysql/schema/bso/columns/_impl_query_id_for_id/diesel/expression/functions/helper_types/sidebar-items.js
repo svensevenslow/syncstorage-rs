@@ -1,1 +1,0 @@
-initSidebarItems({"type":[["Not","The return type of `not(expr)`"],["avg","The return type of `avg(expr)`"],["max","The return type of `max(expr)`"],["min","The return type of `min(expr)`"],["not","The return type of `not(expr)`"],["sum","The return type of `sum(expr)`"]]});

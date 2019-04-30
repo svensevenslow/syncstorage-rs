@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-signal-0.2.1/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-signal-0.2.7/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../tokio_signal/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -139,12 +139,6 @@
 <span id="139">139</span>
 <span id="140">140</span>
 <span id="141">141</span>
-<span id="142">142</span>
-<span id="143">143</span>
-<span id="144">144</span>
-<span id="145">145</span>
-<span id="146">146</span>
-<span id="147">147</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Asynchronous signal handling for Tokio</span>
 <span class="doccomment">//!</span>
@@ -167,15 +161,12 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust,no_run</span>
 <span class="doccomment">//! extern crate futures;</span>
-<span class="doccomment">//! extern crate tokio_core;</span>
+<span class="doccomment">//! extern crate tokio;</span>
 <span class="doccomment">//! extern crate tokio_signal;</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! use tokio_core::reactor::Core;</span>
 <span class="doccomment">//! use futures::{Future, Stream};</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! fn main() {</span>
-<span class="doccomment">//!     let mut core = Core::new().unwrap();</span>
-<span class="doccomment">//!</span>
 <span class="doccomment">//!     // Create an infinite stream of &quot;Ctrl+C&quot; notifications. Each item received</span>
 <span class="doccomment">//!     // on this stream may represent multiple ctrl-c signals.</span>
 <span class="doccomment">//!     let ctrl_c = tokio_signal::ctrl_c().flatten_stream();</span>
@@ -186,7 +177,7 @@
 <span class="doccomment">//!         Ok(())</span>
 <span class="doccomment">//!     });</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//!     core.run(prog).unwrap();</span>
+<span class="doccomment">//!     tokio::runtime::current_thread::block_on_all(prog).unwrap();</span>
 <span class="doccomment">//! }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
@@ -194,34 +185,31 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust,no_run</span>
 <span class="doccomment">//! # extern crate futures;</span>
-<span class="doccomment">//! # extern crate tokio_core;</span>
+<span class="doccomment">//! # extern crate tokio;</span>
 <span class="doccomment">//! # extern crate tokio_signal;</span>
 <span class="doccomment">//! # #[cfg(unix)]</span>
 <span class="doccomment">//! # mod foo {</span>
 <span class="doccomment">//! #</span>
 <span class="doccomment">//! extern crate futures;</span>
-<span class="doccomment">//! extern crate tokio_core;</span>
+<span class="doccomment">//! extern crate tokio;</span>
 <span class="doccomment">//! extern crate tokio_signal;</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! use tokio_core::reactor::Core;</span>
 <span class="doccomment">//! use futures::{Future, Stream};</span>
 <span class="doccomment">//! use tokio_signal::unix::{Signal, SIGHUP};</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! fn main() {</span>
-<span class="doccomment">//!     let mut core = Core::new().unwrap();</span>
-<span class="doccomment">//!</span>
 <span class="doccomment">//!     // Like the previous example, this is an infinite stream of signals</span>
 <span class="doccomment">//!     // being received, and signals may be coalesced while pending.</span>
 <span class="doccomment">//!     let stream = Signal::new(SIGHUP).flatten_stream();</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//!     // Convert out stream into a future and block the program</span>
-<span class="doccomment">//!     core.run(stream.into_future()).ok().unwrap();</span>
+<span class="doccomment">//!     tokio::runtime::current_thread::block_on_all(stream.into_future()).ok().unwrap();</span>
 <span class="doccomment">//! }</span>
 <span class="doccomment">//! # }</span>
 <span class="doccomment">//! # fn main() {}</span>
 <span class="doccomment">//! ```</span>
 
-<span class="attribute">#![<span class="ident">doc</span>(<span class="ident">html_root_url</span> <span class="op">=</span> <span class="string">&quot;https://docs.rs/tokio-signal/0.1&quot;</span>)]</span>
+<span class="attribute">#![<span class="ident">doc</span>(<span class="ident">html_root_url</span> <span class="op">=</span> <span class="string">&quot;https://docs.rs/tokio-signal/0.2.7&quot;</span>)]</span>
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
 
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">futures</span>;

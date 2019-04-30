@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.4.0/src/serialize/binary/decoder.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>decoder.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../../light.css" id="themeStyle"><script src="../../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../../settings.html"><img src="../../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.5.0/src/serialize/binary/decoder.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>decoder.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../../light.css" id="themeStyle"><script src="../../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../../trust_dns_proto/index.html'><img src='../../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../../settings.html"><img src="../../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -237,6 +237,31 @@
 <span id="237">237</span>
 <span id="238">238</span>
 <span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">/*
  * Copyright (C) 2015 Benjamin Fry &lt;benjaminfry@me.com&gt;
@@ -254,8 +279,9 @@
  * limitations under the License.
  */</span>
 
-<span class="kw">use</span> <span class="ident">error</span>::{<span class="ident">ProtoErrorKind</span>, <span class="ident">ProtoResult</span>};
 <span class="kw">use</span> <span class="ident">byteorder</span>::{<span class="ident">ByteOrder</span>, <span class="ident">NetworkEndian</span>};
+<span class="kw">use</span> <span class="ident">error</span>::{<span class="ident">ProtoError</span>, <span class="ident">ProtoErrorKind</span>, <span class="ident">ProtoResult</span>};
+<span class="kw">use</span> <span class="ident">serialize</span>::<span class="ident">binary</span>::<span class="ident">Restrict</span>;
 
 <span class="doccomment">/// This is non-destructive to the inner buffer, b/c for pointer types we need to perform a reverse</span>
 <span class="doccomment">///  seek to lookup names</span>
@@ -283,19 +309,29 @@
     }
 
     <span class="doccomment">/// Pop one byte from the buffer</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">Restrict</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">index</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">len</span>() {
             <span class="kw">let</span> <span class="ident">byte</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buffer</span>[<span class="self">self</span>.<span class="ident">index</span>];
             <span class="self">self</span>.<span class="ident">index</span> <span class="op">+=</span> <span class="number">1</span>;
-            <span class="prelude-val">Ok</span>(<span class="ident">byte</span>)
+            <span class="prelude-val">Ok</span>(<span class="ident">Restrict</span>::<span class="ident">new</span>(<span class="ident">byte</span>))
         } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">ProtoErrorKind</span>::<span class="ident">Message</span>(<span class="string">&quot;unexpected end of input reached&quot;</span>).<span class="ident">into</span>())
+            <span class="prelude-val">Err</span>(<span class="string">&quot;unexpected end of input reached&quot;</span>.<span class="ident">into</span>())
         }
     }
 
     <span class="doccomment">/// Returns the number of bytes in the buffer</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// use trust_dns_proto::serialize::binary::BinDecoder;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let deadbeef = b&quot;deadbeef&quot;;</span>
+    <span class="doccomment">/// let mut decoder = BinDecoder::new(deadbeef);</span>
+    <span class="doccomment">/// assert_eq!(decoder.len(), 8);</span>
+    <span class="doccomment">/// decoder.read_slice(7).unwrap();</span>
+    <span class="doccomment">/// assert_eq!(decoder.len(), 1);</span>
+    <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="self">self</span>.<span class="ident">index</span>
+        <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">len</span>().<span class="ident">saturating_sub</span>(<span class="self">self</span>.<span class="ident">index</span>)
     }
 
     <span class="doccomment">/// Returns `true` if the buffer is empty</span>
@@ -304,9 +340,9 @@
     }
 
     <span class="doccomment">/// Peed one byte forward, without moving the current index forward</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">peek</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">peek</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Restrict</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">index</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">len</span>() {
-            <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">buffer</span>[<span class="self">self</span>.<span class="ident">index</span>])
+            <span class="prelude-val">Some</span>(<span class="ident">Restrict</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="ident">buffer</span>[<span class="self">self</span>.<span class="ident">index</span>]))
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -338,12 +374,29 @@
     <span class="doccomment">/// # Returns</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// A String version of the character data</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_character_data</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">length</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">pop</span>()<span class="question-mark">?</span>;
-        <span class="self">self</span>.<span class="ident">read_slice</span>(<span class="ident">length</span> <span class="kw">as</span> <span class="ident">usize</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_character_data</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">Restrict</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;&gt;</span> {
+        <span class="self">self</span>.<span class="ident">read_character_data_max</span>(<span class="prelude-val">None</span>)
     }
 
-    <span class="comment">// TODO: deprecate in favor of read_slice</span>
+    <span class="doccomment">/// Reads to a maximum length of data, returns an error if this is exceeded</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_character_data_max</span>(
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="ident">max_len</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+    ) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">Restrict</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;&gt;</span> {
+        <span class="kw">let</span> <span class="ident">length</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">pop</span>()<span class="question-mark">?</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">u</span><span class="op">|</span> <span class="ident">u</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">verify_unwrap</span>(<span class="op">|</span><span class="ident">length</span><span class="op">|</span> {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">max_len</span>) <span class="op">=</span> <span class="ident">max_len</span> {
+                <span class="kw-2">*</span><span class="ident">length</span> <span class="op">&lt;=</span> <span class="ident">max_len</span>
+            } <span class="kw">else</span> {
+                <span class="bool-val">true</span>
+            }
+        }).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">length</span><span class="op">|</span> <span class="ident">ProtoError</span>::<span class="ident">from</span>(<span class="ident">ProtoErrorKind</span>::<span class="ident">CharacterDataTooLong</span> {
+            <span class="ident">max</span>: <span class="ident">max_len</span>.<span class="ident">unwrap_or_default</span>(),
+            <span class="ident">len</span>: <span class="ident">length</span>,
+        }))<span class="question-mark">?</span>;
+
+        <span class="self">self</span>.<span class="ident">read_slice</span>(<span class="ident">length</span>)
+    }
+
     <span class="doccomment">/// Reads a Vec out of the buffer</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Arguments</span>
@@ -353,14 +406,8 @@
     <span class="doccomment">/// # Returns</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The Vec of the specified length, otherwise an error</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_vec</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">len</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;&gt;</span> {
-        <span class="comment">// TODO once Drain stabalizes on Vec, this should be replaced...</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="ident">len</span>);
-        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span> {
-            <span class="ident">vec</span>.<span class="ident">push</span>(<span class="self">self</span>.<span class="ident">pop</span>()<span class="question-mark">?</span>)
-        }
-
-        <span class="prelude-val">Ok</span>(<span class="ident">vec</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_vec</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">len</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">Restrict</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">read_slice</span>(<span class="ident">len</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">to_owned</span>()))
     }
 
     <span class="doccomment">/// Reads a slice out of the buffer, without allocating</span>
@@ -372,27 +419,30 @@
     <span class="doccomment">/// # Returns</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The slice of the specified length, otherwise an error</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_slice</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">len</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">index</span> <span class="op">+</span> <span class="ident">len</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_slice</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">len</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">Restrict</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]<span class="op">&gt;&gt;</span> {
+        <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>
+            .<span class="ident">index</span>
+            .<span class="ident">checked_add</span>(<span class="ident">len</span>)
+            .<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="ident">ProtoError</span>::<span class="ident">from</span>(<span class="string">&quot;invalid length for slice&quot;</span>))<span class="question-mark">?</span>;
         <span class="kw">if</span> <span class="ident">end</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">len</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ProtoErrorKind</span>::<span class="ident">Message</span>(<span class="string">&quot;buffer exhausted&quot;</span>).<span class="ident">into</span>());
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;buffer exhausted&quot;</span>.<span class="ident">into</span>());
         }
         <span class="kw">let</span> <span class="ident">slice</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>] <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">buffer</span>[<span class="self">self</span>.<span class="ident">index</span>..<span class="ident">end</span>];
         <span class="self">self</span>.<span class="ident">index</span> <span class="op">+=</span> <span class="ident">len</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">slice</span>)
+        <span class="prelude-val">Ok</span>(<span class="ident">Restrict</span>::<span class="ident">new</span>(<span class="ident">slice</span>))
     }
 
     <span class="doccomment">/// Reads a slice from a previous index to the current</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">slice_from</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]<span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">index</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ProtoErrorKind</span>::<span class="ident">Message</span>(<span class="string">&quot;index antecedes upper bound&quot;</span>).<span class="ident">into</span>());
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;index antecedes upper bound&quot;</span>.<span class="ident">into</span>());
         }
 
         <span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">buffer</span>[<span class="ident">index</span>..<span class="self">self</span>.<span class="ident">index</span>])
     }
 
     <span class="doccomment">/// Reads a byte from the buffer, equivalent to `Self::pop()`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_u8</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_u8</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">Restrict</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;&gt;</span> {
         <span class="self">self</span>.<span class="ident">pop</span>()
     }
 
@@ -404,8 +454,8 @@
     <span class="doccomment">/// # Return</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Return the u16 from the buffer</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_u16</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">NetworkEndian</span>::<span class="ident">read_u16</span>(<span class="self">self</span>.<span class="ident">read_slice</span>(<span class="number">2</span>)<span class="question-mark">?</span>))
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_u16</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">Restrict</span><span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">read_slice</span>(<span class="number">2</span>)<span class="question-mark">?</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">NetworkEndian</span>::<span class="ident">read_u16</span>(<span class="ident">s</span>)))
     }
 
     <span class="doccomment">/// Reads the next four bytes into i32.</span>
@@ -416,8 +466,8 @@
     <span class="doccomment">/// # Return</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Return the i32 from the buffer</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_i32</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">NetworkEndian</span>::<span class="ident">read_i32</span>(<span class="self">self</span>.<span class="ident">read_slice</span>(<span class="number">4</span>)<span class="question-mark">?</span>))
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_i32</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">Restrict</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">read_slice</span>(<span class="number">4</span>)<span class="question-mark">?</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">NetworkEndian</span>::<span class="ident">read_i32</span>(<span class="ident">s</span>)))
     }
 
     <span class="doccomment">/// Reads the next four bytes into u32.</span>
@@ -428,8 +478,8 @@
     <span class="doccomment">/// # Return</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Return the u32 from the buffer</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_u32</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">NetworkEndian</span>::<span class="ident">read_u32</span>(<span class="self">self</span>.<span class="ident">read_slice</span>(<span class="number">4</span>)<span class="question-mark">?</span>))
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_u32</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="ident">Restrict</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">read_slice</span>(<span class="number">4</span>)<span class="question-mark">?</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">NetworkEndian</span>::<span class="ident">read_u32</span>(<span class="ident">s</span>)))
     }
 }
 

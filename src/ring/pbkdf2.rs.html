@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/ring-0.13.2/src/pbkdf2.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>pbkdf2.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/ring-0.13.5/src/pbkdf2.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>pbkdf2.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../ring/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -251,6 +251,9 @@
 <span id="251">251</span>
 <span id="252">252</span>
 <span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2015 Brian Smith.</span>
 <span class="comment">//</span>
@@ -366,7 +369,7 @@
 <span class="doccomment">//!     assert!(db.verify_password(&quot;alice&quot;, &quot;@74d7]404j|W}6u&quot;).is_ok());</span>
 <span class="doccomment">//! }</span>
 
-<span class="kw">use</span> {<span class="ident">constant_time</span>, <span class="ident">digest</span>, <span class="ident">error</span>, <span class="ident">hmac</span>, <span class="ident">polyfill</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">constant_time</span>, <span class="ident">digest</span>, <span class="ident">error</span>, <span class="ident">hmac</span>, <span class="ident">polyfill</span>};
 
 <span class="doccomment">/// Fills `out` with the key derived using PBKDF2 with the given inputs.</span>
 <span class="doccomment">///</span>
@@ -393,8 +396,10 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// `derive` panics if `out.len()` is larger than (2**32 - 1) * the digest</span>
 <span class="doccomment">/// algorithm&#39;s output length, per the PBKDF2 specification.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">derive</span>(<span class="ident">digest_alg</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">digest</span>::<span class="ident">Algorithm</span>, <span class="ident">iterations</span>: <span class="ident">u32</span>,
-              <span class="ident">salt</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">secret</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">out</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]) {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">derive</span>(
+    <span class="ident">digest_alg</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">digest</span>::<span class="ident">Algorithm</span>, <span class="ident">iterations</span>: <span class="ident">u32</span>, <span class="ident">salt</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">secret</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>],
+    <span class="ident">out</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>],
+) {
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">iterations</span> <span class="op">&gt;=</span> <span class="number">1</span>);
 
     <span class="kw">let</span> <span class="ident">output_len</span> <span class="op">=</span> <span class="ident">digest_alg</span>.<span class="ident">output_len</span>;
@@ -417,8 +422,7 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">derive_block</span>(<span class="ident">secret</span>: <span class="kw-2">&amp;</span><span class="ident">hmac</span>::<span class="ident">SigningKey</span>, <span class="ident">iterations</span>: <span class="ident">u32</span>, <span class="ident">salt</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>],
-                <span class="ident">idx</span>: <span class="ident">u32</span>, <span class="ident">out</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]) {
+<span class="kw">fn</span> <span class="ident">derive_block</span>(<span class="ident">secret</span>: <span class="kw-2">&amp;</span><span class="ident">hmac</span>::<span class="ident">SigningKey</span>, <span class="ident">iterations</span>: <span class="ident">u32</span>, <span class="ident">salt</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">idx</span>: <span class="ident">u32</span>, <span class="ident">out</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]) {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">hmac</span>::<span class="ident">SigningContext</span>::<span class="ident">with_key</span>(<span class="ident">secret</span>);
     <span class="ident">ctx</span>.<span class="ident">update</span>(<span class="ident">salt</span>);
     <span class="ident">ctx</span>.<span class="ident">update</span>(<span class="kw-2">&amp;</span><span class="ident">polyfill</span>::<span class="ident">slice</span>::<span class="ident">be_u8_from_u32</span>(<span class="ident">idx</span>));
@@ -464,9 +468,10 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// `verify` panics if `out.len()` is larger than (2**32 - 1) * the digest</span>
 <span class="doccomment">/// algorithm&#39;s output length, per the PBKDF2 specification.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">verify</span>(<span class="ident">digest_alg</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">digest</span>::<span class="ident">Algorithm</span>, <span class="ident">iterations</span>: <span class="ident">u32</span>,
-              <span class="ident">salt</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">secret</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">previously_derived</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>])
-              <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">error</span>::<span class="ident">Unspecified</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">verify</span>(
+    <span class="ident">digest_alg</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">digest</span>::<span class="ident">Algorithm</span>, <span class="ident">iterations</span>: <span class="ident">u32</span>, <span class="ident">salt</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">secret</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>],
+    <span class="ident">previously_derived</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>],
+) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">error</span>::<span class="ident">Unspecified</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="ident">previously_derived</span>.<span class="ident">is_empty</span>() {
         <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">error</span>::<span class="ident">Unspecified</span>);
     }
@@ -489,8 +494,9 @@
 
         <span class="comment">// XXX: This isn&#39;t fully constant-time-safe. TODO: Fix that.</span>
         <span class="kw">let</span> <span class="ident">current_block_matches</span> <span class="op">=</span>
-            <span class="kw">if</span> <span class="ident">constant_time</span>::<span class="ident">verify_slices_are_equal</span>(
-                    <span class="ident">derived_chunk</span>, <span class="ident">previously_derived_chunk</span>).<span class="ident">is_ok</span>() {
+            <span class="kw">if</span> <span class="ident">constant_time</span>::<span class="ident">verify_slices_are_equal</span>(<span class="ident">derived_chunk</span>, <span class="ident">previously_derived_chunk</span>)
+                .<span class="ident">is_ok</span>()
+            {
                 <span class="number">1</span>
             } <span class="kw">else</span> {
                 <span class="number">0</span>

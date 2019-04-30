@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-web-0.7.7/src/fs.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>fs.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-web-0.7.19/src/fs.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>fs.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../actix_web/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
 <span id="2">   2</span>
 <span id="3">   3</span>
 <span id="4">   4</span>
@@ -1784,6 +1784,147 @@
 <span id="1784">1784</span>
 <span id="1785">1785</span>
 <span id="1786">1786</span>
+<span id="1787">1787</span>
+<span id="1788">1788</span>
+<span id="1789">1789</span>
+<span id="1790">1790</span>
+<span id="1791">1791</span>
+<span id="1792">1792</span>
+<span id="1793">1793</span>
+<span id="1794">1794</span>
+<span id="1795">1795</span>
+<span id="1796">1796</span>
+<span id="1797">1797</span>
+<span id="1798">1798</span>
+<span id="1799">1799</span>
+<span id="1800">1800</span>
+<span id="1801">1801</span>
+<span id="1802">1802</span>
+<span id="1803">1803</span>
+<span id="1804">1804</span>
+<span id="1805">1805</span>
+<span id="1806">1806</span>
+<span id="1807">1807</span>
+<span id="1808">1808</span>
+<span id="1809">1809</span>
+<span id="1810">1810</span>
+<span id="1811">1811</span>
+<span id="1812">1812</span>
+<span id="1813">1813</span>
+<span id="1814">1814</span>
+<span id="1815">1815</span>
+<span id="1816">1816</span>
+<span id="1817">1817</span>
+<span id="1818">1818</span>
+<span id="1819">1819</span>
+<span id="1820">1820</span>
+<span id="1821">1821</span>
+<span id="1822">1822</span>
+<span id="1823">1823</span>
+<span id="1824">1824</span>
+<span id="1825">1825</span>
+<span id="1826">1826</span>
+<span id="1827">1827</span>
+<span id="1828">1828</span>
+<span id="1829">1829</span>
+<span id="1830">1830</span>
+<span id="1831">1831</span>
+<span id="1832">1832</span>
+<span id="1833">1833</span>
+<span id="1834">1834</span>
+<span id="1835">1835</span>
+<span id="1836">1836</span>
+<span id="1837">1837</span>
+<span id="1838">1838</span>
+<span id="1839">1839</span>
+<span id="1840">1840</span>
+<span id="1841">1841</span>
+<span id="1842">1842</span>
+<span id="1843">1843</span>
+<span id="1844">1844</span>
+<span id="1845">1845</span>
+<span id="1846">1846</span>
+<span id="1847">1847</span>
+<span id="1848">1848</span>
+<span id="1849">1849</span>
+<span id="1850">1850</span>
+<span id="1851">1851</span>
+<span id="1852">1852</span>
+<span id="1853">1853</span>
+<span id="1854">1854</span>
+<span id="1855">1855</span>
+<span id="1856">1856</span>
+<span id="1857">1857</span>
+<span id="1858">1858</span>
+<span id="1859">1859</span>
+<span id="1860">1860</span>
+<span id="1861">1861</span>
+<span id="1862">1862</span>
+<span id="1863">1863</span>
+<span id="1864">1864</span>
+<span id="1865">1865</span>
+<span id="1866">1866</span>
+<span id="1867">1867</span>
+<span id="1868">1868</span>
+<span id="1869">1869</span>
+<span id="1870">1870</span>
+<span id="1871">1871</span>
+<span id="1872">1872</span>
+<span id="1873">1873</span>
+<span id="1874">1874</span>
+<span id="1875">1875</span>
+<span id="1876">1876</span>
+<span id="1877">1877</span>
+<span id="1878">1878</span>
+<span id="1879">1879</span>
+<span id="1880">1880</span>
+<span id="1881">1881</span>
+<span id="1882">1882</span>
+<span id="1883">1883</span>
+<span id="1884">1884</span>
+<span id="1885">1885</span>
+<span id="1886">1886</span>
+<span id="1887">1887</span>
+<span id="1888">1888</span>
+<span id="1889">1889</span>
+<span id="1890">1890</span>
+<span id="1891">1891</span>
+<span id="1892">1892</span>
+<span id="1893">1893</span>
+<span id="1894">1894</span>
+<span id="1895">1895</span>
+<span id="1896">1896</span>
+<span id="1897">1897</span>
+<span id="1898">1898</span>
+<span id="1899">1899</span>
+<span id="1900">1900</span>
+<span id="1901">1901</span>
+<span id="1902">1902</span>
+<span id="1903">1903</span>
+<span id="1904">1904</span>
+<span id="1905">1905</span>
+<span id="1906">1906</span>
+<span id="1907">1907</span>
+<span id="1908">1908</span>
+<span id="1909">1909</span>
+<span id="1910">1910</span>
+<span id="1911">1911</span>
+<span id="1912">1912</span>
+<span id="1913">1913</span>
+<span id="1914">1914</span>
+<span id="1915">1915</span>
+<span id="1916">1916</span>
+<span id="1917">1917</span>
+<span id="1918">1918</span>
+<span id="1919">1919</span>
+<span id="1920">1920</span>
+<span id="1921">1921</span>
+<span id="1922">1922</span>
+<span id="1923">1923</span>
+<span id="1924">1924</span>
+<span id="1925">1925</span>
+<span id="1926">1926</span>
+<span id="1927">1927</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Static files support</span>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Write</span>;
@@ -1798,10 +1939,10 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">unix</span>)]</span>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">os</span>::<span class="ident">unix</span>::<span class="ident">fs</span>::<span class="ident">MetadataExt</span>;
 
+<span class="kw">use</span> <span class="ident">v_htmlescape</span>::<span class="ident">escape</span> <span class="kw">as</span> <span class="ident">escape_html_entity</span>;
 <span class="kw">use</span> <span class="ident">bytes</span>::<span class="ident">Bytes</span>;
 <span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">Async</span>, <span class="ident">Future</span>, <span class="ident">Poll</span>, <span class="ident">Stream</span>};
 <span class="kw">use</span> <span class="ident">futures_cpupool</span>::{<span class="ident">CpuFuture</span>, <span class="ident">CpuPool</span>};
-<span class="kw">use</span> <span class="ident">htmlescape</span>::<span class="ident">encode_minimal</span> <span class="kw">as</span> <span class="ident">escape_html_entity</span>;
 <span class="kw">use</span> <span class="ident">mime</span>;
 <span class="kw">use</span> <span class="ident">mime_guess</span>::{<span class="ident">get_mime_type</span>, <span class="ident">guess_mime_type</span>};
 <span class="kw">use</span> <span class="ident">percent_encoding</span>::{<span class="ident">utf8_percent_encode</span>, <span class="ident">DEFAULT_ENCODE_SET</span>};
@@ -1907,6 +2048,32 @@
 }
 
 <span class="kw">impl</span> <span class="ident">NamedFile</span> {
+    <span class="doccomment">/// Creates an instance from a previously opened file.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The given `path` need not exist and is only used to determine the `ContentType` and</span>
+    <span class="doccomment">/// `ContentDisposition` headers.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```no_run</span>
+    <span class="doccomment">/// extern crate actix_web;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// use actix_web::fs::NamedFile;</span>
+    <span class="doccomment">/// use std::io::{self, Write};</span>
+    <span class="doccomment">/// use std::env;</span>
+    <span class="doccomment">/// use std::fs::File;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// fn main() -&gt; io::Result&lt;()&gt; {</span>
+    <span class="doccomment">///     let mut file = File::create(&quot;foo.txt&quot;)?;</span>
+    <span class="doccomment">///     file.write_all(b&quot;Hello, world!&quot;)?;</span>
+    <span class="doccomment">///     let named_file = NamedFile::from_file(file, &quot;bar.txt&quot;)?;</span>
+    <span class="doccomment">///     Ok(())</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_file</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Path</span><span class="op">&gt;&gt;</span>(<span class="ident">file</span>: <span class="ident">File</span>, <span class="ident">path</span>: <span class="ident">P</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">NamedFile</span><span class="op">&gt;</span> {
+        <span class="self">Self</span>::<span class="ident">from_file_with_config</span>(<span class="ident">file</span>, <span class="ident">path</span>, <span class="ident">DefaultConfig</span>)
+    }
+
     <span class="doccomment">/// Attempts to open a file in read-only mode.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
@@ -1922,16 +2089,29 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">C</span>: <span class="ident">StaticFileConfig</span><span class="op">&gt;</span> <span class="ident">NamedFile</span><span class="op">&lt;</span><span class="ident">C</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Attempts to open a file in read-only mode using provided configiration.</span>
+    <span class="doccomment">/// Creates an instance from a previously opened file using the provided configuration.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The given `path` need not exist and is only used to determine the `ContentType` and</span>
+    <span class="doccomment">/// `ContentDisposition` headers.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// ```rust</span>
-    <span class="doccomment">/// use actix_web::fs::{DefaultConfig, NamedFile};</span>
+    <span class="doccomment">/// ```no_run</span>
+    <span class="doccomment">/// extern crate actix_web;</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// let file = NamedFile::open_with_config(&quot;foo.txt&quot;, DefaultConfig);</span>
+    <span class="doccomment">/// use actix_web::fs::{DefaultConfig, NamedFile};</span>
+    <span class="doccomment">/// use std::io::{self, Write};</span>
+    <span class="doccomment">/// use std::env;</span>
+    <span class="doccomment">/// use std::fs::File;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// fn main() -&gt; io::Result&lt;()&gt; {</span>
+    <span class="doccomment">///     let mut file = File::create(&quot;foo.txt&quot;)?;</span>
+    <span class="doccomment">///     file.write_all(b&quot;Hello, world!&quot;)?;</span>
+    <span class="doccomment">///     let named_file = NamedFile::from_file_with_config(file, &quot;bar.txt&quot;, DefaultConfig)?;</span>
+    <span class="doccomment">///     Ok(())</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">open_with_config</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Path</span><span class="op">&gt;&gt;</span>(<span class="ident">path</span>: <span class="ident">P</span>, <span class="kw">_</span>: <span class="ident">C</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">NamedFile</span><span class="op">&lt;</span><span class="ident">C</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_file_with_config</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Path</span><span class="op">&gt;&gt;</span>(<span class="ident">file</span>: <span class="ident">File</span>, <span class="ident">path</span>: <span class="ident">P</span>, <span class="kw">_</span>: <span class="ident">C</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">NamedFile</span><span class="op">&lt;</span><span class="ident">C</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">as_ref</span>().<span class="ident">to_path_buf</span>();
 
         <span class="comment">// Get the name of the file and use it to construct default Content-Type</span>
@@ -1956,7 +2136,6 @@
             (<span class="ident">ct</span>, <span class="ident">cd</span>)
         };
 
-        <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File</span>::<span class="ident">open</span>(<span class="kw-2">&amp;</span><span class="ident">path</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">md</span> <span class="op">=</span> <span class="ident">file</span>.<span class="ident">metadata</span>()<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">modified</span> <span class="op">=</span> <span class="ident">md</span>.<span class="ident">modified</span>().<span class="ident">ok</span>();
         <span class="kw">let</span> <span class="ident">cpu_pool</span> <span class="op">=</span> <span class="prelude-val">None</span>;
@@ -1973,6 +2152,19 @@
             <span class="ident">status_code</span>: <span class="ident">StatusCode</span>::<span class="ident">OK</span>,
             <span class="ident">_cd_map</span>: <span class="ident">PhantomData</span>,
         })
+    }
+
+    <span class="doccomment">/// Attempts to open a file in read-only mode using provided configuration.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```rust</span>
+    <span class="doccomment">/// use actix_web::fs::{DefaultConfig, NamedFile};</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let file = NamedFile::open_with_config(&quot;foo.txt&quot;, DefaultConfig);</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">open_with_config</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Path</span><span class="op">&gt;&gt;</span>(<span class="ident">path</span>: <span class="ident">P</span>, <span class="ident">config</span>: <span class="ident">C</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">NamedFile</span><span class="op">&lt;</span><span class="ident">C</span><span class="op">&gt;&gt;</span> {
+        <span class="self">Self</span>::<span class="ident">from_file_with_config</span>(<span class="ident">File</span>::<span class="ident">open</span>(<span class="kw-2">&amp;</span><span class="ident">path</span>)<span class="question-mark">?</span>, <span class="ident">path</span>, <span class="ident">config</span>)
     }
 
     <span class="doccomment">/// Returns reference to the underlying `File` object.</span>
@@ -2177,6 +2369,8 @@
         <span class="comment">// check last modified</span>
         <span class="kw">let</span> <span class="ident">not_modified</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">none_match</span>(<span class="ident">etag</span>.<span class="ident">as_ref</span>(), <span class="ident">req</span>) {
             <span class="bool-val">true</span>
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">req</span>.<span class="ident">headers</span>().<span class="ident">contains_key</span>(<span class="ident">header</span>::<span class="ident">IF_NONE_MATCH</span>) {
+            <span class="bool-val">false</span>
         } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> (<span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">m</span>), <span class="prelude-val">Some</span>(<span class="ident">header</span>::<span class="ident">IfModifiedSince</span>(<span class="kw-2">ref</span> <span class="ident">since</span>))) <span class="op">=</span>
             (<span class="ident">last_modified</span>, <span class="ident">req</span>.<span class="ident">get_header</span>())
         {
@@ -2259,6 +2453,7 @@
     }
 }
 
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
 <span class="doccomment">/// A helper created from a `std::fs::File` which reads the file</span>
 <span class="doccomment">/// chunk-by-chunk on a `CpuPool`.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChunkedReadFile</span> {
@@ -2348,8 +2543,23 @@
     }
 }
 
+<span class="comment">// show file url as relative to static path</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">encode_file_url</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">path</span>:<span class="ident">ident</span>) <span class="op">=&gt;</span> {
+        <span class="ident">utf8_percent_encode</span>(<span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">path</span>.<span class="ident">to_string_lossy</span>(), <span class="ident">DEFAULT_ENCODE_SET</span>)
+    };
+}
+
+<span class="comment">// &quot; -- &amp;quot;  &amp; -- &amp;amp;  &#39; -- &amp;#x27;  &lt; -- &amp;lt;  &gt; -- &amp;gt;  / -- &amp;#x2f;</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">encode_file_name</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">entry</span>:<span class="ident">ident</span>) <span class="op">=&gt;</span> {
+        <span class="ident">escape_html_entity</span>(<span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">entry</span>.<span class="ident">file_name</span>().<span class="ident">to_string_lossy</span>())
+    };
+}
+
 <span class="kw">fn</span> <span class="ident">directory_listing</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(
-    <span class="ident">dir</span>: <span class="kw-2">&amp;</span><span class="ident">Directory</span>, <span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
+    <span class="ident">dir</span>: <span class="kw-2">&amp;</span><span class="ident">Directory</span>,
+    <span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
 ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">HttpResponse</span>, <span class="ident">io</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">index_of</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Index of {}&quot;</span>, <span class="ident">req</span>.<span class="ident">path</span>());
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
@@ -2362,11 +2572,6 @@
                 <span class="prelude-val">Ok</span>(<span class="ident">p</span>) <span class="op">=&gt;</span> <span class="ident">base</span>.<span class="ident">join</span>(<span class="ident">p</span>),
                 <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="kw">continue</span>,
             };
-            <span class="comment">// show file url as relative to static path</span>
-            <span class="kw">let</span> <span class="ident">file_url</span> <span class="op">=</span> <span class="ident">utf8_percent_encode</span>(<span class="kw-2">&amp;</span><span class="ident">p</span>.<span class="ident">to_string_lossy</span>(), <span class="ident">DEFAULT_ENCODE_SET</span>)
-                .<span class="ident">to_string</span>();
-            <span class="comment">// &quot; -- &amp;quot;  &amp; -- &amp;amp;  &#39; -- &amp;#x27;  &lt; -- &amp;lt;  &gt; -- &amp;gt;</span>
-            <span class="kw">let</span> <span class="ident">file_name</span> <span class="op">=</span> <span class="ident">escape_html_entity</span>(<span class="kw-2">&amp;</span><span class="ident">entry</span>.<span class="ident">file_name</span>().<span class="ident">to_string_lossy</span>());
 
             <span class="comment">// if file is a directory, add &#39;/&#39; to the end of the name</span>
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">metadata</span>) <span class="op">=</span> <span class="ident">entry</span>.<span class="ident">metadata</span>() {
@@ -2374,13 +2579,15 @@
                     <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="macro">write</span><span class="macro">!</span>(
                         <span class="ident">body</span>,
                         <span class="string">&quot;&lt;li&gt;&lt;a href=\&quot;{}\&quot;&gt;{}/&lt;/a&gt;&lt;/li&gt;&quot;</span>,
-                        <span class="ident">file_url</span>, <span class="ident">file_name</span>
+                        <span class="macro">encode_file_url</span><span class="macro">!</span>(<span class="ident">p</span>),
+                        <span class="macro">encode_file_name</span><span class="macro">!</span>(<span class="ident">entry</span>),
                     );
                 } <span class="kw">else</span> {
                     <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="macro">write</span><span class="macro">!</span>(
                         <span class="ident">body</span>,
                         <span class="string">&quot;&lt;li&gt;&lt;a href=\&quot;{}\&quot;&gt;{}&lt;/a&gt;&lt;/li&gt;&quot;</span>,
-                        <span class="ident">file_url</span>, <span class="ident">file_name</span>
+                        <span class="macro">encode_file_url</span><span class="macro">!</span>(<span class="ident">p</span>),
+                        <span class="macro">encode_file_name</span><span class="macro">!</span>(<span class="ident">entry</span>),
                     );
                 }
             } <span class="kw">else</span> {
@@ -2443,7 +2650,8 @@
     <span class="doccomment">/// Create new `StaticFiles` instance for specified base directory and</span>
     <span class="doccomment">/// `CpuPool`.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_pool</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;&gt;</span>(
-        <span class="ident">dir</span>: <span class="ident">T</span>, <span class="ident">pool</span>: <span class="ident">CpuPool</span>,
+        <span class="ident">dir</span>: <span class="ident">T</span>,
+        <span class="ident">pool</span>: <span class="ident">CpuPool</span>,
     ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">StaticFiles</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="self">Self</span>::<span class="ident">with_config_pool</span>(<span class="ident">dir</span>, <span class="ident">pool</span>, <span class="ident">DefaultConfig</span>)
     }
@@ -2454,7 +2662,8 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Identical with `new` but allows to specify configiration to use.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_config</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;&gt;</span>(
-        <span class="ident">dir</span>: <span class="ident">T</span>, <span class="ident">config</span>: <span class="ident">C</span>,
+        <span class="ident">dir</span>: <span class="ident">T</span>,
+        <span class="ident">config</span>: <span class="ident">C</span>,
     ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">StaticFiles</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">C</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="comment">// use default CpuPool</span>
         <span class="kw">let</span> <span class="ident">pool</span> <span class="op">=</span> { <span class="ident">DEFAULT_CPUPOOL</span>.<span class="ident">lock</span>().<span class="ident">clone</span>() };
@@ -2465,7 +2674,9 @@
     <span class="doccomment">/// Create new `StaticFiles` instance for specified base directory with config and</span>
     <span class="doccomment">/// `CpuPool`.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_config_pool</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;&gt;</span>(
-        <span class="ident">dir</span>: <span class="ident">T</span>, <span class="ident">pool</span>: <span class="ident">CpuPool</span>, <span class="kw">_</span>: <span class="ident">C</span>,
+        <span class="ident">dir</span>: <span class="ident">T</span>,
+        <span class="ident">pool</span>: <span class="ident">CpuPool</span>,
+        <span class="kw">_</span>: <span class="ident">C</span>,
     ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">StaticFiles</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">C</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">dir</span> <span class="op">=</span> <span class="ident">dir</span>.<span class="ident">into</span>().<span class="ident">canonicalize</span>()<span class="question-mark">?</span>;
 
@@ -2509,7 +2720,7 @@
 
     <span class="doccomment">/// Set index file</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// Redirects to specific index file for directory &quot;/&quot; instead of</span>
+    <span class="doccomment">/// Shows specific index file for directory &quot;/&quot; instead of</span>
     <span class="doccomment">/// showing files listing.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">index_file</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">index</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">StaticFiles</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">C</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">index</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">index</span>.<span class="ident">into</span>());
@@ -2523,9 +2734,10 @@
     }
 
     <span class="kw">fn</span> <span class="ident">try_handle</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
     ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">AsyncResult</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">tail</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">req</span>.<span class="ident">match_info</span>().<span class="ident">query</span>(<span class="string">&quot;tail&quot;</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">tail</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">req</span>.<span class="ident">match_info</span>().<span class="ident">get_decoded</span>(<span class="string">&quot;tail&quot;</span>).<span class="ident">unwrap_or_else</span>(<span class="op">||</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>());
         <span class="kw">let</span> <span class="ident">relpath</span> <span class="op">=</span> <span class="ident">PathBuf</span>::<span class="ident">from_param</span>(<span class="ident">tail</span>.<span class="ident">trim_left_matches</span>(<span class="string">&#39;/&#39;</span>))<span class="question-mark">?</span>;
 
         <span class="comment">// full filepath</span>
@@ -2533,17 +2745,11 @@
 
         <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">is_dir</span>() {
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">redir_index</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">index</span> {
-                <span class="comment">// TODO: Don&#39;t redirect, just return the index content.</span>
-                <span class="comment">// TODO: It&#39;d be nice if there were a good usable URL manipulation</span>
-                <span class="comment">// library</span>
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_path</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">req</span>.<span class="ident">path</span>().<span class="ident">to_owned</span>();
-                <span class="kw">if</span> <span class="op">!</span><span class="ident">new_path</span>.<span class="ident">ends_with</span>(<span class="string">&#39;/&#39;</span>) {
-                    <span class="ident">new_path</span>.<span class="ident">push</span>(<span class="string">&#39;/&#39;</span>);
-                }
-                <span class="ident">new_path</span>.<span class="ident">push_str</span>(<span class="ident">redir_index</span>);
-                <span class="ident">HttpResponse</span>::<span class="ident">Found</span>()
-                    .<span class="ident">header</span>(<span class="ident">header</span>::<span class="ident">LOCATION</span>, <span class="ident">new_path</span>.<span class="ident">as_str</span>())
-                    .<span class="ident">finish</span>()
+                <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">join</span>(<span class="ident">redir_index</span>);
+
+                <span class="ident">NamedFile</span>::<span class="ident">open_with_config</span>(<span class="ident">path</span>, <span class="ident">C</span>::<span class="ident">default</span>())<span class="question-mark">?</span>
+                    .<span class="ident">set_cpu_pool</span>(<span class="self">self</span>.<span class="ident">cpu_pool</span>.<span class="ident">clone</span>())
+                    .<span class="ident">respond_to</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>)<span class="question-mark">?</span>
                     .<span class="ident">respond_to</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>)
             } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">show_index</span> {
                 <span class="kw">let</span> <span class="ident">dir</span> <span class="op">=</span> <span class="ident">Directory</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="ident">directory</span>.<span class="ident">clone</span>(), <span class="ident">path</span>);
@@ -2668,6 +2874,8 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>;
+    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::<span class="ident">Duration</span>;
+    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Add</span>;
 
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="ident">application</span>::<span class="ident">App</span>;
@@ -2685,6 +2893,43 @@
 
         <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">file_extension_to_mime</span>(<span class="string">&quot;&quot;</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">m</span>, <span class="ident">mime</span>::<span class="ident">APPLICATION_OCTET_STREAM</span>);
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_if_modified_since_without_if_none_match</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">NamedFile</span>::<span class="ident">open</span>(<span class="string">&quot;Cargo.toml&quot;</span>)
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">set_cpu_pool</span>(<span class="ident">CpuPool</span>::<span class="ident">new</span>(<span class="number">1</span>));
+        <span class="kw">let</span> <span class="ident">since</span> <span class="op">=</span> <span class="ident">header</span>::<span class="ident">HttpDate</span>::<span class="ident">from</span>(
+            <span class="ident">SystemTime</span>::<span class="ident">now</span>().<span class="ident">add</span>(<span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">60</span>)));
+
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">default</span>()
+            .<span class="ident">header</span>(<span class="ident">header</span>::<span class="ident">IF_MODIFIED_SINCE</span>, <span class="ident">since</span>)
+            .<span class="ident">finish</span>();
+        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">file</span>.<span class="ident">respond_to</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">resp</span>.<span class="ident">status</span>(),
+            <span class="ident">StatusCode</span>::<span class="ident">NOT_MODIFIED</span>
+        );
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_if_modified_since_with_if_none_match</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">NamedFile</span>::<span class="ident">open</span>(<span class="string">&quot;Cargo.toml&quot;</span>)
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">set_cpu_pool</span>(<span class="ident">CpuPool</span>::<span class="ident">new</span>(<span class="number">1</span>));
+        <span class="kw">let</span> <span class="ident">since</span> <span class="op">=</span> <span class="ident">header</span>::<span class="ident">HttpDate</span>::<span class="ident">from</span>(
+            <span class="ident">SystemTime</span>::<span class="ident">now</span>().<span class="ident">add</span>(<span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">60</span>)));
+
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">default</span>()
+            .<span class="ident">header</span>(<span class="ident">header</span>::<span class="ident">IF_NONE_MATCH</span>, <span class="string">&quot;miss_etag&quot;</span>)
+            .<span class="ident">header</span>(<span class="ident">header</span>::<span class="ident">IF_MODIFIED_SINCE</span>, <span class="ident">since</span>)
+            .<span class="ident">finish</span>();
+        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">file</span>.<span class="ident">respond_to</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_ne</span><span class="macro">!</span>(
+            <span class="ident">resp</span>.<span class="ident">status</span>(),
+            <span class="ident">StatusCode</span>::<span class="ident">NOT_MODIFIED</span>
+        );
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -3067,6 +3312,27 @@
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bytes</span>, <span class="ident">data</span>);
     }
 
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_static_files_with_spaces</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">srv</span> <span class="op">=</span> <span class="ident">test</span>::<span class="ident">TestServer</span>::<span class="ident">with_factory</span>(<span class="op">||</span> {
+            <span class="ident">App</span>::<span class="ident">new</span>().<span class="ident">handler</span>(
+                <span class="string">&quot;/&quot;</span>,
+                <span class="ident">StaticFiles</span>::<span class="ident">new</span>(<span class="string">&quot;.&quot;</span>).<span class="ident">unwrap</span>().<span class="ident">index_file</span>(<span class="string">&quot;Cargo.toml&quot;</span>),
+            )
+        });
+        <span class="kw">let</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">srv</span>
+            .<span class="ident">get</span>()
+            .<span class="ident">uri</span>(<span class="ident">srv</span>.<span class="ident">url</span>(<span class="string">&quot;/tests/test%20space.binary&quot;</span>))
+            .<span class="ident">finish</span>()
+            .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">execute</span>(<span class="ident">request</span>.<span class="ident">send</span>()).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">OK</span>);
+
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">execute</span>(<span class="ident">response</span>.<span class="ident">body</span>()).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">Bytes</span>::<span class="ident">from</span>(<span class="ident">fs</span>::<span class="ident">read</span>(<span class="string">&quot;tests/test space.binary&quot;</span>).<span class="ident">unwrap</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bytes</span>, <span class="ident">data</span>);
+    }
+
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">OnlyMethodHeadConfig</span>;
     <span class="kw">impl</span> <span class="ident">StaticFileConfig</span> <span class="kw">for</span> <span class="ident">OnlyMethodHeadConfig</span> {
@@ -3179,43 +3445,66 @@
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_redirect_to_index</span>() {
-        <span class="kw">let</span> <span class="ident">st</span> <span class="op">=</span> <span class="ident">StaticFiles</span>::<span class="ident">new</span>(<span class="string">&quot;.&quot;</span>).<span class="ident">unwrap</span>().<span class="ident">index_file</span>(<span class="string">&quot;index.html&quot;</span>);
+    <span class="kw">fn</span> <span class="ident">test_serve_index</span>() {
+        <span class="kw">let</span> <span class="ident">st</span> <span class="op">=</span> <span class="ident">StaticFiles</span>::<span class="ident">new</span>(<span class="string">&quot;.&quot;</span>).<span class="ident">unwrap</span>().<span class="ident">index_file</span>(<span class="string">&quot;test.binary&quot;</span>);
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">default</span>().<span class="ident">uri</span>(<span class="string">&quot;/tests&quot;</span>).<span class="ident">finish</span>();
 
         <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">st</span>.<span class="ident">handle</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>).<span class="ident">respond_to</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">resp</span>.<span class="ident">as_msg</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">FOUND</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">OK</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(
-            <span class="ident">resp</span>.<span class="ident">headers</span>().<span class="ident">get</span>(<span class="ident">header</span>::<span class="ident">LOCATION</span>).<span class="ident">unwrap</span>(),
-            <span class="string">&quot;/tests/index.html&quot;</span>
+            <span class="ident">resp</span>.<span class="ident">headers</span>().<span class="ident">get</span>(<span class="ident">header</span>::<span class="ident">CONTENT_TYPE</span>).<span class="ident">expect</span>(<span class="string">&quot;content type&quot;</span>),
+            <span class="string">&quot;application/octet-stream&quot;</span>
+        );
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">resp</span>.<span class="ident">headers</span>().<span class="ident">get</span>(<span class="ident">header</span>::<span class="ident">CONTENT_DISPOSITION</span>).<span class="ident">expect</span>(<span class="string">&quot;content disposition&quot;</span>),
+            <span class="string">&quot;attachment; filename=\&quot;test.binary\&quot;&quot;</span>
         );
 
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">default</span>().<span class="ident">uri</span>(<span class="string">&quot;/tests/&quot;</span>).<span class="ident">finish</span>();
         <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">st</span>.<span class="ident">handle</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>).<span class="ident">respond_to</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">resp</span>.<span class="ident">as_msg</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">FOUND</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">OK</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(
-            <span class="ident">resp</span>.<span class="ident">headers</span>().<span class="ident">get</span>(<span class="ident">header</span>::<span class="ident">LOCATION</span>).<span class="ident">unwrap</span>(),
-            <span class="string">&quot;/tests/index.html&quot;</span>
+            <span class="ident">resp</span>.<span class="ident">headers</span>().<span class="ident">get</span>(<span class="ident">header</span>::<span class="ident">CONTENT_TYPE</span>).<span class="ident">unwrap</span>(),
+            <span class="string">&quot;application/octet-stream&quot;</span>
         );
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">resp</span>.<span class="ident">headers</span>().<span class="ident">get</span>(<span class="ident">header</span>::<span class="ident">CONTENT_DISPOSITION</span>).<span class="ident">unwrap</span>(),
+            <span class="string">&quot;attachment; filename=\&quot;test.binary\&quot;&quot;</span>
+        );
+
+        <span class="comment">// nonexistent index file</span>
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">default</span>().<span class="ident">uri</span>(<span class="string">&quot;/tests/unknown&quot;</span>).<span class="ident">finish</span>();
+        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">st</span>.<span class="ident">handle</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>).<span class="ident">respond_to</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">resp</span>.<span class="ident">as_msg</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">NOT_FOUND</span>);
+
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">default</span>().<span class="ident">uri</span>(<span class="string">&quot;/tests/unknown/&quot;</span>).<span class="ident">finish</span>();
+        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">st</span>.<span class="ident">handle</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>).<span class="ident">respond_to</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">resp</span>.<span class="ident">as_msg</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">NOT_FOUND</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_redirect_to_index_nested</span>() {
+    <span class="kw">fn</span> <span class="ident">test_serve_index_nested</span>() {
         <span class="kw">let</span> <span class="ident">st</span> <span class="op">=</span> <span class="ident">StaticFiles</span>::<span class="ident">new</span>(<span class="string">&quot;.&quot;</span>).<span class="ident">unwrap</span>().<span class="ident">index_file</span>(<span class="string">&quot;mod.rs&quot;</span>);
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">default</span>().<span class="ident">uri</span>(<span class="string">&quot;/src/client&quot;</span>).<span class="ident">finish</span>();
         <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">st</span>.<span class="ident">handle</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>).<span class="ident">respond_to</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">resp</span>.<span class="ident">as_msg</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">FOUND</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">OK</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(
-            <span class="ident">resp</span>.<span class="ident">headers</span>().<span class="ident">get</span>(<span class="ident">header</span>::<span class="ident">LOCATION</span>).<span class="ident">unwrap</span>(),
-            <span class="string">&quot;/src/client/mod.rs&quot;</span>
+            <span class="ident">resp</span>.<span class="ident">headers</span>().<span class="ident">get</span>(<span class="ident">header</span>::<span class="ident">CONTENT_TYPE</span>).<span class="ident">unwrap</span>(),
+            <span class="string">&quot;text/x-rust&quot;</span>
+        );
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">resp</span>.<span class="ident">headers</span>().<span class="ident">get</span>(<span class="ident">header</span>::<span class="ident">CONTENT_DISPOSITION</span>).<span class="ident">unwrap</span>(),
+            <span class="string">&quot;inline; filename=\&quot;mod.rs\&quot;&quot;</span>
         );
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">integration_redirect_to_index_with_prefix</span>() {
+    <span class="kw">fn</span> <span class="ident">integration_serve_index_with_prefix</span>() {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">srv</span> <span class="op">=</span> <span class="ident">test</span>::<span class="ident">TestServer</span>::<span class="ident">with_factory</span>(<span class="op">||</span> {
             <span class="ident">App</span>::<span class="ident">new</span>()
                 .<span class="ident">prefix</span>(<span class="string">&quot;public&quot;</span>)
@@ -3224,29 +3513,21 @@
 
         <span class="kw">let</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">get</span>().<span class="ident">uri</span>(<span class="ident">srv</span>.<span class="ident">url</span>(<span class="string">&quot;/public&quot;</span>)).<span class="ident">finish</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">execute</span>(<span class="ident">request</span>.<span class="ident">send</span>()).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">FOUND</span>);
-        <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">response</span>
-            .<span class="ident">headers</span>()
-            .<span class="ident">get</span>(<span class="ident">header</span>::<span class="ident">LOCATION</span>)
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">to_str</span>()
-            .<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">loc</span>, <span class="string">&quot;/public/Cargo.toml&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">OK</span>);
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">execute</span>(<span class="ident">response</span>.<span class="ident">body</span>()).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">Bytes</span>::<span class="ident">from</span>(<span class="ident">fs</span>::<span class="ident">read</span>(<span class="string">&quot;Cargo.toml&quot;</span>).<span class="ident">unwrap</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bytes</span>, <span class="ident">data</span>);
 
         <span class="kw">let</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">get</span>().<span class="ident">uri</span>(<span class="ident">srv</span>.<span class="ident">url</span>(<span class="string">&quot;/public/&quot;</span>)).<span class="ident">finish</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">execute</span>(<span class="ident">request</span>.<span class="ident">send</span>()).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">FOUND</span>);
-        <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">response</span>
-            .<span class="ident">headers</span>()
-            .<span class="ident">get</span>(<span class="ident">header</span>::<span class="ident">LOCATION</span>)
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">to_str</span>()
-            .<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">loc</span>, <span class="string">&quot;/public/Cargo.toml&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">OK</span>);
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">execute</span>(<span class="ident">response</span>.<span class="ident">body</span>()).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">Bytes</span>::<span class="ident">from</span>(<span class="ident">fs</span>::<span class="ident">read</span>(<span class="string">&quot;Cargo.toml&quot;</span>).<span class="ident">unwrap</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bytes</span>, <span class="ident">data</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">integration_redirect_to_index</span>() {
+    <span class="kw">fn</span> <span class="ident">integration_serve_index</span>() {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">srv</span> <span class="op">=</span> <span class="ident">test</span>::<span class="ident">TestServer</span>::<span class="ident">with_factory</span>(<span class="op">||</span> {
             <span class="ident">App</span>::<span class="ident">new</span>().<span class="ident">handler</span>(
                 <span class="string">&quot;test&quot;</span>,
@@ -3256,25 +3537,26 @@
 
         <span class="kw">let</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">get</span>().<span class="ident">uri</span>(<span class="ident">srv</span>.<span class="ident">url</span>(<span class="string">&quot;/test&quot;</span>)).<span class="ident">finish</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">execute</span>(<span class="ident">request</span>.<span class="ident">send</span>()).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">FOUND</span>);
-        <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">response</span>
-            .<span class="ident">headers</span>()
-            .<span class="ident">get</span>(<span class="ident">header</span>::<span class="ident">LOCATION</span>)
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">to_str</span>()
-            .<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">loc</span>, <span class="string">&quot;/test/Cargo.toml&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">OK</span>);
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">execute</span>(<span class="ident">response</span>.<span class="ident">body</span>()).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">Bytes</span>::<span class="ident">from</span>(<span class="ident">fs</span>::<span class="ident">read</span>(<span class="string">&quot;Cargo.toml&quot;</span>).<span class="ident">unwrap</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bytes</span>, <span class="ident">data</span>);
 
         <span class="kw">let</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">get</span>().<span class="ident">uri</span>(<span class="ident">srv</span>.<span class="ident">url</span>(<span class="string">&quot;/test/&quot;</span>)).<span class="ident">finish</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">execute</span>(<span class="ident">request</span>.<span class="ident">send</span>()).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">FOUND</span>);
-        <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">response</span>
-            .<span class="ident">headers</span>()
-            .<span class="ident">get</span>(<span class="ident">header</span>::<span class="ident">LOCATION</span>)
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">to_str</span>()
-            .<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">loc</span>, <span class="string">&quot;/test/Cargo.toml&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">OK</span>);
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">execute</span>(<span class="ident">response</span>.<span class="ident">body</span>()).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">Bytes</span>::<span class="ident">from</span>(<span class="ident">fs</span>::<span class="ident">read</span>(<span class="string">&quot;Cargo.toml&quot;</span>).<span class="ident">unwrap</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bytes</span>, <span class="ident">data</span>);
+
+        <span class="comment">// nonexistent index file</span>
+        <span class="kw">let</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">get</span>().<span class="ident">uri</span>(<span class="ident">srv</span>.<span class="ident">url</span>(<span class="string">&quot;/test/unknown&quot;</span>)).<span class="ident">finish</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">execute</span>(<span class="ident">request</span>.<span class="ident">send</span>()).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">NOT_FOUND</span>);
+
+        <span class="kw">let</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">get</span>().<span class="ident">uri</span>(<span class="ident">srv</span>.<span class="ident">url</span>(<span class="string">&quot;/test/unknown/&quot;</span>)).<span class="ident">finish</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">srv</span>.<span class="ident">execute</span>(<span class="ident">request</span>.<span class="ident">send</span>()).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">response</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">NOT_FOUND</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>

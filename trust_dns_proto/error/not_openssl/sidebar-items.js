@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["SslErrorStack",""]]});
+initSidebarItems({"struct":[["SslErrorStack","SslErrorStac stub"]]});

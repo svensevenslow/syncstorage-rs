@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.4.0/src/op/header.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>header.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.5.0/src/op/header.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>header.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../trust_dns_proto/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -536,41 +536,6 @@
 <span id="536">536</span>
 <span id="537">537</span>
 <span id="538">538</span>
-<span id="539">539</span>
-<span id="540">540</span>
-<span id="541">541</span>
-<span id="542">542</span>
-<span id="543">543</span>
-<span id="544">544</span>
-<span id="545">545</span>
-<span id="546">546</span>
-<span id="547">547</span>
-<span id="548">548</span>
-<span id="549">549</span>
-<span id="550">550</span>
-<span id="551">551</span>
-<span id="552">552</span>
-<span id="553">553</span>
-<span id="554">554</span>
-<span id="555">555</span>
-<span id="556">556</span>
-<span id="557">557</span>
-<span id="558">558</span>
-<span id="559">559</span>
-<span id="560">560</span>
-<span id="561">561</span>
-<span id="562">562</span>
-<span id="563">563</span>
-<span id="564">564</span>
-<span id="565">565</span>
-<span id="566">566</span>
-<span id="567">567</span>
-<span id="568">568</span>
-<span id="569">569</span>
-<span id="570">570</span>
-<span id="571">571</span>
-<span id="572">572</span>
-<span id="573">573</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">/*
  * Copyright (C) 2015 Benjamin Fry &lt;benjaminfry@me.com&gt;
@@ -592,10 +557,10 @@
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">convert</span>::<span class="ident">From</span>;
 
-<span class="kw">use</span> <span class="ident">serialize</span>::<span class="ident">binary</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">op_code</span>::<span class="ident">OpCode</span>;
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">response_code</span>::<span class="ident">ResponseCode</span>;
+<span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">serialize</span>::<span class="ident">binary</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Metadata for the `Message` struct.</span>
 <span class="doccomment">///</span>
@@ -946,24 +911,6 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">additional_count</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u16</span> {
         <span class="self">self</span>.<span class="ident">additional_count</span>
     }
-
-    <span class="doccomment">/// This is a specialized clone which clones all the fields but the counts</span>
-    <span class="doccomment">///  handy for setting the count fields before sending over the wire.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clone</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">query_count</span>: <span class="ident">u16</span>,
-        <span class="ident">answer_count</span>: <span class="ident">u16</span>,
-        <span class="ident">name_server_count</span>: <span class="ident">u16</span>,
-        <span class="ident">additional_count</span>: <span class="ident">u16</span>,
-    ) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">Header</span> {
-            <span class="ident">query_count</span>: <span class="ident">query_count</span>,
-            <span class="ident">answer_count</span>: <span class="ident">answer_count</span>,
-            <span class="ident">name_server_count</span>: <span class="ident">name_server_count</span>,
-            <span class="ident">additional_count</span>: <span class="ident">additional_count</span>,
-            ..<span class="kw-2">*</span><span class="self">self</span>
-        }
-    }
 }
 
 <span class="kw">impl</span> <span class="ident">BinEncodable</span> <span class="kw">for</span> <span class="ident">Header</span> {
@@ -1015,9 +962,9 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> <span class="ident">BinDecodable</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Header</span> {
     <span class="kw">fn</span> <span class="ident">read</span>(<span class="ident">decoder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">BinDecoder</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ProtoResult</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_u16</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_u16</span>()<span class="question-mark">?</span>.<span class="ident">unverified</span>(<span class="comment">/*it is valid for this to be any u16*/</span>);
 
-        <span class="kw">let</span> <span class="ident">q_opcd_a_t_r</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">pop</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">q_opcd_a_t_r</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">pop</span>()<span class="question-mark">?</span>.<span class="ident">unverified</span>(<span class="comment">/*used as a bitfield, this is safe*/</span>);
         <span class="comment">// if the first bit is set</span>
         <span class="kw">let</span> <span class="ident">message_type</span> <span class="op">=</span> <span class="kw">if</span> (<span class="number">0b1000_0000</span> <span class="op">&amp;</span> <span class="ident">q_opcd_a_t_r</span>) <span class="op">==</span> <span class="number">0b1000_0000</span> {
             <span class="ident">MessageType</span>::<span class="ident">Response</span>
@@ -1030,16 +977,19 @@
         <span class="kw">let</span> <span class="ident">truncation</span> <span class="op">=</span> (<span class="number">0b0000_0010</span> <span class="op">&amp;</span> <span class="ident">q_opcd_a_t_r</span>) <span class="op">==</span> <span class="number">0b0000_0010</span>;
         <span class="kw">let</span> <span class="ident">recursion_desired</span> <span class="op">=</span> (<span class="number">0b0000_0001</span> <span class="op">&amp;</span> <span class="ident">q_opcd_a_t_r</span>) <span class="op">==</span> <span class="number">0b0000_0001</span>;
 
-        <span class="kw">let</span> <span class="ident">r_z_ad_cd_rcod</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">pop</span>()<span class="question-mark">?</span>; <span class="comment">// fail fast...</span>
+        <span class="kw">let</span> <span class="ident">r_z_ad_cd_rcod</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">pop</span>()<span class="question-mark">?</span>.<span class="ident">unverified</span>(<span class="comment">/*used as a bitfield, this is safe*/</span>); <span class="comment">// fail fast...</span>
+
         <span class="kw">let</span> <span class="ident">recursion_available</span> <span class="op">=</span> (<span class="number">0b1000_0000</span> <span class="op">&amp;</span> <span class="ident">r_z_ad_cd_rcod</span>) <span class="op">==</span> <span class="number">0b1000_0000</span>;
         <span class="kw">let</span> <span class="ident">authentic_data</span> <span class="op">=</span> (<span class="number">0b0010_0000</span> <span class="op">&amp;</span> <span class="ident">r_z_ad_cd_rcod</span>) <span class="op">==</span> <span class="number">0b0010_0000</span>;
         <span class="kw">let</span> <span class="ident">checking_disabled</span> <span class="op">=</span> (<span class="number">0b0001_0000</span> <span class="op">&amp;</span> <span class="ident">r_z_ad_cd_rcod</span>) <span class="op">==</span> <span class="number">0b0001_0000</span>;
         <span class="kw">let</span> <span class="ident">response_code</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">0b0000_1111</span> <span class="op">&amp;</span> <span class="ident">r_z_ad_cd_rcod</span>;
 
-        <span class="kw">let</span> <span class="ident">query_count</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_u16</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">answer_count</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_u16</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">name_server_count</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_u16</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">additional_count</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_u16</span>()<span class="question-mark">?</span>;
+        <span class="comment">// TODO: We should pass these restrictions on, they can&#39;t be trusted, but that would seriosly complicate the Header type..</span>
+        <span class="comment">// TODO: perhaps the read methods for BinDecodable should return Restrict?</span>
+        <span class="kw">let</span> <span class="ident">query_count</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_u16</span>()<span class="question-mark">?</span>.<span class="ident">unverified</span>(<span class="comment">/*this must be verified when reading queries*/</span>);
+        <span class="kw">let</span> <span class="ident">answer_count</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_u16</span>()<span class="question-mark">?</span>.<span class="ident">unverified</span>(<span class="comment">/*this must be evaluated when reading records*/</span>);
+        <span class="kw">let</span> <span class="ident">name_server_count</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_u16</span>()<span class="question-mark">?</span>.<span class="ident">unverified</span>(<span class="comment">/*this must be evaluated when reading records*/</span>);
+        <span class="kw">let</span> <span class="ident">additional_count</span> <span class="op">=</span> <span class="ident">decoder</span>.<span class="ident">read_u16</span>()<span class="question-mark">?</span>.<span class="ident">unverified</span>(<span class="comment">/*this must be evaluated when reading records*/</span>);
 
         <span class="comment">// TODO: question, should this use the builder pattern instead? might be cleaner code, but</span>
         <span class="comment">//  this guarantees that the Header is fully instantiated with all values...</span>
@@ -1065,18 +1015,8 @@
 <span class="attribute">#[<span class="ident">test</span>]</span>
 <span class="kw">fn</span> <span class="ident">test_parse</span>() {
     <span class="kw">let</span> <span class="ident">byte_vec</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
-        <span class="number">0x01</span>,
-        <span class="number">0x10</span>,
-        <span class="number">0xAA</span>,
-        <span class="number">0x83</span>, <span class="comment">// 0b1010 1010 1000 0011</span>
-        <span class="number">0x88</span>,
-        <span class="number">0x77</span>,
-        <span class="number">0x66</span>,
-        <span class="number">0x55</span>,
-        <span class="number">0x44</span>,
-        <span class="number">0x33</span>,
-        <span class="number">0x22</span>,
-        <span class="number">0x11</span>,
+        <span class="number">0x01</span>, <span class="number">0x10</span>, <span class="number">0xAA</span>, <span class="number">0x83</span>, <span class="comment">// 0b1010 1010 1000 0011</span>
+        <span class="number">0x88</span>, <span class="number">0x77</span>, <span class="number">0x66</span>, <span class="number">0x55</span>, <span class="number">0x44</span>, <span class="number">0x33</span>, <span class="number">0x22</span>, <span class="number">0x11</span>,
     ];
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoder</span> <span class="op">=</span> <span class="ident">BinDecoder</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">byte_vec</span>);
@@ -1123,18 +1063,8 @@
     };
 
     <span class="kw">let</span> <span class="ident">expect</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
-        <span class="number">0x01</span>,
-        <span class="number">0x10</span>,
-        <span class="number">0xAA</span>,
-        <span class="number">0x83</span>, <span class="comment">// 0b1010 1010 1000 0011</span>
-        <span class="number">0x88</span>,
-        <span class="number">0x77</span>,
-        <span class="number">0x66</span>,
-        <span class="number">0x55</span>,
-        <span class="number">0x44</span>,
-        <span class="number">0x33</span>,
-        <span class="number">0x22</span>,
-        <span class="number">0x11</span>,
+        <span class="number">0x01</span>, <span class="number">0x10</span>, <span class="number">0xAA</span>, <span class="number">0x83</span>, <span class="comment">// 0b1010 1010 1000 0011</span>
+        <span class="number">0x88</span>, <span class="number">0x77</span>, <span class="number">0x66</span>, <span class="number">0x55</span>, <span class="number">0x44</span>, <span class="number">0x33</span>, <span class="number">0x22</span>, <span class="number">0x11</span>,
     ];
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="number">512</span>);
