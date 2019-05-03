@@ -1,7 +1,7 @@
 //! API Handlers
 use std::collections::HashMap;
 
-use actix_web::{http::StatusCode, FutureResponse, HttpResponse, State};
+use actix_web::{http::StatusCode, HttpResponse};
 use futures::future::{self, Either, Future};
 use serde::Serialize;
 
@@ -15,7 +15,7 @@ use web::extractors::{
 
 pub const ONE_KB: f64 = 1024.0;
 
-pub fn get_collections(meta: MetaRequest) -> FutureResponse<HttpResponse> {
+pub fn get_collections(meta: MetaRequest) -> HttpResponse {
     Box::new(
         meta.db
             .get_collection_timestamps(meta.user_id)
@@ -28,7 +28,7 @@ pub fn get_collections(meta: MetaRequest) -> FutureResponse<HttpResponse> {
     )
 }
 
-pub fn get_collection_counts(meta: MetaRequest) -> FutureResponse<HttpResponse> {
+pub fn get_collection_counts(meta: MetaRequest) -> HttpResponse {
     Box::new(
         meta.db
             .get_collection_counts(meta.user_id)
@@ -41,7 +41,7 @@ pub fn get_collection_counts(meta: MetaRequest) -> FutureResponse<HttpResponse> 
     )
 }
 
-pub fn get_collection_usage(meta: MetaRequest) -> FutureResponse<HttpResponse> {
+pub fn get_collection_usage(meta: MetaRequest) -> HttpResponse {
     Box::new(
         meta.db
             .get_collection_usage(meta.user_id)
@@ -58,7 +58,7 @@ pub fn get_collection_usage(meta: MetaRequest) -> FutureResponse<HttpResponse> {
     )
 }
 
-pub fn get_quota(meta: MetaRequest) -> FutureResponse<HttpResponse> {
+pub fn get_quota(meta: MetaRequest) -> HttpResponse {
     Box::new(
         meta.db
             .get_storage_usage(meta.user_id)
@@ -67,7 +67,7 @@ pub fn get_quota(meta: MetaRequest) -> FutureResponse<HttpResponse> {
     )
 }
 
-pub fn delete_all(meta: MetaRequest) -> FutureResponse<HttpResponse> {
+pub fn delete_all(meta: MetaRequest) -> HttpResponse {
     Box::new(
         meta.db
             .delete_storage(meta.user_id)
@@ -76,7 +76,7 @@ pub fn delete_all(meta: MetaRequest) -> FutureResponse<HttpResponse> {
     )
 }
 
-pub fn delete_collection(coll: CollectionRequest) -> FutureResponse<HttpResponse> {
+pub fn delete_collection(coll: CollectionRequest) -> HttpResponse {
     let delete_bsos = !coll.query.ids.is_empty();
     let fut = if delete_bsos {
         coll.db.delete_bsos(params::DeleteBsos {
@@ -110,7 +110,7 @@ pub fn delete_collection(coll: CollectionRequest) -> FutureResponse<HttpResponse
     )
 }
 
-pub fn get_collection(coll: CollectionRequest) -> FutureResponse<HttpResponse> {
+pub fn get_collection(coll: CollectionRequest) -> HttpResponse {
     let params = params::GetBsos {
         user_id: coll.user_id.clone(),
         collection: coll.collection.clone(),
@@ -125,7 +125,7 @@ pub fn get_collection(coll: CollectionRequest) -> FutureResponse<HttpResponse> {
     }
 }
 
-fn finish_get_collection<F, T>(coll: CollectionRequest, fut: F) -> FutureResponse<HttpResponse>
+fn finish_get_collection<F, T>(coll: CollectionRequest, fut: F) -> HttpResponse
 where
     F: Future<Item = Paginated<T>, Error = ApiError> + 'static,
     T: Serialize + Default + 'static,
@@ -175,7 +175,7 @@ where
     )
 }
 
-pub fn post_collection(coll: CollectionPostRequest) -> FutureResponse<HttpResponse> {
+pub fn post_collection(coll: CollectionPostRequest) -> HttpResponse {
     if coll.batch.is_some() {
         return post_collection_batch(coll);
     }
@@ -196,7 +196,7 @@ pub fn post_collection(coll: CollectionPostRequest) -> FutureResponse<HttpRespon
     )
 }
 
-pub fn post_collection_batch(coll: CollectionPostRequest) -> FutureResponse<HttpResponse> {
+pub fn post_collection_batch(coll: CollectionPostRequest) -> HttpResponse {
     // Bail early if we have nonsensical arguments
     let breq = match coll.batch.clone() {
         Some(breq) => breq,
@@ -309,7 +309,7 @@ pub fn post_collection_batch(coll: CollectionPostRequest) -> FutureResponse<Http
     }))
 }
 
-pub fn delete_bso(bso_req: BsoRequest) -> FutureResponse<HttpResponse> {
+pub fn delete_bso(bso_req: BsoRequest) -> HttpResponse {
     Box::new(
         bso_req
             .db
@@ -323,7 +323,7 @@ pub fn delete_bso(bso_req: BsoRequest) -> FutureResponse<HttpResponse> {
     )
 }
 
-pub fn get_bso(bso_req: BsoRequest) -> FutureResponse<HttpResponse> {
+pub fn get_bso(bso_req: BsoRequest) -> HttpResponse {
     Box::new(
         bso_req
             .db
@@ -342,7 +342,7 @@ pub fn get_bso(bso_req: BsoRequest) -> FutureResponse<HttpResponse> {
     )
 }
 
-pub fn put_bso(bso_req: BsoPutRequest) -> FutureResponse<HttpResponse> {
+pub fn put_bso(bso_req: BsoPutRequest) -> HttpResponse {
     Box::new(
         bso_req
             .db
@@ -364,7 +364,7 @@ pub fn put_bso(bso_req: BsoPutRequest) -> FutureResponse<HttpResponse> {
 }
 
 pub fn get_configuration(
-    (_auth, state): (HawkIdentifier, State<ServerState>),
-) -> FutureResponse<HttpResponse> {
+    (_auth, state): (HawkIdentifier, ServerState),
+) -> HttpResponse {
     Box::new(future::result(Ok(HttpResponse::Ok().json(&*state.limits))))
 }

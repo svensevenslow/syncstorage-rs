@@ -3,8 +3,11 @@
 //! Matches the [Sync Storage middleware](https://github.com/mozilla-services/server-syncstorage/blob/master/syncstorage/tweens.py) (tweens).
 use actix_web::{
     http::{header, Method, StatusCode},
-    middleware::{Middleware, Response, Started},
-    FromRequest, HttpRequest, HttpResponse, Result,
+    // middleware::{Middleware, Response, Started},
+    FromRequest,
+    HttpRequest,
+    HttpResponse,
+    Result,
 };
 use futures::{
     future::{self, Either},

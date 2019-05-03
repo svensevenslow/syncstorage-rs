@@ -18,7 +18,6 @@ use super::{
     extractors::RequestErrorLocation,
 };
 use error::ApiResult;
-use server::ServerState;
 use settings::Secrets;
 
 /// A parsed and authenticated JSON payload
@@ -122,7 +121,7 @@ impl HawkPayload {
     }
 }
 
-impl FromRequest<ServerState> for HawkPayload {
+impl FromRequest for HawkPayload {
     /// Default [`Settings`](../../settings/struct.Settings.html) instance.
     ///
     /// Not hugely useful, all of the configurable settings
@@ -130,12 +129,13 @@ impl FromRequest<ServerState> for HawkPayload {
     type Config = ();
 
     /// Result-wrapped `HawkPayload` instance.
-    type Result = ApiResult<HawkPayload>;
+    //type Result = ApiResult<HawkPayload>;
+    type Future = ApiResult<HawkPayload>;
 
     /// Parse and authenticate a Hawk payload
     /// from the `Authorization` header
     /// of an actix request object.
-    fn from_request(request: &HttpRequest<ServerState>, _: &Self::Config) -> Self::Result {
+    fn from_request(request: &HttpRequest, _: &Self::Config) -> Self::Future {
         let ci = request.connection_info();
         let host_port: Vec<_> = ci.host().splitn(2, ':').collect();
         let host = host_port[0];

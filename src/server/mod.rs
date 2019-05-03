@@ -3,7 +3,7 @@
 use std::sync::Arc;
 
 use actix::{System, SystemRunner};
-use actix_web::{http, middleware::cors::Cors, server::HttpServer, App};
+use actix_web::{http, middleware::cors::Cors, App, HttpServer};
 //use num_cpus;
 
 use db::{mysql::MysqlDbPool, DbError, DbPool};
@@ -55,6 +55,8 @@ macro_rules! init_routes {
 #[cfg(test)]
 mod test;
 
+use actix_web::dev::Body;
+
 /// This is the global HTTP state object that will be made available to all
 /// HTTP API calls.
 pub struct ServerState {
@@ -69,7 +71,7 @@ pub struct ServerState {
     pub port: u16,
 }
 
-pub fn build_app(state: ServerState) -> App<ServerState> {
+pub fn build_app(state: ServerState) -> App<ServerState, Body> {
     App::with_state(state)
         .middleware(middleware::WeaveTimestamp)
         .middleware(middleware::DbTransaction)

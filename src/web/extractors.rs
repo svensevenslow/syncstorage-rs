@@ -4,12 +4,10 @@
 //! relevant types, and failing correctly with the appropriate errors if issues arise.
 use std::{self, collections::HashMap, str::FromStr};
 
+use actix_web::dev::Path;
 use actix_web::http::header::{HeaderValue, ACCEPT, CONTENT_TYPE};
-use actix_web::{
-    dev::{JsonConfig, PayloadConfig},
-    error::ErrorInternalServerError,
-    Error, FromRequest, HttpRequest, Json, Path, Query,
-};
+use actix_web::web::{Json, JsonConfig, PayloadConfig, Query};
+use actix_web::{error::ErrorInternalServerError, Error, FromRequest, HttpRequest};
 use futures::{future, Future};
 use regex::Regex;
 use serde::de::{Deserialize, Deserializer, Error as SerdeError};
@@ -17,8 +15,7 @@ use serde_json::Value;
 use validator::{Validate, ValidationError};
 
 use db::{util::SyncTimestamp, Db, DbError, DbErrorKind, Sorting};
-use error::{ApiError, ApiResult};
-use server::ServerState;
+use error::ApiError;
 use web::{auth::HawkPayload, error::ValidationErrorKind};
 
 const BATCH_MAX_IDS: usize = 100;
@@ -79,9 +76,10 @@ pub struct BsoBodies {
     pub invalid: HashMap<String, String>,
 }
 
-impl FromRequest<ServerState> for BsoBodies {
+impl FromRequest for BsoBodies {
     type Config = ();
-    type Result = Box<Future<Item = BsoBodies, Error = Error>>;
+    //type Result = Box<Future<Item = BsoBodies, Error = Error>>;
+    type Future = Result<Self, Error>;
 
     /// Extract the BSO Bodies from the request
     ///
@@ -92,7 +90,7 @@ impl FromRequest<ServerState> for BsoBodies {
     ///   - Valid BSO's include a BSO id
     ///
     /// No collection id is used, so payload checks are not done here.
-    fn from_request(req: &HttpRequest<ServerState>, _: &Self::Config) -> Self::Result {
+    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
         // Only try and parse the body if its a valid content-type
         let headers = req.headers();
         let default = HeaderValue::from_static("");
@@ -258,11 +256,12 @@ pub struct BsoBody {
     pub ttl: Option<u32>,
 }
 
-impl FromRequest<ServerState> for BsoBody {
+impl FromRequest for BsoBody {
     type Config = ();
-    type Result = Box<Future<Item = BsoBody, Error = Error>>;
+    //type Result = Box<Future<Item = BsoBody, Error = Error>>;
+    type Future = Result<Self, Error>;
 
-    fn from_request(req: &HttpRequest<ServerState>, _: &Self::Config) -> Self::Result {
+    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
         // Only try and parse the body if its a valid content-type
         let headers = req.headers();
         let default = HeaderValue::from_static("");
@@ -331,11 +330,12 @@ pub struct BsoParam {
     pub bso: String,
 }
 
-impl FromRequest<ServerState> for BsoParam {
+impl FromRequest for BsoParam {
     type Config = ();
-    type Result = ApiResult<BsoParam>;
+    //type Result = ApiResult<BsoParam>;
+    type Future = Result<Self, Error>;
 
-    fn from_request(req: &HttpRequest<ServerState>, _: &Self::Config) -> Self::Result {
+    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
         if let Some(bso) = req.extensions().get::<BsoParam>() {
             return Ok(bso.clone());
         }
@@ -364,11 +364,12 @@ pub struct CollectionParam {
     pub collection: String,
 }
 
-impl FromRequest<ServerState> for CollectionParam {
+impl FromRequest for CollectionParam {
     type Config = ();
-    type Result = ApiResult<CollectionParam>;
+    //type Result = ApiResult<CollectionParam>;
+    type Future = Result<Self, Error>;
 
-    fn from_request(req: &HttpRequest<ServerState>, _: &Self::Config) -> Self::Result {
+    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
         if let Some(collection) = req.extensions().get::<CollectionParam>() {
             return Ok(collection.clone());
         }
@@ -399,11 +400,12 @@ pub struct MetaRequest {
     pub db: Box<dyn Db>,
 }
 
-impl FromRequest<ServerState> for MetaRequest {
+impl FromRequest for MetaRequest {
     type Config = ();
-    type Result = Result<MetaRequest, Error>;
+    //type Result = ApiResult<CollectionParam>;
+    type Future = Result<Self, Error>;
 
-    fn from_request(req: &HttpRequest<ServerState>, settings: &Self::Config) -> Self::Result {
+    fn from_request(req: &HttpRequest, settings: &Self::Config) -> Self::Future {
         let user_id = HawkIdentifier::from_request(req, settings)?;
         let db = <Box<dyn Db>>::from_request(req, settings)?;
         Ok({ MetaRequest { user_id, db } })
@@ -428,11 +430,12 @@ pub struct CollectionRequest {
     pub reply: ReplyFormat,
 }
 
-impl FromRequest<ServerState> for CollectionRequest {
+impl FromRequest for CollectionRequest {
     type Config = ();
-    type Result = Result<CollectionRequest, Error>;
+    //type Result = ApiResult<CollectionParam>;
+    type Future = Result<Self, Error>;
 
-    fn from_request(req: &HttpRequest<ServerState>, settings: &Self::Config) -> Self::Result {
+    fn from_request(req: &HttpRequest, settings: &Self::Config) -> Self::Future {
         let user_id = HawkIdentifier::from_request(req, settings)?;
         let db = <Box<dyn Db>>::from_request(req, settings)?;
         let query = BsoQueryParams::from_request(req, settings)?;
@@ -473,9 +476,10 @@ pub struct CollectionPostRequest {
     pub batch: Option<BatchRequest>,
 }
 
-impl FromRequest<ServerState> for CollectionPostRequest {
+impl FromRequest for CollectionPostRequest {
     type Config = ();
-    type Result = Box<Future<Item = CollectionPostRequest, Error = Error>>;
+    //type Result = Box<Future<Item = CollectionPostRequest, Error = Error>>;
+    type Future = Result<Self, Error>;
 
     /// Extractor for Collection Posts (Batch BSO upload)
     ///
@@ -483,7 +487,7 @@ impl FromRequest<ServerState> for CollectionPostRequest {
     /// done previously:
     ///   - If the collection is 'crypto', known bad payloads are checked for
     ///   - Any valid BSO's beyond `BATCH_MAX_RECORDS` are moved to invalid
-    fn from_request(req: &HttpRequest<ServerState>, _: &Self::Config) -> Self::Result {
+    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
         let req = req.clone();
         let max_post_records = i64::from(req.state().limits.max_post_records);
         let fut = <(
@@ -554,11 +558,12 @@ pub struct BsoRequest {
     pub bso: String,
 }
 
-impl FromRequest<ServerState> for BsoRequest {
+impl FromRequest for BsoRequest {
     type Config = ();
-    type Result = Result<BsoRequest, Error>;
+    //type Result = Result<BsoRequest, Error>;
+    type Future = Result<Self, Error>;
 
-    fn from_request(req: &HttpRequest<ServerState>, settings: &Self::Config) -> Self::Result {
+    fn from_request(req: &HttpRequest, settings: &Self::Config) -> Self::Future {
         let user_id = HawkIdentifier::from_request(req, settings)?;
         let db = <Box<dyn Db>>::from_request(req, settings)?;
         let query = BsoQueryParams::from_request(req, settings)?;
@@ -589,11 +594,12 @@ pub struct BsoPutRequest {
     pub body: BsoBody,
 }
 
-impl FromRequest<ServerState> for BsoPutRequest {
+impl FromRequest for BsoPutRequest {
     type Config = ();
-    type Result = Box<Future<Item = BsoPutRequest, Error = Error>>;
+    //type Result = Box<Future<Item = BsoPutRequest, Error = Error>>;
+    type Future = Result<Self, Error>;
 
-    fn from_request(req: &HttpRequest<ServerState>, _: &Self::Config) -> Self::Result {
+    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
         let fut = <(
             HawkIdentifier,
             Box<dyn Db>,
@@ -646,12 +652,13 @@ pub struct HawkIdentifier {
     pub fxa_id: String,
 }
 
-impl FromRequest<ServerState> for HawkIdentifier {
+impl FromRequest for HawkIdentifier {
     type Config = ();
-    type Result = ApiResult<HawkIdentifier>;
+    //type Result = ApiResult<HawkIdentifier>;
+    type Future = Result<Self, Error>;
 
     /// Use HawkPayload extraction and format as HawkIdentifier.
-    fn from_request(req: &HttpRequest<ServerState>, settings: &Self::Config) -> Self::Result {
+    fn from_request(req: &HttpRequest, settings: &Self::Config) -> Self::Future {
         if let Some(user_id) = req.extensions().get::<HawkIdentifier>() {
             return Ok(user_id.clone());
         }
@@ -700,11 +707,12 @@ impl From<u32> for HawkIdentifier {
     }
 }
 
-impl FromRequest<ServerState> for Box<dyn Db> {
+impl FromRequest for Box<dyn Db> {
     type Config = ();
-    type Result = Result<Self, Error>;
+    //type Result = Result<Self, Error>;
+    type Future = Result<Self, Error>;
 
-    fn from_request(req: &HttpRequest<ServerState>, _: &Self::Config) -> Self::Result {
+    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
         req.extensions()
             .get::<(Box<dyn Db>, bool)>()
             .ok_or_else(|| ErrorInternalServerError("Unexpected Db error"))
@@ -747,15 +755,16 @@ pub struct BsoQueryParams {
     pub full: bool,
 }
 
-impl FromRequest<ServerState> for BsoQueryParams {
+impl FromRequest for BsoQueryParams {
     type Config = ();
-    type Result = ApiResult<BsoQueryParams>;
+    //type Result = ApiResult<BsoQueryParams>;
+    type Future = Result<Self, Error>;
 
     /// Extract and validate the query parameters
-    fn from_request(req: &HttpRequest<ServerState>, _: &Self::Config) -> Self::Result {
+    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
         // TODO: serde deserialize the query ourselves to catch the serde error nicely
         let params =
-            Query::<BsoQueryParams>::from_request(req, &actix_web::dev::QueryConfig::default())
+            Query::<BsoQueryParams>::from_request(req)
                 .map_err(|e| {
                     ValidationErrorKind::FromDetails(
                         e.to_string(),
@@ -785,13 +794,14 @@ pub struct BatchRequest {
     pub commit: bool,
 }
 
-impl FromRequest<ServerState> for Option<BatchRequest> {
+impl FromRequest for Option<BatchRequest> {
     type Config = ();
-    type Result = ApiResult<Option<BatchRequest>>;
+    //type Result = ApiResult<Option<BatchRequest>>;
+    type Future = Result<Option<BatchRequest>, Error>;
 
-    fn from_request(req: &HttpRequest<ServerState>, _: &Self::Config) -> Self::Result {
+    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
         let params =
-            Query::<BatchParams>::from_request(req, &actix_web::dev::QueryConfig::default())
+            Query::<BatchParams>::from_request(req)
                 .map_err(|e| {
                     ValidationErrorKind::FromDetails(
                         e.to_string(),
@@ -888,12 +898,13 @@ pub enum PreConditionHeader {
     IfUnmodifiedSince(SyncTimestamp),
 }
 
-impl FromRequest<ServerState> for Option<PreConditionHeader> {
+impl FromRequest for Option<PreConditionHeader> {
     type Config = ();
-    type Result = ApiResult<Option<PreConditionHeader>>;
+    //type Result = ApiResult<Option<PreConditionHeader>>;
+    type Future = Result<Self, Error>;
 
     /// Extract and validate the precondition headers
-    fn from_request(req: &HttpRequest<ServerState>, _: &Self::Config) -> Self::Result {
+    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
         if let Some(precondition) = req.extensions().get::<Option<PreConditionHeader>>() {
             return Ok(precondition.clone());
         }
@@ -1075,9 +1086,9 @@ mod tests {
     use std::str::from_utf8;
     use std::sync::Arc;
 
+    use actix_web::dev::Body;
     use actix_web::test::TestRequest;
-    use actix_web::{http::Method, Binary, Body};
-    use actix_web::{Error, HttpResponse};
+    use actix_web::{http::Method, Error, HttpResponse};
     use base64;
     use hawk::{Credentials, Key, RequestBuilder};
     use hmac::{Hmac, Mac};
@@ -1118,10 +1129,10 @@ mod tests {
     fn extract_body_as_str(response: &HttpResponse) -> String {
         match response.body() {
             Body::Binary(binary) => match binary {
-                Binary::Bytes(b) => from_utf8(b).unwrap().to_string(),
-                Binary::Slice(s) => from_utf8(s).unwrap().to_string(),
-                Binary::SharedString(s) => s.clone().to_string(),
-                Binary::SharedVec(v) => from_utf8(v).unwrap().to_string(),
+                Body::Binary::Bytes(b) => from_utf8(b).unwrap().to_string(),
+                Body::Binary::Slice(s) => from_utf8(s).unwrap().to_string(),
+                Body::Binary::SharedString(s) => s.clone().to_string(),
+                Body::Binary::SharedVec(v) => from_utf8(v).unwrap().to_string(),
             },
             _ => panic!("Invalid body"),
         }
@@ -1501,11 +1512,7 @@ mod tests {
 
     #[test]
     fn test_invalid_precondition_headers() {
-        fn assert_invalid_header(
-            req: &HttpRequest<ServerState>,
-            _error_header: &str,
-            _error_message: &str,
-        ) {
+        fn assert_invalid_header(req: &HttpRequest, _error_header: &str, _error_message: &str) {
             let result = <Option<PreConditionHeader> as FromRequest<ServerState>>::extract(&req);
             assert!(result.is_err());
             let response: HttpResponse = result.err().unwrap().into();
