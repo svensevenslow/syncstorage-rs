@@ -1,17 +1,15 @@
 //! # Web Middleware
 //!
 //! Matches the [Sync Storage middleware](https://github.com/mozilla-services/server-syncstorage/blob/master/syncstorage/tweens.py) (tweens).
+use actix_service::{Service, Transform};
+use actix_web::dev::{ServiceRequest, ServiceResponse};
 use actix_web::{
-    http::{header, Method, StatusCode},
-    // middleware::{Middleware, Response, Started},
-    FromRequest,
-    HttpRequest,
-    HttpResponse,
-    Result,
+    http::{header, HeaderName, HeaderValue, Method, StatusCode},
+    Error, FromRequest, HttpMessage, HttpRequest, HttpResponse, Result,
 };
 use futures::{
     future::{self, Either},
-    Future,
+    Future, IntoFuture,
 };
 
 use db::{params, util::SyncTimestamp, Db};
@@ -24,22 +22,17 @@ use web::extractors::{BsoParam, CollectionParam, HawkIdentifier, PreConditionHea
 struct DefaultWeaveTimestamp(SyncTimestamp);
 
 /// Middleware to set the X-Weave-Timestamp header on all responses.
-pub struct WeaveTimestamp;
-
-impl<S> Middleware<S> for WeaveTimestamp {
-    /// Set the `DefaultWeaveTimestamp` and attach to the `HttpRequest`
-    fn start(&self, req: &HttpRequest<S>) -> Result<Started> {
-        req.extensions_mut()
-            .insert(DefaultWeaveTimestamp::default());
-        Ok(Started::Done)
-    }
-
-    /// Method is called when handler returns response,
-    /// but before sending http message to peer.
-    fn response(&self, req: &HttpRequest<S>, mut resp: HttpResponse) -> Result<Response> {
+pub fn add_weave_timestamp<S, P, B>(
+    req: ServiceRequest,
+    srv: &mut S,
+) -> impl IntoFuture<Item = ServiceResponse<B>, Error = Error>
+where
+    S: Service<Request = ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
+{
+    srv.call(req).map(|mut resp| {
         let ts = match req.extensions().get::<DefaultWeaveTimestamp>() {
             Some(ts) => ts.0.as_seconds(),
-            None => return Ok(Response::Done(resp)),
+            None => return resp,
         };
 
         let weave_ts = if let Some(val) = resp.headers().get("X-Last-Modified") {
@@ -52,7 +45,8 @@ impl<S> Middleware<S> for WeaveTimestamp {
                     ))
                     .into();
                     error
-                })?
+                })
+                .unwrap()
                 .parse::<f64>()
                 .map_err(|e| {
                     let error: ApiError = ApiErrorKind::Internal(format!(
@@ -61,7 +55,8 @@ impl<S> Middleware<S> for WeaveTimestamp {
                     ))
                     .into();
                     error
-                })?;
+                })
+                .unwrap();
             if resp_ts > ts {
                 resp_ts
             } else {
@@ -71,86 +66,92 @@ impl<S> Middleware<S> for WeaveTimestamp {
             ts
         };
         resp.headers_mut().insert(
-            "x-weave-timestamp",
-            header::HeaderValue::from_str(&format!("{:.*}", 2, &weave_ts)).map_err(|e| {
-                let error: ApiError = ApiErrorKind::Internal(format!(
-                    "Invalid X-Weave-Timestamp response header: {}",
-                    e
-                ))
-                .into();
-                error
-            })?,
+            header::HeaderName::from_static("x-weave-timestamp"),
+            header::HeaderValue::from_str(&format!("{:.*}", 2, &weave_ts))
+                .map_err(|e| {
+                    let error: ApiError = ApiErrorKind::Internal(format!(
+                        "Invalid X-Weave-Timestamp response header: {}",
+                        e
+                    ))
+                    .into();
+                    error
+                })
+                .unwrap(),
         );
-        Ok(Response::Done(resp))
-    }
+        resp
+    })
 }
 
-#[derive(Debug)]
-pub struct DbTransaction;
+/// Middelware to initialize the db and enforce transactions
+pub fn dbTransaction<S, P, B>(
+    s_req: ServiceRequest,
+    srv: &mut S,
+) -> impl IntoFuture<Item = ServiceResponse<B>, Error = Error>
+where
+    S: Service<Request = ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
+{
+    let (req, payload) = s_req.into_parts();
+    let collection = CollectionParam::from_request(&req, &mut payload)
+        .map(|param| param.collection.clone())
+        .ok();
+    let user_id = HawkIdentifier::from_request(&req, &mut payload).unwrap();
+    let in_transaction = collection.is_some();
 
-impl Middleware<ServerState> for DbTransaction {
-    /// Initialize the database
-    fn start(&self, req: &HttpRequest<ServerState>) -> Result<Started> {
-        let req = req.clone();
-        // We may or may not be operating on a collection
-        let collection = CollectionParam::from_request(&req, &())
-            .map(|param| param.collection.clone())
-            .ok();
-        let user_id = HawkIdentifier::from_request(&req, &())?;
-        let in_transaction = collection.is_some();
-
-        let fut = req
-            .state()
-            .db_pool
-            .get()
-            .and_then(move |db| {
-                let db2 = db.clone();
-                let fut = if let Some(collection) = collection {
-                    // Take a read or write lock depending on request method
-                    let lc = params::LockCollection {
-                        user_id,
-                        collection,
-                    };
-                    Either::A(
-                        match *req.method() {
-                            Method::GET | Method::HEAD => db.lock_for_read(lc),
-                            _ => db.lock_for_write(lc),
-                        }
-                        .or_else(move |e| {
-                            // Middleware::response won't be called: rollback immediately
-                            db2.rollback().and_then(|_| future::err(e))
-                        }),
-                    )
-                } else {
-                    // If we're not operating on a collection, don't take a lock
-                    Either::B(future::ok(()))
+    let fut = req
+        .app_data::<ServerState>()
+        .unwrap()
+        .db_pool
+        .get()
+        .and_then(move |db| {
+            let db2 = db.clone();
+            let fut = if let Some(collection) = collection {
+                // Take a read or write lock depending on request method
+                let lc = params::LockCollection {
+                    user_id,
+                    collection,
                 };
-                fut.and_then(move |_| {
-                    // track whether a transaction was started above via the
-                    // lock methods
-                    req.extensions_mut().insert((db, in_transaction));
-                    future::ok(None)
-                })
+                Either::A(
+                    match *req.method() {
+                        Method::GET | Method::HEAD => db.lock_for_read(lc),
+                        _ => db.lock_for_write(lc),
+                    }
+                    .or_else(move |e| {
+                        // Middleware::response won't be called: rollback immediately
+                        db2.rollback().and_then(|_| future::err(e))
+                    }),
+                )
+            } else {
+                // If we're not operating on a collection, don't take a lock
+                Either::B(future::ok(()))
+            };
+            fut.and_then(move |_| {
+                // track whether a transaction was started above via the
+                // lock methods
+                req.extensions_mut().insert((db, in_transaction));
+                future::ok(None)
             })
-            .map_err(Into::into);
-        Ok(Started::Future(Box::new(fut)))
-    }
-
-    fn response(&self, req: &HttpRequest<ServerState>, resp: HttpResponse) -> Result<Response> {
-        if let Some((db, in_transaction)) = req.extensions().get::<(Box<dyn Db>, bool)>() {
+        })
+        .map_err(Into::into);
+    srv.call(s_req).map(|mut s_resp| {
+        if let Some((db, in_transaction)) =
+            s_resp.request().extensions().get::<(Box<dyn Db>, bool)>()
+        {
             if *in_transaction {
+                let resp = s_resp.response_mut();
                 let fut = match resp.error() {
                     None => db.commit(),
                     Some(_) => db.rollback(),
                 };
                 let fut = fut.and_then(|_| Ok(resp)).map_err(Into::into);
-                return Ok(Response::Future(Box::new(fut)));
+                return s_resp;
             }
         }
-        Ok(Response::Done(resp))
-    }
+        s_resp
+    })
 }
 
+
+/*
 /// The resource in question's Timestamp
 pub struct ResourceTimestamp(SyncTimestamp);
 
@@ -233,7 +234,7 @@ impl Middleware<ServerState> for PreConditionCheck {
         Ok(Response::Future(Box::new(fut)))
     }
 }
-
+*/
 #[cfg(test)]
 mod tests {
     use super::*;

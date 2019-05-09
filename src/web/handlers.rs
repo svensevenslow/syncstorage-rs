@@ -16,7 +16,8 @@ use web::extractors::{
 pub const ONE_KB: f64 = 1024.0;
 
 pub fn get_collections(meta: MetaRequest) -> HttpResponse {
-    Box::new(
+    HttpResponse::with_body(
+        HttpResponse::Ok,
         meta.db
             .get_collection_timestamps(meta.user_id)
             .map_err(From::from)
@@ -29,16 +30,14 @@ pub fn get_collections(meta: MetaRequest) -> HttpResponse {
 }
 
 pub fn get_collection_counts(meta: MetaRequest) -> HttpResponse {
-    Box::new(
-        meta.db
-            .get_collection_counts(meta.user_id)
-            .map_err(From::from)
-            .map(|result| {
-                HttpResponse::build(StatusCode::OK)
-                    .header("X-Weave-Records", result.len().to_string())
-                    .json(result)
-            }),
-    )
+    meta.db
+        .get_collection_counts(meta.user_id)
+        .map_err(From::from)
+        .map(|result| {
+            HttpResponse::build(StatusCode::OK)
+                .header("X-Weave-Records", result.len().to_string())
+                .json(result)
+        })
 }
 
 pub fn get_collection_usage(meta: MetaRequest) -> HttpResponse {
@@ -363,8 +362,6 @@ pub fn put_bso(bso_req: BsoPutRequest) -> HttpResponse {
     )
 }
 
-pub fn get_configuration(
-    (_auth, state): (HawkIdentifier, ServerState),
-) -> HttpResponse {
+pub fn get_configuration((_auth, state): (HawkIdentifier, ServerState)) -> HttpResponse {
     Box::new(future::result(Ok(HttpResponse::Ok().json(&*state.limits))))
 }

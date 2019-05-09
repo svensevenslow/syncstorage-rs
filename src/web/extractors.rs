@@ -4,7 +4,7 @@
 //! relevant types, and failing correctly with the appropriate errors if issues arise.
 use std::{self, collections::HashMap, str::FromStr};
 
-use actix_web::dev::Path;
+use actix_web::dev::{Path, Payload, ServiceRequest, ServiceResponse};
 use actix_web::http::header::{HeaderValue, ACCEPT, CONTENT_TYPE};
 use actix_web::web::{Json, JsonConfig, PayloadConfig, Query};
 use actix_web::{error::ErrorInternalServerError, Error, FromRequest, HttpRequest};
@@ -14,6 +14,7 @@ use serde::de::{Deserialize, Deserializer, Error as SerdeError};
 use serde_json::Value;
 use validator::{Validate, ValidationError};
 
+use crate::server::ServerState;
 use db::{util::SyncTimestamp, Db, DbError, DbErrorKind, Sorting};
 use error::ApiError;
 use web::{auth::HawkPayload, error::ValidationErrorKind};
@@ -78,8 +79,8 @@ pub struct BsoBodies {
 
 impl FromRequest for BsoBodies {
     type Config = ();
-    //type Result = Box<Future<Item = BsoBodies, Error = Error>>;
-    type Future = Result<Self, Error>;
+    //type Result = Result<Self, Error>;
+    type Future = Box<Future<Item = Self, Error = Error>>;
 
     /// Extract the BSO Bodies from the request
     ///
@@ -90,7 +91,7 @@ impl FromRequest for BsoBodies {
     ///   - Valid BSO's include a BSO id
     ///
     /// No collection id is used, so payload checks are not done here.
-    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
+    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
         // Only try and parse the body if its a valid content-type
         let headers = req.headers();
         let default = HeaderValue::from_static("");
@@ -110,24 +111,15 @@ impl FromRequest for BsoBodies {
             }
         }
 
-        // Get the max request size we'll parse
-        let max_request_bytes = req.state().limits.max_request_bytes;
-
         // Load the entire request into a String
-        let mut config = PayloadConfig::default();
-        config.limit(max_request_bytes as usize);
-        let fut = if let Ok(result) = <String>::from_request(req, &config) {
-            result
-        } else {
-            return Box::new(future::err(
-                ValidationErrorKind::FromDetails(
-                    "Mimetype/encoding/content-length error".to_owned(),
-                    RequestErrorLocation::Header,
-                    None,
-                )
-                .into(),
-            ));
-        };
+        let fut = <String>::from_request(req, &mut payload).map_err(|_| {
+            ValidationErrorKind::FromDetails(
+                "Mimetype/encoding/content-length error".to_owned(),
+                RequestErrorLocation::Header,
+                None,
+            )
+            .into()
+        });
 
         // Avoid duplicating by defining our error func now, doesn't need the box wrapper
         fn make_error() -> Error {
@@ -144,8 +136,9 @@ impl FromRequest for BsoBodies {
         let newlines: bool = content_type == b"application/newlines";
 
         // Grab the max sizes
-        let max_payload_size = req.state().limits.max_record_payload_bytes as usize;
-        let max_post_bytes = req.state().limits.max_post_bytes as usize;
+        let state = req.app_data::<ServerState>().clone().unwrap();
+        let max_payload_size = state.limits.max_record_payload_bytes as usize;
+        let max_post_bytes = state.limits.max_post_bytes as usize;
 
         let fut = fut.and_then(move |body| {
             // Get all the raw JSON values
@@ -259,9 +252,9 @@ pub struct BsoBody {
 impl FromRequest for BsoBody {
     type Config = ();
     //type Result = Box<Future<Item = BsoBody, Error = Error>>;
-    type Future = Result<Self, Error>;
+    type Future = Box<Future<Item = BsoBody, Error = Error>>;
 
-    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
+    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
         // Only try and parse the body if its a valid content-type
         let headers = req.headers();
         let default = HeaderValue::from_static("");
@@ -279,11 +272,12 @@ impl FromRequest for BsoBody {
             }
         }
         let mut config = JsonConfig::default();
-        let max_request_size = req.state().limits.max_request_bytes as usize;
+        let state = req.app_data::<ServerState>().clone().unwrap();
+        let max_request_size = state.limits.max_request_bytes as usize;
         config.limit(max_request_size);
 
-        let max_payload_size = req.state().limits.max_record_payload_bytes as usize;
-        let fut = <Json<BsoBody>>::from_request(req, &config)
+        let max_payload_size = state.limits.max_record_payload_bytes as usize;
+        let fut = <Json<BsoBody>>::from_request(req, &mut payload)
             .map_err(|e| {
                 let err: ApiError = ValidationErrorKind::FromDetails(
                     e.to_string(),
@@ -369,11 +363,12 @@ impl FromRequest for CollectionParam {
     //type Result = ApiResult<CollectionParam>;
     type Future = Result<Self, Error>;
 
-    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
+    fn from_request(s_req: &ServiceRequest, _: &Payload) -> Self::Future {
+        let (req, body) = s_req.into_parts();
         if let Some(collection) = req.extensions().get::<CollectionParam>() {
             return Ok(collection.clone());
         }
-
+        // TODO: What does `extract` extract?
         let collection = Path::<CollectionParam>::extract(req)
             .map_err(|e| {
                 ValidationErrorKind::FromDetails(
@@ -405,9 +400,9 @@ impl FromRequest for MetaRequest {
     //type Result = ApiResult<CollectionParam>;
     type Future = Result<Self, Error>;
 
-    fn from_request(req: &HttpRequest, settings: &Self::Config) -> Self::Future {
-        let user_id = HawkIdentifier::from_request(req, settings)?;
-        let db = <Box<dyn Db>>::from_request(req, settings)?;
+    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
+        let user_id = HawkIdentifier::from_request(req, &mut payload)?;
+        let db = <Box<dyn Db>>::from_request(req, &mut payload)?;
         Ok({ MetaRequest { user_id, db } })
     }
 }
@@ -435,11 +430,11 @@ impl FromRequest for CollectionRequest {
     //type Result = ApiResult<CollectionParam>;
     type Future = Result<Self, Error>;
 
-    fn from_request(req: &HttpRequest, settings: &Self::Config) -> Self::Future {
-        let user_id = HawkIdentifier::from_request(req, settings)?;
-        let db = <Box<dyn Db>>::from_request(req, settings)?;
-        let query = BsoQueryParams::from_request(req, settings)?;
-        let collection = CollectionParam::from_request(req, settings)?.collection;
+    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
+        let user_id = HawkIdentifier::from_request(req, &mut payload)?;
+        let db = <Box<dyn Db>>::from_request(req, &mut payload)?;
+        let query = BsoQueryParams::from_request(req, &mut payload)?;
+        let collection = CollectionParam::from_request(req, &mut payload)?.collection;
         let reply = match req.headers().get(ACCEPT) {
             Some(v) if v.as_bytes() == b"application/newlines" => ReplyFormat::Newlines,
             Some(v) if v.as_bytes() == b"application/json" => ReplyFormat::Json,
@@ -479,7 +474,7 @@ pub struct CollectionPostRequest {
 impl FromRequest for CollectionPostRequest {
     type Config = ();
     //type Result = Box<Future<Item = CollectionPostRequest, Error = Error>>;
-    type Future = Result<Self, Error>;
+    type Future = Box<Future<Item = CollectionPostRequest, Error = Error>>;
 
     /// Extractor for Collection Posts (Batch BSO upload)
     ///
@@ -487,9 +482,10 @@ impl FromRequest for CollectionPostRequest {
     /// done previously:
     ///   - If the collection is 'crypto', known bad payloads are checked for
     ///   - Any valid BSO's beyond `BATCH_MAX_RECORDS` are moved to invalid
-    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
+    fn from_request(req: &HttpRequest, _: &Payload) -> Self::Future {
         let req = req.clone();
-        let max_post_records = i64::from(req.state().limits.max_post_records);
+        let state = req.app_data::<ServerState>().clone().unwrap();
+        let max_post_records = i64::from(state.limits.max_post_records);
         let fut = <(
             HawkIdentifier,
             Box<dyn Db>,
@@ -563,14 +559,14 @@ impl FromRequest for BsoRequest {
     //type Result = Result<BsoRequest, Error>;
     type Future = Result<Self, Error>;
 
-    fn from_request(req: &HttpRequest, settings: &Self::Config) -> Self::Future {
-        let user_id = HawkIdentifier::from_request(req, settings)?;
-        let db = <Box<dyn Db>>::from_request(req, settings)?;
-        let query = BsoQueryParams::from_request(req, settings)?;
-        let collection = CollectionParam::from_request(req, settings)?
+    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
+        let user_id = HawkIdentifier::from_request(req, &mut payload)?;
+        let db = <Box<dyn Db>>::from_request(req, &mut payload)?;
+        let query = BsoQueryParams::from_request(req, &mut payload)?;
+        let collection = CollectionParam::from_request(req, &mut payload)?
             .collection
             .clone();
-        let bso = BsoParam::from_request(req, settings)?;
+        let bso = BsoParam::from_request(req, &mut payload)?;
 
         Ok(BsoRequest {
             collection,
@@ -597,9 +593,9 @@ pub struct BsoPutRequest {
 impl FromRequest for BsoPutRequest {
     type Config = ();
     //type Result = Box<Future<Item = BsoPutRequest, Error = Error>>;
-    type Future = Result<Self, Error>;
+    type Future = Box<Future<Item = BsoPutRequest, Error = Error>>;
 
-    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
+    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
         let fut = <(
             HawkIdentifier,
             Box<dyn Db>,
@@ -658,12 +654,13 @@ impl FromRequest for HawkIdentifier {
     type Future = Result<Self, Error>;
 
     /// Use HawkPayload extraction and format as HawkIdentifier.
-    fn from_request(req: &HttpRequest, settings: &Self::Config) -> Self::Future {
+    fn from_request(s_req: &ServiceRequest, settings: &Self::Config) -> Self::Future {
+        let (req, payload) = s_req.into_parts();
         if let Some(user_id) = req.extensions().get::<HawkIdentifier>() {
             return Ok(user_id.clone());
         }
 
-        let payload = HawkPayload::from_request(req, settings)?;
+        let payload = HawkPayload::from_request(req, &mut payload)?;
         let path_uid = Path::<UidParam>::extract(req).map_err(|e| {
             ValidationErrorKind::FromDetails(
                 e.to_string(),
@@ -761,18 +758,17 @@ impl FromRequest for BsoQueryParams {
     type Future = Result<Self, Error>;
 
     /// Extract and validate the query parameters
-    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
+    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
         // TODO: serde deserialize the query ourselves to catch the serde error nicely
-        let params =
-            Query::<BsoQueryParams>::from_request(req)
-                .map_err(|e| {
-                    ValidationErrorKind::FromDetails(
-                        e.to_string(),
-                        RequestErrorLocation::QueryString,
-                        None,
-                    )
-                })?
-                .into_inner();
+        let params = Query::<BsoQueryParams>::from_request(req, &mut payload)
+            .map_err(|e| {
+                ValidationErrorKind::FromDetails(
+                    e.to_string(),
+                    RequestErrorLocation::QueryString,
+                    None,
+                )
+            })?
+            .into_inner();
         params.validate().map_err(|e| {
             ValidationErrorKind::FromValidationErrors(e, RequestErrorLocation::QueryString)
         })?;
@@ -794,24 +790,23 @@ pub struct BatchRequest {
     pub commit: bool,
 }
 
-impl FromRequest for Option<BatchRequest> {
+impl FromRequest for BatchRequest {
     type Config = ();
     //type Result = ApiResult<Option<BatchRequest>>;
     type Future = Result<Option<BatchRequest>, Error>;
 
-    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
-        let params =
-            Query::<BatchParams>::from_request(req)
-                .map_err(|e| {
-                    ValidationErrorKind::FromDetails(
-                        e.to_string(),
-                        RequestErrorLocation::QueryString,
-                        None,
-                    )
-                })?
-                .into_inner();
+    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
+        let params = Query::<BatchParams>::from_request(req, &mut payload)
+            .map_err(|e| {
+                ValidationErrorKind::FromDetails(
+                    e.to_string(),
+                    RequestErrorLocation::QueryString,
+                    None,
+                )
+            })?
+            .into_inner();
 
-        let limits = &req.state().limits;
+        let limits = &req.app_data::<ServerState>().clone().unwrap().limits;
         let checks = [
             ("X-Weave-Records", limits.max_post_records),
             ("X-Weave-Bytes", limits.max_post_bytes),

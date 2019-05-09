@@ -3,52 +3,49 @@
 use std::sync::Arc;
 
 use actix::{System, SystemRunner};
-use actix_web::{http, middleware::cors::Cors, App, HttpServer};
+use actix_web::{middleware::cors::Cors, web, App, HttpServer};
 //use num_cpus;
 
+use crate::web::handlers;
+use crate::web::middleware;
 use db::{mysql::MysqlDbPool, DbError, DbPool};
 use settings::{Secrets, ServerLimits, Settings};
-use web::handlers;
-use web::middleware;
 
-macro_rules! init_routes {
-    ($app:expr) => {
-        $app.resource("/1.5/{uid}/info/collections", |r| {
-            r.method(http::Method::GET).with(handlers::get_collections);
-        })
-        .resource("/1.5/{uid}/info/collection_counts", |r| {
-            r.method(http::Method::GET)
-                .with(handlers::get_collection_counts);
-        })
-        .resource("/1.5/{uid}/info/collection_usage", |r| {
-            r.method(http::Method::GET)
-                .with(handlers::get_collection_usage);
-        })
-        .resource("/1.5/{uid}/info/configuration", |r| {
-            r.method(http::Method::GET)
-                .with(handlers::get_configuration);
-        })
-        .resource("/1.5/{uid}/info/quota", |r| {
-            r.method(http::Method::GET).with(handlers::get_quota);
-        })
-        .resource("/1.5/{uid}", |r| {
-            r.method(http::Method::DELETE).with(handlers::delete_all);
-        })
-        .resource("/1.5/{uid}/storage", |r| {
-            r.method(http::Method::DELETE).with(handlers::delete_all);
-        })
-        .resource("/1.5/{uid}/storage/{collection}", |r| {
-            r.method(http::Method::DELETE)
-                .with(handlers::delete_collection);
-            r.method(http::Method::GET).with(handlers::get_collection);
-            r.method(http::Method::POST).with(handlers::post_collection);
-        })
-        .resource("/1.5/{uid}/storage/{collection}/{bso}", |r| {
-            r.method(http::Method::DELETE).with(handlers::delete_bso);
-            r.method(http::Method::GET).with(handlers::get_bso);
-            r.method(http::Method::PUT).with(handlers::put_bso);
-        })
-    };
+fn init_routes(s_config: &mut web::ServiceConfig) {
+    s_config
+        .service(
+            web::resource("/1.5/{uid}/info/collections")
+                .route(web::get().to(handlers::get_collections)),
+        )
+        .service(
+            web::resource("/1.5/{uid}/info/collection_counts")
+                .route(web::get().to(handlers::get_collection_counts)),
+        )
+        .service(
+            web::resource("/1.5/{uid}/info/collection_usage")
+                .route(web::get().to(handlers::get_collection_usage)),
+        )
+        /* TODO:  Needs FromRequest for get_configuration
+        .service(
+            web::resource("/1.5/{uid}/info/configuration")
+                .route(web::get().to(handlers::get_configuration)),
+        )
+        */
+        .service(web::resource("/1.5/{uid}/info/quota").route(web::get().to(handlers::get_quota)))
+        .service(web::resource("/1.5/{uid}").route(web::delete().to(handlers::delete_all)))
+        .service(web::resource("/1.5/{uid}/storage").route(web::delete().to(handlers::delete_all)))
+        .service(
+            web::resource("/1.5/{uid}/storage/{collection}")
+                .route(web::delete().to(handlers::delete_collection))
+                .route(web::get().to(handlers::get_collection))
+                .route(web::post().to(handlers::post_collection)),
+        )
+        .service(
+            web::resource("/1.5/{uid}/storage/{collection}/{bso}")
+                .route(web::delete().to(handlers::delete_bso))
+                .route(web::get().to(handlers::get_bso))
+                .route(web::put().to(handlers::put_bso)),
+        );
 }
 
 // The tests depend on the init_routes! macro, so this mod must come after it
@@ -71,12 +68,14 @@ pub struct ServerState {
     pub port: u16,
 }
 
-pub fn build_app(state: ServerState) -> App<ServerState, Body> {
-    App::with_state(state)
-        .middleware(middleware::WeaveTimestamp)
-        .middleware(middleware::DbTransaction)
-        .middleware(middleware::PreConditionCheck)
-        .configure(|app| init_routes!(Cors::for_app(app)).register())
+pub fn build_app(state: ServerState) -> App<impl actix_service::NewService, Body> {
+    App::new()
+        .data(state)
+        .wrap_fn(middleware::add_weave_timestamp)
+        .wrap_fn(middleware::dbTransaction)
+        //.wrap_fn(middleware::PreConditionCheck)
+        .wrap(Cors::default())
+        .configure(init_routes)
 }
 
 pub struct Server {}
@@ -98,7 +97,7 @@ impl Server {
                 port,
             };
 
-            build_app(state)
+            build_app(state).into()
         })
         .bind(format!("127.0.0.1:{}", settings.port))
         .unwrap()

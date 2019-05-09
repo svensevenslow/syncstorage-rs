@@ -1,4 +1,5 @@
-use actix_web::{client::ClientRequest, http::StatusCode, test::TestServer};
+use actix_http_test::TestServer;
+use actix_web::{client::ClientRequest, http::StatusCode};
 use base64;
 use chrono::offset::Utc;
 use hawk::{Credentials, Key, RequestBuilder};

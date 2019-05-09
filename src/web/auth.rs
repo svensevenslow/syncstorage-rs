@@ -79,7 +79,9 @@ impl HawkPayload {
             &Key::new(token_secret.as_bytes(), &ring::digest::SHA256),
             // Allow plenty of leeway for clock skew, because
             // client timestamps tend to be all over the shop
-            Duration::weeks(52),
+            Duration::weeks(52)
+                .to_std()
+                .map_err(|_| HawkErrorKind::InvalidHeader)?,
         ) {
             Ok(payload)
         } else {
@@ -152,7 +154,7 @@ impl FromRequest for HawkPayload {
         } else {
             80
         };
-
+        let secrets = request.app_data().clone().unwrap();
         HawkPayload::new(
             request
                 .headers()
@@ -167,7 +169,7 @@ impl FromRequest for HawkPayload {
                 .as_str(),
             host,
             port,
-            &request.state().secrets,
+            &secrets,
             Utc::now().timestamp() as u64,
         )
     }
