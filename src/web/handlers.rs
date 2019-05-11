@@ -1,11 +1,11 @@
 //! API Handlers
 use std::collections::HashMap;
 
-use actix_web::{http::StatusCode, HttpResponse};
+use actix_web::{http::StatusCode, web, HttpRequest, HttpResponse};
 use futures::future::{self, Either, Future};
 use serde::Serialize;
 
-use db::{params, results::Paginated, DbError, DbErrorKind};
+use db::{params, results::Paginated, Db, DbError, DbErrorKind};
 use error::ApiError;
 use server::ServerState;
 use web::extractors::{
@@ -16,17 +16,14 @@ use web::extractors::{
 pub const ONE_KB: f64 = 1024.0;
 
 pub fn get_collections(meta: MetaRequest) -> HttpResponse {
-    HttpResponse::with_body(
-        HttpResponse::Ok,
-        meta.db
-            .get_collection_timestamps(meta.user_id)
-            .map_err(From::from)
-            .map(|result| {
-                HttpResponse::build(StatusCode::OK)
-                    .header("X-Weave-Records", result.len().to_string())
-                    .json(result)
-            }),
-    )
+    meta.db
+        .get_collection_timestamps(meta.user_id)
+        .map_err(From::from)
+        .map(|result| {
+            HttpResponse::build(StatusCode::OK)
+                .header("X-Weave-Records", result.len().to_string())
+                .json(result)
+        })
 }
 
 pub fn get_collection_counts(meta: MetaRequest) -> HttpResponse {

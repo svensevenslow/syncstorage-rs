@@ -1,6 +1,8 @@
 use std::fmt;
 
+use actix_web::error::ResponseError;
 use actix_web::http::StatusCode;
+use actix_web::HttpResponse;
 use diesel;
 use diesel_migrations;
 use failure::{Backtrace, Context, Fail};
@@ -57,6 +59,12 @@ impl DbError {
     }
 }
 
+impl ResponseError for DbError {
+    fn error_response(&self) -> HttpResponse {
+        // TODO: Add msg as body.
+        HttpResponse::InternalServerError().finish()
+    }
+}
 impl From<Context<DbErrorKind>> for DbError {
     fn from(inner: Context<DbErrorKind>) -> Self {
         let status = match inner.get_context() {

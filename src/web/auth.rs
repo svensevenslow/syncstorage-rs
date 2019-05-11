@@ -2,7 +2,7 @@
 //! Matches the [Python logic](https://github.com/mozilla-services/tokenlib).
 //! We may want to extract this to its own repo/crate in due course.
 
-use actix_web::{FromRequest, HttpRequest};
+use actix_web::{dev::Payload, FromRequest, HttpRequest};
 use base64;
 use chrono::offset::Utc;
 use hawk::{Header as HawkHeader, Key, RequestBuilder};
@@ -17,7 +17,7 @@ use super::{
     error::{HawkErrorKind, ValidationErrorKind},
     extractors::RequestErrorLocation,
 };
-use error::ApiResult;
+use error::{ApiError, ApiResult};
 use settings::Secrets;
 
 /// A parsed and authenticated JSON payload
@@ -134,10 +134,12 @@ impl FromRequest for HawkPayload {
     //type Result = ApiResult<HawkPayload>;
     type Future = ApiResult<HawkPayload>;
 
+    type Error = ApiError;
+
     /// Parse and authenticate a Hawk payload
     /// from the `Authorization` header
     /// of an actix request object.
-    fn from_request(request: &HttpRequest, _: &Self::Config) -> Self::Future {
+    fn from_request(request: &HttpRequest, _: &mut Payload) -> Self::Future {
         let ci = request.connection_info();
         let host_port: Vec<_> = ci.host().splitn(2, ':').collect();
         let host = host_port[0];

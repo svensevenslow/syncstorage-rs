@@ -22,7 +22,7 @@ use web::extractors::{BsoParam, CollectionParam, HawkIdentifier, PreConditionHea
 struct DefaultWeaveTimestamp(SyncTimestamp);
 
 /// Middleware to set the X-Weave-Timestamp header on all responses.
-pub fn add_weave_timestamp<S, P, B>(
+pub fn add_weave_timestamp<S, B>(
     req: ServiceRequest,
     srv: &mut S,
 ) -> impl IntoFuture<Item = ServiceResponse<B>, Error = Error>
@@ -83,7 +83,7 @@ where
 }
 
 /// Middelware to initialize the db and enforce transactions
-pub fn dbTransaction<S, P, B>(
+pub fn db_transaction<S, B>(
     s_req: ServiceRequest,
     srv: &mut S,
 ) -> impl IntoFuture<Item = ServiceResponse<B>, Error = Error>
@@ -150,57 +150,71 @@ where
     })
 }
 
-
-/*
 /// The resource in question's Timestamp
 pub struct ResourceTimestamp(SyncTimestamp);
 
 #[derive(Debug)]
 pub struct PreConditionCheck;
 
-impl Middleware<ServerState> for PreConditionCheck {
-    /// This middleware must be wrapped by the `DbTransaction` middleware to ensure a Db object
-    /// is available.
-    fn start(&self, req: &HttpRequest<ServerState>) -> Result<Started> {
-        let precondition =
-            match <Option<PreConditionHeader> as FromRequest<ServerState>>::from_request(&req, &())
-            {
-                Ok(Some(precondition)) => precondition,
-                Ok(None) => return Ok(Started::Done),
-                Err(e) => return Ok(Started::Response(e.into())),
-            };
-        let user_id = HawkIdentifier::from_request(&req, &())?;
-        let db = <Box<dyn Db>>::from_request(&req, &())?;
-        let collection = CollectionParam::from_request(&req, &())
-            .ok()
-            .map(|v| v.collection);
-        let bso = BsoParam::from_request(&req, &()).ok().map(|v| v.bso);
-        let req = req.clone(); // Clone for the move to set the timestamp we get
-        let fut = db
-            .extract_resource(user_id, collection, bso)
-            .and_then(move |resource_ts: SyncTimestamp| {
-                // Ensure we stash the extracted resource timestamp on the request in case its
-                // requested elsewhere
-                req.extensions_mut().insert(ResourceTimestamp(resource_ts));
-                let status = match precondition {
-                    PreConditionHeader::IfModifiedSince(header_ts) if resource_ts <= header_ts => {
-                        StatusCode::NOT_MODIFIED
-                    }
-                    PreConditionHeader::IfUnmodifiedSince(header_ts) if resource_ts > header_ts => {
-                        StatusCode::PRECONDITION_FAILED
-                    }
-                    _ => return future::ok(None),
-                };
-                let resp = HttpResponse::build(status)
-                    .header("X-Last-Modified", resource_ts.as_header())
-                    .body(""); // 304 can't return any content
-                future::ok(Some(resp))
-            })
-            .map_err(Into::into);
-        Ok(Started::Future(Box::new(fut)))
-    }
+pub fn precondition_check<S, B> (
+    s_req: ServiceRequest,
+    srv: &mut S
+) -> impl IntoFuture<Item = ServiceResponse<B>, Error=Error>
+where
+    S: Service<Request = ServiceRequest, Response = ServiceResponse<B>, Error=Error>,
+    {
 
-    fn response(&self, req: &HttpRequest<ServerState>, mut resp: HttpResponse) -> Result<Response> {
+    // pre-call
+    // This middleware must be wrapped by the `DbTransaction` middleware to ensure a Db object
+    // is available.
+    let (req, paylad) = s_req.into_parts();
+
+    // Can't use From complains about Option not in scope, so semi-hack.
+    let precondition =
+        match PreConditionHeaderOpt as FromRequest<ServerState>>::from_request(&req, &payload)
+        {
+            Ok(precondition) => {
+                match precondition.opt {
+                    Some(precondition) => precondition,
+                    // TODO: Is this correct?
+                    None => return HttpResponse::Ok()
+                }
+            },
+            // TODO: Return a Server Error?
+            Err(e) => return e.into(),
+        };
+    let user_id = HawkIdentifier::from_request(&req, &payload)?;
+    let db = <Box<dyn Db>>::from_request(&req, &payload?);
+    let collection = CollectionParam::from_request(&req, &payload)
+        .ok()
+        .map(|v| v.collection);
+    let bso = BsoParam::from_request(&req, &payload.ok().map(|v| v.bso);
+    let req = req.clone(); // Clone for the move to set the timestamp we get
+    let fut = db
+        .extract_resource(user_id, collection, bso)
+        .and_then(move |resource_ts: SyncTimestamp| {
+            // Ensure we stash the extracted resource timestamp on the request in case its
+            // requested elsewhere
+            req.extensions_mut().insert(ResourceTimestamp(resource_ts));
+            let status = match precondition {
+                PreConditionHeader::IfModifiedSince(header_ts) if resource_ts <= header_ts => {
+                    StatusCode::NOT_MODIFIED
+                }
+                PreConditionHeader::IfUnmodifiedSince(header_ts) if resource_ts > header_ts => {
+                    StatusCode::PRECONDITION_FAILED
+                }
+                _ => return future::ok(None),
+            };
+            let resp = HttpResponse::build(status)
+                .header("X-Last-Modified", resource_ts.as_header())
+                .body(""); // 304 can't return any content
+            future::ok(Some(resp))
+        })
+        .map_err(Into::into);
+
+    // Make the call, and do the post.
+    srv.call(req).map(|mut resp| {
+
         // Ensure all outgoing requests from here have a X-Last-Modified
         if resp.headers().contains_key("X-Last-Modified") {
             return Ok(Response::Done(resp));
@@ -231,10 +245,10 @@ impl Middleware<ServerState> for PreConditionCheck {
                 future::ok(resp)
             })
             .map_err(Into::into);
-        Ok(Response::Future(Box::new(fut)))
-    }
+        Response::Future(Box::new(fut))
+    })
 }
-*/
+
 #[cfg(test)]
 mod tests {
     use super::*;

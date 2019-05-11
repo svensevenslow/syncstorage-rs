@@ -81,6 +81,7 @@ impl FromRequest for BsoBodies {
     type Config = ();
     //type Result = Result<Self, Error>;
     type Future = Box<Future<Item = Self, Error = Error>>;
+    type Error = Error;
 
     /// Extract the BSO Bodies from the request
     ///
@@ -91,7 +92,7 @@ impl FromRequest for BsoBodies {
     ///   - Valid BSO's include a BSO id
     ///
     /// No collection id is used, so payload checks are not done here.
-    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
+    fn from_request(req: &HttpRequest, payload: &mut Payload) -> Self::Future {
         // Only try and parse the body if its a valid content-type
         let headers = req.headers();
         let default = HeaderValue::from_static("");
@@ -253,8 +254,9 @@ impl FromRequest for BsoBody {
     type Config = ();
     //type Result = Box<Future<Item = BsoBody, Error = Error>>;
     type Future = Box<Future<Item = BsoBody, Error = Error>>;
+    type Error = Error;
 
-    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
+    fn from_request(req: &HttpRequest, payload: &mut Payload) -> Self::Future {
         // Only try and parse the body if its a valid content-type
         let headers = req.headers();
         let default = HeaderValue::from_static("");
@@ -328,13 +330,14 @@ impl FromRequest for BsoParam {
     type Config = ();
     //type Result = ApiResult<BsoParam>;
     type Future = Result<Self, Error>;
+    type Error = Error;
 
-    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
+    fn from_request(req: &HttpRequest, _: &mut Payload) -> Self::Future {
         if let Some(bso) = req.extensions().get::<BsoParam>() {
             return Ok(bso.clone());
         }
 
-        let bso = Path::<BsoParam>::extract(req)
+        let bso = Query::<BsoParam>::extract(req)
             .map_err(|e| {
                 ValidationErrorKind::FromDetails(
                     e.to_string(),
@@ -362,14 +365,17 @@ impl FromRequest for CollectionParam {
     type Config = ();
     //type Result = ApiResult<CollectionParam>;
     type Future = Result<Self, Error>;
+    type Error = Error;
 
-    fn from_request(s_req: &ServiceRequest, _: &Payload) -> Self::Future {
-        let (req, body) = s_req.into_parts();
+    fn from_request(req: &HttpRequest, _: &mut Payload) -> Self::Future {
         if let Some(collection) = req.extensions().get::<CollectionParam>() {
             return Ok(collection.clone());
         }
         // TODO: What does `extract` extract?
-        let collection = Path::<CollectionParam>::extract(req)
+        // It pulls the args from the path. actix wants to do this with the .to(fn) see
+        // https://docs.rs/actix-web/1.0.0-beta.3/actix_web/dev/struct.Path.html#method.get
+        //https://docs.rs/actix-web/1.0.0-beta.3/actix_web/struct.Route.html#method.to
+        let collection = Query::<CollectionParam>::extract(&req)
             .map_err(|e| {
                 ValidationErrorKind::FromDetails(
                     e.to_string(),
@@ -399,8 +405,9 @@ impl FromRequest for MetaRequest {
     type Config = ();
     //type Result = ApiResult<CollectionParam>;
     type Future = Result<Self, Error>;
+    type Error = Error;
 
-    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
+    fn from_request(req: &HttpRequest, payload: &mut Payload) -> Self::Future {
         let user_id = HawkIdentifier::from_request(req, &mut payload)?;
         let db = <Box<dyn Db>>::from_request(req, &mut payload)?;
         Ok({ MetaRequest { user_id, db } })
@@ -429,8 +436,9 @@ impl FromRequest for CollectionRequest {
     type Config = ();
     //type Result = ApiResult<CollectionParam>;
     type Future = Result<Self, Error>;
+    type Error = Error;
 
-    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
+    fn from_request(req: &HttpRequest, payload: &mut Payload) -> Self::Future {
         let user_id = HawkIdentifier::from_request(req, &mut payload)?;
         let db = <Box<dyn Db>>::from_request(req, &mut payload)?;
         let query = BsoQueryParams::from_request(req, &mut payload)?;
@@ -475,6 +483,7 @@ impl FromRequest for CollectionPostRequest {
     type Config = ();
     //type Result = Box<Future<Item = CollectionPostRequest, Error = Error>>;
     type Future = Box<Future<Item = CollectionPostRequest, Error = Error>>;
+    type Error = Error;
 
     /// Extractor for Collection Posts (Batch BSO upload)
     ///
@@ -482,7 +491,7 @@ impl FromRequest for CollectionPostRequest {
     /// done previously:
     ///   - If the collection is 'crypto', known bad payloads are checked for
     ///   - Any valid BSO's beyond `BATCH_MAX_RECORDS` are moved to invalid
-    fn from_request(req: &HttpRequest, _: &Payload) -> Self::Future {
+    fn from_request(req: &HttpRequest, _: &mut Payload) -> Self::Future {
         let req = req.clone();
         let state = req.app_data::<ServerState>().clone().unwrap();
         let max_post_records = i64::from(state.limits.max_post_records);
@@ -523,7 +532,7 @@ impl FromRequest for CollectionPostRequest {
                 }
             }
 
-            let batch = match <Option<BatchRequest>>::extract(&req) {
+            let batch = match BatchRequestOpt::extract(&req) {
                 Ok(batch) => batch,
                 Err(e) => return future::err(e.into()),
             };
@@ -534,7 +543,7 @@ impl FromRequest for CollectionPostRequest {
                 user_id,
                 query,
                 bsos,
-                batch,
+                batch: batch.opt,
             })
         });
 
@@ -558,8 +567,9 @@ impl FromRequest for BsoRequest {
     type Config = ();
     //type Result = Result<BsoRequest, Error>;
     type Future = Result<Self, Error>;
+    type Error = Error;
 
-    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
+    fn from_request(req: &HttpRequest, payload: &mut Payload) -> Self::Future {
         let user_id = HawkIdentifier::from_request(req, &mut payload)?;
         let db = <Box<dyn Db>>::from_request(req, &mut payload)?;
         let query = BsoQueryParams::from_request(req, &mut payload)?;
@@ -594,8 +604,9 @@ impl FromRequest for BsoPutRequest {
     type Config = ();
     //type Result = Box<Future<Item = BsoPutRequest, Error = Error>>;
     type Future = Box<Future<Item = BsoPutRequest, Error = Error>>;
+    type Error = Error;
 
-    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
+    fn from_request(req: &HttpRequest, payload: &mut Payload) -> Self::Future {
         let fut = <(
             HawkIdentifier,
             Box<dyn Db>,
@@ -652,16 +663,16 @@ impl FromRequest for HawkIdentifier {
     type Config = ();
     //type Result = ApiResult<HawkIdentifier>;
     type Future = Result<Self, Error>;
+    type Error = Error;
 
     /// Use HawkPayload extraction and format as HawkIdentifier.
-    fn from_request(s_req: &ServiceRequest, settings: &Self::Config) -> Self::Future {
-        let (req, payload) = s_req.into_parts();
+    fn from_request(req: &HttpRequest, payload: &mut Payload) -> Self::Future {
         if let Some(user_id) = req.extensions().get::<HawkIdentifier>() {
             return Ok(user_id.clone());
         }
 
-        let payload = HawkPayload::from_request(req, &mut payload)?;
-        let path_uid = Path::<UidParam>::extract(req).map_err(|e| {
+        let payload = HawkPayload::from_request(&req, &mut payload)?;
+        let path_uid = Query::<UidParam>::extract(&req).map_err(|e| {
             ValidationErrorKind::FromDetails(
                 e.to_string(),
                 RequestErrorLocation::Path,
@@ -708,8 +719,9 @@ impl FromRequest for Box<dyn Db> {
     type Config = ();
     //type Result = Result<Self, Error>;
     type Future = Result<Self, Error>;
+    type Error = Error;
 
-    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
+    fn from_request(req: &HttpRequest, _: &mut Payload) -> Self::Future {
         req.extensions()
             .get::<(Box<dyn Db>, bool)>()
             .ok_or_else(|| ErrorInternalServerError("Unexpected Db error"))
@@ -756,9 +768,10 @@ impl FromRequest for BsoQueryParams {
     type Config = ();
     //type Result = ApiResult<BsoQueryParams>;
     type Future = Result<Self, Error>;
+    type Error = Error;
 
     /// Extract and validate the query parameters
-    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
+    fn from_request(req: &HttpRequest, payload: &mut Payload) -> Self::Future {
         // TODO: serde deserialize the query ourselves to catch the serde error nicely
         let params = Query::<BsoQueryParams>::from_request(req, &mut payload)
             .map_err(|e| {
@@ -790,12 +803,18 @@ pub struct BatchRequest {
     pub commit: bool,
 }
 
-impl FromRequest for BatchRequest {
+#[derive(Debug, Default, Clone, Deserialize)]
+pub struct BatchRequestOpt {
+    pub opt: Option<BatchRequest>,
+}
+
+impl FromRequest for BatchRequestOpt {
     type Config = ();
     //type Result = ApiResult<Option<BatchRequest>>;
-    type Future = Result<Option<BatchRequest>, Error>;
+    type Future = Result<BatchRequestOpt, Error>;
+    type Error = Error;
 
-    fn from_request(req: &HttpRequest, payload: &Payload) -> Self::Future {
+    fn from_request(req: &HttpRequest, payload: &mut Payload) -> Self::Future {
         let params = Query::<BatchParams>::from_request(req, &mut payload)
             .map_err(|e| {
                 ValidationErrorKind::FromDetails(
@@ -847,7 +866,7 @@ impl FromRequest for BatchRequest {
 
         if params.batch.is_none() && params.commit.is_none() {
             // No batch options requested
-            return Ok(None);
+            return Ok(Self { opt: None });
         } else if params.batch.is_none() {
             // commit w/ no batch ID is an error
             let err: DbError = DbErrorKind::BatchNotFound.into();
@@ -874,10 +893,12 @@ impl FromRequest for BatchRequest {
             }
         };
 
-        Ok(Some(BatchRequest {
-            id,
-            commit: params.commit.is_some(),
-        }))
+        Ok(Self {
+            opt: Some(BatchRequest {
+                id,
+                commit: params.commit.is_some(),
+            }),
+        })
     }
 }
 
@@ -893,15 +914,23 @@ pub enum PreConditionHeader {
     IfUnmodifiedSince(SyncTimestamp),
 }
 
-impl FromRequest for Option<PreConditionHeader> {
+#[derive(Debug, Clone, PartialEq)]
+pub struct PreConditionHeaderOpt {
+    opt: Option<PreConditionHeader>,
+}
+
+impl FromRequest for PreConditionHeaderOpt {
     type Config = ();
     //type Result = ApiResult<Option<PreConditionHeader>>;
     type Future = Result<Self, Error>;
+    type Error = Error;
 
     /// Extract and validate the precondition headers
-    fn from_request(req: &HttpRequest, _: &Self::Config) -> Self::Future {
+    fn from_request(req: &HttpRequest, _: &mut Payload) -> Self::Future {
         if let Some(precondition) = req.extensions().get::<Option<PreConditionHeader>>() {
-            return Ok(precondition.clone());
+            return Ok(Self {
+                opt: precondition.clone(),
+            });
         }
 
         let headers = req.headers();
@@ -919,7 +948,7 @@ impl FromRequest for Option<PreConditionHeader> {
         } else if let Some(unmodified_value) = unmodified {
             (unmodified_value, "X-If-Unmodified-Since")
         } else {
-            return Ok(None);
+            return Ok(Self { opt: None });
         };
         value
             .to_str()
@@ -948,7 +977,7 @@ impl FromRequest for Option<PreConditionHeader> {
                     PreConditionHeader::IfUnmodifiedSince(v)
                 };
                 req.extensions_mut().insert(header.clone());
-                Some(header)
+                Self { opt: Some(header) }
             })
     }
 }

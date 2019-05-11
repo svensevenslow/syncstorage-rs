@@ -71,9 +71,9 @@ pub struct ServerState {
 pub fn build_app(state: ServerState) -> App<impl actix_service::NewService, Body> {
     App::new()
         .data(state)
-        .wrap_fn(middleware::add_weave_timestamp)
-        .wrap_fn(middleware::dbTransaction)
-        //.wrap_fn(middleware::PreConditionCheck)
+        .wrap_fn(|req, srv| middleware::add_weave_timestamp(req, srv))
+        .wrap_fn(|req, srv| middleware::db_transaction(req, srv))
+        .wrap_fn(|req, srv| middleware::precondition_check(req, srv))
         .wrap(Cors::default())
         .configure(init_routes)
 }

@@ -96,7 +96,7 @@ from_error!(InvalidKeyLength, ApiError, HawkErrorKind::InvalidKeyLength);
 from_error!(JsonError, ApiError, HawkErrorKind::Json);
 from_error!(MacError, ApiError, HawkErrorKind::Hmac);
 from_error!(ToStrError, ApiError, HawkErrorKind::Header);
-from_error!(std::error::Error, ApiError, HawkErrorKind::Header);
+//from_error!(std::error::Error, ApiError, HawkErrorKind::Header);
 
 impl From<Context<HawkErrorKind>> for HawkError {
     fn from(inner: Context<HawkErrorKind>) -> Self {
@@ -132,7 +132,7 @@ impl From<HawkErrorKind> for ApiError {
 
 impl From<ParseError> for ApiError {
     fn from(inner: ParseError) -> Self {
-        HawkErrorKind::Parse(SyncFailure::new(inner)).into()
+        HawkErrorKind::Parse(inner).into()
     }
 }
 
