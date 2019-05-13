@@ -3,7 +3,7 @@
 use std::sync::Arc;
 
 use actix::{System, SystemRunner};
-use actix_web::{middleware::cors::Cors, web, App, HttpServer};
+use actix_web::{middleware::cors::Cors, web, App, HttpServer, HttpResponse};
 //use num_cpus;
 
 use crate::web::handlers;
@@ -76,6 +76,40 @@ pub fn build_app(state: ServerState) -> App<impl actix_service::NewService, Body
         .wrap_fn(|req, srv| middleware::precondition_check(req, srv))
         .wrap(Cors::default())
         .configure(init_routes)
+}
+
+pub fn build_dockerflow(state: ServerState) -> App<impl actix_service::NewService, Body> {
+    App::new()
+        .data(state)
+        // Handle the resource that don't need to go through middleware
+        .service(
+            web::resource("/__heartbeat__")
+                .route(web::get().to(|r| {
+                    // if addidtional information is desired, point to an appropriate handler.
+                    let body = json!({"status": "ok", "version": env!("CARGO_PKG_VERSION")});
+                    HttpResponse::Ok()
+                        .content_type("application/json")
+                        .body(body.to_string())
+            })
+        ))
+        .service(
+            web::resource("/__lbheartbeat__")
+                .route(web::get().to( |r| {
+                    // used by the load balancers, just return OK.
+                    HttpResponse::Ok()
+                        .content_type("application/json")
+                        .body("{}")
+            })
+        ))
+        .service(
+            web::resource("/__version__")
+            .route(web::get().to( |r| {
+            // return the contents of the version.json file created by circleci and stored in the docker root
+                HttpResponse::Ok()
+                    .content_type("application/json")
+                    .body(include_str!("../../version.json"))
+            })
+        ))
 }
 
 pub struct Server {}

@@ -38,8 +38,7 @@ pub fn get_collection_counts(meta: MetaRequest) -> HttpResponse {
 }
 
 pub fn get_collection_usage(meta: MetaRequest) -> HttpResponse {
-    Box::new(
-        meta.db
+    meta.db
             .get_collection_usage(meta.user_id)
             .map_err(From::from)
             .map(|usage| {
@@ -50,8 +49,7 @@ pub fn get_collection_usage(meta: MetaRequest) -> HttpResponse {
                 HttpResponse::build(StatusCode::OK)
                     .header("X-Weave-Records", usage.len().to_string())
                     .json(usage)
-            }),
-    )
+            })
 }
 
 pub fn get_quota(meta: MetaRequest) -> HttpResponse {

@@ -15,7 +15,7 @@ use futures::{
 use db::{params, util::SyncTimestamp, Db};
 use error::{ApiError, ApiErrorKind};
 use server::ServerState;
-use web::extractors::{BsoParam, CollectionParam, HawkIdentifier, PreConditionHeader};
+use web::extractors::{BsoParam, CollectionParam, HawkIdentifier, PreConditionHeader, PreConditionHeaderOpt};
 
 /// Default Timestamp used for WeaveTimestamp middleware.
 #[derive(Default)]
@@ -167,7 +167,7 @@ where
     // pre-call
     // This middleware must be wrapped by the `DbTransaction` middleware to ensure a Db object
     // is available.
-    let (req, paylad) = s_req.into_parts();
+    let (req, payload) = s_req.into_parts();
 
     // Can't use From complains about Option not in scope, so semi-hack.
     let precondition =
@@ -183,14 +183,14 @@ where
             // TODO: Return a Server Error?
             Err(e) => return e.into(),
         };
-    let user_id = HawkIdentifier::from_request(&req, &payload)?;
-    let db = <Box<dyn Db>>::from_request(&req, &payload?);
-    let collection = CollectionParam::from_request(&req, &payload)
+    let user_id = HawkIdentifier::from_request(&req, &mut payload)?;
+    let db = <Box<dyn Db>>::from_request(&req, &mut payload)?;
+    let collection = CollectionParam::from_request(&req, &mut payload)
         .ok()
         .map(|v| v.collection);
-    let bso = BsoParam::from_request(&req, &payload.ok().map(|v| v.bso);
+    let bso = BsoParam::from_request(&req, &mut payload.map(|v| v.bso));
     let req = req.clone(); // Clone for the move to set the timestamp we get
-    let fut = db
+    let fut = db.unwrap()
         .extract_resource(user_id, collection, bso)
         .and_then(move |resource_ts: SyncTimestamp| {
             // Ensure we stash the extracted resource timestamp on the request in case its
@@ -213,15 +213,15 @@ where
         .map_err(Into::into);
 
     // Make the call, and do the post.
-    srv.call(req).map(|mut resp| {
+    srv.call(s_req).map(|mut s_resp| {
 
         // Ensure all outgoing requests from here have a X-Last-Modified
-        if resp.headers().contains_key("X-Last-Modified") {
+        if s_resp.headers().contains_key("X-Last-Modified") {
             return Ok(Response::Done(resp));
         }
 
         // See if we already extracted one and use that if possible
-        if let Some(resource_ts) = req.extensions().get::<ResourceTimestamp>() {
+        if let Some(resource_ts) = s_req.extensions().get::<ResourceTimestamp>() {
             let ts = resource_ts.0;
             if let Ok(ts_header) = header::HeaderValue::from_str(&ts.as_header()) {
                 resp.headers_mut().insert("X-Last-Modified", ts_header);
@@ -230,19 +230,19 @@ where
         }
 
         // Do the work needed to generate a timestamp otherwise
-        let user_id = HawkIdentifier::from_request(&req, &())?;
-        let db = <Box<dyn Db>>::from_request(&req, &())?;
-        let collection = CollectionParam::from_request(&req, &())
+        let user_id = HawkIdentifier::from_request(&s_req, &())?;
+        let db = <Box<dyn Db>>::from_request(&s_req, &())?;
+        let collection = CollectionParam::from_request(&s_req, &())
             .ok()
             .map(|v| v.collection);
-        let bso = BsoParam::from_request(&req, &()).ok().map(|v| v.bso);
+        let bso = BsoParam::from_request(&s_req, &()).ok().map(|v| v.bso);
         let fut = db
             .extract_resource(user_id, collection, bso)
             .and_then(move |resource_ts: SyncTimestamp| {
                 if let Ok(ts_header) = header::HeaderValue::from_str(&resource_ts.as_header()) {
                     resp.headers_mut().insert("X-Last-Modified", ts_header);
                 }
-                future::ok(resp)
+                future::ok(s_resp)
             })
             .map_err(Into::into);
         Response::Future(Box::new(fut))
