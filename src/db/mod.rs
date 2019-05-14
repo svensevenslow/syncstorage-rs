@@ -10,11 +10,11 @@ pub mod util;
 use std::fmt::Debug;
 
 use futures::future::Future;
-
+use actix_web::Result;
 pub use self::error::{DbError, DbErrorKind};
 use self::util::SyncTimestamp;
 use error::ApiError;
-use web::extractors::HawkIdentifier;
+use web::extractors::{BsoParam, HawkIdentifier};
 
 lazy_static! {
     /// For efficiency, it's possible to use fixed pre-determined IDs for
@@ -96,7 +96,7 @@ pub trait Db: Send + Debug {
 
     fn get_bsos(&self, params: params::GetBsos) -> DbFuture<results::GetBsos>;
 
-    fn get_bso_ids(&self, params: params::GetBsos) -> DbFuture<results::GetBsoIds>;
+    fn get_bso_ids(&self, params: params::GetBsos) -> DbFuture<results::GetBsos>;
 
     fn post_bsos(&self, params: params::PostBsos) -> DbFuture<results::PostBsos>;
 
@@ -130,7 +130,7 @@ pub trait Db: Send + Debug {
         &self,
         user_id: HawkIdentifier,
         collection: Option<String>,
-        bso: Option<String>,
+        bso: Option<BsoParam>,
     ) -> DbFuture<SyncTimestamp> {
         // If there's no collection, we return the overall storage timestamp
         let collection = match collection {
@@ -139,7 +139,7 @@ pub trait Db: Send + Debug {
         };
         // If there's no bso, return the collection
         let bso = match bso {
-            Some(bso) => bso,
+            Some(bso) => bso.bso,
             None => {
                 return Box::new(
                     self.get_collection_timestamp(params::GetCollectionTimestamp {

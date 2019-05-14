@@ -3,7 +3,7 @@
 use std::sync::Arc;
 
 use actix::{System, SystemRunner};
-use actix_web::{middleware::cors::Cors, web, App, HttpServer, HttpResponse};
+use actix_web::{middleware::cors::Cors, web, App, HttpResponse, HttpServer};
 //use num_cpus;
 
 use crate::web::handlers;
@@ -15,15 +15,15 @@ fn init_routes(s_config: &mut web::ServiceConfig) {
     s_config
         .service(
             web::resource("/1.5/{uid}/info/collections")
-                .route(web::get().to(handlers::get_collections)),
+                .route(web::get().to_async(handlers::get_collections)),
         )
         .service(
             web::resource("/1.5/{uid}/info/collection_counts")
-                .route(web::get().to(handlers::get_collection_counts)),
+                .route(web::get().to_async(handlers::get_collection_counts)),
         )
         .service(
             web::resource("/1.5/{uid}/info/collection_usage")
-                .route(web::get().to(handlers::get_collection_usage)),
+                .route(web::get().to_async(handlers::get_collection_usage)),
         )
         /* TODO:  Needs FromRequest for get_configuration
         .service(
@@ -31,20 +31,20 @@ fn init_routes(s_config: &mut web::ServiceConfig) {
                 .route(web::get().to(handlers::get_configuration)),
         )
         */
-        .service(web::resource("/1.5/{uid}/info/quota").route(web::get().to(handlers::get_quota)))
-        .service(web::resource("/1.5/{uid}").route(web::delete().to(handlers::delete_all)))
-        .service(web::resource("/1.5/{uid}/storage").route(web::delete().to(handlers::delete_all)))
+        .service(web::resource("/1.5/{uid}/info/quota").route(web::get().to_async(handlers::get_quota)))
+        .service(web::resource("/1.5/{uid}").route(web::delete().to_async(handlers::delete_all)))
+        .service(web::resource("/1.5/{uid}/storage").route(web::delete().to_async(handlers::delete_all)))
         .service(
             web::resource("/1.5/{uid}/storage/{collection}")
-                .route(web::delete().to(handlers::delete_collection))
-                .route(web::get().to(handlers::get_collection))
-                .route(web::post().to(handlers::post_collection)),
+                .route(web::delete().to_async(handlers::delete_collection))
+                .route(web::get().to_async(handlers::get_collection))
+                .route(web::post().to_async(handlers::post_collection)),
         )
         .service(
             web::resource("/1.5/{uid}/storage/{collection}/{bso}")
-                .route(web::delete().to(handlers::delete_bso))
-                .route(web::get().to(handlers::get_bso))
-                .route(web::put().to(handlers::put_bso)),
+                .route(web::delete().to_async(handlers::delete_bso))
+                .route(web::get().to_async(handlers::get_bso))
+                .route(web::put().to_async(handlers::put_bso)),
         );
 }
 
@@ -82,34 +82,25 @@ pub fn build_dockerflow(state: ServerState) -> App<impl actix_service::NewServic
     App::new()
         .data(state)
         // Handle the resource that don't need to go through middleware
-        .service(
-            web::resource("/__heartbeat__")
-                .route(web::get().to(|r| {
-                    // if addidtional information is desired, point to an appropriate handler.
-                    let body = json!({"status": "ok", "version": env!("CARGO_PKG_VERSION")});
-                    HttpResponse::Ok()
-                        .content_type("application/json")
-                        .body(body.to_string())
-            })
-        ))
-        .service(
-            web::resource("/__lbheartbeat__")
-                .route(web::get().to( |r| {
-                    // used by the load balancers, just return OK.
-                    HttpResponse::Ok()
-                        .content_type("application/json")
-                        .body("{}")
-            })
-        ))
-        .service(
-            web::resource("/__version__")
-            .route(web::get().to( |r| {
+        .service(web::resource("/__heartbeat__").route(web::get().to(|r| {
+            // if addidtional information is desired, point to an appropriate handler.
+            let body = json!({"status": "ok", "version": env!("CARGO_PKG_VERSION")});
+            HttpResponse::Ok()
+                .content_type("application/json")
+                .body(body.to_string())
+        })))
+        .service(web::resource("/__lbheartbeat__").route(web::get().to(|r| {
+            // used by the load balancers, just return OK.
+            HttpResponse::Ok()
+                .content_type("application/json")
+                .body("{}")
+        })))
+        .service(web::resource("/__version__").route(web::get().to(|r| {
             // return the contents of the version.json file created by circleci and stored in the docker root
-                HttpResponse::Ok()
-                    .content_type("application/json")
-                    .body(include_str!("../../version.json"))
-            })
-        ))
+            HttpResponse::Ok()
+                .content_type("application/json")
+                .body(include_str!("../../version.json"))
+        })))
 }
 
 pub struct Server {}

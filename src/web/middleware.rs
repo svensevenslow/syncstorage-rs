@@ -171,24 +171,24 @@ where
 
     // Can't use From complains about Option not in scope, so semi-hack.
     let precondition =
-        match PreConditionHeaderOpt as FromRequest<ServerState>>::from_request(&req, &payload)
+        match PreConditionHeaderOpt::from_request(&req, &mut payload)
         {
             Ok(precondition) => {
                 match precondition.opt {
                     Some(precondition) => precondition,
                     // TODO: Is this correct?
-                    None => return HttpResponse::Ok()
+                    None => return Box::new(ServiceResponse::new(req, HttpResponse::Ok().finish()))
                 }
             },
-            // TODO: Return a Server Error?
-            Err(e) => return e.into(),
+            // TODO: Return a Server Error containing the error string?
+            Err(e) => return Box::new(ServiceResponse::new(req, HttpResponse::InternalServerError().body(format!("Err: {:?}", e))))
         };
-    let user_id = HawkIdentifier::from_request(&req, &mut payload)?;
-    let db = <Box<dyn Db>>::from_request(&req, &mut payload)?;
+    let user_id = HawkIdentifier::from_request(&req, &mut payload).unwrap();
+    let db = <Box<dyn Db>>::from_request(&req, &mut payload);
     let collection = CollectionParam::from_request(&req, &mut payload)
         .ok()
         .map(|v| v.collection);
-    let bso = BsoParam::from_request(&req, &mut payload.map(|v| v.bso));
+    let bso = BsoParam::from_request(&req, &mut payload).ok();
     let req = req.clone(); // Clone for the move to set the timestamp we get
     let fut = db.unwrap()
         .extract_resource(user_id, collection, bso)
@@ -213,11 +213,11 @@ where
         .map_err(Into::into);
 
     // Make the call, and do the post.
-    srv.call(s_req).map(|mut s_resp| {
+    Box::new(srv.call(s_req).map(|mut resp| {
 
         // Ensure all outgoing requests from here have a X-Last-Modified
         if s_resp.headers().contains_key("X-Last-Modified") {
-            return Ok(Response::Done(resp));
+            return Ok(HttpResponse::Done(resp));
         }
 
         // See if we already extracted one and use that if possible
@@ -226,7 +226,7 @@ where
             if let Ok(ts_header) = header::HeaderValue::from_str(&ts.as_header()) {
                 resp.headers_mut().insert("X-Last-Modified", ts_header);
             }
-            return Ok(Response::Done(resp));
+            return Ok(HttpResponse::Done(resp));
         }
 
         // Do the work needed to generate a timestamp otherwise
@@ -236,17 +236,17 @@ where
             .ok()
             .map(|v| v.collection);
         let bso = BsoParam::from_request(&s_req, &()).ok().map(|v| v.bso);
-        let fut = db
+        db
             .extract_resource(user_id, collection, bso)
             .and_then(move |resource_ts: SyncTimestamp| {
                 if let Ok(ts_header) = header::HeaderValue::from_str(&resource_ts.as_header()) {
                     resp.headers_mut().insert("X-Last-Modified", ts_header);
                 }
-                future::ok(s_resp)
+                future::ok(resp)
             })
             .map_err(Into::into);
-        Response::Future(Box::new(fut))
-    })
+        // Response::Future(Box::new(fut))
+    }))
 }
 
 #[cfg(test)]
@@ -258,7 +258,7 @@ mod tests {
 
     #[test]
     fn test_no_modified_header() {
-        let weave_timestamp = WeaveTimestamp {};
+        let weave_timestamp = DefaultWeaveTimestamp {};
         let req = TestRequest::default().finish();
         let resp = HttpResponse::build(http::StatusCode::OK).finish();
         match weave_timestamp.start(&req) {

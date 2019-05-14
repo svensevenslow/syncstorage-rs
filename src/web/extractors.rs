@@ -916,7 +916,7 @@ pub enum PreConditionHeader {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct PreConditionHeaderOpt {
-    opt: Option<PreConditionHeader>,
+    pub opt: Option<PreConditionHeader>,
 }
 
 impl FromRequest for PreConditionHeaderOpt {

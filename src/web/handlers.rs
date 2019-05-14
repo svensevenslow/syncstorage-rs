@@ -1,7 +1,7 @@
 //! API Handlers
 use std::collections::HashMap;
 
-use actix_web::{http::StatusCode, web, HttpRequest, HttpResponse};
+use actix_web::{http::StatusCode, Error, web, HttpRequest, HttpResponse};
 use futures::future::{self, Either, Future};
 use serde::Serialize;
 
@@ -15,7 +15,7 @@ use web::extractors::{
 
 pub const ONE_KB: f64 = 1024.0;
 
-pub fn get_collections(meta: MetaRequest) -> HttpResponse {
+pub fn get_collections(meta: MetaRequest) -> impl Future<Item = HttpResponse, Error = Error> {
     meta.db
         .get_collection_timestamps(meta.user_id)
         .map_err(From::from)
@@ -26,7 +26,7 @@ pub fn get_collections(meta: MetaRequest) -> HttpResponse {
         })
 }
 
-pub fn get_collection_counts(meta: MetaRequest) -> HttpResponse {
+pub fn get_collection_counts(meta: MetaRequest) -> impl Future<Item = HttpResponse, Error = Error> {
     meta.db
         .get_collection_counts(meta.user_id)
         .map_err(From::from)
@@ -37,7 +37,7 @@ pub fn get_collection_counts(meta: MetaRequest) -> HttpResponse {
         })
 }
 
-pub fn get_collection_usage(meta: MetaRequest) -> HttpResponse {
+pub fn get_collection_usage(meta: MetaRequest) -> impl Future<Item = HttpResponse, Error = Error> {
     meta.db
             .get_collection_usage(meta.user_id)
             .map_err(From::from)
@@ -52,7 +52,7 @@ pub fn get_collection_usage(meta: MetaRequest) -> HttpResponse {
             })
 }
 
-pub fn get_quota(meta: MetaRequest) -> HttpResponse {
+pub fn get_quota(meta: MetaRequest) -> impl Future<Item = HttpResponse, Error = Error> {
     Box::new(
         meta.db
             .get_storage_usage(meta.user_id)
@@ -61,7 +61,7 @@ pub fn get_quota(meta: MetaRequest) -> HttpResponse {
     )
 }
 
-pub fn delete_all(meta: MetaRequest) -> HttpResponse {
+pub fn delete_all(meta: MetaRequest) -> impl Future<Item = HttpResponse, Error = Error> {
     Box::new(
         meta.db
             .delete_storage(meta.user_id)
@@ -70,7 +70,7 @@ pub fn delete_all(meta: MetaRequest) -> HttpResponse {
     )
 }
 
-pub fn delete_collection(coll: CollectionRequest) -> HttpResponse {
+pub fn delete_collection(coll: CollectionRequest) -> impl Future<Item = HttpResponse, Error = Error> {
     let delete_bsos = !coll.query.ids.is_empty();
     let fut = if delete_bsos {
         coll.db.delete_bsos(params::DeleteBsos {
@@ -85,7 +85,6 @@ pub fn delete_collection(coll: CollectionRequest) -> HttpResponse {
         })
     };
 
-    Box::new(
         fut.or_else(move |e| {
             if e.is_colllection_not_found() || e.is_bso_not_found() {
                 coll.db.get_storage_timestamp(coll.user_id)
@@ -100,32 +99,31 @@ pub fn delete_collection(coll: CollectionRequest) -> HttpResponse {
                     resp.header("X-Last-Modified", result.as_header());
                 })
                 .json(result)
-        }),
-    )
+        })
 }
 
-pub fn get_collection(coll: CollectionRequest) -> HttpResponse {
+pub fn get_collection(coll: CollectionRequest) -> impl Future<Item = HttpResponse, Error = Error> {
     let params = params::GetBsos {
         user_id: coll.user_id.clone(),
-        collection: coll.collection.clone(),
         params: coll.query.clone(),
+        collection: coll.collection.clone(),
     };
     if coll.query.full {
         let fut = coll.db.get_bsos(params);
-        finish_get_collection(coll, fut)
+        Box::new(finish_get_collection(coll, fut))
     } else {
+        // Changed to be a Paginated list of BSOs, need to extract IDs from them.
         let fut = coll.db.get_bso_ids(params);
-        finish_get_collection(coll, fut)
+        Box::new(finish_get_collection(coll, fut))
     }
 }
 
-fn finish_get_collection<F, T>(coll: CollectionRequest, fut: F) -> HttpResponse
+fn finish_get_collection<F, T>(coll: CollectionRequest, fut: F) -> impl Future<Item = HttpResponse, Error = Error>
 where
     F: Future<Item = Paginated<T>, Error = ApiError> + 'static,
     T: Serialize + Default + 'static,
 {
     let reply_format = coll.reply;
-    Box::new(
         fut.or_else(move |e| {
             if e.is_colllection_not_found() {
                 // For b/w compat, non-existent collections must return an
@@ -165,39 +163,39 @@ where
                         .body(items)
                 }
             }
-        }),
-    )
-}
-
-pub fn post_collection(coll: CollectionPostRequest) -> HttpResponse {
-    if coll.batch.is_some() {
-        return post_collection_batch(coll);
+        })
     }
-    Box::new(
+
+pub fn post_collection(coll: CollectionPostRequest) -> impl Future<Item = HttpResponse, Error = Error> {
+    // TODO 
+    if coll.batch.is_some() {
+        return Either::A(post_collection_batch(coll));
+    }
+    //Box::new(
+    Either::B(
         coll.db
-            .post_bsos(params::PostBsos {
-                user_id: coll.user_id,
-                collection: coll.collection,
-                bsos: coll.bsos.valid.into_iter().map(From::from).collect(),
-                failed: coll.bsos.invalid,
-            })
-            .map_err(From::from)
-            .map(|result| {
-                HttpResponse::build(StatusCode::OK)
-                    .header("X-Last-Modified", result.modified.as_header())
-                    .json(result)
-            }),
-    )
+        .post_bsos(params::PostBsos {
+            user_id: coll.user_id,
+            collection: coll.collection,
+            bsos: coll.bsos.valid.into_iter().map(From::from).collect(),
+            failed: coll.bsos.invalid,
+        })
+        .map_err(From::from)
+        .map(|result| {
+            HttpResponse::build(StatusCode::OK)
+                .header("X-Last-Modified", result.modified.as_header())
+                .json(result)
+        }))
 }
 
-pub fn post_collection_batch(coll: CollectionPostRequest) -> HttpResponse {
+pub fn post_collection_batch(coll: CollectionPostRequest) -> impl Future<Item = HttpResponse, Error = Error> {
     // Bail early if we have nonsensical arguments
     let breq = match coll.batch.clone() {
         Some(breq) => breq,
         None => {
             let err: DbError = DbErrorKind::BatchNotFound.into();
             let err: ApiError = err.into();
-            return Box::new(future::err(err.into()));
+            return future::err(err.into());
         }
     };
 
@@ -261,7 +259,7 @@ pub fn post_collection_batch(coll: CollectionPostRequest) -> HttpResponse {
         })
         .map_err(From::from);
 
-    Box::new(fut.and_then(move |(id, success, failed)| {
+    fut.and_then(move |(id, success, failed)| {
         let mut resp = json!({
             "success": success,
             "failed": failed,
@@ -299,12 +297,11 @@ pub fn post_collection_batch(coll: CollectionPostRequest) -> HttpResponse {
                     .header("X-Last-Modified", result.modified.as_header())
                     .json(resp)
             });
-        Either::B(fut)
-    }))
+        return Either::B(fut)
+    })
 }
 
-pub fn delete_bso(bso_req: BsoRequest) -> HttpResponse {
-    Box::new(
+pub fn delete_bso(bso_req: BsoRequest) -> impl Future<Item = HttpResponse, Error = Error> {
         bso_req
             .db
             .delete_bso(params::DeleteBso {
@@ -313,12 +310,10 @@ pub fn delete_bso(bso_req: BsoRequest) -> HttpResponse {
                 id: bso_req.bso,
             })
             .map_err(From::from)
-            .map(|result| HttpResponse::Ok().json(json!({ "modified": result }))),
-    )
+            .map(|result| HttpResponse::Ok().json(json!({ "modified": result })))
 }
 
-pub fn get_bso(bso_req: BsoRequest) -> HttpResponse {
-    Box::new(
+pub fn get_bso(bso_req: BsoRequest) -> impl Future<Item = HttpResponse, Error = Error> {
         bso_req
             .db
             .get_bso(params::GetBso {
@@ -332,12 +327,10 @@ pub fn get_bso(bso_req: BsoRequest) -> HttpResponse {
                     || HttpResponse::NotFound().finish(),
                     |bso| HttpResponse::Ok().json(bso),
                 )
-            }),
-    )
+            })
 }
 
-pub fn put_bso(bso_req: BsoPutRequest) -> HttpResponse {
-    Box::new(
+pub fn put_bso(bso_req: BsoPutRequest) -> impl Future<Item = HttpResponse, Error = Error> {
         bso_req
             .db
             .put_bso(params::PutBso {
@@ -353,10 +346,9 @@ pub fn put_bso(bso_req: BsoPutRequest) -> HttpResponse {
                 HttpResponse::build(StatusCode::OK)
                     .header("X-Last-Modified", result.as_header())
                     .json(result)
-            }),
-    )
+            })
 }
 
-pub fn get_configuration((_auth, state): (HawkIdentifier, ServerState)) -> HttpResponse {
-    Box::new(future::result(Ok(HttpResponse::Ok().json(&*state.limits))))
+pub fn get_configuration((_auth, state): (HawkIdentifier, ServerState)) -> impl Future<Item = HttpResponse, Error = Error> {
+    future::result(Ok(HttpResponse::Ok().json(&*state.limits)))
 }
