@@ -4,9 +4,9 @@
 //! relevant types, and failing correctly with the appropriate errors if issues arise.
 use std::{self, collections::HashMap, str::FromStr};
 
-use actix_web::dev::{Path, Payload, ServiceRequest, ServiceResponse};
+use actix_web::dev::{Payload};
 use actix_web::http::header::{HeaderValue, ACCEPT, CONTENT_TYPE};
-use actix_web::web::{Json, JsonConfig, PayloadConfig, Query};
+use actix_web::web::{Json, JsonConfig, Query};
 use actix_web::{error::ErrorInternalServerError, Error, FromRequest, HttpRequest};
 use futures::{future, Future};
 use regex::Regex;

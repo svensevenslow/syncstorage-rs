@@ -1,7 +1,7 @@
 //! API Handlers
 use std::collections::HashMap;
 
-use actix_web::{http::StatusCode, Error, web, HttpRequest, HttpResponse};
+use actix_web::{http::StatusCode, Error, HttpResponse};
 use futures::future::{self, Either, Future};
 use serde::Serialize;
 
@@ -195,7 +195,7 @@ pub fn post_collection_batch(coll: CollectionPostRequest) -> impl Future<Item = 
         None => {
             let err: DbError = DbErrorKind::BatchNotFound.into();
             let err: ApiError = err.into();
-            return Box::new(future::err(err.into()));
+            return future::err(err.into());
         }
     };
 
@@ -210,10 +210,10 @@ pub fn post_collection_batch(coll: CollectionPostRequest) -> impl Future<Item = 
                 })
                 .and_then(move |is_valid| {
                     if is_valid {
-                        Box::new(future::ok(id))
+                        future::ok(id)
                     } else {
                         let err: DbError = DbErrorKind::BatchNotFound.into();
-                        Box::new(future::err(err.into()))
+                        future::err(err.into())
                     }
                 }),
         )
@@ -249,12 +249,12 @@ pub fn post_collection_batch(coll: CollectionPostRequest) -> impl Future<Item = 
                             // NLL: not a guard as: (E0008) "moves value into
                             // pattern guard"
                             if e.is_conflict() {
-                                return Box::new(future::err(e));
+                                return future::err(e);
                             }
                             failed.extend(bso_ids.into_iter().map(|id| (id, "db error".to_owned())))
                         }
                     };
-                    Box::new(future::ok((id, success, failed)))
+                    future::ok((id, success, failed))
                 })
         })
         .map_err(From::from);
@@ -298,7 +298,8 @@ pub fn post_collection_batch(coll: CollectionPostRequest) -> impl Future<Item = 
                     .json(resp)
             });
         return Either::B(fut)
-    })
+    });
+    fut.finish()
 }
 
 pub fn delete_bso(bso_req: BsoRequest) -> impl Future<Item = HttpResponse, Error = Error> {

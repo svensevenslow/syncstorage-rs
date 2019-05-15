@@ -3,23 +3,22 @@
 //! Matches the [Sync Storage middleware](https://github.com/mozilla-services/server-syncstorage/blob/master/syncstorage/tweens.py) (tweens).
 use actix_web::{
     http::{header, Method, StatusCode},
-    FromRequest, HttpRequest, HttpResponse, Result,
+    FromRequest, HttpResponse,
     Error,
 };
 
-use actix_web::dev::{MessageBody, ServiceRequest, ServiceResponse, Body};
+use actix_web::dev::{MessageBody, ServiceRequest, ServiceResponse};
 
 use actix_service::{Service, Transform};
 
 use futures::{
-    future::{self, ok, FutureResult,Either},
+    future::{self, FutureResult,Either},
     Future,
     Poll
 };
 
 use db::{params, util::SyncTimestamp, Db};
-use error::{ApiError, ApiErrorKind};
-use server::ServerState;
+use error::ApiErrorKind;
 use web::extractors::{BsoParam, CollectionParam, HawkIdentifier, PreConditionHeader, PreConditionHeaderOpt};
 
 /// Default Timestamp used for WeaveTimestamp middleware.
@@ -88,11 +87,12 @@ impl Default for WeaveTimestamp {
 
 impl<S, B> Transform<S> for WeaveTimestamp
 where
-S: Service<Request =ServiceRequest, Response=ServiceResponse<B>, Error= Error>,
+S: Service<Request = ServiceRequest, Response = ServiceResponse<B>, Error= Error>,
 S::Future: 'static,
+B: MessageBody,
 {
     type Request = ServiceRequest;
-    type Response = ServiceResponse;
+    type Response = ServiceResponse<B>;
     type Error = Error;
     type InitError=();
     type Transform = WeaveTimestampMiddleware<S>;
@@ -187,11 +187,12 @@ impl Default for DbTransaction {
 
 impl<S, B> Transform<S> for DbTransaction
 where
+B: MessageBody,
 S: Service<Request =ServiceRequest, Response=ServiceResponse<B>, Error= Error>,
 S::Future: 'static,
 {
     type Request = ServiceRequest;
-    type Response = ServiceResponse;
+    type Response = ServiceResponse<B>;
     type Error = Error;
     type InitError=();
     type Transform = DbTransactionMiddleware<S>;
@@ -219,11 +220,12 @@ impl Default for PreConditionCheck {
 
 impl<S, B> Transform<S> for PreConditionCheck
 where
+B: MessageBody,
 S: Service<Request =ServiceRequest, Response=ServiceResponse<B>, Error= Error>,
 S::Future: 'static,
 {
     type Request = ServiceRequest;
-    type Response = ServiceResponse;
+    type Response = ServiceResponse<B>;
     type Error = Error;
     type InitError=();
     type Transform = PreConditionCheckMiddleware<S>;

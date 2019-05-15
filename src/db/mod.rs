@@ -10,7 +10,6 @@ pub mod util;
 use std::fmt::Debug;
 
 use futures::future::Future;
-use actix_web::Result;
 pub use self::error::{DbError, DbErrorKind};
 use self::util::SyncTimestamp;
 use error::ApiError;
