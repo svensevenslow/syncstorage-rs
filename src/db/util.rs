@@ -113,6 +113,12 @@ where
     }
 }
 
+impl Into<f64> for SyncTimestamp {
+    fn into(&self) -> f64 {
+        self.0 as f64
+    }
+}
+
 pub fn deserialize_ts<'de, D>(d: D) -> Result<u64, D::Error>
 where
     D: Deserializer<'de>,

@@ -63,6 +63,9 @@ pub enum HawkErrorKind {
 
     #[fail(display = "id property is too short")]
     TruncatedId,
+
+    #[fail(display = "General Hawk error: {}", _0)]
+    GeneralError(String)
 }
 
 /// An error occurred in an Actix extractor.

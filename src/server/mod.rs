@@ -71,9 +71,9 @@ pub struct ServerState {
 pub fn build_app(state: ServerState) -> App<impl actix_service::NewService, Body> {
     App::new()
         .data(state)
-        .wrap_fn(|req, srv| middleware::add_weave_timestamp(req, srv))
-        .wrap_fn(|req, srv| middleware::db_transaction(req, srv))
-        .wrap_fn(|req, srv| middleware::precondition_check(req, srv))
+        .wrap(middleware::WeaveTimestamp::default())
+        .wrap(middleware::DbTransaction::default())
+        .wrap(middleware::PreconditionCheck::default())
         .wrap(Cors::default())
         .configure(init_routes)
 }
@@ -82,20 +82,20 @@ pub fn build_dockerflow(state: ServerState) -> App<impl actix_service::NewServic
     App::new()
         .data(state)
         // Handle the resource that don't need to go through middleware
-        .service(web::resource("/__heartbeat__").route(web::get().to(|r| {
+        .service(web::resource("/__heartbeat__").route(web::get().to(|_| {
             // if addidtional information is desired, point to an appropriate handler.
             let body = json!({"status": "ok", "version": env!("CARGO_PKG_VERSION")});
             HttpResponse::Ok()
                 .content_type("application/json")
                 .body(body.to_string())
         })))
-        .service(web::resource("/__lbheartbeat__").route(web::get().to(|r| {
+        .service(web::resource("/__lbheartbeat__").route(web::get().to(|_| {
             // used by the load balancers, just return OK.
             HttpResponse::Ok()
                 .content_type("application/json")
                 .body("{}")
         })))
-        .service(web::resource("/__version__").route(web::get().to(|r| {
+        .service(web::resource("/__version__").route(web::get().to(|_| {
             // return the contents of the version.json file created by circleci and stored in the docker root
             HttpResponse::Ok()
                 .content_type("application/json")

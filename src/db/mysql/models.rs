@@ -446,10 +446,9 @@ impl MysqlDb {
     }
 
     pub fn get_bso_ids_sync(&self, params: params::GetBsos) -> Result<results::GetBsoIds> {
-        // XXX: should be a more efficient select of only the id column
         let result = self.get_bsos_sync(params)?;
-        Ok(results::GetBsos {
-            items: result.items,
+        Ok(results::GetBsoIds {
+            items: result.items.into_iter().map(|bso| bso.id).collect(),
             offset: result.offset,
         })
     }

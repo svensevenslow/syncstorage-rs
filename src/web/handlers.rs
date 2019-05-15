@@ -167,7 +167,7 @@ where
     }
 
 pub fn post_collection(coll: CollectionPostRequest) -> impl Future<Item = HttpResponse, Error = Error> {
-    // TODO 
+    // TODO
     if coll.batch.is_some() {
         return Either::A(post_collection_batch(coll));
     }
@@ -195,7 +195,7 @@ pub fn post_collection_batch(coll: CollectionPostRequest) -> impl Future<Item = 
         None => {
             let err: DbError = DbErrorKind::BatchNotFound.into();
             let err: ApiError = err.into();
-            return future::err(err.into());
+            return Box::new(future::err(err.into()));
         }
     };
 
@@ -249,12 +249,12 @@ pub fn post_collection_batch(coll: CollectionPostRequest) -> impl Future<Item = 
                             // NLL: not a guard as: (E0008) "moves value into
                             // pattern guard"
                             if e.is_conflict() {
-                                return future::err(e);
+                                return Box::new(future::err(e));
                             }
                             failed.extend(bso_ids.into_iter().map(|id| (id, "db error".to_owned())))
                         }
                     };
-                    future::ok((id, success, failed))
+                    Box::new(future::ok((id, success, failed)))
                 })
         })
         .map_err(From::from);
