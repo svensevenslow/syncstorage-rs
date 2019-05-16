@@ -95,7 +95,7 @@ pub trait Db: Send + Debug {
 
     fn get_bsos(&self, params: params::GetBsos) -> DbFuture<results::GetBsos>;
 
-fn get_bso_ids(&self, params: params::GetBsos) -> DbFuture<results::GetBsoIds>;
+    fn get_bso_ids(&self, params: params::GetBsos) -> DbFuture<results::GetBsoIds>;
 
     fn post_bsos(&self, params: params::PostBsos) -> DbFuture<results::PostBsos>;
 

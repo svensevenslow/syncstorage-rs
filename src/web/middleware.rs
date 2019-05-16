@@ -4,10 +4,10 @@
 use actix_web::{
     http::{header, Method, StatusCode},
     FromRequest, HttpResponse,
-    Error,
+    Error, web::Data,
 };
 
-use actix_web::dev::{MessageBody, ServiceRequest, ServiceResponse};
+use actix_web::dev::{Body, MessageBody, ServiceRequest, ServiceResponse};
 
 use actix_service::{Service, Transform};
 
@@ -20,6 +20,7 @@ use futures::{
 use db::{params, util::SyncTimestamp, Db};
 use error::ApiErrorKind;
 use web::extractors::{BsoParam, CollectionParam, HawkIdentifier, PreConditionHeader, PreConditionHeaderOpt};
+use crate::server::ServerState;
 
 /// Default Timestamp used for WeaveTimestamp middleware.
 #[derive(Default)]
@@ -79,6 +80,12 @@ S::Future: 'static,
 /// Middleware to set the X-Weave-Timestamp header on all responses.
 pub struct WeaveTimestamp;
 
+impl WeaveTimestamp {
+    pub fn new() -> Self {
+        WeaveTimestamp::default()
+    }
+}
+
 impl Default for WeaveTimestamp {
     fn default() -> Self {
         Self
@@ -126,16 +133,17 @@ S::Future: 'static,
         self.service.poll_ready()
     }
 
-    fn call(&mut self, req: ServiceRequest) -> Self::Future {
-        let (req, mut payload) = req.into_parts();
+    fn call(&mut self, sreq: ServiceRequest) -> Self::Future {
+        let (req, mut payload) = sreq.into_parts();
         let req = req.clone();
         let collection = CollectionParam::from_request(&req, &mut payload)
             .map(|param| param.collection.clone())
             .ok();
-        let user_id =HawkIdentifier::from_request(&req, &mut payload)?;
+        let user_id = HawkIdentifier::from_request(&req, &mut payload).unwrap();
         let in_transaction = collection.is_some();
+        let data:Data<ServerState> = sreq.app_data().unwrap();
 
-        req.data().db_pool.get().and_then(move |db| {
+        data.db_pool.get().and_then(move |db| {
             let db2 = db.clone();
             let fut = if let Some(collection) = collection {
                 let lc = params::LockCollection{
@@ -161,22 +169,28 @@ S::Future: 'static,
                 future::ok(None)
             })
         });
-        Box::new(self.service.call(req).map(move |mut resp| {
-            if let Some((db, in_transaction)) = resp.request().extensions().get::<(Box<dyn Db>, bool)>() {
+        Box::new(self.service.call(sreq).map(move |mut sresp| {
+            if let Some((db, in_transaction)) = sresp.request().extensions().get::<(Box<dyn Db>, bool)>() {
                 if *in_transaction {
-                    match resp.error() {
+                    match sresp.response().error() {
                         None => db.commit(),
                         Some(_) => db.rollback(),
                     };
                 }
             };
-            resp
+            sresp
         }))
     }
 }
 
 
 pub struct DbTransaction;
+
+impl DbTransaction {
+    pub fn new() -> Self {
+        DbTransaction::default()
+    }
+}
 
 impl Default for DbTransaction {
     fn default() -> Self {
@@ -211,6 +225,12 @@ pub struct ResourceTimestamp(SyncTimestamp);
 
 #[derive(Debug)]
 pub struct PreConditionCheck;
+
+impl PreConditionCheck {
+    pub fn new() -> Self {
+        PreConditionCheck::default()
+    }
+}
 
 impl Default for PreConditionCheck {
     fn default() -> Self {
@@ -261,7 +281,7 @@ S::Future: 'static,
     fn call(&mut self, sreq: ServiceRequest) -> Self::Future {
         let (req, mut payload) = sreq.into_parts();
         // Pre check
-        let precondition = match PreConditionHeaderOpt::from_request(req, &mut payload) {
+        let precondition = match PreConditionHeaderOpt::from_request(&req, &mut payload) {
             Ok(precond) =>
                 match precond.opt {
                     Some(p) => p,
@@ -302,47 +322,48 @@ S::Future: 'static,
                         .body("")
                     ));
                 };
-                // Box::new(ServiceResponse::new(req, HttpResponse::Ok().finish()))
+                Box::new(ServiceResponse::new(req, HttpResponse::Ok().finish()))
             });
 
         // post-check
 
-        self.service.call(req).map(|mut resp| {
-            if resp.headers().contains_key("X-Last-Modified") {
+        Box::new(self.service.call(sreq).map(|mut sresp| {
+            let resp = sresp.response();
+            if sresp.headers().contains_key("X-Last-Modified") {
                 return Box::new(ServiceResponse::new(req,
-                HttpResponse::build(StatusCode::Done).finish()))
+                HttpResponse::build(StatusCode::OK).finish()))
             }
 
                 // See if we already extracted one and use that if possible
             if let Some(resource_ts) = req.extensions().get::<ResourceTimestamp>() {
                 let ts = resource_ts.0;
                 if let Ok(ts_header) = header::HeaderValue::from_str(&ts.as_header()) {
-                    resp.headers_mut().insert("X-Last-Modified", ts_header);
+                    resp.headers_mut().insert(header::HeaderName::from_static("X-Last-Modified"), ts_header);
                 }
                 return Box::new(ServiceResponse::new(
                     req,
-                    HttpResponse::build(StatusCode::Done).finish(),
+                    HttpResponse::build(StatusCode::OK).finish(),
                 ));
             }
 
             // Do the work needed to generate a timestamp otherwise
-            let user_id = HawkIdentifier::from_request(&req, &())?;
-            let db = <Box<dyn Db>>::from_request(&req, &())?;
-            let collection = CollectionParam::from_request(&req, &())
+            let user_id = HawkIdentifier::from_request(&req, &mut payload).unwrap();
+            let db = <Box<dyn Db>>::from_request(&req, &mut payload).unwrap();
+            let collection = CollectionParam::from_request(&req, &mut payload)
                 .ok()
                 .map(|v| v.collection);
-            let bso = BsoParam::from_request(&sreq, &()).ok().map(|v| v.bso);
+            let bso = BsoParam::from_request(&req, &mut payload).ok(); //.map(|v| v.bso);
             let fut = db
                 .extract_resource(user_id, collection, bso)
                 .and_then(move |resource_ts: SyncTimestamp| {
                     if let Ok(ts_header) = header::HeaderValue::from_str(&resource_ts.as_header()) {
-                        resp.headers_mut().insert("X-Last-Modified", ts_header);
+                        resp.headers_mut().insert(header::HeaderName::from_static("X-Last-Modified"), ts_header);
                     }
-                    return Box::new(ServiceResponse::new(req, resp));
+                    return Box::new(ServiceResponse::new(req, *resp.clone()));
                 })
                 .map_err(Into::into);
             return Box::new(fut);
-        })
+        }))
     }
 }
 

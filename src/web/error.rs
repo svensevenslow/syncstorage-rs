@@ -135,7 +135,9 @@ impl From<HawkErrorKind> for ApiError {
 
 impl From<ParseError> for ApiError {
     fn from(inner: ParseError) -> Self {
-        HawkErrorKind::Parse(inner).into()
+
+        //HawkErrorKind::Parse(inner).into()
+        HawkErrorKind::GeneralError(format!("{:?}", inner)).into()
     }
 }
 

@@ -110,11 +110,11 @@ pub fn get_collection(coll: CollectionRequest) -> impl Future<Item = HttpRespons
     };
     if coll.query.full {
         let fut = coll.db.get_bsos(params);
-        Box::new(finish_get_collection(coll, fut))
+        Either::A(finish_get_collection(coll, fut))
     } else {
         // Changed to be a Paginated list of BSOs, need to extract IDs from them.
         let fut = coll.db.get_bso_ids(params);
-        Box::new(finish_get_collection(coll, fut))
+        Either::B(finish_get_collection(coll, fut))
     }
 }
 
@@ -195,7 +195,7 @@ pub fn post_collection_batch(coll: CollectionPostRequest) -> impl Future<Item = 
         None => {
             let err: DbError = DbErrorKind::BatchNotFound.into();
             let err: ApiError = err.into();
-            return future::err(err.into());
+            return Either::A(future::err(err.into()));
         }
     };
 
@@ -229,7 +229,7 @@ pub fn post_collection_batch(coll: CollectionPostRequest) -> impl Future<Item = 
     let user_id = coll.user_id.clone();
     let collection = coll.collection.clone();
 
-    let fut = fut
+    Either::B(fut
         .and_then(move |id| {
             let mut success = vec![];
             let mut failed = coll.bsos.invalid.clone();
@@ -257,9 +257,8 @@ pub fn post_collection_batch(coll: CollectionPostRequest) -> impl Future<Item = 
                     future::ok((id, success, failed))
                 })
         })
-        .map_err(From::from);
-
-    fut.and_then(move |(id, success, failed)| {
+        .map_err(From::from)
+        .and_then(move |(id, success, failed)| {
         let mut resp = json!({
             "success": success,
             "failed": failed,
@@ -298,8 +297,7 @@ pub fn post_collection_batch(coll: CollectionPostRequest) -> impl Future<Item = 
                     .json(resp)
             });
         return Either::B(fut)
-    });
-    fut.finish()
+    }))
 }
 
 pub fn delete_bso(bso_req: BsoRequest) -> impl Future<Item = HttpResponse, Error = Error> {

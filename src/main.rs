@@ -3,6 +3,7 @@ extern crate actix;
 //extern crate actix_http_test;
 extern crate actix_service;
 extern crate actix_web;
+extern crate actix_http;
 extern crate base64;
 extern crate chrono;
 extern crate config;
