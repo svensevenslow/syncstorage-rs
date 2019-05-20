@@ -275,8 +275,8 @@ S::Future: 'static,
     type Request = ServiceRequest;
     type Response = ServiceResponse<B>;
     type Error = Error;
-    //type Future = Box<Future<Item = Self::Response, Error = Self::Error>>;
-    type Future = Either<FutureResult<Self::Response, Self::Error>, S::Future>;
+    type Future = Box<Future<Item = Self::Response, Error = Self::Error>>;
+    //type Future = Either<FutureResult<Self::Response, Self::Error>, S::Future>;
 
     // call super poll_ready()
     fn poll_ready(&mut self) -> Poll<(), Self::Error>{
@@ -290,10 +290,12 @@ S::Future: 'static,
             Ok(precond) =>
                 match precond.opt {
                     Some(p) => p,
-                    None => return Either::A(future::ok(ServiceResponse::new(req, HttpResponse::Ok().finish().into_body())))
+                    // XXX: not responses, just continue on
+                    None => return Box::new(future::ok(ServiceResponse::new(req, HttpResponse::Ok().finish().into_body())))
                 },
             Err(e) => {
-                return Either::A(future::ok(ServiceResponse::new(
+                // XXX: same
+                return Box::new(future::ok(ServiceResponse::new(
                     req,
                     HttpResponse::InternalServerError().body(format!("Err: {:?}", e)).into_body()),
                 ))
