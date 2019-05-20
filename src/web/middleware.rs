@@ -7,7 +7,9 @@ use actix_web::{
     Error, web::Data,
 };
 
-use actix_web::dev::{Body, MessageBody, ServiceRequest, ServiceResponse};
+//use actix_web::dev::{Body, MessageBody, ServiceRequest, ServiceResponse};
+use actix_web::dev::{MessageBody, ServiceRequest, ServiceResponse};
+//use actix_http::body::Body;
 
 use actix_service::{Service, Transform};
 
@@ -18,7 +20,7 @@ use futures::{
 };
 
 use db::{params, util::SyncTimestamp, Db};
-use error::ApiErrorKind;
+use error::{ApiError, ApiErrorKind};
 use web::extractors::{BsoParam, CollectionParam, HawkIdentifier, PreConditionHeader, PreConditionHeaderOpt};
 use crate::server::ServerState;
 
@@ -53,10 +55,10 @@ S::Future: 'static,
                 let weave_ts = if let Some(val) = resp.headers().get("X-Last-Modified") {
                     let resp_ts = val
                         .to_str()
-                        .map_err(|e| ApiErrorKind::Internal(format!("Invalid X-Last-Modfied response header: {}", e)).into())
+                        .map_err(|e| -> ApiError { ApiErrorKind::Internal(format!("Invalid X-Last-Modfied response header: {}", e)).into() })
                         .unwrap()
                         .parse::<f64>()
-                        .map_err(|e| ApiErrorKind::Internal(format!("Invalid X-Last-Modified response header: {}", e)).into())
+                        .map_err(|e| -> ApiError { ApiErrorKind::Internal(format!("Invalid X-Last-Modified response header: {}", e)).into() })
                         .unwrap();
                     if resp_ts > ts.0.into() {
                         resp_ts
@@ -69,7 +71,7 @@ S::Future: 'static,
                 resp.headers_mut().insert(
                     header::HeaderName::from_static("x-weave-timestamp"),
                     header::HeaderValue::from_str(&format!("{:.*}", 2, &weave_ts))
-                    .map_err(|e|{ ApiErrorKind::Internal(format!("Invalid X-Weave-Timestamp response header: {}", e)).into()})
+                    .map_err(|e| -> ApiError { ApiErrorKind::Internal(format!("Invalid X-Weave-Timestamp response header: {}", e)).into()})
                     .unwrap()
                 )
             };
@@ -240,9 +242,10 @@ impl Default for PreConditionCheck {
 
 impl<S, B> Transform<S> for PreConditionCheck
 where
-B: MessageBody,
+//B: MessageBody,
 S: Service<Request =ServiceRequest, Response=ServiceResponse<B>, Error= Error>,
 S::Future: 'static,
+//    B: 'static,
 {
     type Request = ServiceRequest;
     type Response = ServiceResponse<B>;
@@ -264,14 +267,16 @@ pub struct PreConditionCheckMiddleware<S> {
 
 impl<S, B> Service for PreConditionCheckMiddleware<S>
 where
-B: MessageBody,
+//B: MessageBody,
 S: Service<Request = ServiceRequest, Response = ServiceResponse<B>, Error= Error>,
 S::Future: 'static,
+//    B: 'static,
 {
     type Request = ServiceRequest;
     type Response = ServiceResponse<B>;
     type Error = Error;
-    type Future = Box<Future<Item = Self::Response, Error = Self::Error>>;
+    //type Future = Box<Future<Item = Self::Response, Error = Self::Error>>;
+    type Future = Either<FutureResult<Self::Response, Self::Error>, S::Future>;
 
     // call super poll_ready()
     fn poll_ready(&mut self) -> Poll<(), Self::Error>{
@@ -285,12 +290,12 @@ S::Future: 'static,
             Ok(precond) =>
                 match precond.opt {
                     Some(p) => p,
-                    None => return Box::new(ServiceResponse::new(req, HttpResponse::Ok().finish()))
+                    None => return Either::A(future::ok(ServiceResponse::new(req, HttpResponse::Ok().finish().into_body())))
                 },
             Err(e) => {
-                return Box::new(ServiceResponse::new(
+                return Either::A(future::ok(ServiceResponse::new(
                     req,
-                    HttpResponse::InternalServerError().body(format!("Err: {:?}", e)),
+                    HttpResponse::InternalServerError().body(format!("Err: {:?}", e)).into_body()),
                 ))
             }
         };
