@@ -49,9 +49,11 @@ S::Future: 'static,
     }
 
     fn call(&mut self, req: ServiceRequest) -> Self::Future {
+        let ts = DefaultWeaveTimestamp::default();
         Box::new(self.service.call(req).map(move |mut resp| {
-            let (req, payload) = req.into_parts();
-            if let Some(ts) = req.extensions().get::<DefaultWeaveTimestamp>() {
+            //let (req, _) = req.into_parts();
+            //if let Some(ts) = req.extensions().get::<DefaultWeaveTimestamp>() {
+            if true {
                 let weave_ts = if let Some(val) = resp.headers().get("X-Last-Modified") {
                     let resp_ts = val
                         .to_str()
@@ -115,16 +117,21 @@ B: MessageBody,
     }
 }
 
+use std::cell::RefCell;
+use std::rc::Rc;
+
 #[derive(Debug)]
 pub struct DbTransactionMiddleware<S>{
-    service: S,
+//    service: S,
+    service: Rc<RefCell<S>>,
 }
 
 impl<S,B> Service for DbTransactionMiddleware<S>
 where
-B:MessageBody,
-S:Service<Request = ServiceRequest, Response = ServiceResponse<B>, Error=Error>,
-S::Future: 'static,
+//B:MessageBody,
+S:Service<Request = ServiceRequest, Response = ServiceResponse<B>, Error=Error> + 'static,
+    S::Future: 'static,
+B: 'static
 {
     type Request = ServiceRequest;
     type Response = ServiceResponse<B>;
@@ -132,10 +139,12 @@ S::Future: 'static,
     type Future = Box<Future<Item = Self::Response, Error = Self::Error>>;
 
     fn poll_ready(&mut self) -> Poll<(), Self::Error> {
-        self.service.poll_ready()
+        //self.service.poll_ready()
+        self.service.borrow_mut().poll_ready()
     }
 
     fn call(&mut self, sreq: ServiceRequest) -> Self::Future {
+        let data:Data<ServerState> = sreq.app_data().unwrap();
         let (req, mut payload) = sreq.into_parts();
         let req = req.clone();
         let collection = CollectionParam::from_request(&req, &mut payload)
@@ -143,9 +152,10 @@ S::Future: 'static,
             .ok();
         let user_id = HawkIdentifier::from_request(&req, &mut payload).unwrap();
         let in_transaction = collection.is_some();
-        let data:Data<ServerState> = sreq.app_data().unwrap();
 
-        data.db_pool.get().and_then(move |db| {
+        let mut srv = self.service.clone();
+
+        Box::new(data.db_pool.get().and_then(move |db| {
             let db2 = db.clone();
             let fut = if let Some(collection) = collection {
                 let lc = params::LockCollection{
@@ -159,28 +169,33 @@ S::Future: 'static,
                     }
                     .or_else(move|e| {
                         db2.rollback().and_then(|_| future::err(e))
-                    }),
+                    })
                 )
-            }else {
+            } else {
                 Either::B(future::ok(()))
             };
             fut.and_then(move |_| {
                 // track whether a transaction was started above via the
                 // lock methods
-                req.extensions_mut().insert((db, in_transaction));
-                future::ok(None)
+                req.extensions_mut().insert((db.clone(), in_transaction));
+                future::ok(db)
+                //future::ok(None)
             })
-        });
-        Box::new(self.service.call(sreq).map(move |mut sresp| {
-            if let Some((db, in_transaction)) = sresp.request().extensions().get::<(Box<dyn Db>, bool)>() {
-                if *in_transaction {
-                    match sresp.response().error() {
+        }).map_err(Into::into)
+            .and_then(move |db| {
+            srv.call(sreq).and_then(move |sresp| {
+                //if let Some((db, in_transaction)) = sresp.request().extensions().get::<(Box<dyn Db>, bool)>() {
+                if true {
+                if in_transaction {
+                    return Either::A(match sresp.response().error() {
                         None => db.commit(),
                         Some(_) => db.rollback(),
-                    };
+                    }.map_err(Into::into).and_then(|_| future::ok(sresp)));
                 }
-            };
-            sresp
+            }
+                Either::B(future::ok(sresp))
+                //sresp
+            })
         }))
     }
 }
@@ -203,9 +218,10 @@ impl Default for DbTransaction {
 
 impl<S, B> Transform<S> for DbTransaction
 where
-B: MessageBody,
-S: Service<Request =ServiceRequest, Response=ServiceResponse<B>, Error= Error>,
+//B: MessageBody,
+S: Service<Request =ServiceRequest, Response=ServiceResponse<B>, Error= Error> + 'static,
 S::Future: 'static,
+    B: 'static
 {
     type Request = ServiceRequest;
     type Response = ServiceResponse<B>;
@@ -216,7 +232,7 @@ S::Future: 'static,
 
     fn new_transform(&self, service: S) -> Self::Future {
         future::ok(DbTransactionMiddleware{
-            service
+            service: Rc::new(RefCell::new(service))
         })
     }
 }
@@ -225,6 +241,7 @@ S::Future: 'static,
 /// The resource in question's Timestamp
 pub struct ResourceTimestamp(SyncTimestamp);
 
+/*
 #[derive(Debug)]
 pub struct PreConditionCheck;
 
@@ -322,23 +339,23 @@ S::Future: 'static,
                     _ => StatusCode::OK,
                 };
                 if status != StatusCode::OK {
-                    return Box::new(ServiceResponse::new(
+                    return Box::new(future::ok(ServiceResponse::new(
                         req,
                         HttpResponse::build(status)
                         .header("X-Last-Modified", resource_ts.as_header())
-                        .body("")
-                    ));
+                        .body("").into_body()
+                    )));
                 };
-                Box::new(ServiceResponse::new(req, HttpResponse::Ok().finish()))
-            });
+                Box::new(future::ok(ServiceResponse::new(req, HttpResponse::Ok().finish().into_body())))
+            }).and_then(
 
         // post-check
 
-        Box::new(self.service.call(sreq).map(|mut sresp| {
+        Box::new(self.service.call(sreq).and_then(|mut sresp| {
             let resp = sresp.response();
             if sresp.headers().contains_key("X-Last-Modified") {
-                return Box::new(ServiceResponse::new(req,
-                HttpResponse::build(StatusCode::OK).finish()))
+                return Either::A(future::ok(ServiceResponse::new(req,
+                HttpResponse::build(StatusCode::OK).finish().into_body())))
             }
 
                 // See if we already extracted one and use that if possible
@@ -347,10 +364,10 @@ S::Future: 'static,
                 if let Ok(ts_header) = header::HeaderValue::from_str(&ts.as_header()) {
                     resp.headers_mut().insert(header::HeaderName::from_static("X-Last-Modified"), ts_header);
                 }
-                return Box::new(ServiceResponse::new(
+                return Either::A(future::ok(ServiceResponse::new(
                     req,
-                    HttpResponse::build(StatusCode::OK).finish(),
-                ));
+                    HttpResponse::build(StatusCode::OK).finish().into_body(),
+                )));
             }
 
             // Do the work needed to generate a timestamp otherwise
@@ -362,17 +379,22 @@ S::Future: 'static,
             let bso = BsoParam::from_request(&req, &mut payload).ok(); //.map(|v| v.bso);
             let fut = db
                 .extract_resource(user_id, collection, bso)
+                .map_err(|e| {
+                    let e: Error = e.into();
+                    e
+                })
                 .and_then(move |resource_ts: SyncTimestamp| {
                     if let Ok(ts_header) = header::HeaderValue::from_str(&resource_ts.as_header()) {
                         resp.headers_mut().insert(header::HeaderName::from_static("X-Last-Modified"), ts_header);
                     }
-                    return Box::new(ServiceResponse::new(req, *resp.clone()));
-                })
-                .map_err(Into::into);
-            return Box::new(fut);
+                    return Box::new(future::ok(ServiceResponse::new(req, *resp.clone())));
+                });
+                //.map_err(Into::into);
+            return Either::B(fut);
         }))
     }
 }
+*/
 
 #[cfg(test)]
 mod tests {

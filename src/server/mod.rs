@@ -42,7 +42,7 @@ impl Server {
         let secrets = Arc::new(settings.master_secret);
         let port = settings.port;
 
-        HttpServer::new(|| {
+        HttpServer::new(move || {
             // Setup the server state
             let state = ServerState {
                 db_pool: db_pool.clone(),
@@ -61,7 +61,7 @@ impl Server {
                 .data(state)
                 .wrap(middleware::WeaveTimestamp::new())
                 .wrap(middleware::DbTransaction::new())
-                .wrap(middleware::PreConditionCheck::new())
+                //.wrap(middleware::PreConditionCheck::new())
                 .wrap(Cors::default())
                         .service(
                     web::resource("/1.5/{uid}/info/collections")
