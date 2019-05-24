@@ -5,10 +5,10 @@
 use actix_web::{dev::Payload, FromRequest, HttpRequest};
 use base64;
 use chrono::offset::Utc;
-use hawk::{Header as HawkHeader, Key, RequestBuilder};
+use hawk::{self, Header as HawkHeader, Key, RequestBuilder};
 use hkdf::Hkdf;
 use hmac::{Hmac, Mac};
-use ring;
+use serde::{Deserialize, Serialize};
 use serde_json;
 use sha2::Sha256;
 use time::Duration;
@@ -17,8 +17,8 @@ use super::{
     error::{HawkErrorKind, ValidationErrorKind},
     extractors::RequestErrorLocation,
 };
-use error::{ApiError, ApiResult};
-use settings::Secrets;
+use crate::error::{ApiError, ApiErrorKind, ApiResult};
+use crate::settings::Secrets;
 
 /// A parsed and authenticated JSON payload
 /// extracted from the signed `id` property
@@ -76,12 +76,12 @@ impl HawkPayload {
         let request = RequestBuilder::new(method, host, port, path).request();
         if request.validate_header(
             &header,
-            &Key::new(token_secret.as_bytes(), &ring::digest::SHA256),
+            &Key::new(token_secret.as_bytes(), hawk::DigestAlgorithm::Sha256)?,
             // Allow plenty of leeway for clock skew, because
             // client timestamps tend to be all over the shop
             Duration::weeks(52)
                 .to_std()
-                .map_err(|_| HawkErrorKind::InvalidHeader)?,
+                .map_err(|_| ApiErrorKind::Internal("Duration::weeks".to_owned()))?,
         ) {
             Ok(payload)
         } else {
@@ -196,7 +196,7 @@ fn verify_hmac(info: &[u8], key: &[u8], expected: &[u8]) -> ApiResult<()> {
 #[cfg(test)]
 mod tests {
     use super::{HawkPayload, Secrets};
-    use settings::Settings;
+    use crate::settings::Settings;
 
     #[test]
     fn valid_header() {

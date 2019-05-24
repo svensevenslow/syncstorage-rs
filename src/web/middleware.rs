@@ -19,10 +19,10 @@ use futures::{
     Poll
 };
 
-use db::{params, util::SyncTimestamp, Db};
-use error::{ApiError, ApiErrorKind};
-use web::extractors::{BsoParam, CollectionParam, HawkIdentifier, PreConditionHeader, PreConditionHeaderOpt};
+use crate::db::{params, util::SyncTimestamp, Db};
+use crate::error::{ApiError, ApiErrorKind};
 use crate::server::ServerState;
+use crate::web::extractors::{BsoParam, CollectionParam, HawkIdentifier, PreConditionHeader, PreConditionHeaderOpt};
 
 /// Default Timestamp used for WeaveTimestamp middleware.
 #[derive(Default)]

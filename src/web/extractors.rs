@@ -9,15 +9,19 @@ use actix_web::http::header::{HeaderValue, ACCEPT, CONTENT_TYPE};
 use actix_web::web::{Json, JsonConfig, Query};
 use actix_web::{error::ErrorInternalServerError, Error, FromRequest, HttpRequest};
 use futures::{future, Future};
+use lazy_static::lazy_static;
 use regex::Regex;
-use serde::de::{Deserialize, Deserializer, Error as SerdeError};
+use serde::{
+    de::{Deserializer, Error as SerdeError},
+    Deserialize, Serialize,
+};
 use serde_json::Value;
 use validator::{Validate, ValidationError};
 
+use crate::db::{util::SyncTimestamp, Db, DbError, DbErrorKind, Sorting};
+use crate::error::{ApiError, ApiResult};
 use crate::server::ServerState;
-use db::{util::SyncTimestamp, Db, DbError, DbErrorKind, Sorting};
-use error::ApiError;
-use web::{auth::HawkPayload, error::ValidationErrorKind};
+use crate::web::{auth::HawkPayload, error::ValidationErrorKind};
 
 const BATCH_MAX_IDS: usize = 100;
 
@@ -1116,15 +1120,14 @@ mod tests {
     use base64;
     use hawk::{Credentials, Key, RequestBuilder};
     use hmac::{Hmac, Mac};
-    use ring;
-    use serde_json;
+    use serde_json::{self, json};
     use sha2::Sha256;
 
-    use db::mock::{MockDb, MockDbPool};
-    use server::ServerState;
-    use settings::{Secrets, ServerLimits};
+    use crate::db::mock::{MockDb, MockDbPool};
+    use crate::server::ServerState;
+    use crate::settings::{Secrets, ServerLimits};
 
-    use web::auth::{hkdf_expand_32, HawkPayload};
+    use crate::web::auth::{hkdf_expand_32, HawkPayload};
 
     lazy_static! {
         static ref SERVER_LIMITS: Arc<ServerLimits> = Arc::new(ServerLimits::default());
@@ -1186,7 +1189,7 @@ mod tests {
         let token_secret = base64::encode_config(&token_secret, base64::URL_SAFE);
         let credentials = Credentials {
             id,
-            key: Key::new(token_secret.as_bytes(), &ring::digest::SHA256),
+            key: Key::new(token_secret.as_bytes(), hawk::DigestAlgorithm::Sha256).unwrap(),
         };
         let request = RequestBuilder::new(method, host, port, path)
             .hash(&payload_hash[..])
