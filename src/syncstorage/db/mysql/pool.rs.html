@@ -174,8 +174,8 @@
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">models</span>::{<span class="ident">MysqlDb</span>, <span class="prelude-ty">Result</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">test</span>::<span class="ident">TestTransactionCustomizer</span>;
-<span class="kw">use</span> <span class="ident">db</span>::{<span class="ident">error</span>::<span class="ident">DbError</span>, <span class="ident">Db</span>, <span class="ident">DbFuture</span>, <span class="ident">DbPool</span>, <span class="ident">STD_COLLS</span>};
-<span class="kw">use</span> <span class="ident">settings</span>::<span class="ident">Settings</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">db</span>::{<span class="ident">error</span>::<span class="ident">DbError</span>, <span class="ident">Db</span>, <span class="ident">DbFuture</span>, <span class="ident">DbPool</span>, <span class="ident">STD_COLLS</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">settings</span>::<span class="ident">Settings</span>;
 
 <span class="macro">embed_migrations</span><span class="macro">!</span>();
 
@@ -240,11 +240,11 @@
 }
 
 <span class="kw">impl</span> <span class="ident">DbPool</span> <span class="kw">for</span> <span class="ident">MysqlDbPool</span> {
-    <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">DbFuture</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">dyn</span> <span class="ident">Db</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">DbFuture</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Db</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="ident">pool</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">clone</span>();
         <span class="ident">Box</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="ident">thread_pool</span>.<span class="ident">spawn_handle</span>(<span class="ident">lazy</span>(<span class="kw">move</span> <span class="op">||</span> {
             <span class="ident">pool</span>.<span class="ident">get_sync</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">db</span><span class="op">|</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">db</span>) <span class="kw">as</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">dyn</span> <span class="ident">Db</span><span class="op">&gt;</span>)
+                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">db</span><span class="op">|</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">db</span>) <span class="kw">as</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Db</span><span class="op">&gt;</span>)
                 .<span class="ident">map_err</span>(<span class="ident">Into</span>::<span class="ident">into</span>)
         })))
     }

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/cadence-0.15.1/src/sinks/async.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>async.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../cadence/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/cadence-0.17.1/src/sinks/async.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>async.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../cadence/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -450,10 +450,146 @@
 <span id="450">450</span>
 <span id="451">451</span>
 <span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Cadence - An extensible Statsd client for Rust!</span>
 <span class="comment">//</span>
-<span class="comment">// Copyright 2015-2017 TSH Labs</span>
+<span class="comment">// Copyright 2015-2019 TSH Labs</span>
 <span class="comment">//</span>
 <span class="comment">// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
 <span class="comment">// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
@@ -461,26 +597,25 @@
 <span class="comment">// option. This file may not be copied, modified, or distributed</span>
 <span class="comment">// except according to those terms.</span>
 
-<span class="comment">// We actually need the Mutex since we use it with a Condvar</span>
-<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cargo-clippy&quot;</span>, <span class="ident">allow</span>(<span class="ident">mutex_atomic</span>))]</span>
-
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">atomic</span>::{<span class="ident">AtomicUsize</span>, <span class="ident">Ordering</span>};
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::{<span class="ident">Arc</span>, <span class="ident">Condvar</span>, <span class="ident">Mutex</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">panic</span>::<span class="ident">RefUnwindSafe</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">AtomicUsize</span>, <span class="ident">Ordering</span>};
+
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">thread</span>;
 
-<span class="kw">use</span> <span class="ident">crossbeam</span>::<span class="ident">sync</span>::<span class="ident">MsQueue</span>;
+<span class="kw">use</span> <span class="ident">crossbeam_channel</span>::{<span class="self">self</span>, <span class="ident">Receiver</span>, <span class="ident">Sender</span>};
 
 <span class="kw">use</span> <span class="ident">sinks</span>::<span class="ident">core</span>::<span class="ident">MetricSink</span>;
 
 <span class="doccomment">/// Implementation of a `MetricSink` that wraps another implementation</span>
 <span class="doccomment">/// and uses it to emit metrics asynchronously, in another thread.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// Metics submitted to this sink are queued and sent to the wrapped sink</span>
+<span class="doccomment">/// Metrics submitted to this sink are queued and sent to the wrapped sink</span>
 <span class="doccomment">/// that is running in a separate thread. The wrapped implementation can</span>
-<span class="doccomment">/// be any thread safe (`Sync` + `Send`) `MetricSink`. Results from the</span>
-<span class="doccomment">/// wrapped implementation will be discarded.</span>
+<span class="doccomment">/// be any thread (`Sync` + `Send`) and panic (`RefUnwindSafe`) safe</span>
+<span class="doccomment">/// `MetricSink`. Results from the wrapped implementation will be discarded.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// The thread used for network operations (actually sending the metrics</span>
 <span class="doccomment">/// using the wrapped sink) is created and started when the `QueuingMetricSink`</span>
@@ -521,7 +656,8 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// The `.emit()` method of the wrapped sink will be executed in a</span>
     <span class="doccomment">/// different thread after being passed to it via a queue. The wrapped</span>
-    <span class="doccomment">/// sink should be thread safe (`Send + Sync`).</span>
+    <span class="doccomment">/// sink should be thread safe (`Send + Sync`) and panic safe</span>
+    <span class="doccomment">/// (`RefUnwindSafe`).</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The thread in which the wrapped sink runs is created when the</span>
     <span class="doccomment">/// `QueuingMetricSink` is created and stopped when the queuing sink</span>
@@ -543,7 +679,7 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">sink</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">QueuingMetricSink</span>
     <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="ident">MetricSink</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+        <span class="ident">T</span>: <span class="ident">MetricSink</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">RefUnwindSafe</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
         <span class="kw">let</span> <span class="ident">worker</span> <span class="op">=</span> <span class="ident">Worker</span>::<span class="ident">new</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">v</span>: <span class="ident">String</span><span class="op">|</span> {
             <span class="kw">let</span> <span class="ident">_r</span> <span class="op">=</span> <span class="ident">sink</span>.<span class="ident">emit</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>);
@@ -551,7 +687,7 @@
         <span class="kw">let</span> <span class="ident">context</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">WorkerContext</span>::<span class="ident">new</span>(<span class="ident">worker</span>));
         <span class="ident">spawn_worker_in_thread</span>(<span class="ident">Arc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">context</span>));
 
-        <span class="ident">QueuingMetricSink</span> { <span class="ident">context</span>: <span class="ident">context</span> }
+        <span class="ident">QueuingMetricSink</span> { <span class="ident">context</span> }
     }
 
     <span class="doccomment">/// Return the number of times the wrapped sink or underlying worker thread</span>
@@ -624,7 +760,7 @@
 {
     <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">worker</span>: <span class="ident">Worker</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">WorkerContext</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
         <span class="ident">WorkerContext</span> {
-            <span class="ident">worker</span>: <span class="ident">worker</span>,
+            <span class="ident">worker</span>,
             <span class="ident">stats</span>: <span class="ident">WorkerStats</span>::<span class="ident">new</span>(),
         }
     }
@@ -667,7 +803,7 @@
 {
     <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">context</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">WorkerContext</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Sentinel</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> {
         <span class="ident">Sentinel</span> {
-            <span class="ident">context</span>: <span class="ident">context</span>,
+            <span class="ident">context</span>,
             <span class="ident">active</span>: <span class="bool-val">true</span>,
         }
     }
@@ -693,36 +829,35 @@
     }
 }
 
-<span class="doccomment">/// Worker to repeatedly run a method consuming entries in a queue.</span>
+<span class="doccomment">/// Worker to repeatedly run a method consuming entries via a channel.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// The `.run()` method of the worker is intended to be in a separate</span>
 <span class="doccomment">/// thread (thread B). Meanwhile, the `.submit()`, `.stop()`,</span>
 <span class="doccomment">/// `.stop_and_wait()`, and `.is_stopped()` methods are meant to be called</span>
 <span class="doccomment">/// from the main thread (thread A).</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// This worker is stopped by receiving a &quot;poison pill&quot; message on the</span>
-<span class="doccomment">/// queue that it is consuming messages from. Thus, calls to `.submit()`,</span>
+<span class="doccomment">/// This worker is stopped by receiving a &quot;poison pill&quot; message in the</span>
+<span class="doccomment">/// channel that it is consuming messages from. Thus, calls to `.submit()`,</span>
 <span class="doccomment">/// consuming messages in &#39;.run()`, and `.stop()` typically involve no</span>
 <span class="doccomment">/// locking.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// However, in order to enable easier testing, after it stops receiving</span>
-<span class="doccomment">/// messages the `.run()` method will use a `Mutex` to set a &quot;stopped&quot; flag</span>
-<span class="doccomment">/// to allow callers waiting on a conditional variable (callers using</span>
+<span class="doccomment">/// messages the `.run()` method will use an atomic &quot;stopped&quot; flag to</span>
+<span class="doccomment">/// allow callers waiting on a conditional variable (callers using</span>
 <span class="doccomment">/// `.stop_and_wait()`) to wake up after the worker finally stops.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// If you&#39;re just trying to make use of this worker you don&#39;t need to</span>
 <span class="doccomment">/// worry about this, just call `.submit()`, `.run()`, and `.stop()`.</span>
-<span class="doccomment">/// But, if you&#39;re wondering why this is mixing lock-free data structures</span>
-<span class="doccomment">/// with locking and is generally more complicated that it seems like</span>
-<span class="doccomment">/// it should be: testing is the reason.</span>
+<span class="doccomment">/// But, if you&#39;re wondering why the stopped flag and methods to wait</span>
+<span class="doccomment">/// for it or inspect it even exist: testing is the reason.</span>
 <span class="kw">struct</span> <span class="ident">Worker</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">T</span>: <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
 {
-    <span class="ident">task</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="ident">T</span>) <span class="op">-&gt;</span> () <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>,
-    <span class="ident">queue</span>: <span class="ident">MsQueue</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span>,
-    <span class="ident">stopped</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-    <span class="ident">cond</span>: <span class="ident">Condvar</span>,
+    <span class="ident">task</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="ident">T</span>) <span class="op">-&gt;</span> () <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">RefUnwindSafe</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>,
+    <span class="ident">sender</span>: <span class="ident">Sender</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">receiver</span>: <span class="ident">Receiver</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">stopped</span>: <span class="ident">AtomicBool</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Worker</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
@@ -731,50 +866,68 @@
 {
     <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">task</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">Worker</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
     <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="ident">T</span>) <span class="op">-&gt;</span> () <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="ident">T</span>) <span class="op">-&gt;</span> () <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">RefUnwindSafe</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
+        <span class="kw">let</span> (<span class="ident">tx</span>, <span class="ident">rx</span>) <span class="op">=</span> <span class="ident">crossbeam_channel</span>::<span class="ident">unbounded</span>();
+
         <span class="ident">Worker</span> {
             <span class="ident">task</span>: <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">task</span>),
-            <span class="ident">queue</span>: <span class="ident">MsQueue</span>::<span class="ident">new</span>(),
-            <span class="ident">stopped</span>: <span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="bool-val">false</span>),
-            <span class="ident">cond</span>: <span class="ident">Condvar</span>::<span class="ident">new</span>(),
+            <span class="ident">sender</span>: <span class="ident">tx</span>,
+            <span class="ident">receiver</span>: <span class="ident">rx</span>,
+            <span class="ident">stopped</span>: <span class="ident">AtomicBool</span>::<span class="ident">new</span>(<span class="bool-val">false</span>),
         }
     }
 
     <span class="kw">fn</span> <span class="ident">submit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">v</span>: <span class="ident">T</span>) {
-        <span class="self">self</span>.<span class="ident">queue</span>.<span class="ident">push</span>(<span class="prelude-val">Some</span>(<span class="ident">v</span>));
+        <span class="comment">// Errors are ignored since the channel cannot be full and</span>
+        <span class="comment">// disconnection means senders and receivers have been dropped</span>
+        <span class="comment">// (which means we&#39;re shutting down and nothing could be sending</span>
+        <span class="comment">// anything else via this channel anyway).</span>
+        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sender</span>.<span class="ident">try_send</span>(<span class="prelude-val">Some</span>(<span class="ident">v</span>));
     }
 
     <span class="kw">fn</span> <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">queue</span>.<span class="ident">pop</span>() {
-            (<span class="self">self</span>.<span class="ident">task</span>)(<span class="ident">v</span>);
+        <span class="kw">for</span> <span class="ident">opt</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">receiver</span>.<span class="ident">iter</span>() {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">opt</span> {
+                (<span class="self">self</span>.<span class="ident">task</span>)(<span class="ident">v</span>);
+            } <span class="kw">else</span> {
+                <span class="kw">break</span>;
+            }
         }
 
         <span class="comment">// Set the &quot;stopped&quot; flag so that callers using the `stop_and_wait`</span>
-        <span class="comment">// method will wake up and see that we&#39;ve stopped processing entries</span>
-        <span class="comment">// in the queue. This is only for the benefit of unit testing.</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">stopped</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">stopped</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-        <span class="kw-2">*</span><span class="ident">stopped</span> <span class="op">=</span> <span class="bool-val">true</span>;
-        <span class="self">self</span>.<span class="ident">cond</span>.<span class="ident">notify_all</span>();
+        <span class="comment">// method will see that we&#39;ve stopped processing entries in the channel.</span>
+        <span class="comment">// This is only for the benefit of unit testing.</span>
+        <span class="self">self</span>.<span class="ident">stopped</span>.<span class="ident">store</span>(<span class="bool-val">true</span>, <span class="ident">Ordering</span>::<span class="ident">Release</span>);
     }
 
     <span class="kw">fn</span> <span class="ident">stop</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="self">self</span>.<span class="ident">queue</span>.<span class="ident">push</span>(<span class="prelude-val">None</span>);
+        <span class="comment">// Send a `None` poison pill value to stop the run loop.</span>
+        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sender</span>.<span class="ident">try_send</span>(<span class="prelude-val">None</span>);
     }
 
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
+    <span class="comment">// Stop reading events from the channel and wait for the &quot;stopped&quot; flag</span>
+    <span class="comment">// to be set. Note that this repeatedly yields the current thread and is</span>
+    <span class="comment">// only intended for unit testing.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
     <span class="kw">fn</span> <span class="ident">stop_and_wait</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">stopped</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">stopped</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
         <span class="self">self</span>.<span class="ident">stop</span>();
 
-        <span class="kw">while</span> <span class="op">!</span><span class="kw-2">*</span><span class="ident">stopped</span> {
-            <span class="ident">stopped</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">cond</span>.<span class="ident">wait</span>(<span class="ident">stopped</span>).<span class="ident">unwrap</span>();
+        <span class="kw">while</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">stopped</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Acquire</span>) {
+            <span class="ident">thread</span>::<span class="ident">yield_now</span>();
         }
     }
 
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
+    <span class="comment">// Is the channel used between threads empty, i.e. are all values processed?</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+    <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">receiver</span>.<span class="ident">is_empty</span>()
+    }
+
+    <span class="comment">// Has this worker stopped running?</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
     <span class="kw">fn</span> <span class="ident">is_stopped</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">stopped</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>()
+        <span class="self">self</span>.<span class="ident">stopped</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Acquire</span>)
     }
 }
 
@@ -792,7 +945,8 @@
     <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">QueuingMetricSink</span>, <span class="ident">Worker</span>};
     <span class="kw">use</span> <span class="ident">sinks</span>::<span class="ident">core</span>::<span class="ident">MetricSink</span>;
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>;
-    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">Ordering</span>};
+    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">panic</span>;
+    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">AtomicUsize</span>, <span class="ident">Ordering</span>};
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">thread</span>;
 
@@ -850,29 +1004,79 @@
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">worker</span>.<span class="ident">is_stopped</span>());
     }
 
-    <span class="kw">struct</span> <span class="ident">TestMetricSink</span> {
-        <span class="ident">metrics</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
+    <span class="comment">// Make sure the worker and its channel are in the expected state</span>
+    <span class="comment">// when the producer size of the channel panics.</span>
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_worker_panic_on_submit_side</span>() {
+        <span class="kw">let</span> <span class="ident">worker</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">Worker</span>::<span class="ident">new</span>(<span class="kw">move</span> <span class="op">|</span><span class="kw">_</span>: <span class="ident">String</span><span class="op">|</span> {}));
+        <span class="kw">let</span> <span class="ident">worker_ref1</span> <span class="op">=</span> <span class="ident">worker</span>.<span class="ident">clone</span>();
+        <span class="kw">let</span> <span class="ident">worker_ref2</span> <span class="op">=</span> <span class="ident">worker</span>.<span class="ident">clone</span>();
+
+        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unreachable_code</span>)]</span>
+        <span class="kw">let</span> <span class="ident">t1</span> <span class="op">=</span> <span class="ident">thread</span>::<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">||</span> {
+            <span class="ident">worker_ref1</span>.<span class="ident">submit</span>(<span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;This thread is supposed to panic&quot;</span>));
+        });
+
+        <span class="kw">let</span> <span class="ident">t2</span> <span class="op">=</span> <span class="ident">thread</span>::<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">||</span> {
+            <span class="ident">worker_ref2</span>.<span class="ident">run</span>();
+        });
+
+        <span class="ident">worker</span>.<span class="ident">stop</span>();
+
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">t1</span>.<span class="ident">join</span>().<span class="ident">is_err</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">t2</span>.<span class="ident">join</span>().<span class="ident">is_ok</span>());
+
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">worker</span>.<span class="ident">is_stopped</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">worker</span>.<span class="ident">is_empty</span>());
     }
 
-    <span class="kw">impl</span> <span class="ident">TestMetricSink</span> {
-        <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">store</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">TestMetricSink</span> {
-            <span class="ident">TestMetricSink</span> { <span class="ident">metrics</span>: <span class="ident">store</span> }
-        }
-    }
+    <span class="comment">// Make sure the worker and its channel are in the expected state</span>
+    <span class="comment">// when the consumer side of the channel panics.</span>
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_worker_panic_on_run_side</span>() {
+        <span class="kw">let</span> <span class="ident">worker</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">Worker</span>::<span class="ident">new</span>(<span class="kw">move</span> <span class="op">|</span><span class="kw">_</span>: <span class="ident">String</span><span class="op">|</span> { <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;This thread is supposed to panic&quot;</span>); }));
+        <span class="kw">let</span> <span class="ident">worker_ref1</span> <span class="op">=</span> <span class="ident">worker</span>.<span class="ident">clone</span>();
+        <span class="kw">let</span> <span class="ident">worker_ref2</span> <span class="op">=</span> <span class="ident">worker</span>.<span class="ident">clone</span>();
 
-    <span class="kw">impl</span> <span class="ident">MetricSink</span> <span class="kw">for</span> <span class="ident">TestMetricSink</span> {
-        <span class="kw">fn</span> <span class="ident">emit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">m</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">store</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">metrics</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-            <span class="ident">store</span>.<span class="ident">push</span>(<span class="ident">m</span>.<span class="ident">to_string</span>());
-            <span class="prelude-val">Ok</span>(<span class="ident">m</span>.<span class="ident">len</span>())
-        }
+        <span class="kw">let</span> <span class="ident">t1</span> <span class="op">=</span> <span class="ident">thread</span>::<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">||</span> {
+            <span class="ident">worker_ref1</span>.<span class="ident">submit</span>(<span class="string">&quot;foo&quot;</span>.<span class="ident">to_owned</span>());
+        });
+
+        <span class="kw">let</span> <span class="ident">t2</span> <span class="op">=</span> <span class="ident">thread</span>::<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">||</span> {
+            <span class="ident">worker_ref2</span>.<span class="ident">run</span>();
+        });
+
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">t1</span>.<span class="ident">join</span>().<span class="ident">is_ok</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">t2</span>.<span class="ident">join</span>().<span class="ident">is_err</span>());
+
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">worker</span>.<span class="ident">is_stopped</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">worker</span>.<span class="ident">is_empty</span>());
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_queuing_sink_emit</span>() {
+        <span class="kw">struct</span> <span class="ident">TestMetricSink</span> {
+            <span class="ident">metrics</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
+        }
+
+        <span class="kw">impl</span> <span class="ident">TestMetricSink</span> {
+            <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">metrics</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">TestMetricSink</span> {
+                <span class="ident">TestMetricSink</span> { <span class="ident">metrics</span> }
+            }
+        }
+
+        <span class="kw">impl</span> <span class="ident">MetricSink</span> <span class="kw">for</span> <span class="ident">TestMetricSink</span> {
+            <span class="kw">fn</span> <span class="ident">emit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">m</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">store</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">metrics</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
+                <span class="ident">store</span>.<span class="ident">push</span>(<span class="ident">m</span>.<span class="ident">to_string</span>());
+                <span class="prelude-val">Ok</span>(<span class="ident">m</span>.<span class="ident">len</span>())
+            }
+        }
+
         <span class="kw">let</span> <span class="ident">store</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[]));
         <span class="kw">let</span> <span class="ident">wrapped</span> <span class="op">=</span> <span class="ident">TestMetricSink</span>::<span class="ident">new</span>(<span class="ident">store</span>.<span class="ident">clone</span>());
         <span class="kw">let</span> <span class="ident">queuing</span> <span class="op">=</span> <span class="ident">QueuingMetricSink</span>::<span class="ident">from</span>(<span class="ident">wrapped</span>);
+
         <span class="ident">queuing</span>.<span class="ident">emit</span>(<span class="string">&quot;foo.counter:1|c&quot;</span>).<span class="ident">unwrap</span>();
         <span class="ident">queuing</span>.<span class="ident">emit</span>(<span class="string">&quot;bar.counter:2|c&quot;</span>).<span class="ident">unwrap</span>();
         <span class="ident">queuing</span>.<span class="ident">emit</span>(<span class="string">&quot;baz.counter:3|c&quot;</span>).<span class="ident">unwrap</span>();
@@ -883,17 +1087,16 @@
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;baz.counter:3|c&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">store</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>()[<span class="number">2</span>]);
     }
 
-    <span class="kw">struct</span> <span class="ident">PanickingMetricSink</span>;
-
-    <span class="kw">impl</span> <span class="ident">MetricSink</span> <span class="kw">for</span> <span class="ident">PanickingMetricSink</span> {
-        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_variables</span>)]</span>
-        <span class="kw">fn</span> <span class="ident">emit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">metric</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-            <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;This thread is supposed to panic, relax :p&quot;</span>);
-        }
-    }
-
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_queuing_sink_emit_panics</span>() {
+        <span class="kw">struct</span> <span class="ident">PanickingMetricSink</span>;
+
+        <span class="kw">impl</span> <span class="ident">MetricSink</span> <span class="kw">for</span> <span class="ident">PanickingMetricSink</span> {
+            <span class="kw">fn</span> <span class="ident">emit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_m</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+                <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;This thread is supposed to panic&quot;</span>);
+            }
+        }
+
         <span class="kw">let</span> <span class="ident">queuing</span> <span class="op">=</span> <span class="ident">QueuingMetricSink</span>::<span class="ident">from</span>(<span class="ident">PanickingMetricSink</span>);
         <span class="ident">queuing</span>.<span class="ident">emit</span>(<span class="string">&quot;foo.counter:4|c&quot;</span>).<span class="ident">unwrap</span>();
         <span class="ident">queuing</span>.<span class="ident">emit</span>(<span class="string">&quot;foo.counter:5|c&quot;</span>).<span class="ident">unwrap</span>();
@@ -901,6 +1104,75 @@
         <span class="ident">queuing</span>.<span class="ident">context</span>.<span class="ident">worker</span>.<span class="ident">stop_and_wait</span>();
 
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">queuing</span>.<span class="ident">panics</span>());
+    }
+
+    <span class="comment">// Make sure that subsequent metrics make it to the wrapped sink even when</span>
+    <span class="comment">// the wrapped sink panics. This ensures that the thread running the sink</span>
+    <span class="comment">// is restarted correctly and the worker and channel are in the correct state.</span>
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_queuing_sink_emit_recover_from_panics</span>() {
+        <span class="kw">struct</span> <span class="ident">SometimesPanickingMetricSink</span> {
+            <span class="ident">metrics</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
+            <span class="ident">counter</span>: <span class="ident">AtomicUsize</span>,
+        }
+
+        <span class="kw">impl</span> <span class="ident">SometimesPanickingMetricSink</span> {
+            <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">metrics</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+                <span class="ident">SometimesPanickingMetricSink</span> {
+                    <span class="ident">metrics</span>,
+                    <span class="ident">counter</span>: <span class="ident">AtomicUsize</span>::<span class="ident">new</span>(<span class="number">0</span>),
+                }
+            }
+        }
+
+        <span class="kw">impl</span> <span class="ident">MetricSink</span> <span class="kw">for</span> <span class="ident">SometimesPanickingMetricSink</span> {
+            <span class="kw">fn</span> <span class="ident">emit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">m</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+                <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">counter</span>.<span class="ident">fetch_add</span>(<span class="number">1</span>, <span class="ident">Ordering</span>::<span class="ident">Acquire</span>);
+                <span class="kw">if</span> <span class="ident">val</span> <span class="op">==</span> <span class="number">0</span> {
+                    <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;This thread is supposed to panic&quot;</span>);
+                }
+
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">store</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">metrics</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
+                <span class="ident">store</span>.<span class="ident">push</span>(<span class="ident">m</span>.<span class="ident">to_string</span>());
+                <span class="prelude-val">Ok</span>(<span class="ident">m</span>.<span class="ident">len</span>())
+            }
+        }
+
+        <span class="kw">let</span> <span class="ident">store</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[]));
+        <span class="kw">let</span> <span class="ident">queuing</span> <span class="op">=</span> <span class="ident">QueuingMetricSink</span>::<span class="ident">from</span>(<span class="ident">SometimesPanickingMetricSink</span>::<span class="ident">new</span>(<span class="ident">store</span>.<span class="ident">clone</span>()));
+
+        <span class="ident">queuing</span>.<span class="ident">emit</span>(<span class="string">&quot;foo.counter:4|c&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="ident">queuing</span>.<span class="ident">emit</span>(<span class="string">&quot;foo.counter:5|c&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="ident">queuing</span>.<span class="ident">emit</span>(<span class="string">&quot;foo.timer:34|ms&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="ident">queuing</span>.<span class="ident">context</span>.<span class="ident">worker</span>.<span class="ident">stop_and_wait</span>();
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">queuing</span>.<span class="ident">panics</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;foo.counter:5|c&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">store</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>()[<span class="number">0</span>]);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;foo.timer:34|ms&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">store</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>()[<span class="number">1</span>]);
+    }
+
+    <span class="comment">// Make sure that our queuing sink is unwind safe (it has the auto trait) and</span>
+    <span class="comment">// that it handles any expected panics on its own, resulting in calling code not</span>
+    <span class="comment">// seeing any panics.</span>
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_queuing_sink_panic_handler</span>() {
+        <span class="kw">struct</span> <span class="ident">PanickingMetricSink</span>;
+
+        <span class="kw">impl</span> <span class="ident">MetricSink</span> <span class="kw">for</span> <span class="ident">PanickingMetricSink</span> {
+            <span class="kw">fn</span> <span class="ident">emit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_m</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+                <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;This thread is supposed to panic&quot;</span>);
+            }
+        }
+
+        <span class="kw">let</span> <span class="ident">queuing</span> <span class="op">=</span> <span class="ident">QueuingMetricSink</span>::<span class="ident">from</span>(<span class="ident">PanickingMetricSink</span>);
+        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">panic</span>::<span class="ident">catch_unwind</span>(<span class="kw">move</span> <span class="op">||</span> {
+            <span class="ident">queuing</span>.<span class="ident">emit</span>(<span class="string">&quot;foo.counter:4|c&quot;</span>).<span class="ident">unwrap</span>();
+            <span class="ident">queuing</span>.<span class="ident">emit</span>(<span class="string">&quot;foo.counter:5|c&quot;</span>).<span class="ident">unwrap</span>();
+            <span class="ident">queuing</span>.<span class="ident">emit</span>(<span class="string">&quot;foo.timer:34|ms&quot;</span>).<span class="ident">unwrap</span>();
+            <span class="ident">queuing</span>.<span class="ident">context</span>.<span class="ident">worker</span>.<span class="ident">stop_and_wait</span>();
+        });
+
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">res</span>.<span class="ident">is_ok</span>());
     }
 }
 </pre></div>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/hawk-1.0.4/src/request.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>request.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../hawk/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/hawk-3.0.0/src/request.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>request.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../hawk/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -649,20 +649,329 @@
 <span id="649">649</span>
 <span id="650">650</span>
 <span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
+<span id="674">674</span>
+<span id="675">675</span>
+<span id="676">676</span>
+<span id="677">677</span>
+<span id="678">678</span>
+<span id="679">679</span>
+<span id="680">680</span>
+<span id="681">681</span>
+<span id="682">682</span>
+<span id="683">683</span>
+<span id="684">684</span>
+<span id="685">685</span>
+<span id="686">686</span>
+<span id="687">687</span>
+<span id="688">688</span>
+<span id="689">689</span>
+<span id="690">690</span>
+<span id="691">691</span>
+<span id="692">692</span>
+<span id="693">693</span>
+<span id="694">694</span>
+<span id="695">695</span>
+<span id="696">696</span>
+<span id="697">697</span>
+<span id="698">698</span>
+<span id="699">699</span>
+<span id="700">700</span>
+<span id="701">701</span>
+<span id="702">702</span>
+<span id="703">703</span>
+<span id="704">704</span>
+<span id="705">705</span>
+<span id="706">706</span>
+<span id="707">707</span>
+<span id="708">708</span>
+<span id="709">709</span>
+<span id="710">710</span>
+<span id="711">711</span>
+<span id="712">712</span>
+<span id="713">713</span>
+<span id="714">714</span>
+<span id="715">715</span>
+<span id="716">716</span>
+<span id="717">717</span>
+<span id="718">718</span>
+<span id="719">719</span>
+<span id="720">720</span>
+<span id="721">721</span>
+<span id="722">722</span>
+<span id="723">723</span>
+<span id="724">724</span>
+<span id="725">725</span>
+<span id="726">726</span>
+<span id="727">727</span>
+<span id="728">728</span>
+<span id="729">729</span>
+<span id="730">730</span>
+<span id="731">731</span>
+<span id="732">732</span>
+<span id="733">733</span>
+<span id="734">734</span>
+<span id="735">735</span>
+<span id="736">736</span>
+<span id="737">737</span>
+<span id="738">738</span>
+<span id="739">739</span>
+<span id="740">740</span>
+<span id="741">741</span>
+<span id="742">742</span>
+<span id="743">743</span>
+<span id="744">744</span>
+<span id="745">745</span>
+<span id="746">746</span>
+<span id="747">747</span>
+<span id="748">748</span>
+<span id="749">749</span>
+<span id="750">750</span>
+<span id="751">751</span>
+<span id="752">752</span>
+<span id="753">753</span>
+<span id="754">754</span>
+<span id="755">755</span>
+<span id="756">756</span>
+<span id="757">757</span>
+<span id="758">758</span>
+<span id="759">759</span>
+<span id="760">760</span>
+<span id="761">761</span>
+<span id="762">762</span>
+<span id="763">763</span>
+<span id="764">764</span>
+<span id="765">765</span>
+<span id="766">766</span>
+<span id="767">767</span>
+<span id="768">768</span>
+<span id="769">769</span>
+<span id="770">770</span>
+<span id="771">771</span>
+<span id="772">772</span>
+<span id="773">773</span>
+<span id="774">774</span>
+<span id="775">775</span>
+<span id="776">776</span>
+<span id="777">777</span>
+<span id="778">778</span>
+<span id="779">779</span>
+<span id="780">780</span>
+<span id="781">781</span>
+<span id="782">782</span>
+<span id="783">783</span>
+<span id="784">784</span>
+<span id="785">785</span>
+<span id="786">786</span>
+<span id="787">787</span>
+<span id="788">788</span>
+<span id="789">789</span>
+<span id="790">790</span>
+<span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
+<span id="794">794</span>
+<span id="795">795</span>
+<span id="796">796</span>
+<span id="797">797</span>
+<span id="798">798</span>
+<span id="799">799</span>
+<span id="800">800</span>
+<span id="801">801</span>
+<span id="802">802</span>
+<span id="803">803</span>
+<span id="804">804</span>
+<span id="805">805</span>
+<span id="806">806</span>
+<span id="807">807</span>
+<span id="808">808</span>
+<span id="809">809</span>
+<span id="810">810</span>
+<span id="811">811</span>
+<span id="812">812</span>
+<span id="813">813</span>
+<span id="814">814</span>
+<span id="815">815</span>
+<span id="816">816</span>
+<span id="817">817</span>
+<span id="818">818</span>
+<span id="819">819</span>
+<span id="820">820</span>
+<span id="821">821</span>
+<span id="822">822</span>
+<span id="823">823</span>
+<span id="824">824</span>
+<span id="825">825</span>
+<span id="826">826</span>
+<span id="827">827</span>
+<span id="828">828</span>
+<span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
+<span id="839">839</span>
+<span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
+<span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
+<span id="860">860</span>
+<span id="861">861</span>
+<span id="862">862</span>
+<span id="863">863</span>
+<span id="864">864</span>
+<span id="865">865</span>
+<span id="866">866</span>
+<span id="867">867</span>
+<span id="868">868</span>
+<span id="869">869</span>
+<span id="870">870</span>
+<span id="871">871</span>
+<span id="872">872</span>
+<span id="873">873</span>
+<span id="874">874</span>
+<span id="875">875</span>
+<span id="876">876</span>
+<span id="877">877</span>
+<span id="878">878</span>
+<span id="879">879</span>
+<span id="880">880</span>
+<span id="881">881</span>
+<span id="882">882</span>
+<span id="883">883</span>
+<span id="884">884</span>
+<span id="885">885</span>
+<span id="886">886</span>
+<span id="887">887</span>
+<span id="888">888</span>
+<span id="889">889</span>
+<span id="890">890</span>
+<span id="891">891</span>
+<span id="892">892</span>
+<span id="893">893</span>
+<span id="894">894</span>
+<span id="895">895</span>
+<span id="896">896</span>
+<span id="897">897</span>
+<span id="898">898</span>
+<span id="899">899</span>
+<span id="900">900</span>
+<span id="901">901</span>
+<span id="902">902</span>
+<span id="903">903</span>
+<span id="904">904</span>
+<span id="905">905</span>
+<span id="906">906</span>
+<span id="907">907</span>
+<span id="908">908</span>
+<span id="909">909</span>
+<span id="910">910</span>
+<span id="911">911</span>
+<span id="912">912</span>
+<span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
+<span id="921">921</span>
+<span id="922">922</span>
+<span id="923">923</span>
+<span id="924">924</span>
+<span id="925">925</span>
+<span id="926">926</span>
+<span id="927">927</span>
+<span id="928">928</span>
+<span id="929">929</span>
+<span id="930">930</span>
+<span id="931">931</span>
+<span id="932">932</span>
+<span id="933">933</span>
+<span id="934">934</span>
+<span id="935">935</span>
+<span id="936">936</span>
+<span id="937">937</span>
+<span id="938">938</span>
+<span id="939">939</span>
+<span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
+<span id="945">945</span>
+<span id="946">946</span>
+<span id="947">947</span>
+<span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="ident">base64</span>;
-<span class="kw">use</span> <span class="ident">time</span>;
-<span class="kw">use</span> <span class="ident">url</span>::<span class="ident">Url</span>;
-<span class="kw">use</span> <span class="ident">mac</span>::{<span class="ident">Mac</span>, <span class="ident">MacType</span>};
-<span class="kw">use</span> <span class="ident">header</span>::<span class="ident">Header</span>;
-<span class="kw">use</span> <span class="ident">response</span>::<span class="ident">ResponseBuilder</span>;
-<span class="kw">use</span> <span class="ident">bewit</span>::<span class="ident">Bewit</span>;
-<span class="kw">use</span> <span class="ident">credentials</span>::{<span class="ident">Credentials</span>, <span class="ident">Key</span>};
-<span class="kw">use</span> <span class="ident">rand</span>;
-<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">Rng</span>;
-<span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">time</span>::{<span class="ident">now</span>, <span class="ident">Duration</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">bewit</span>::<span class="ident">Bewit</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">credentials</span>::{<span class="ident">Credentials</span>, <span class="ident">Key</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">error</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">header</span>::<span class="ident">Header</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">mac</span>::{<span class="ident">Mac</span>, <span class="ident">MacType</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">response</span>::<span class="ident">ResponseBuilder</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">borrow</span>::<span class="ident">Cow</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>::<span class="ident">FromStr</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::{<span class="ident">Duration</span>, <span class="ident">SystemTime</span>};
+<span class="kw">use</span> <span class="ident">url</span>::{<span class="ident">Position</span>, <span class="ident">Url</span>};
 
 <span class="doccomment">/// Request represents a single HTTP request.</span>
 <span class="doccomment">///</span>
@@ -689,7 +998,7 @@
     <span class="ident">method</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
     <span class="ident">host</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
     <span class="ident">port</span>: <span class="ident">u16</span>,
-    <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
+    <span class="ident">path</span>: <span class="ident">Cow</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">str</span><span class="op">&gt;</span>,
     <span class="ident">hash</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]<span class="op">&gt;</span>,
     <span class="ident">ext</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span>,
     <span class="ident">app</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span>,
@@ -700,72 +1009,90 @@
     <span class="doccomment">/// Create a new Header for this request, inventing a new nonce and setting the</span>
     <span class="doccomment">/// timestamp to the current time.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_header</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">credentials</span>: <span class="kw-2">&amp;</span><span class="ident">Credentials</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Header</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">nonce</span> <span class="op">=</span> <span class="ident">random_string</span>(<span class="number">10</span>);
-        <span class="self">self</span>.<span class="ident">make_header_full</span>(<span class="ident">credentials</span>, <span class="ident">time</span>::<span class="ident">now</span>().<span class="ident">to_timespec</span>(), <span class="ident">nonce</span>)
+        <span class="kw">let</span> <span class="ident">nonce</span> <span class="op">=</span> <span class="ident">random_string</span>(<span class="number">10</span>)<span class="question-mark">?</span>;
+        <span class="self">self</span>.<span class="ident">make_header_full</span>(<span class="ident">credentials</span>, <span class="ident">SystemTime</span>::<span class="ident">now</span>(), <span class="ident">nonce</span>)
     }
 
     <span class="doccomment">/// Similar to `make_header`, but allowing specification of the timestamp</span>
     <span class="doccomment">/// and nonce.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_header_full</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
-                               <span class="ident">credentials</span>: <span class="kw-2">&amp;</span><span class="ident">Credentials</span>,
-                               <span class="ident">ts</span>: <span class="ident">time</span>::<span class="ident">Timespec</span>,
-                               <span class="ident">nonce</span>: <span class="ident">S</span>)
-                               <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Header</span><span class="op">&gt;</span>
-        <span class="kw">where</span> <span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_header_full</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">credentials</span>: <span class="kw-2">&amp;</span><span class="ident">Credentials</span>,
+        <span class="ident">ts</span>: <span class="ident">SystemTime</span>,
+        <span class="ident">nonce</span>: <span class="ident">S</span>,
+    ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Header</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     {
         <span class="kw">let</span> <span class="ident">nonce</span> <span class="op">=</span> <span class="ident">nonce</span>.<span class="ident">into</span>();
-        <span class="kw">let</span> <span class="ident">mac</span> <span class="op">=</span> <span class="ident">Mac</span>::<span class="ident">new</span>(<span class="ident">MacType</span>::<span class="ident">Header</span>,
-                           <span class="kw-2">&amp;</span><span class="ident">credentials</span>.<span class="ident">key</span>,
-                           <span class="ident">ts</span>,
-                           <span class="kw-2">&amp;</span><span class="ident">nonce</span>,
-                           <span class="self">self</span>.<span class="ident">method</span>,
-                           <span class="self">self</span>.<span class="ident">host</span>,
-                           <span class="self">self</span>.<span class="ident">port</span>,
-                           <span class="self">self</span>.<span class="ident">path</span>,
-                           <span class="self">self</span>.<span class="ident">hash</span>,
-                           <span class="self">self</span>.<span class="ident">ext</span>)<span class="question-mark">?</span>;
-        <span class="ident">Header</span>::<span class="ident">new</span>(<span class="prelude-val">Some</span>(<span class="ident">credentials</span>.<span class="ident">id</span>.<span class="ident">clone</span>()),
-                    <span class="prelude-val">Some</span>(<span class="ident">ts</span>),
-                    <span class="prelude-val">Some</span>(<span class="ident">nonce</span>),
-                    <span class="prelude-val">Some</span>(<span class="ident">mac</span>),
-                    <span class="kw">match</span> <span class="self">self</span>.<span class="ident">ext</span> {
-                        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-                        <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>.<span class="ident">to_string</span>()),
-                    },
-                    <span class="kw">match</span> <span class="self">self</span>.<span class="ident">hash</span> {
-                        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-                        <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>.<span class="ident">to_vec</span>()),
-                    },
-                    <span class="kw">match</span> <span class="self">self</span>.<span class="ident">app</span> {
-                        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-                        <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>.<span class="ident">to_string</span>()),
-                    },
-                    <span class="kw">match</span> <span class="self">self</span>.<span class="ident">dlg</span> {
-                        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-                        <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>.<span class="ident">to_string</span>()),
-                    })
+        <span class="kw">let</span> <span class="ident">mac</span> <span class="op">=</span> <span class="ident">Mac</span>::<span class="ident">new</span>(
+            <span class="ident">MacType</span>::<span class="ident">Header</span>,
+            <span class="kw-2">&amp;</span><span class="ident">credentials</span>.<span class="ident">key</span>,
+            <span class="ident">ts</span>,
+            <span class="kw-2">&amp;</span><span class="ident">nonce</span>,
+            <span class="self">self</span>.<span class="ident">method</span>,
+            <span class="self">self</span>.<span class="ident">host</span>,
+            <span class="self">self</span>.<span class="ident">port</span>,
+            <span class="self">self</span>.<span class="ident">path</span>.<span class="ident">as_ref</span>(),
+            <span class="self">self</span>.<span class="ident">hash</span>,
+            <span class="self">self</span>.<span class="ident">ext</span>,
+        )<span class="question-mark">?</span>;
+        <span class="ident">Header</span>::<span class="ident">new</span>(
+            <span class="prelude-val">Some</span>(<span class="ident">credentials</span>.<span class="ident">id</span>.<span class="ident">clone</span>()),
+            <span class="prelude-val">Some</span>(<span class="ident">ts</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">nonce</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">mac</span>),
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">ext</span> {
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+                <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>.<span class="ident">to_string</span>()),
+            },
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">hash</span> {
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+                <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>.<span class="ident">to_vec</span>()),
+            },
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">app</span> {
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+                <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>.<span class="ident">to_string</span>()),
+            },
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">dlg</span> {
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+                <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>.<span class="ident">to_string</span>()),
+            },
+        )
     }
 
     <span class="doccomment">/// Make a &quot;bewit&quot; that can be attached to a URL to authenticate GET access.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The ttl gives the time for which this bewit is valid, starting now.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_bewit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">credentials</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Credentials</span>, <span class="ident">ttl</span>: <span class="ident">Duration</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Bewit</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;&gt;</span> {
-        <span class="kw">let</span> <span class="ident">exp</span> <span class="op">=</span> <span class="ident">time</span>::<span class="ident">now</span>().<span class="ident">to_timespec</span>() <span class="op">+</span> <span class="ident">ttl</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_bewit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">credentials</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Credentials</span>, <span class="ident">exp</span>: <span class="ident">SystemTime</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Bewit</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;&gt;</span> {
         <span class="comment">// note that this includes `method` and `hash` even though they must always be GET and None</span>
         <span class="comment">// for bewits.  If they aren&#39;t, then the bewit just won&#39;t validate -- no need to catch</span>
         <span class="comment">// that now</span>
-        <span class="kw">let</span> <span class="ident">mac</span> <span class="op">=</span> <span class="ident">Mac</span>::<span class="ident">new</span>(<span class="ident">MacType</span>::<span class="ident">Bewit</span>,
-                           <span class="kw-2">&amp;</span><span class="ident">credentials</span>.<span class="ident">key</span>,
-                           <span class="ident">exp</span>,
-                           <span class="string">&quot;&quot;</span>,
-                           <span class="self">self</span>.<span class="ident">method</span>,
-                           <span class="self">self</span>.<span class="ident">host</span>,
-                           <span class="self">self</span>.<span class="ident">port</span>,
-                           <span class="self">self</span>.<span class="ident">path</span>,
-                           <span class="self">self</span>.<span class="ident">hash</span>,
-                           <span class="self">self</span>.<span class="ident">ext</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">mac</span> <span class="op">=</span> <span class="ident">Mac</span>::<span class="ident">new</span>(
+            <span class="ident">MacType</span>::<span class="ident">Bewit</span>,
+            <span class="kw-2">&amp;</span><span class="ident">credentials</span>.<span class="ident">key</span>,
+            <span class="ident">exp</span>,
+            <span class="string">&quot;&quot;</span>,
+            <span class="self">self</span>.<span class="ident">method</span>,
+            <span class="self">self</span>.<span class="ident">host</span>,
+            <span class="self">self</span>.<span class="ident">port</span>,
+            <span class="self">self</span>.<span class="ident">path</span>.<span class="ident">as_ref</span>(),
+            <span class="self">self</span>.<span class="ident">hash</span>,
+            <span class="self">self</span>.<span class="ident">ext</span>,
+        )<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="ident">Bewit</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">credentials</span>.<span class="ident">id</span>, <span class="ident">exp</span>, <span class="ident">mac</span>, <span class="self">self</span>.<span class="ident">ext</span>);
         <span class="prelude-val">Ok</span>(<span class="ident">bewit</span>)
+    }
+
+    <span class="doccomment">/// Variant of `make_bewit` that takes a Duration (starting from now)</span>
+    <span class="doccomment">/// instead of a SystemTime, provided for convenience.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_bewit_with_ttl</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">credentials</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Credentials</span>,
+        <span class="ident">ttl</span>: <span class="ident">Duration</span>,
+    ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Bewit</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;&gt;</span> {
+        <span class="kw">let</span> <span class="ident">exp</span> <span class="op">=</span> <span class="ident">SystemTime</span>::<span class="ident">now</span>() <span class="op">+</span> <span class="ident">ttl</span>;
+        <span class="self">self</span>.<span class="ident">make_bewit</span>(<span class="ident">credentials</span>, <span class="ident">exp</span>)
     }
 
     <span class="doccomment">/// Validate the given header.  This validates that the `mac` field matches that calculated</span>
@@ -810,16 +1137,18 @@
         };
 
         <span class="comment">// first verify the MAC</span>
-        <span class="kw">match</span> <span class="ident">Mac</span>::<span class="ident">new</span>(<span class="ident">MacType</span>::<span class="ident">Header</span>,
-                       <span class="ident">key</span>,
-                       <span class="ident">ts</span>,
-                       <span class="ident">nonce</span>,
-                       <span class="self">self</span>.<span class="ident">method</span>,
-                       <span class="self">self</span>.<span class="ident">host</span>,
-                       <span class="self">self</span>.<span class="ident">port</span>,
-                       <span class="self">self</span>.<span class="ident">path</span>,
-                       <span class="ident">header_hash</span>,
-                       <span class="ident">header_ext</span>) {
+        <span class="kw">match</span> <span class="ident">Mac</span>::<span class="ident">new</span>(
+            <span class="ident">MacType</span>::<span class="ident">Header</span>,
+            <span class="ident">key</span>,
+            <span class="ident">ts</span>,
+            <span class="ident">nonce</span>,
+            <span class="self">self</span>.<span class="ident">method</span>,
+            <span class="self">self</span>.<span class="ident">host</span>,
+            <span class="self">self</span>.<span class="ident">port</span>,
+            <span class="self">self</span>.<span class="ident">path</span>.<span class="ident">as_ref</span>(),
+            <span class="ident">header_hash</span>,
+            <span class="ident">header_ext</span>,
+        ) {
             <span class="prelude-val">Ok</span>(<span class="ident">calculated_mac</span>) <span class="op">=&gt;</span> {
                 <span class="kw">if</span> <span class="kw-2">&amp;</span><span class="ident">calculated_mac</span> <span class="op">!=</span> <span class="ident">header_mac</span> {
                     <span class="kw">return</span> <span class="bool-val">false</span>;
@@ -842,8 +1171,12 @@
         }
 
         <span class="comment">// ..then the timestamp</span>
-        <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">now</span>().<span class="ident">to_timespec</span>();
-        <span class="kw">let</span> <span class="ident">skew</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">now</span> <span class="op">&gt;</span> <span class="ident">ts</span> { <span class="ident">now</span> <span class="op">-</span> <span class="ident">ts</span> } <span class="kw">else</span> { <span class="ident">ts</span> <span class="op">-</span> <span class="ident">now</span> };
+        <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">SystemTime</span>::<span class="ident">now</span>();
+        <span class="kw">let</span> <span class="ident">skew</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">now</span> <span class="op">&gt;</span> <span class="ident">ts</span> {
+            <span class="ident">now</span>.<span class="ident">duration_since</span>(<span class="ident">ts</span>).<span class="ident">unwrap</span>()
+        } <span class="kw">else</span> {
+            <span class="ident">ts</span>.<span class="ident">duration_since</span>(<span class="ident">now</span>).<span class="ident">unwrap</span>()
+        };
         <span class="kw">if</span> <span class="ident">skew</span> <span class="op">&gt;</span> <span class="ident">ts_skew</span> {
             <span class="kw">return</span> <span class="bool-val">false</span>;
         }
@@ -858,19 +1191,21 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Nonces and hashes do not apply when using bewits.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">validate_bewit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">bewit</span>: <span class="kw-2">&amp;</span><span class="ident">Bewit</span>, <span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">Key</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">let</span> <span class="ident">calculated_mac</span> <span class="op">=</span> <span class="ident">Mac</span>::<span class="ident">new</span>(<span class="ident">MacType</span>::<span class="ident">Bewit</span>,
-                                      <span class="ident">key</span>,
-                                      <span class="ident">bewit</span>.<span class="ident">exp</span>(),
-                                      <span class="string">&quot;&quot;</span>,
-                                      <span class="self">self</span>.<span class="ident">method</span>,
-                                      <span class="self">self</span>.<span class="ident">host</span>,
-                                      <span class="self">self</span>.<span class="ident">port</span>,
-                                      <span class="self">self</span>.<span class="ident">path</span>,
-                                      <span class="self">self</span>.<span class="ident">hash</span>,
-                                      <span class="kw">match</span> <span class="ident">bewit</span>.<span class="ident">ext</span>() {
-                                          <span class="prelude-val">Some</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">e</span>),
-                                          <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-                                      });
+        <span class="kw">let</span> <span class="ident">calculated_mac</span> <span class="op">=</span> <span class="ident">Mac</span>::<span class="ident">new</span>(
+            <span class="ident">MacType</span>::<span class="ident">Bewit</span>,
+            <span class="ident">key</span>,
+            <span class="ident">bewit</span>.<span class="ident">exp</span>(),
+            <span class="string">&quot;&quot;</span>,
+            <span class="self">self</span>.<span class="ident">method</span>,
+            <span class="self">self</span>.<span class="ident">host</span>,
+            <span class="self">self</span>.<span class="ident">port</span>,
+            <span class="self">self</span>.<span class="ident">path</span>.<span class="ident">as_ref</span>(),
+            <span class="self">self</span>.<span class="ident">hash</span>,
+            <span class="kw">match</span> <span class="ident">bewit</span>.<span class="ident">ext</span>() {
+                <span class="prelude-val">Some</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">e</span>),
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+            },
+        );
         <span class="kw">let</span> <span class="ident">calculated_mac</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">calculated_mac</span> {
             <span class="prelude-val">Ok</span>(<span class="ident">m</span>) <span class="op">=&gt;</span> <span class="ident">m</span>,
             <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {
@@ -882,7 +1217,7 @@
             <span class="kw">return</span> <span class="bool-val">false</span>;
         }
 
-        <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">time</span>::<span class="ident">now</span>().<span class="ident">to_timespec</span>();
+        <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">SystemTime</span>::<span class="ident">now</span>();
         <span class="kw">if</span> <span class="ident">bewit</span>.<span class="ident">exp</span>() <span class="op">&lt;</span> <span class="ident">now</span> {
             <span class="kw">return</span> <span class="bool-val">false</span>;
         }
@@ -892,12 +1227,14 @@
 
     <span class="doccomment">/// Get a Response instance for a response to this request.  This is a convenience</span>
     <span class="doccomment">/// wrapper around `Response::from_request_header`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_response_builder</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">req_header</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Header</span>) <span class="op">-&gt;</span> <span class="ident">ResponseBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-        <span class="ident">ResponseBuilder</span>::<span class="ident">from_request_header</span>(<span class="ident">req_header</span>,
-                                             <span class="self">self</span>.<span class="ident">method</span>,
-                                             <span class="self">self</span>.<span class="ident">host</span>,
-                                             <span class="self">self</span>.<span class="ident">port</span>,
-                                             <span class="self">self</span>.<span class="ident">path</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_response_builder</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>, <span class="ident">req_header</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Header</span>) <span class="op">-&gt;</span> <span class="ident">ResponseBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+        <span class="ident">ResponseBuilder</span>::<span class="ident">from_request_header</span>(
+            <span class="ident">req_header</span>,
+            <span class="self">self</span>.<span class="ident">method</span>,
+            <span class="self">self</span>.<span class="ident">host</span>,
+            <span class="self">self</span>.<span class="ident">port</span>,
+            <span class="self">self</span>.<span class="ident">path</span>.<span class="ident">as_ref</span>(),
+        )
     }
 }
 
@@ -908,10 +1245,10 @@
     <span class="doccomment">/// Create a new request with the given method, host, port, and path.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">method</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>, <span class="ident">host</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>, <span class="ident">port</span>: <span class="ident">u16</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="ident">RequestBuilder</span>(<span class="ident">Request</span> {
-            <span class="ident">method</span>: <span class="ident">method</span>,
-            <span class="ident">host</span>: <span class="ident">host</span>,
-            <span class="ident">port</span>: <span class="ident">port</span>,
-            <span class="ident">path</span>: <span class="ident">path</span>,
+            <span class="ident">method</span>,
+            <span class="ident">host</span>,
+            <span class="ident">port</span>,
+            <span class="ident">path</span>: <span class="ident">Cow</span>::<span class="ident">Borrowed</span>(<span class="ident">path</span>),
             <span class="ident">hash</span>: <span class="prelude-val">None</span>,
             <span class="ident">ext</span>: <span class="prelude-val">None</span>,
             <span class="ident">app</span>: <span class="prelude-val">None</span>,
@@ -923,10 +1260,10 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_url</span>(<span class="ident">method</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>, <span class="ident">url</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Url</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">let</span> (<span class="ident">host</span>, <span class="ident">port</span>, <span class="ident">path</span>) <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">parse_url</span>(<span class="ident">url</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">RequestBuilder</span>(<span class="ident">Request</span> {
-            <span class="ident">method</span>: <span class="ident">method</span>,
-            <span class="ident">host</span>: <span class="ident">host</span>,
-            <span class="ident">port</span>: <span class="ident">port</span>,
-            <span class="ident">path</span>: <span class="ident">path</span>,
+            <span class="ident">method</span>,
+            <span class="ident">host</span>,
+            <span class="ident">port</span>,
+            <span class="ident">path</span>: <span class="ident">Cow</span>::<span class="ident">Borrowed</span>(<span class="ident">path</span>),
             <span class="ident">hash</span>: <span class="prelude-val">None</span>,
             <span class="ident">ext</span>: <span class="prelude-val">None</span>,
             <span class="ident">app</span>: <span class="prelude-val">None</span>,
@@ -942,7 +1279,7 @@
 
     <span class="doccomment">/// Set the URL path for the request.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">path</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">path</span> <span class="op">=</span> <span class="ident">path</span>;
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">path</span> <span class="op">=</span> <span class="ident">Cow</span>::<span class="ident">Borrowed</span>(<span class="ident">path</span>);
         <span class="self">self</span>
     }
 
@@ -993,39 +1330,85 @@
         <span class="self">self</span>.<span class="number">0</span>
     }
 
+    <span class="doccomment">/// Extract the `bewit` query parameter, if any, from the path, and return it in the output</span>
+    <span class="doccomment">/// parameter, returning a modified RequestBuilder omitting the `bewit=..` query parameter.  If</span>
+    <span class="doccomment">/// no bewit is present, or if an error is returned, the output parameter is reset to None.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The path manipulation is tested to correspond to that preformed by the hueniverse/hawk</span>
+    <span class="doccomment">/// implementation-specification</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extract_bewit</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">bewit</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Bewit</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+        <span class="kw">const</span> <span class="ident">PREFIX</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;bewit=&quot;</span>;
+        <span class="kw-2">*</span><span class="ident">bewit</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">query_index</span>) <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">path</span>.<span class="ident">find</span>(<span class="string">&#39;?&#39;</span>) {
+            <span class="kw">let</span> (<span class="ident">bewit_components</span>, <span class="ident">components</span>): (<span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">path</span>
+                [<span class="ident">query_index</span> <span class="op">+</span> <span class="number">1</span>..]
+                .<span class="ident">split</span>(<span class="string">&#39;&amp;&#39;</span>)
+                .<span class="ident">partition</span>(<span class="op">|</span><span class="ident">comp</span><span class="op">|</span> <span class="ident">comp</span>.<span class="ident">starts_with</span>(<span class="ident">PREFIX</span>));
+
+            <span class="kw">if</span> <span class="ident">bewit_components</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
+                <span class="kw">let</span> <span class="ident">bewit_str</span> <span class="op">=</span> <span class="ident">bewit_components</span>[<span class="number">0</span>];
+                <span class="kw-2">*</span><span class="ident">bewit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">bewit_str</span>[<span class="ident">PREFIX</span>.<span class="ident">len</span>()..])<span class="question-mark">?</span>);
+
+                <span class="comment">// update the path to omit the bewit=... segment</span>
+                <span class="kw">let</span> <span class="ident">new_path</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">components</span>.<span class="ident">is_empty</span>() {
+                    <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>.<span class="ident">path</span>[..=<span class="ident">query_index</span>], <span class="ident">components</span>.<span class="ident">join</span>(<span class="string">&quot;&amp;&quot;</span>)).<span class="ident">to_string</span>()
+                } <span class="kw">else</span> {
+                    <span class="comment">// no query left, so return the remaining path, omitting the &#39;?&#39;</span>
+                    <span class="self">self</span>.<span class="number">0</span>.<span class="ident">path</span>[..<span class="ident">query_index</span>].<span class="ident">to_string</span>()
+                };
+                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">path</span> <span class="op">=</span> <span class="ident">Cow</span>::<span class="ident">Owned</span>(<span class="ident">new_path</span>);
+                <span class="prelude-val">Ok</span>(<span class="self">self</span>)
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">bewit_components</span>.<span class="ident">is_empty</span>() {
+                <span class="prelude-val">Ok</span>(<span class="self">self</span>)
+            } <span class="kw">else</span> {
+                <span class="prelude-val">Err</span>(<span class="ident">InvalidBewit</span>::<span class="ident">Multiple</span>.<span class="ident">into</span>())
+            }
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>)
+        }
+    }
+
     <span class="kw">fn</span> <span class="ident">parse_url</span>(<span class="ident">url</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Url</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>, <span class="ident">u16</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>)<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">host</span> <span class="op">=</span> <span class="ident">url</span>.<span class="ident">host_str</span>()
-            .<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;url {} has no host&quot;</span>, <span class="ident">url</span>))<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">port</span> <span class="op">=</span> <span class="ident">url</span>.<span class="ident">port_or_known_default</span>()
-            .<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;url {} has no port&quot;</span>, <span class="ident">url</span>))<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">url</span>.<span class="ident">path</span>();
+        <span class="kw">let</span> <span class="ident">host</span> <span class="op">=</span> <span class="ident">url</span>
+            .<span class="ident">host_str</span>()
+            .<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="ident">Error</span>::<span class="ident">InvalidUrl</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;url {} has no host&quot;</span>, <span class="ident">url</span>)))<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">port</span> <span class="op">=</span> <span class="ident">url</span>
+            .<span class="ident">port_or_known_default</span>()
+            .<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="ident">Error</span>::<span class="ident">InvalidUrl</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;url {} has no port&quot;</span>, <span class="ident">url</span>)))<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">url</span>[<span class="ident">Position</span>::<span class="ident">BeforePath</span>..];
         <span class="prelude-val">Ok</span>((<span class="ident">host</span>, <span class="ident">port</span>, <span class="ident">path</span>))
     }
 }
 
 <span class="doccomment">/// Create a random string with `bytes` bytes of entropy.  The string</span>
 <span class="doccomment">/// is base64-encoded. so it will be longer than bytes characters.</span>
-<span class="kw">fn</span> <span class="ident">random_string</span>(<span class="ident">bytes</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="ident">rand</span>::<span class="ident">thread_rng</span>();
+<span class="kw">fn</span> <span class="ident">random_string</span>(<span class="ident">bytes</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0u8</span>; <span class="ident">bytes</span>];
-    <span class="ident">rng</span>.<span class="ident">fill_bytes</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bytes</span>);
-    <span class="ident">base64</span>::<span class="ident">encode</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>)
+    <span class="kw">crate</span>::<span class="ident">crypto</span>::<span class="ident">rand_bytes</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bytes</span>)<span class="question-mark">?</span>;
+    <span class="prelude-val">Ok</span>(<span class="ident">base64</span>::<span class="ident">encode</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>))
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">test</span>, <span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_ring&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_openssl&quot;</span>)))]</span>
 <span class="kw">mod</span> <span class="ident">test</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">time</span>::<span class="ident">Timespec</span>;
-    <span class="kw">use</span> <span class="ident">credentials</span>::{<span class="ident">Credentials</span>, <span class="ident">Key</span>};
-    <span class="kw">use</span> <span class="ident">header</span>::<span class="ident">Header</span>;
-    <span class="kw">use</span> <span class="ident">url</span>::<span class="ident">Url</span>;
-    <span class="kw">use</span> <span class="ident">ring</span>::<span class="ident">digest</span>;
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">credentials</span>::{<span class="ident">Credentials</span>, <span class="ident">Key</span>};
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">header</span>::<span class="ident">Header</span>;
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>::<span class="ident">FromStr</span>;
+    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::{<span class="ident">Duration</span>, <span class="ident">SystemTime</span>, <span class="ident">UNIX_EPOCH</span>};
+    <span class="kw">use</span> <span class="ident">url</span>::<span class="ident">Url</span>;
 
     <span class="comment">// this is a header from a real request using the JS Hawk library, to</span>
     <span class="comment">// https://pulse.taskcluster.net:443/v1/namespaces with credentials &quot;me&quot; / &quot;tok&quot;</span>
     <span class="kw">const</span> <span class="ident">REAL_HEADER</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;id=\&quot;me\&quot;, ts=\&quot;1491183061\&quot;, nonce=\&quot;RVnYzW\&quot;, \
                                        mac=\&quot;1kqRT9EoxiZ9AA/ayOCXB+AcjfK/BoJ+n7z0gfvZotQ=\&quot;&quot;</span>;
+    <span class="kw">const</span> <span class="ident">BEWIT_STR</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span>
+        <span class="string">&quot;bWVcMTM1MzgzMjgzNFxmaXk0ZTV3QmRhcEROeEhIZUExOE5yU3JVMVUzaVM2NmdtMFhqVEpwWXlVPVw&quot;</span>;
+
+    <span class="comment">// this is used as the initial bewit when calling extract_bewit, to verify that it is</span>
+    <span class="comment">// not allowing the original value of the parameter to remain in place.</span>
+    <span class="kw">const</span> <span class="ident">INITIAL_BEWIT_STR</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span>
+        <span class="string">&quot;T0ggTk9FU1wxMzUzODMyODM0XGZpeTRlNXdCZGFwRE54SEhlQTE4TnJTclUxVTNpUzY2Z20wWGpUSnBZeVU9XCZtdXQgYmV3aXQgbm90IHJlc2V0IQ&quot;</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_empty</span>() {
@@ -1083,27 +1466,231 @@
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_url_builder_with_query</span>() {
+        <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">Url</span>::<span class="ident">parse</span>(<span class="string">&quot;https://example.com/foo?foo=bar&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">from_url</span>(<span class="string">&quot;GET&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">url</span>).<span class="ident">unwrap</span>();
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">INITIAL_BEWIT_STR</span>).<span class="ident">unwrap</span>());
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">extract_bewit</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bewit</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bewit</span>, <span class="prelude-val">None</span>);
+
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">request</span>();
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">path</span>, <span class="string">&quot;/foo?foo=bar&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">host</span>, <span class="string">&quot;example.com&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">port</span>, <span class="number">443</span>); <span class="comment">// default for https</span>
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_url_builder_with_encodable_chars</span>() {
+        <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">Url</span>::<span class="ident">parse</span>(<span class="string">&quot;https://example.com/ñoo?foo=año&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">from_url</span>(<span class="string">&quot;GET&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">url</span>).<span class="ident">unwrap</span>();
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">INITIAL_BEWIT_STR</span>).<span class="ident">unwrap</span>());
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">extract_bewit</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bewit</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bewit</span>, <span class="prelude-val">None</span>);
+
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">request</span>();
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">path</span>, <span class="string">&quot;/%C3%B1oo?foo=a%C3%B1o&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">host</span>, <span class="string">&quot;example.com&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">port</span>, <span class="number">443</span>); <span class="comment">// default for https</span>
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_url_builder_with_empty_query</span>() {
+        <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">Url</span>::<span class="ident">parse</span>(<span class="string">&quot;https://example.com/foo?&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">from_url</span>(<span class="string">&quot;GET&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">url</span>).<span class="ident">unwrap</span>();
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">INITIAL_BEWIT_STR</span>).<span class="ident">unwrap</span>());
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">extract_bewit</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bewit</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bewit</span>, <span class="prelude-val">None</span>);
+
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">request</span>();
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">path</span>, <span class="string">&quot;/foo?&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">host</span>, <span class="string">&quot;example.com&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">port</span>, <span class="number">443</span>); <span class="comment">// default for https</span>
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_url_builder_with_bewit_alone</span>() {
+        <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">Url</span>::<span class="ident">parse</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;https://example.com/foo?bewit={}&quot;</span>, <span class="ident">BEWIT_STR</span>)).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">from_url</span>(<span class="string">&quot;GET&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">url</span>).<span class="ident">unwrap</span>();
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">INITIAL_BEWIT_STR</span>).<span class="ident">unwrap</span>());
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">extract_bewit</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bewit</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bewit</span>, <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">BEWIT_STR</span>).<span class="ident">unwrap</span>()));
+
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">request</span>();
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">path</span>, <span class="string">&quot;/foo&quot;</span>); <span class="comment">// NOTE: strips the `?`</span>
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">host</span>, <span class="string">&quot;example.com&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">port</span>, <span class="number">443</span>); <span class="comment">// default for https</span>
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_url_builder_with_bewit_first</span>() {
+        <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">Url</span>::<span class="ident">parse</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;https://example.com/foo?bewit={}&amp;a=1&quot;</span>, <span class="ident">BEWIT_STR</span>)).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">from_url</span>(<span class="string">&quot;GET&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">url</span>).<span class="ident">unwrap</span>();
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">INITIAL_BEWIT_STR</span>).<span class="ident">unwrap</span>());
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">extract_bewit</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bewit</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bewit</span>, <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">BEWIT_STR</span>).<span class="ident">unwrap</span>()));
+
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">request</span>();
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">path</span>, <span class="string">&quot;/foo?a=1&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">host</span>, <span class="string">&quot;example.com&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">port</span>, <span class="number">443</span>); <span class="comment">// default for https</span>
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_url_builder_with_bewit_multiple</span>() {
+        <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">Url</span>::<span class="ident">parse</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(
+            <span class="string">&quot;https://example.com/foo?bewit={}&amp;bewit={}&quot;</span>,
+            <span class="ident">BEWIT_STR</span>, <span class="ident">BEWIT_STR</span>
+        ))
+        .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">from_url</span>(<span class="string">&quot;GET&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">url</span>).<span class="ident">unwrap</span>();
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">INITIAL_BEWIT_STR</span>).<span class="ident">unwrap</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">bldr</span>.<span class="ident">extract_bewit</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bewit</span>).<span class="ident">is_err</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bewit</span>, <span class="prelude-val">None</span>);
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_url_builder_with_bewit_invalid</span>() {
+        <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">Url</span>::<span class="ident">parse</span>(<span class="string">&quot;https://example.com/foo?bewit=1234&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">from_url</span>(<span class="string">&quot;GET&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">url</span>).<span class="ident">unwrap</span>();
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">INITIAL_BEWIT_STR</span>).<span class="ident">unwrap</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">bldr</span>.<span class="ident">extract_bewit</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bewit</span>).<span class="ident">is_err</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bewit</span>, <span class="prelude-val">None</span>);
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_url_builder_with_bewit_last</span>() {
+        <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">Url</span>::<span class="ident">parse</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;https://example.com/foo?a=1&amp;bewit={}&quot;</span>, <span class="ident">BEWIT_STR</span>)).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">from_url</span>(<span class="string">&quot;GET&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">url</span>).<span class="ident">unwrap</span>();
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">INITIAL_BEWIT_STR</span>).<span class="ident">unwrap</span>());
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">extract_bewit</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bewit</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bewit</span>, <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">BEWIT_STR</span>).<span class="ident">unwrap</span>()));
+
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">request</span>();
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">path</span>, <span class="string">&quot;/foo?a=1&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">host</span>, <span class="string">&quot;example.com&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">port</span>, <span class="number">443</span>); <span class="comment">// default for https</span>
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_url_builder_with_bewit_middle</span>() {
+        <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">Url</span>::<span class="ident">parse</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(
+            <span class="string">&quot;https://example.com/foo?a=1&amp;bewit={}&amp;b=2&quot;</span>,
+            <span class="ident">BEWIT_STR</span>
+        ))
+        .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">from_url</span>(<span class="string">&quot;GET&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">url</span>).<span class="ident">unwrap</span>();
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">INITIAL_BEWIT_STR</span>).<span class="ident">unwrap</span>());
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">extract_bewit</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bewit</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bewit</span>, <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">BEWIT_STR</span>).<span class="ident">unwrap</span>()));
+
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">request</span>();
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">path</span>, <span class="string">&quot;/foo?a=1&amp;b=2&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">host</span>, <span class="string">&quot;example.com&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">port</span>, <span class="number">443</span>); <span class="comment">// default for https</span>
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_url_builder_with_bewit_percent_encoding</span>() {
+        <span class="comment">// Note that this *over*-encodes things.  Perfectly legal, but the kind</span>
+        <span class="comment">// of thing that incautious libraries can sometimes fail to reproduce,</span>
+        <span class="comment">// causing Hawk validation failures</span>
+        <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">Url</span>::<span class="ident">parse</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(
+            <span class="string">&quot;https://example.com/foo?%66oo=1&amp;bewit={}&amp;%62ar=2&quot;</span>,
+            <span class="ident">BEWIT_STR</span>
+        ))
+        .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">from_url</span>(<span class="string">&quot;GET&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">url</span>).<span class="ident">unwrap</span>();
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">INITIAL_BEWIT_STR</span>).<span class="ident">unwrap</span>());
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">extract_bewit</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bewit</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bewit</span>, <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">BEWIT_STR</span>).<span class="ident">unwrap</span>()));
+
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">request</span>();
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">path</span>, <span class="string">&quot;/foo?%66oo=1&amp;%62ar=2&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">host</span>, <span class="string">&quot;example.com&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">port</span>, <span class="number">443</span>); <span class="comment">// default for https</span>
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_url_builder_with_xxxbewit</span>() {
+        <span class="comment">// check that we&#39;re not doing a simple string search for &quot;bewit=..&quot;</span>
+        <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">Url</span>::<span class="ident">parse</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(
+            <span class="string">&quot;https://example.com/foo?a=1&amp;xxxbewit={}&amp;b=2&quot;</span>,
+            <span class="ident">BEWIT_STR</span>
+        ))
+        .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">from_url</span>(<span class="string">&quot;GET&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">url</span>).<span class="ident">unwrap</span>();
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">INITIAL_BEWIT_STR</span>).<span class="ident">unwrap</span>());
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">extract_bewit</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bewit</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bewit</span>, <span class="prelude-val">None</span>);
+
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">request</span>();
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">path</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;/foo?a=1&amp;xxxbewit={}&amp;b=2&quot;</span>, <span class="ident">BEWIT_STR</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">host</span>, <span class="string">&quot;example.com&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">port</span>, <span class="number">443</span>); <span class="comment">// default for https</span>
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_url_builder_with_username_password</span>() {
+        <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">Url</span>::<span class="ident">parse</span>(<span class="string">&quot;https://a:b@example.com/foo?x=y&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">from_url</span>(<span class="string">&quot;GET&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">url</span>).<span class="ident">unwrap</span>();
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Bewit</span>::<span class="ident">from_str</span>(<span class="ident">INITIAL_BEWIT_STR</span>).<span class="ident">unwrap</span>());
+        <span class="kw">let</span> <span class="ident">bldr</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">extract_bewit</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bewit</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bewit</span>, <span class="prelude-val">None</span>);
+
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">bldr</span>.<span class="ident">request</span>();
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">path</span>, <span class="string">&quot;/foo?x=y&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">host</span>, <span class="string">&quot;example.com&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">port</span>, <span class="number">443</span>); <span class="comment">// default for https</span>
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_make_header_full</span>() {
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;example.com&quot;</span>, <span class="number">443</span>, <span class="string">&quot;/foo&quot;</span>).<span class="ident">request</span>();
         <span class="kw">let</span> <span class="ident">credentials</span> <span class="op">=</span> <span class="ident">Credentials</span> {
             <span class="ident">id</span>: <span class="string">&quot;me&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="ident">Key</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">99u8</span>; <span class="number">32</span>], <span class="kw-2">&amp;</span><span class="ident">digest</span>::<span class="ident">SHA256</span>),
+            <span class="ident">key</span>: <span class="ident">Key</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">99u8</span>; <span class="number">32</span>], <span class="kw">crate</span>::<span class="ident">SHA256</span>).<span class="ident">unwrap</span>(),
         };
-        <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">req</span>.<span class="ident">make_header_full</span>(<span class="kw-2">&amp;</span><span class="ident">credentials</span>, <span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1000</span>, <span class="number">100</span>), <span class="string">&quot;nonny&quot;</span>)
+        <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">req</span>
+            .<span class="ident">make_header_full</span>(<span class="kw-2">&amp;</span><span class="ident">credentials</span>, <span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1000</span>, <span class="number">100</span>), <span class="string">&quot;nonny&quot;</span>)
             .<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">header</span>,
-                   <span class="ident">Header</span> {
-                       <span class="ident">id</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;me&quot;</span>.<span class="ident">to_string</span>()),
-                       <span class="ident">ts</span>: <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1000</span>, <span class="number">100</span>)),
-                       <span class="ident">nonce</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;nonny&quot;</span>.<span class="ident">to_string</span>()),
-                       <span class="ident">mac</span>: <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">122</span>, <span class="number">47</span>, <span class="number">2</span>, <span class="number">53</span>, <span class="number">195</span>, <span class="number">247</span>, <span class="number">185</span>, <span class="number">107</span>, <span class="number">133</span>, <span class="number">250</span>,
-                                                <span class="number">61</span>, <span class="number">134</span>, <span class="number">200</span>, <span class="number">35</span>, <span class="number">118</span>, <span class="number">94</span>, <span class="number">48</span>, <span class="number">175</span>, <span class="number">237</span>, <span class="number">108</span>,
-                                                <span class="number">60</span>, <span class="number">71</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">244</span>, <span class="number">66</span>, <span class="number">41</span>, <span class="number">172</span>, <span class="number">91</span>, <span class="number">7</span>, <span class="number">233</span>, <span class="number">140</span>])),
-                       <span class="ident">ext</span>: <span class="prelude-val">None</span>,
-                       <span class="ident">hash</span>: <span class="prelude-val">None</span>,
-                       <span class="ident">app</span>: <span class="prelude-val">None</span>,
-                       <span class="ident">dlg</span>: <span class="prelude-val">None</span>,
-                   });
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">header</span>,
+            <span class="ident">Header</span> {
+                <span class="ident">id</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;me&quot;</span>.<span class="ident">to_string</span>()),
+                <span class="ident">ts</span>: <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1000</span>, <span class="number">100</span>)),
+                <span class="ident">nonce</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;nonny&quot;</span>.<span class="ident">to_string</span>()),
+                <span class="ident">mac</span>: <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[
+                    <span class="number">122</span>, <span class="number">47</span>, <span class="number">2</span>, <span class="number">53</span>, <span class="number">195</span>, <span class="number">247</span>, <span class="number">185</span>, <span class="number">107</span>, <span class="number">133</span>, <span class="number">250</span>, <span class="number">61</span>, <span class="number">134</span>, <span class="number">200</span>, <span class="number">35</span>, <span class="number">118</span>, <span class="number">94</span>, <span class="number">48</span>,
+                    <span class="number">175</span>, <span class="number">237</span>, <span class="number">108</span>, <span class="number">60</span>, <span class="number">71</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">244</span>, <span class="number">66</span>, <span class="number">41</span>, <span class="number">172</span>, <span class="number">91</span>, <span class="number">7</span>, <span class="number">233</span>, <span class="number">140</span>
+                ])),
+                <span class="ident">ext</span>: <span class="prelude-val">None</span>,
+                <span class="ident">hash</span>: <span class="prelude-val">None</span>,
+                <span class="ident">app</span>: <span class="prelude-val">None</span>,
+                <span class="ident">dlg</span>: <span class="prelude-val">None</span>,
+            }
+        );
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1117,24 +1704,27 @@
             .<span class="ident">request</span>();
         <span class="kw">let</span> <span class="ident">credentials</span> <span class="op">=</span> <span class="ident">Credentials</span> {
             <span class="ident">id</span>: <span class="string">&quot;me&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="ident">Key</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">99u8</span>; <span class="number">32</span>], <span class="kw-2">&amp;</span><span class="ident">digest</span>::<span class="ident">SHA256</span>),
+            <span class="ident">key</span>: <span class="ident">Key</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">99u8</span>; <span class="number">32</span>], <span class="kw">crate</span>::<span class="ident">SHA256</span>).<span class="ident">unwrap</span>(),
         };
-        <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">req</span>.<span class="ident">make_header_full</span>(<span class="kw-2">&amp;</span><span class="ident">credentials</span>, <span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1000</span>, <span class="number">100</span>), <span class="string">&quot;nonny&quot;</span>)
+        <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">req</span>
+            .<span class="ident">make_header_full</span>(<span class="kw-2">&amp;</span><span class="ident">credentials</span>, <span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1000</span>, <span class="number">100</span>), <span class="string">&quot;nonny&quot;</span>)
             .<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">header</span>,
-                   <span class="ident">Header</span> {
-                       <span class="ident">id</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;me&quot;</span>.<span class="ident">to_string</span>()),
-                       <span class="ident">ts</span>: <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1000</span>, <span class="number">100</span>)),
-                       <span class="ident">nonce</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;nonny&quot;</span>.<span class="ident">to_string</span>()),
-                       <span class="ident">mac</span>: <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">72</span>, <span class="number">123</span>, <span class="number">243</span>, <span class="number">214</span>, <span class="number">145</span>, <span class="number">81</span>, <span class="number">129</span>, <span class="number">54</span>, <span class="number">183</span>, <span class="number">90</span>,
-                                                <span class="number">22</span>, <span class="number">136</span>, <span class="number">192</span>, <span class="number">146</span>, <span class="number">208</span>, <span class="number">53</span>, <span class="number">216</span>, <span class="number">138</span>, <span class="number">145</span>, <span class="number">94</span>,
-                                                <span class="number">175</span>, <span class="number">204</span>, <span class="number">217</span>, <span class="number">8</span>, <span class="number">77</span>, <span class="number">16</span>, <span class="number">202</span>, <span class="number">50</span>, <span class="number">10</span>, <span class="number">144</span>, <span class="number">133</span>,
-                                                <span class="number">162</span>])),
-                       <span class="ident">ext</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;ext&quot;</span>.<span class="ident">to_string</span>()),
-                       <span class="ident">hash</span>: <span class="prelude-val">Some</span>(<span class="ident">hash</span>.<span class="ident">clone</span>()),
-                       <span class="ident">app</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;app&quot;</span>.<span class="ident">to_string</span>()),
-                       <span class="ident">dlg</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;dlg&quot;</span>.<span class="ident">to_string</span>()),
-                   });
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">header</span>,
+            <span class="ident">Header</span> {
+                <span class="ident">id</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;me&quot;</span>.<span class="ident">to_string</span>()),
+                <span class="ident">ts</span>: <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1000</span>, <span class="number">100</span>)),
+                <span class="ident">nonce</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;nonny&quot;</span>.<span class="ident">to_string</span>()),
+                <span class="ident">mac</span>: <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[
+                    <span class="number">72</span>, <span class="number">123</span>, <span class="number">243</span>, <span class="number">214</span>, <span class="number">145</span>, <span class="number">81</span>, <span class="number">129</span>, <span class="number">54</span>, <span class="number">183</span>, <span class="number">90</span>, <span class="number">22</span>, <span class="number">136</span>, <span class="number">192</span>, <span class="number">146</span>, <span class="number">208</span>, <span class="number">53</span>, <span class="number">216</span>,
+                    <span class="number">138</span>, <span class="number">145</span>, <span class="number">94</span>, <span class="number">175</span>, <span class="number">204</span>, <span class="number">217</span>, <span class="number">8</span>, <span class="number">77</span>, <span class="number">16</span>, <span class="number">202</span>, <span class="number">50</span>, <span class="number">10</span>, <span class="number">144</span>, <span class="number">133</span>, <span class="number">162</span>
+                ])),
+                <span class="ident">ext</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;ext&quot;</span>.<span class="ident">to_string</span>()),
+                <span class="ident">hash</span>: <span class="prelude-val">Some</span>(<span class="ident">hash</span>.<span class="ident">clone</span>()),
+                <span class="ident">app</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;app&quot;</span>.<span class="ident">to_string</span>()),
+                <span class="ident">dlg</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;dlg&quot;</span>.<span class="ident">to_string</span>()),
+            }
+        );
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1142,25 +1732,33 @@
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;example.com&quot;</span>, <span class="number">443</span>, <span class="string">&quot;/foo&quot;</span>).<span class="ident">request</span>();
         <span class="kw">let</span> <span class="ident">credentials</span> <span class="op">=</span> <span class="ident">Credentials</span> {
             <span class="ident">id</span>: <span class="string">&quot;me&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="ident">Key</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">99u8</span>; <span class="number">32</span>], <span class="kw-2">&amp;</span><span class="ident">digest</span>::<span class="ident">SHA256</span>),
+            <span class="ident">key</span>: <span class="ident">Key</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">99u8</span>; <span class="number">32</span>], <span class="kw">crate</span>::<span class="ident">SHA256</span>).<span class="ident">unwrap</span>(),
         };
-        <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">req</span>.<span class="ident">make_header_full</span>(<span class="kw-2">&amp;</span><span class="ident">credentials</span>, <span class="ident">now</span>().<span class="ident">to_timespec</span>(), <span class="string">&quot;nonny&quot;</span>)
+        <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">req</span>
+            .<span class="ident">make_header_full</span>(<span class="kw-2">&amp;</span><span class="ident">credentials</span>, <span class="ident">SystemTime</span>::<span class="ident">now</span>(), <span class="string">&quot;nonny&quot;</span>)
             .<span class="ident">unwrap</span>();
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">validate_header</span>(<span class="kw-2">&amp;</span><span class="ident">header</span>, <span class="kw-2">&amp;</span><span class="ident">credentials</span>.<span class="ident">key</span>, <span class="ident">Duration</span>::<span class="ident">minutes</span>(<span class="number">1</span>)));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">validate_header</span>(<span class="kw-2">&amp;</span><span class="ident">header</span>, <span class="kw-2">&amp;</span><span class="ident">credentials</span>.<span class="ident">key</span>, <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1</span> <span class="op">*</span> <span class="number">60</span>)));
     }
+
+    <span class="comment">// Well, close enough.</span>
+    <span class="kw">const</span> <span class="ident">ONE_YEAR_IN_SECS</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="number">365</span> <span class="op">*</span> <span class="number">24</span> <span class="op">*</span> <span class="number">60</span> <span class="op">*</span> <span class="number">60</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_validate_real_request</span>() {
         <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">from_str</span>(<span class="ident">REAL_HEADER</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">credentials</span> <span class="op">=</span> <span class="ident">Credentials</span> {
             <span class="ident">id</span>: <span class="string">&quot;me&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">digest</span>::<span class="ident">SHA256</span>),
+            <span class="ident">key</span>: <span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw">crate</span>::<span class="ident">SHA256</span>).<span class="ident">unwrap</span>(),
         };
-        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;pulse.taskcluster.net&quot;</span>, <span class="number">443</span>, <span class="string">&quot;/v1/namespaces&quot;</span>)
-            .<span class="ident">request</span>();
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span>
+            <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;pulse.taskcluster.net&quot;</span>, <span class="number">443</span>, <span class="string">&quot;/v1/namespaces&quot;</span>).<span class="ident">request</span>();
         <span class="comment">// allow 1000 years skew, since this was a real request that</span>
         <span class="comment">// happened back in 2017, when life was simple and carefree</span>
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">validate_header</span>(<span class="kw-2">&amp;</span><span class="ident">header</span>, <span class="kw-2">&amp;</span><span class="ident">credentials</span>.<span class="ident">key</span>, <span class="ident">Duration</span>::<span class="ident">weeks</span>(<span class="number">52000</span>)));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">validate_header</span>(
+            <span class="kw-2">&amp;</span><span class="ident">header</span>,
+            <span class="kw-2">&amp;</span><span class="ident">credentials</span>.<span class="ident">key</span>,
+            <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1000</span> <span class="op">*</span> <span class="ident">ONE_YEAR_IN_SECS</span>)
+        ));
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1168,11 +1766,15 @@
         <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">from_str</span>(<span class="ident">REAL_HEADER</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">credentials</span> <span class="op">=</span> <span class="ident">Credentials</span> {
             <span class="ident">id</span>: <span class="string">&quot;me&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;WRONG&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">digest</span>::<span class="ident">SHA256</span>),
+            <span class="ident">key</span>: <span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;WRONG&quot;</span>, <span class="kw">crate</span>::<span class="ident">SHA256</span>).<span class="ident">unwrap</span>(),
         };
-        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;pulse.taskcluster.net&quot;</span>, <span class="number">443</span>, <span class="string">&quot;/v1/namespaces&quot;</span>)
-            .<span class="ident">request</span>();
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">req</span>.<span class="ident">validate_header</span>(<span class="kw-2">&amp;</span><span class="ident">header</span>, <span class="kw-2">&amp;</span><span class="ident">credentials</span>.<span class="ident">key</span>, <span class="ident">Duration</span>::<span class="ident">weeks</span>(<span class="number">52000</span>)));
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span>
+            <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;pulse.taskcluster.net&quot;</span>, <span class="number">443</span>, <span class="string">&quot;/v1/namespaces&quot;</span>).<span class="ident">request</span>();
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">req</span>.<span class="ident">validate_header</span>(
+            <span class="kw-2">&amp;</span><span class="ident">header</span>,
+            <span class="kw-2">&amp;</span><span class="ident">credentials</span>.<span class="ident">key</span>,
+            <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1000</span> <span class="op">*</span> <span class="ident">ONE_YEAR_IN_SECS</span>)
+        ));
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1180,56 +1782,70 @@
         <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">from_str</span>(<span class="ident">REAL_HEADER</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">credentials</span> <span class="op">=</span> <span class="ident">Credentials</span> {
             <span class="ident">id</span>: <span class="string">&quot;me&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">digest</span>::<span class="ident">SHA256</span>),
+            <span class="ident">key</span>: <span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw">crate</span>::<span class="ident">SHA256</span>).<span class="ident">unwrap</span>(),
         };
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;pulse.taskcluster.net&quot;</span>, <span class="number">443</span>, <span class="string">&quot;WRONG PATH&quot;</span>).<span class="ident">request</span>();
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">req</span>.<span class="ident">validate_header</span>(<span class="kw-2">&amp;</span><span class="ident">header</span>, <span class="kw-2">&amp;</span><span class="ident">credentials</span>.<span class="ident">key</span>, <span class="ident">Duration</span>::<span class="ident">weeks</span>(<span class="number">52000</span>)));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">req</span>.<span class="ident">validate_header</span>(
+            <span class="kw-2">&amp;</span><span class="ident">header</span>,
+            <span class="kw-2">&amp;</span><span class="ident">credentials</span>.<span class="ident">key</span>,
+            <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1000</span> <span class="op">*</span> <span class="ident">ONE_YEAR_IN_SECS</span>)
+        ));
     }
 
     <span class="kw">fn</span> <span class="ident">make_header_without_hash</span>() <span class="op">-&gt;</span> <span class="ident">Header</span> {
-        <span class="ident">Header</span>::<span class="ident">new</span>(<span class="prelude-val">Some</span>(<span class="string">&quot;dh37fgj492je&quot;</span>),
-                    <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)),
-                    <span class="prelude-val">Some</span>(<span class="string">&quot;j4h3g2&quot;</span>),
-                    <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">161</span>, <span class="number">105</span>, <span class="number">122</span>, <span class="number">110</span>, <span class="number">248</span>, <span class="number">62</span>, <span class="number">129</span>, <span class="number">193</span>, <span class="number">148</span>, <span class="number">206</span>, <span class="number">239</span>,
-                                        <span class="number">193</span>, <span class="number">219</span>, <span class="number">46</span>, <span class="number">137</span>, <span class="number">221</span>, <span class="number">51</span>, <span class="number">170</span>, <span class="number">135</span>, <span class="number">114</span>, <span class="number">81</span>, <span class="number">68</span>, <span class="number">145</span>,
-                                        <span class="number">182</span>, <span class="number">15</span>, <span class="number">165</span>, <span class="number">145</span>, <span class="number">168</span>, <span class="number">114</span>, <span class="number">237</span>, <span class="number">52</span>, <span class="number">35</span>])),
-                    <span class="prelude-val">None</span>,
-                    <span class="prelude-val">None</span>,
-                    <span class="prelude-val">None</span>,
-                    <span class="prelude-val">None</span>)
-            .<span class="ident">unwrap</span>()
+        <span class="ident">Header</span>::<span class="ident">new</span>(
+            <span class="prelude-val">Some</span>(<span class="string">&quot;dh37fgj492je&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;j4h3g2&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[
+                <span class="number">161</span>, <span class="number">105</span>, <span class="number">122</span>, <span class="number">110</span>, <span class="number">248</span>, <span class="number">62</span>, <span class="number">129</span>, <span class="number">193</span>, <span class="number">148</span>, <span class="number">206</span>, <span class="number">239</span>, <span class="number">193</span>, <span class="number">219</span>, <span class="number">46</span>, <span class="number">137</span>, <span class="number">221</span>, <span class="number">51</span>,
+                <span class="number">170</span>, <span class="number">135</span>, <span class="number">114</span>, <span class="number">81</span>, <span class="number">68</span>, <span class="number">145</span>, <span class="number">182</span>, <span class="number">15</span>, <span class="number">165</span>, <span class="number">145</span>, <span class="number">168</span>, <span class="number">114</span>, <span class="number">237</span>, <span class="number">52</span>, <span class="number">35</span>,
+            ])),
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>,
+        )
+        .<span class="ident">unwrap</span>()
     }
 
     <span class="kw">fn</span> <span class="ident">make_header_with_hash</span>() <span class="op">-&gt;</span> <span class="ident">Header</span> {
-        <span class="ident">Header</span>::<span class="ident">new</span>(<span class="prelude-val">Some</span>(<span class="string">&quot;dh37fgj492je&quot;</span>),
-                    <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)),
-                    <span class="prelude-val">Some</span>(<span class="string">&quot;j4h3g2&quot;</span>),
-                    <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">189</span>, <span class="number">53</span>, <span class="number">155</span>, <span class="number">244</span>, <span class="number">203</span>, <span class="number">150</span>, <span class="number">255</span>, <span class="number">238</span>, <span class="number">135</span>, <span class="number">144</span>, <span class="number">186</span>,
-                                        <span class="number">93</span>, <span class="number">6</span>, <span class="number">189</span>, <span class="number">184</span>, <span class="number">21</span>, <span class="number">150</span>, <span class="number">210</span>, <span class="number">226</span>, <span class="number">61</span>, <span class="number">93</span>, <span class="number">154</span>, <span class="number">17</span>,
-                                        <span class="number">218</span>, <span class="number">142</span>, <span class="number">250</span>, <span class="number">254</span>, <span class="number">193</span>, <span class="number">123</span>, <span class="number">132</span>, <span class="number">131</span>, <span class="number">195</span>])),
-                    <span class="prelude-val">None</span>,
-                    <span class="prelude-val">Some</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
-                    <span class="prelude-val">None</span>,
-                    <span class="prelude-val">None</span>)
-            .<span class="ident">unwrap</span>()
+        <span class="ident">Header</span>::<span class="ident">new</span>(
+            <span class="prelude-val">Some</span>(<span class="string">&quot;dh37fgj492je&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;j4h3g2&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[
+                <span class="number">189</span>, <span class="number">53</span>, <span class="number">155</span>, <span class="number">244</span>, <span class="number">203</span>, <span class="number">150</span>, <span class="number">255</span>, <span class="number">238</span>, <span class="number">135</span>, <span class="number">144</span>, <span class="number">186</span>, <span class="number">93</span>, <span class="number">6</span>, <span class="number">189</span>, <span class="number">184</span>, <span class="number">21</span>, <span class="number">150</span>,
+                <span class="number">210</span>, <span class="number">226</span>, <span class="number">61</span>, <span class="number">93</span>, <span class="number">154</span>, <span class="number">17</span>, <span class="number">218</span>, <span class="number">142</span>, <span class="number">250</span>, <span class="number">254</span>, <span class="number">193</span>, <span class="number">123</span>, <span class="number">132</span>, <span class="number">131</span>, <span class="number">195</span>,
+            ])),
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">Some</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>,
+        )
+        .<span class="ident">unwrap</span>()
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_validate_no_hash</span>() {
         <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">make_header_without_hash</span>();
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="number">0</span>, <span class="string">&quot;&quot;</span>).<span class="ident">request</span>();
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">validate_header</span>(<span class="kw-2">&amp;</span><span class="ident">header</span>,
-                                    <span class="kw-2">&amp;</span><span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">digest</span>::<span class="ident">SHA256</span>),
-                                    <span class="ident">Duration</span>::<span class="ident">weeks</span>(<span class="number">52000</span>)));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">validate_header</span>(
+            <span class="kw-2">&amp;</span><span class="ident">header</span>,
+            <span class="kw-2">&amp;</span><span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw">crate</span>::<span class="ident">SHA256</span>).<span class="ident">unwrap</span>(),
+            <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1000</span> <span class="op">*</span> <span class="ident">ONE_YEAR_IN_SECS</span>)
+        ));
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_validate_hash_in_header</span>() {
         <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">make_header_with_hash</span>();
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="number">0</span>, <span class="string">&quot;&quot;</span>).<span class="ident">request</span>();
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">validate_header</span>(<span class="kw-2">&amp;</span><span class="ident">header</span>,
-                                    <span class="kw-2">&amp;</span><span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">digest</span>::<span class="ident">SHA256</span>),
-                                    <span class="ident">Duration</span>::<span class="ident">weeks</span>(<span class="number">52000</span>)));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">validate_header</span>(
+            <span class="kw-2">&amp;</span><span class="ident">header</span>,
+            <span class="kw-2">&amp;</span><span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw">crate</span>::<span class="ident">SHA256</span>).<span class="ident">unwrap</span>(),
+            <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1000</span> <span class="op">*</span> <span class="ident">ONE_YEAR_IN_SECS</span>)
+        ));
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1239,9 +1855,11 @@
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="number">0</span>, <span class="string">&quot;&quot;</span>)
             .<span class="ident">hash</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">hash</span>[..]))
             .<span class="ident">request</span>();
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">req</span>.<span class="ident">validate_header</span>(<span class="kw-2">&amp;</span><span class="ident">header</span>,
-                                     <span class="kw-2">&amp;</span><span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">digest</span>::<span class="ident">SHA256</span>),
-                                     <span class="ident">Duration</span>::<span class="ident">weeks</span>(<span class="number">52000</span>)));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">req</span>.<span class="ident">validate_header</span>(
+            <span class="kw-2">&amp;</span><span class="ident">header</span>,
+            <span class="kw-2">&amp;</span><span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw">crate</span>::<span class="ident">SHA256</span>).<span class="ident">unwrap</span>(),
+            <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1000</span> <span class="op">*</span> <span class="ident">ONE_YEAR_IN_SECS</span>)
+        ));
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1251,27 +1869,31 @@
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="number">0</span>, <span class="string">&quot;&quot;</span>)
             .<span class="ident">hash</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">hash</span>[..]))
             .<span class="ident">request</span>();
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">validate_header</span>(<span class="kw-2">&amp;</span><span class="ident">header</span>,
-                                    <span class="kw-2">&amp;</span><span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">digest</span>::<span class="ident">SHA256</span>),
-                                    <span class="ident">Duration</span>::<span class="ident">weeks</span>(<span class="number">52000</span>)));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">validate_header</span>(
+            <span class="kw-2">&amp;</span><span class="ident">header</span>,
+            <span class="kw-2">&amp;</span><span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw">crate</span>::<span class="ident">SHA256</span>).<span class="ident">unwrap</span>(),
+            <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1000</span> <span class="op">*</span> <span class="ident">ONE_YEAR_IN_SECS</span>)
+        ));
 
         <span class="comment">// ..but supplying the wrong hash will cause validation to fail</span>
         <span class="kw">let</span> <span class="ident">hash</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">99</span>, <span class="number">99</span>, <span class="number">99</span>, <span class="number">99</span>];
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="number">0</span>, <span class="string">&quot;&quot;</span>)
             .<span class="ident">hash</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">hash</span>[..]))
             .<span class="ident">request</span>();
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">req</span>.<span class="ident">validate_header</span>(<span class="kw-2">&amp;</span><span class="ident">header</span>,
-                                     <span class="kw-2">&amp;</span><span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">digest</span>::<span class="ident">SHA256</span>),
-                                     <span class="ident">Duration</span>::<span class="ident">weeks</span>(<span class="number">52000</span>)));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">req</span>.<span class="ident">validate_header</span>(
+            <span class="kw-2">&amp;</span><span class="ident">header</span>,
+            <span class="kw-2">&amp;</span><span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw">crate</span>::<span class="ident">SHA256</span>).<span class="ident">unwrap</span>(),
+            <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1000</span> <span class="op">*</span> <span class="ident">ONE_YEAR_IN_SECS</span>)
+        ));
     }
 
-    <span class="kw">fn</span> <span class="ident">round_trip_bewit</span>(<span class="ident">req</span>: <span class="ident">Request</span>, <span class="ident">duration</span>: <span class="ident">Duration</span>, <span class="ident">expected</span>: <span class="ident">bool</span>) {
+    <span class="kw">fn</span> <span class="ident">round_trip_bewit</span>(<span class="ident">req</span>: <span class="ident">Request</span>, <span class="ident">ts</span>: <span class="ident">SystemTime</span>, <span class="ident">expected</span>: <span class="ident">bool</span>) {
         <span class="kw">let</span> <span class="ident">credentials</span> <span class="op">=</span> <span class="ident">Credentials</span> {
             <span class="ident">id</span>: <span class="string">&quot;me&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">digest</span>::<span class="ident">SHA256</span>),
+            <span class="ident">key</span>: <span class="ident">Key</span>::<span class="ident">new</span>(<span class="string">&quot;tok&quot;</span>, <span class="kw">crate</span>::<span class="ident">SHA256</span>).<span class="ident">unwrap</span>(),
         };
 
-        <span class="kw">let</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="ident">req</span>.<span class="ident">make_bewit</span>(<span class="kw-2">&amp;</span><span class="ident">credentials</span>, <span class="ident">duration</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="ident">req</span>.<span class="ident">make_bewit</span>(<span class="kw-2">&amp;</span><span class="ident">credentials</span>, <span class="ident">ts</span>).<span class="ident">unwrap</span>();
 
         <span class="comment">// convert to a string and back</span>
         <span class="kw">let</span> <span class="ident">bewit</span> <span class="op">=</span> <span class="ident">bewit</span>.<span class="ident">to_str</span>();
@@ -1284,7 +1906,7 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_validate_bewit</span>() {
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;foo.com&quot;</span>, <span class="number">443</span>, <span class="string">&quot;/x/y/z&quot;</span>).<span class="ident">request</span>();
-        <span class="ident">round_trip_bewit</span>(<span class="ident">req</span>, <span class="ident">Duration</span>::<span class="ident">minutes</span>(<span class="number">10</span>), <span class="bool-val">true</span>);
+        <span class="ident">round_trip_bewit</span>(<span class="ident">req</span>, <span class="ident">SystemTime</span>::<span class="ident">now</span>() <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">10</span> <span class="op">*</span> <span class="number">60</span>), <span class="bool-val">true</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1292,13 +1914,13 @@
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;foo.com&quot;</span>, <span class="number">443</span>, <span class="string">&quot;/x/y/z&quot;</span>)
             .<span class="ident">ext</span>(<span class="string">&quot;abcd&quot;</span>)
             .<span class="ident">request</span>();
-        <span class="ident">round_trip_bewit</span>(<span class="ident">req</span>, <span class="ident">Duration</span>::<span class="ident">minutes</span>(<span class="number">10</span>), <span class="bool-val">true</span>);
+        <span class="ident">round_trip_bewit</span>(<span class="ident">req</span>, <span class="ident">SystemTime</span>::<span class="ident">now</span>() <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">10</span> <span class="op">*</span> <span class="number">60</span>), <span class="bool-val">true</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_validate_bewit_expired</span>() {
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;foo.com&quot;</span>, <span class="number">443</span>, <span class="string">&quot;/x/y/z&quot;</span>).<span class="ident">request</span>();
-        <span class="ident">round_trip_bewit</span>(<span class="ident">req</span>, <span class="ident">Duration</span>::<span class="ident">minutes</span>(<span class="op">-</span><span class="number">10</span>), <span class="bool-val">false</span>);
+        <span class="ident">round_trip_bewit</span>(<span class="ident">req</span>, <span class="ident">SystemTime</span>::<span class="ident">now</span>() <span class="op">-</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">10</span> <span class="op">*</span> <span class="number">60</span>), <span class="bool-val">false</span>);
     }
 }
 </pre></div>

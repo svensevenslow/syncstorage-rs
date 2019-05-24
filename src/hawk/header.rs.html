@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/hawk-1.0.4/src/header.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>header.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../hawk/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/hawk-3.0.0/src/header.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>header.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../hawk/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -433,24 +433,86 @@
 <span id="433">433</span>
 <span id="434">434</span>
 <span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="ident">base64</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">error</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">mac</span>::<span class="ident">Mac</span>;
+<span class="kw">use</span> <span class="ident">base64</span>::<span class="ident">display</span>::<span class="ident">Base64Display</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>::<span class="ident">FromStr</span>;
-<span class="kw">use</span> <span class="ident">mac</span>::<span class="ident">Mac</span>;
-<span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">time</span>::<span class="ident">Timespec</span>;
-
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::{<span class="ident">Duration</span>, <span class="ident">SystemTime</span>, <span class="ident">UNIX_EPOCH</span>};
 <span class="doccomment">/// Representation of a Hawk `Authorization` header value (the part following &quot;Hawk &quot;).</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// Headers can be derived froms trings using the `FromStr` trait, and formatted into a</span>
+<span class="doccomment">/// Headers can be derived from strings using the `FromStr` trait, and formatted into a</span>
 <span class="doccomment">/// string using the `fmt_header` method.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// All fields are optional, although for specific purposes some fields must be present.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Header</span> {
     <span class="kw">pub</span> <span class="ident">id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">ts</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Timespec</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">ts</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SystemTime</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">nonce</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">mac</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Mac</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">ext</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
@@ -462,27 +524,29 @@
 <span class="kw">impl</span> <span class="ident">Header</span> {
     <span class="doccomment">/// Create a new Header with the full set of Hawk fields.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// This is a low-level funtion. Headers are more often created from Request or Responses.</span>
+    <span class="doccomment">/// This is a low-level function. Headers are more often created from Requests or Responses.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Note that none of the string-formatted header components can contain the character `\&quot;`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="ident">id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-                  <span class="ident">ts</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Timespec</span><span class="op">&gt;</span>,
-                  <span class="ident">nonce</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-                  <span class="ident">mac</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Mac</span><span class="op">&gt;</span>,
-                  <span class="ident">ext</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-                  <span class="ident">hash</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;&gt;</span>,
-                  <span class="ident">app</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-                  <span class="ident">dlg</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>)
-                  <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Header</span><span class="op">&gt;</span>
-        <span class="kw">where</span> <span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(
+        <span class="ident">id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
+        <span class="ident">ts</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SystemTime</span><span class="op">&gt;</span>,
+        <span class="ident">nonce</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
+        <span class="ident">mac</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Mac</span><span class="op">&gt;</span>,
+        <span class="ident">ext</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
+        <span class="ident">hash</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;&gt;</span>,
+        <span class="ident">app</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
+        <span class="ident">dlg</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
+    ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Header</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     {
         <span class="prelude-val">Ok</span>(<span class="ident">Header</span> {
             <span class="ident">id</span>: <span class="ident">Header</span>::<span class="ident">check_component</span>(<span class="ident">id</span>)<span class="question-mark">?</span>,
-            <span class="ident">ts</span>: <span class="ident">ts</span>,
+            <span class="ident">ts</span>,
             <span class="ident">nonce</span>: <span class="ident">Header</span>::<span class="ident">check_component</span>(<span class="ident">nonce</span>)<span class="question-mark">?</span>,
-            <span class="ident">mac</span>: <span class="ident">mac</span>,
+            <span class="ident">mac</span>,
             <span class="ident">ext</span>: <span class="ident">Header</span>::<span class="ident">check_component</span>(<span class="ident">ext</span>)<span class="question-mark">?</span>,
-            <span class="ident">hash</span>: <span class="ident">hash</span>,
+            <span class="ident">hash</span>,
             <span class="ident">app</span>: <span class="ident">Header</span>::<span class="ident">check_component</span>(<span class="ident">app</span>)<span class="question-mark">?</span>,
             <span class="ident">dlg</span>: <span class="ident">Header</span>::<span class="ident">check_component</span>(<span class="ident">dlg</span>)<span class="question-mark">?</span>,
         })
@@ -490,12 +554,15 @@
 
     <span class="doccomment">/// Check a header component for validity.</span>
     <span class="kw">fn</span> <span class="ident">check_component</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="ident">value</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>
-        <span class="kw">where</span> <span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span> <span class="ident">value</span> {
             <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">into</span>();
             <span class="kw">if</span> <span class="ident">value</span>.<span class="ident">contains</span>(<span class="string">&#39;\&quot;&#39;</span>) {
-                <span class="macro">bail</span><span class="macro">!</span>(<span class="string">&quot;Hawk headers cannot contain `\\`&quot;</span>);
+                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">HeaderParseError</span>(
+                    <span class="string">&quot;Hawk headers cannot contain `\\`&quot;</span>.<span class="ident">into</span>(),
+                ));
             }
             <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">value</span>))
         } <span class="kw">else</span> {
@@ -512,7 +579,12 @@
             <span class="ident">sep</span> <span class="op">=</span> <span class="string">&quot;, &quot;</span>;
         }
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">ts</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">ts</span> {
-            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}ts=\&quot;{}\&quot;&quot;</span>, <span class="ident">sep</span>, <span class="ident">ts</span>.<span class="ident">sec</span>)<span class="question-mark">?</span>;
+            <span class="macro">write</span><span class="macro">!</span>(
+                <span class="ident">f</span>,
+                <span class="string">&quot;{}ts=\&quot;{}\&quot;&quot;</span>,
+                <span class="ident">sep</span>,
+                <span class="ident">ts</span>.<span class="ident">duration_since</span>(<span class="ident">UNIX_EPOCH</span>).<span class="ident">unwrap_or_default</span>().<span class="ident">as_secs</span>()
+            )<span class="question-mark">?</span>;
             <span class="ident">sep</span> <span class="op">=</span> <span class="string">&quot;, &quot;</span>;
         }
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">nonce</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">nonce</span> {
@@ -520,7 +592,12 @@
             <span class="ident">sep</span> <span class="op">=</span> <span class="string">&quot;, &quot;</span>;
         }
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">mac</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">mac</span> {
-            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}mac=\&quot;{}\&quot;&quot;</span>, <span class="ident">sep</span>, <span class="ident">base64</span>::<span class="ident">encode</span>(<span class="ident">mac</span>))<span class="question-mark">?</span>;
+            <span class="macro">write</span><span class="macro">!</span>(
+                <span class="ident">f</span>,
+                <span class="string">&quot;{}mac=\&quot;{}\&quot;&quot;</span>,
+                <span class="ident">sep</span>,
+                <span class="ident">Base64Display</span>::<span class="ident">with_config</span>(<span class="ident">mac</span>, <span class="ident">base64</span>::<span class="ident">STANDARD</span>)
+            )<span class="question-mark">?</span>;
             <span class="ident">sep</span> <span class="op">=</span> <span class="string">&quot;, &quot;</span>;
         }
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">ext</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">ext</span> {
@@ -528,7 +605,12 @@
             <span class="ident">sep</span> <span class="op">=</span> <span class="string">&quot;, &quot;</span>;
         }
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">hash</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">hash</span> {
-            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}hash=\&quot;{}\&quot;&quot;</span>, <span class="ident">sep</span>, <span class="ident">base64</span>::<span class="ident">encode</span>(<span class="ident">hash</span>))<span class="question-mark">?</span>;
+            <span class="macro">write</span><span class="macro">!</span>(
+                <span class="ident">f</span>,
+                <span class="string">&quot;{}hash=\&quot;{}\&quot;&quot;</span>,
+                <span class="ident">sep</span>,
+                <span class="ident">Base64Display</span>::<span class="ident">with_config</span>(<span class="ident">hash</span>, <span class="ident">base64</span>::<span class="ident">STANDARD</span>)
+            )<span class="question-mark">?</span>;
             <span class="ident">sep</span> <span class="op">=</span> <span class="string">&quot;, &quot;</span>;
         }
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">app</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">app</span> {
@@ -555,7 +637,7 @@
 
         <span class="comment">// Required attributes</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ts</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Timespec</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ts</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SystemTime</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">nonce</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mac</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
         <span class="comment">// Optional attributes</span>
@@ -566,58 +648,62 @@
 
         <span class="kw">while</span> <span class="op">!</span><span class="ident">p</span>.<span class="ident">is_empty</span>() {
             <span class="comment">// Skip whitespace and commas used as separators</span>
-            <span class="ident">p</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">trim_left_matches</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;,&#39;</span> <span class="op">||</span> <span class="ident">char</span>::<span class="ident">is_whitespace</span>(<span class="ident">c</span>));
+            <span class="ident">p</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">trim_start_matches</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;,&#39;</span> <span class="op">||</span> <span class="ident">char</span>::<span class="ident">is_whitespace</span>(<span class="ident">c</span>));
             <span class="comment">// Find first &#39;=&#39; which delimits attribute name from value</span>
-            <span class="kw">match</span> <span class="ident">p</span>.<span class="ident">find</span>(<span class="string">&#39;=&#39;</span>) {
-                <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> {
-                    <span class="kw">let</span> <span class="ident">attr</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">p</span>[..<span class="ident">v</span>].<span class="ident">trim</span>();
-                    <span class="kw">if</span> <span class="ident">p</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">v</span> <span class="op">+</span> <span class="number">1</span> {
-                        <span class="macro">bail</span><span class="macro">!</span>(<span class="ident">ErrorKind</span>::<span class="ident">HeaderParseError</span>);
-                    }
-                    <span class="ident">p</span> <span class="op">=</span> (<span class="kw-2">&amp;</span><span class="ident">p</span>[<span class="ident">v</span> <span class="op">+</span> <span class="number">1</span>..]).<span class="ident">trim_left</span>();
-                    <span class="kw">if</span> <span class="op">!</span><span class="ident">p</span>.<span class="ident">starts_with</span>(<span class="string">&#39;\&quot;&#39;</span>) {
-                        <span class="macro">bail</span><span class="macro">!</span>(<span class="ident">ErrorKind</span>::<span class="ident">HeaderParseError</span>);
-                    }
-                    <span class="ident">p</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">p</span>[<span class="number">1</span>..];
-                    <span class="comment">// We have poor RFC 7235 compliance here as we ought to support backslash</span>
-                    <span class="comment">// escaped characters, but hawk doesn&#39;t allow this we won&#39;t either.  All</span>
-                    <span class="comment">// strings must be surrounded by &quot;..&quot; and contain no such characters.</span>
-                    <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">find</span>(<span class="string">&#39;\&quot;&#39;</span>);
-                    <span class="kw">match</span> <span class="ident">end</span> {
-                        <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> {
-                            <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">p</span>[..<span class="ident">v</span>];
-                            <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">attr</span> {
-                                <span class="string">&quot;id&quot;</span> <span class="op">=&gt;</span> <span class="ident">id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">val</span>),
-                                <span class="string">&quot;ts&quot;</span> <span class="op">=&gt;</span> {
-                                    <span class="kw">let</span> <span class="ident">epoch</span> <span class="op">=</span> <span class="ident">i64</span>::<span class="ident">from_str</span>(<span class="ident">val</span>)
-                                        .<span class="ident">chain_err</span>(<span class="op">||</span> <span class="string">&quot;Error parsing `ts` field&quot;</span>)<span class="question-mark">?</span>;
-                                    <span class="ident">ts</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="ident">epoch</span>, <span class="number">0</span>));
-                                }
-                                <span class="string">&quot;mac&quot;</span> <span class="op">=&gt;</span> {
-                                    <span class="ident">mac</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">base64</span>::<span class="ident">decode</span>(<span class="ident">val</span>)
-                                                   .<span class="ident">chain_err</span>(<span class="op">||</span> <span class="string">&quot;Error parsing `mac` field&quot;</span>)<span class="question-mark">?</span>);
-                                }
-                                <span class="string">&quot;nonce&quot;</span> <span class="op">=&gt;</span> <span class="ident">nonce</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">val</span>),
-                                <span class="string">&quot;ext&quot;</span> <span class="op">=&gt;</span> <span class="ident">ext</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">val</span>),
-                                <span class="string">&quot;hash&quot;</span> <span class="op">=&gt;</span> {
-                                    <span class="ident">hash</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">base64</span>::<span class="ident">decode</span>(<span class="ident">val</span>)
-                                                    .<span class="ident">chain_err</span>(<span class="op">||</span> <span class="string">&quot;Error parsing `hash` field&quot;</span>)<span class="question-mark">?</span>);
-                                }
-                                <span class="string">&quot;app&quot;</span> <span class="op">=&gt;</span> <span class="ident">app</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">val</span>),
-                                <span class="string">&quot;dlg&quot;</span> <span class="op">=&gt;</span> <span class="ident">dlg</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">val</span>),
-                                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="macro">bail</span><span class="macro">!</span>(<span class="string">&quot;Invalid Hawk field {}&quot;</span>, <span class="kw-2">*</span><span class="ident">attr</span>),
-                            };
-                            <span class="comment">// Break if we are at end of string, otherwise skip separator</span>
-                            <span class="kw">if</span> <span class="ident">p</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">v</span> <span class="op">+</span> <span class="number">1</span> {
-                                <span class="kw">break</span>;
-                            }
-                            <span class="ident">p</span> <span class="op">=</span> <span class="ident">p</span>[<span class="ident">v</span> <span class="op">+</span> <span class="number">1</span>..].<span class="ident">trim_left</span>();
-                        }
-                        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">bail</span><span class="macro">!</span>(<span class="ident">ErrorKind</span>::<span class="ident">HeaderParseError</span>),
-                    }
+            <span class="kw">let</span> <span class="ident">assign_end</span> <span class="op">=</span> <span class="ident">p</span>
+                .<span class="ident">find</span>(<span class="string">&#39;=&#39;</span>)
+                .<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="ident">Error</span>::<span class="ident">HeaderParseError</span>(<span class="string">&quot;Expected &#39;=&#39;&quot;</span>.<span class="ident">into</span>()))<span class="question-mark">?</span>;
+            <span class="kw">let</span> <span class="ident">attr</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">p</span>[..<span class="ident">assign_end</span>].<span class="ident">trim</span>();
+            <span class="kw">if</span> <span class="ident">p</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">assign_end</span> <span class="op">+</span> <span class="number">1</span> {
+                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">HeaderParseError</span>(
+                    <span class="string">&quot;Missing right hand side of =&quot;</span>.<span class="ident">into</span>(),
+                ));
+            }
+            <span class="ident">p</span> <span class="op">=</span> (<span class="kw-2">&amp;</span><span class="ident">p</span>[<span class="ident">assign_end</span> <span class="op">+</span> <span class="number">1</span>..]).<span class="ident">trim_start</span>();
+            <span class="kw">if</span> <span class="op">!</span><span class="ident">p</span>.<span class="ident">starts_with</span>(<span class="string">&#39;\&quot;&#39;</span>) {
+                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">HeaderParseError</span>(<span class="string">&quot;Expected opening quote&quot;</span>.<span class="ident">into</span>()));
+            }
+            <span class="ident">p</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">p</span>[<span class="number">1</span>..];
+            <span class="comment">// We have poor RFC 7235 compliance here as we ought to support backslash</span>
+            <span class="comment">// escaped characters, but hawk doesn&#39;t allow this we won&#39;t either.  All</span>
+            <span class="comment">// strings must be surrounded by &quot;..&quot; and contain no such characters.</span>
+            <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">find</span>(<span class="string">&#39;\&quot;&#39;</span>);
+            <span class="kw">let</span> <span class="ident">val_end</span> <span class="op">=</span>
+                <span class="ident">end</span>.<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="ident">Error</span>::<span class="ident">HeaderParseError</span>(<span class="string">&quot;Expected closing quote&quot;</span>.<span class="ident">into</span>()))<span class="question-mark">?</span>;
+            <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">p</span>[..<span class="ident">val_end</span>];
+            <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">attr</span> {
+                <span class="string">&quot;id&quot;</span> <span class="op">=&gt;</span> <span class="ident">id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">val</span>),
+                <span class="string">&quot;ts&quot;</span> <span class="op">=&gt;</span> {
+                    <span class="kw">let</span> <span class="ident">epoch</span> <span class="op">=</span> <span class="ident">u64</span>::<span class="ident">from_str</span>(<span class="ident">val</span>)
+                        .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">Error</span>::<span class="ident">HeaderParseError</span>(<span class="string">&quot;Error parsing `ts` field&quot;</span>.<span class="ident">into</span>()))<span class="question-mark">?</span>;
+                    <span class="ident">ts</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="ident">epoch</span>, <span class="number">0</span>));
                 }
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">bail</span><span class="macro">!</span>(<span class="ident">ErrorKind</span>::<span class="ident">HeaderParseError</span>),
+                <span class="string">&quot;mac&quot;</span> <span class="op">=&gt;</span> {
+                    <span class="ident">mac</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">base64</span>::<span class="ident">decode</span>(<span class="ident">val</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
+                        <span class="ident">Error</span>::<span class="ident">HeaderParseError</span>(<span class="string">&quot;Error parsing `mac` field&quot;</span>.<span class="ident">into</span>())
+                    })<span class="question-mark">?</span>);
+                }
+                <span class="string">&quot;nonce&quot;</span> <span class="op">=&gt;</span> <span class="ident">nonce</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">val</span>),
+                <span class="string">&quot;ext&quot;</span> <span class="op">=&gt;</span> <span class="ident">ext</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">val</span>),
+                <span class="string">&quot;hash&quot;</span> <span class="op">=&gt;</span> {
+                    <span class="ident">hash</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">base64</span>::<span class="ident">decode</span>(<span class="ident">val</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
+                        <span class="ident">Error</span>::<span class="ident">HeaderParseError</span>(<span class="string">&quot;Error parsing `hash` field&quot;</span>.<span class="ident">into</span>())
+                    })<span class="question-mark">?</span>);
+                }
+                <span class="string">&quot;app&quot;</span> <span class="op">=&gt;</span> <span class="ident">app</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">val</span>),
+                <span class="string">&quot;dlg&quot;</span> <span class="op">=&gt;</span> <span class="ident">dlg</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">val</span>),
+                <span class="kw">_</span> <span class="op">=&gt;</span> {
+                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">HeaderParseError</span>(<span class="macro">format</span><span class="macro">!</span>(
+                        <span class="string">&quot;Invalid Hawk field {}&quot;</span>,
+                        <span class="kw-2">*</span><span class="ident">attr</span>
+                    )))
+                }
             };
+            <span class="comment">// Break if we are at end of string, otherwise skip separator</span>
+            <span class="kw">if</span> <span class="ident">p</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">val_end</span> <span class="op">+</span> <span class="number">1</span> {
+                <span class="kw">break</span>;
+            }
+            <span class="ident">p</span> <span class="op">=</span> <span class="ident">p</span>[<span class="ident">val_end</span> <span class="op">+</span> <span class="number">1</span>..].<span class="ident">trim_start</span>();
         }
 
         <span class="prelude-val">Ok</span>(<span class="ident">Header</span> {
@@ -625,7 +711,7 @@
                 <span class="prelude-val">Some</span>(<span class="ident">id</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">id</span>.<span class="ident">to_string</span>()),
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             },
-            <span class="ident">ts</span>: <span class="ident">ts</span>,
+            <span class="ident">ts</span>,
             <span class="ident">nonce</span>: <span class="kw">match</span> <span class="ident">nonce</span> {
                 <span class="prelude-val">Some</span>(<span class="ident">nonce</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">nonce</span>.<span class="ident">to_string</span>()),
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
@@ -638,7 +724,7 @@
                 <span class="prelude-val">Some</span>(<span class="ident">ext</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">ext</span>.<span class="ident">to_string</span>()),
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             },
-            <span class="ident">hash</span>: <span class="ident">hash</span>,
+            <span class="ident">hash</span>,
             <span class="ident">app</span>: <span class="kw">match</span> <span class="ident">app</span> {
                 <span class="prelude-val">Some</span>(<span class="ident">app</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">app</span>.<span class="ident">to_string</span>()),
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
@@ -654,90 +740,105 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">Header</span>;
-    <span class="kw">use</span> <span class="ident">time</span>::<span class="ident">Timespec</span>;
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">mac</span>::<span class="ident">Mac</span>;
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>::<span class="ident">FromStr</span>;
-    <span class="kw">use</span> <span class="ident">mac</span>::<span class="ident">Mac</span>;
+    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::{<span class="ident">Duration</span>, <span class="ident">UNIX_EPOCH</span>};
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">illegal_id</span>() {
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">Header</span>::<span class="ident">new</span>(<span class="prelude-val">Some</span>(<span class="string">&quot;ab\&quot;cdef&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1234</span>, <span class="number">0</span>)),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;nonce&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[])),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;ext&quot;</span>),
-                            <span class="prelude-val">None</span>,
-                            <span class="prelude-val">None</span>,
-                            <span class="prelude-val">None</span>)
-            .<span class="ident">is_err</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">Header</span>::<span class="ident">new</span>(
+            <span class="prelude-val">Some</span>(<span class="string">&quot;ab\&quot;cdef&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1234</span>, <span class="number">0</span>)),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;nonce&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[])),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;ext&quot;</span>),
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>
+        )
+        .<span class="ident">is_err</span>());
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">illegal_nonce</span>() {
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">Header</span>::<span class="ident">new</span>(<span class="prelude-val">Some</span>(<span class="string">&quot;abcdef&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1234</span>, <span class="number">0</span>)),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;no\&quot;nce&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[])),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;ext&quot;</span>),
-                            <span class="prelude-val">None</span>,
-                            <span class="prelude-val">None</span>,
-                            <span class="prelude-val">None</span>)
-            .<span class="ident">is_err</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">Header</span>::<span class="ident">new</span>(
+            <span class="prelude-val">Some</span>(<span class="string">&quot;abcdef&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1234</span>, <span class="number">0</span>)),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;no\&quot;nce&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[])),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;ext&quot;</span>),
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>
+        )
+        .<span class="ident">is_err</span>());
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">illegal_ext</span>() {
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">Header</span>::<span class="ident">new</span>(<span class="prelude-val">Some</span>(<span class="string">&quot;abcdef&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1234</span>, <span class="number">0</span>)),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;nonce&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[])),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;ex\&quot;t&quot;</span>),
-                            <span class="prelude-val">None</span>,
-                            <span class="prelude-val">None</span>,
-                            <span class="prelude-val">None</span>)
-            .<span class="ident">is_err</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">Header</span>::<span class="ident">new</span>(
+            <span class="prelude-val">Some</span>(<span class="string">&quot;abcdef&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1234</span>, <span class="number">0</span>)),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;nonce&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[])),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;ex\&quot;t&quot;</span>),
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>
+        )
+        .<span class="ident">is_err</span>());
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">illegal_app</span>() {
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">Header</span>::<span class="ident">new</span>(<span class="prelude-val">Some</span>(<span class="string">&quot;abcdef&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1234</span>, <span class="number">0</span>)),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;nonce&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[])),
-                            <span class="prelude-val">None</span>,
-                            <span class="prelude-val">None</span>,
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;a\&quot;pp&quot;</span>),
-                            <span class="prelude-val">None</span>)
-            .<span class="ident">is_err</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">Header</span>::<span class="ident">new</span>(
+            <span class="prelude-val">Some</span>(<span class="string">&quot;abcdef&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1234</span>, <span class="number">0</span>)),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;nonce&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[])),
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">Some</span>(<span class="string">&quot;a\&quot;pp&quot;</span>),
+            <span class="prelude-val">None</span>
+        )
+        .<span class="ident">is_err</span>());
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">illegal_dlg</span>() {
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">Header</span>::<span class="ident">new</span>(<span class="prelude-val">Some</span>(<span class="string">&quot;abcdef&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1234</span>, <span class="number">0</span>)),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;nonce&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[])),
-                            <span class="prelude-val">None</span>,
-                            <span class="prelude-val">None</span>,
-                            <span class="prelude-val">None</span>,
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;d\&quot;lg&quot;</span>))
-            .<span class="ident">is_err</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">Header</span>::<span class="ident">new</span>(
+            <span class="prelude-val">Some</span>(<span class="string">&quot;abcdef&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1234</span>, <span class="number">0</span>)),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;nonce&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[])),
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">Some</span>(<span class="string">&quot;d\&quot;lg&quot;</span>)
+        )
+        .<span class="ident">is_err</span>());
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">from_str</span>() {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">from_str</span>(<span class="string">&quot;id=\&quot;dh37fgj492je\&quot;, ts=\&quot;1353832234\&quot;, \
-                                      nonce=\&quot;j4h3g2\&quot;, ext=\&quot;some-app-ext-data\&quot;, \
-                                      mac=\&quot;6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE=\&quot;, \
-                                      hash=\&quot;6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE=\&quot;, \
-                                      app=\&quot;my-app\&quot;, dlg=\&quot;my-authority\&quot;&quot;</span>)
-            .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">from_str</span>(
+            <span class="string">&quot;id=\&quot;dh37fgj492je\&quot;, ts=\&quot;1353832234\&quot;, \
+             nonce=\&quot;j4h3g2\&quot;, ext=\&quot;some-app-ext-data\&quot;, \
+             mac=\&quot;6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE=\&quot;, \
+             hash=\&quot;6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE=\&quot;, \
+             app=\&quot;my-app\&quot;, dlg=\&quot;my-authority\&quot;&quot;</span>,
+        )
+        .<span class="ident">unwrap</span>();
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">id</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;dh37fgj492je&quot;</span>.<span class="ident">to_string</span>()));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">ts</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">ts</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)));
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">nonce</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;j4h3g2&quot;</span>.<span class="ident">to_string</span>()));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">mac</span> <span class="op">==</span>
-                <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">233</span>, <span class="number">30</span>, <span class="number">43</span>, <span class="number">87</span>, <span class="number">152</span>, <span class="number">132</span>, <span class="number">248</span>, <span class="number">211</span>, <span class="number">232</span>, <span class="number">202</span>, <span class="number">111</span>, <span class="number">150</span>,
-                                    <span class="number">194</span>, <span class="number">55</span>, <span class="number">135</span>, <span class="number">206</span>, <span class="number">48</span>, <span class="number">6</span>, <span class="number">93</span>, <span class="number">75</span>, <span class="number">75</span>, <span class="number">52</span>, <span class="number">140</span>, <span class="number">102</span>, <span class="number">163</span>,
-                                    <span class="number">91</span>, <span class="number">233</span>, <span class="number">50</span>, <span class="number">135</span>, <span class="number">233</span>, <span class="number">44</span>, <span class="number">1</span>])));
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">s</span>.<span class="ident">mac</span>
+                <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[
+                    <span class="number">233</span>, <span class="number">30</span>, <span class="number">43</span>, <span class="number">87</span>, <span class="number">152</span>, <span class="number">132</span>, <span class="number">248</span>, <span class="number">211</span>, <span class="number">232</span>, <span class="number">202</span>, <span class="number">111</span>, <span class="number">150</span>, <span class="number">194</span>, <span class="number">55</span>, <span class="number">135</span>, <span class="number">206</span>, <span class="number">48</span>,
+                    <span class="number">6</span>, <span class="number">93</span>, <span class="number">75</span>, <span class="number">75</span>, <span class="number">52</span>, <span class="number">140</span>, <span class="number">102</span>, <span class="number">163</span>, <span class="number">91</span>, <span class="number">233</span>, <span class="number">50</span>, <span class="number">135</span>, <span class="number">233</span>, <span class="number">44</span>, <span class="number">1</span>
+                ]))
+        );
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">ext</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;some-app-ext-data&quot;</span>.<span class="ident">to_string</span>()));
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">app</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;my-app&quot;</span>.<span class="ident">to_string</span>()));
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">dlg</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;my-authority&quot;</span>.<span class="ident">to_string</span>()));
@@ -745,10 +846,12 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">from_str_invalid_mac</span>() {
-        <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">from_str</span>(<span class="string">&quot;id=\&quot;dh37fgj492je\&quot;, ts=\&quot;1353832234\&quot;, \
-                                      nonce=\&quot;j4h3g2\&quot;, ext=\&quot;some-app-ext-data\&quot;, \
-                                      mac=\&quot;6!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!AE=\&quot;, \
-                                      app=\&quot;my-app\&quot;, dlg=\&quot;my-authority\&quot;&quot;</span>);
+        <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">from_str</span>(
+            <span class="string">&quot;id=\&quot;dh37fgj492je\&quot;, ts=\&quot;1353832234\&quot;, \
+             nonce=\&quot;j4h3g2\&quot;, ext=\&quot;some-app-ext-data\&quot;, \
+             mac=\&quot;6!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!AE=\&quot;, \
+             app=\&quot;my-app\&quot;, dlg=\&quot;my-authority\&quot;&quot;</span>,
+        );
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">r</span>.<span class="ident">is_err</span>());
     }
 
@@ -766,17 +869,22 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">from_str_few_field</span>() {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">from_str</span>(<span class="string">&quot;id=\&quot;xyz\&quot;, ts=\&quot;1353832234\&quot;, \
-                                      nonce=\&quot;abc\&quot;, \
-                                      mac=\&quot;6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE=\&quot;&quot;</span>)
-            .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">from_str</span>(
+            <span class="string">&quot;id=\&quot;xyz\&quot;, ts=\&quot;1353832234\&quot;, \
+             nonce=\&quot;abc\&quot;, \
+             mac=\&quot;6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE=\&quot;&quot;</span>,
+        )
+        .<span class="ident">unwrap</span>();
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">id</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;xyz&quot;</span>.<span class="ident">to_string</span>()));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">ts</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">ts</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)));
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">nonce</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;abc&quot;</span>.<span class="ident">to_string</span>()));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">mac</span> <span class="op">==</span>
-                <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">233</span>, <span class="number">30</span>, <span class="number">43</span>, <span class="number">87</span>, <span class="number">152</span>, <span class="number">132</span>, <span class="number">248</span>, <span class="number">211</span>, <span class="number">232</span>, <span class="number">202</span>, <span class="number">111</span>, <span class="number">150</span>,
-                                    <span class="number">194</span>, <span class="number">55</span>, <span class="number">135</span>, <span class="number">206</span>, <span class="number">48</span>, <span class="number">6</span>, <span class="number">93</span>, <span class="number">75</span>, <span class="number">75</span>, <span class="number">52</span>, <span class="number">140</span>, <span class="number">102</span>, <span class="number">163</span>,
-                                    <span class="number">91</span>, <span class="number">233</span>, <span class="number">50</span>, <span class="number">135</span>, <span class="number">233</span>, <span class="number">44</span>, <span class="number">1</span>])));
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">s</span>.<span class="ident">mac</span>
+                <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[
+                    <span class="number">233</span>, <span class="number">30</span>, <span class="number">43</span>, <span class="number">87</span>, <span class="number">152</span>, <span class="number">132</span>, <span class="number">248</span>, <span class="number">211</span>, <span class="number">232</span>, <span class="number">202</span>, <span class="number">111</span>, <span class="number">150</span>, <span class="number">194</span>, <span class="number">55</span>, <span class="number">135</span>, <span class="number">206</span>, <span class="number">48</span>,
+                    <span class="number">6</span>, <span class="number">93</span>, <span class="number">75</span>, <span class="number">75</span>, <span class="number">52</span>, <span class="number">140</span>, <span class="number">102</span>, <span class="number">163</span>, <span class="number">91</span>, <span class="number">233</span>, <span class="number">50</span>, <span class="number">135</span>, <span class="number">233</span>, <span class="number">44</span>, <span class="number">1</span>
+                ]))
+        );
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">ext</span> <span class="op">==</span> <span class="prelude-val">None</span>);
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">app</span> <span class="op">==</span> <span class="prelude-val">None</span>);
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">dlg</span> <span class="op">==</span> <span class="prelude-val">None</span>);
@@ -784,17 +892,22 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">from_str_messy</span>() {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">from_str</span>(<span class="string">&quot;, id  =  \&quot;dh37fgj492je\&quot;, ts=\&quot;1353832234\&quot;, \
-                                      nonce=\&quot;j4h3g2\&quot;  , , ext=\&quot;some-app-ext-data\&quot;, \
-                                      mac=\&quot;6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE=\&quot;&quot;</span>)
-            .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">from_str</span>(
+            <span class="string">&quot;, id  =  \&quot;dh37fgj492je\&quot;, ts=\&quot;1353832234\&quot;, \
+             nonce=\&quot;j4h3g2\&quot;  , , ext=\&quot;some-app-ext-data\&quot;, \
+             mac=\&quot;6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE=\&quot;&quot;</span>,
+        )
+        .<span class="ident">unwrap</span>();
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">id</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;dh37fgj492je&quot;</span>.<span class="ident">to_string</span>()));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">ts</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">ts</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)));
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">nonce</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;j4h3g2&quot;</span>.<span class="ident">to_string</span>()));
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">mac</span> <span class="op">==</span>
-                <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">233</span>, <span class="number">30</span>, <span class="number">43</span>, <span class="number">87</span>, <span class="number">152</span>, <span class="number">132</span>, <span class="number">248</span>, <span class="number">211</span>, <span class="number">232</span>, <span class="number">202</span>, <span class="number">111</span>, <span class="number">150</span>,
-                                    <span class="number">194</span>, <span class="number">55</span>, <span class="number">135</span>, <span class="number">206</span>, <span class="number">48</span>, <span class="number">6</span>, <span class="number">93</span>, <span class="number">75</span>, <span class="number">75</span>, <span class="number">52</span>, <span class="number">140</span>, <span class="number">102</span>, <span class="number">163</span>,
-                                    <span class="number">91</span>, <span class="number">233</span>, <span class="number">50</span>, <span class="number">135</span>, <span class="number">233</span>, <span class="number">44</span>, <span class="number">1</span>])));
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">s</span>.<span class="ident">mac</span>
+                <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[
+                    <span class="number">233</span>, <span class="number">30</span>, <span class="number">43</span>, <span class="number">87</span>, <span class="number">152</span>, <span class="number">132</span>, <span class="number">248</span>, <span class="number">211</span>, <span class="number">232</span>, <span class="number">202</span>, <span class="number">111</span>, <span class="number">150</span>, <span class="number">194</span>, <span class="number">55</span>, <span class="number">135</span>, <span class="number">206</span>, <span class="number">48</span>,
+                    <span class="number">6</span>, <span class="number">93</span>, <span class="number">75</span>, <span class="number">75</span>, <span class="number">52</span>, <span class="number">140</span>, <span class="number">102</span>, <span class="number">163</span>, <span class="number">91</span>, <span class="number">233</span>, <span class="number">50</span>, <span class="number">135</span>, <span class="number">233</span>, <span class="number">44</span>, <span class="number">1</span>
+                ]))
+        );
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">ext</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;some-app-ext-data&quot;</span>.<span class="ident">to_string</span>()));
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">app</span> <span class="op">==</span> <span class="prelude-val">None</span>);
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">dlg</span> <span class="op">==</span> <span class="prelude-val">None</span>);
@@ -811,58 +924,71 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">to_str_few_fields</span>() {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">new</span>(<span class="prelude-val">Some</span>(<span class="string">&quot;dh37fgj492je&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;j4h3g2&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">8</span>, <span class="number">35</span>, <span class="number">182</span>, <span class="number">149</span>, <span class="number">42</span>, <span class="number">111</span>, <span class="number">33</span>, <span class="number">192</span>, <span class="number">19</span>, <span class="number">22</span>, <span class="number">94</span>,
-                                                <span class="number">43</span>, <span class="number">118</span>, <span class="number">176</span>, <span class="number">65</span>, <span class="number">69</span>, <span class="number">86</span>, <span class="number">4</span>, <span class="number">156</span>, <span class="number">184</span>, <span class="number">85</span>, <span class="number">107</span>,
-                                                <span class="number">249</span>, <span class="number">242</span>, <span class="number">172</span>, <span class="number">200</span>, <span class="number">66</span>, <span class="number">209</span>, <span class="number">57</span>, <span class="number">63</span>, <span class="number">38</span>, <span class="number">83</span>])),
-                            <span class="prelude-val">None</span>,
-                            <span class="prelude-val">None</span>,
-                            <span class="prelude-val">None</span>,
-                            <span class="prelude-val">None</span>)
-            .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">new</span>(
+            <span class="prelude-val">Some</span>(<span class="string">&quot;dh37fgj492je&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;j4h3g2&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[
+                <span class="number">8</span>, <span class="number">35</span>, <span class="number">182</span>, <span class="number">149</span>, <span class="number">42</span>, <span class="number">111</span>, <span class="number">33</span>, <span class="number">192</span>, <span class="number">19</span>, <span class="number">22</span>, <span class="number">94</span>, <span class="number">43</span>, <span class="number">118</span>, <span class="number">176</span>, <span class="number">65</span>, <span class="number">69</span>, <span class="number">86</span>, <span class="number">4</span>, <span class="number">156</span>,
+                <span class="number">184</span>, <span class="number">85</span>, <span class="number">107</span>, <span class="number">249</span>, <span class="number">242</span>, <span class="number">172</span>, <span class="number">200</span>, <span class="number">66</span>, <span class="number">209</span>, <span class="number">57</span>, <span class="number">63</span>, <span class="number">38</span>, <span class="number">83</span>,
+            ])),
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>,
+        )
+        .<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">formatted</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">s</span>);
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;got: {}&quot;</span>, <span class="ident">formatted</span>);
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">formatted</span> <span class="op">==</span>
-                <span class="string">&quot;id=\&quot;dh37fgj492je\&quot;, ts=\&quot;1353832234\&quot;, nonce=\&quot;j4h3g2\&quot;, \
-                 mac=\&quot;CCO2lSpvIcATFl4rdrBBRVYEnLhVa/nyrMhC0Tk/JlM=\&quot;&quot;</span>)
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">formatted</span>
+                <span class="op">==</span> <span class="string">&quot;id=\&quot;dh37fgj492je\&quot;, ts=\&quot;1353832234\&quot;, nonce=\&quot;j4h3g2\&quot;, \
+                    mac=\&quot;CCO2lSpvIcATFl4rdrBBRVYEnLhVa/nyrMhC0Tk/JlM=\&quot;&quot;</span>
+        )
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">to_str_maximal</span>() {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">new</span>(<span class="prelude-val">Some</span>(<span class="string">&quot;dh37fgj492je&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;j4h3g2&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">8</span>, <span class="number">35</span>, <span class="number">182</span>, <span class="number">149</span>, <span class="number">42</span>, <span class="number">111</span>, <span class="number">33</span>, <span class="number">192</span>, <span class="number">19</span>, <span class="number">22</span>, <span class="number">94</span>,
-                                                <span class="number">43</span>, <span class="number">118</span>, <span class="number">176</span>, <span class="number">65</span>, <span class="number">69</span>, <span class="number">86</span>, <span class="number">4</span>, <span class="number">156</span>, <span class="number">184</span>, <span class="number">85</span>, <span class="number">107</span>,
-                                                <span class="number">249</span>, <span class="number">242</span>, <span class="number">172</span>, <span class="number">200</span>, <span class="number">66</span>, <span class="number">209</span>, <span class="number">57</span>, <span class="number">63</span>, <span class="number">38</span>, <span class="number">83</span>])),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;my-ext-value&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;my-app&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;my-dlg&quot;</span>))
-            .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">new</span>(
+            <span class="prelude-val">Some</span>(<span class="string">&quot;dh37fgj492je&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;j4h3g2&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[
+                <span class="number">8</span>, <span class="number">35</span>, <span class="number">182</span>, <span class="number">149</span>, <span class="number">42</span>, <span class="number">111</span>, <span class="number">33</span>, <span class="number">192</span>, <span class="number">19</span>, <span class="number">22</span>, <span class="number">94</span>, <span class="number">43</span>, <span class="number">118</span>, <span class="number">176</span>, <span class="number">65</span>, <span class="number">69</span>, <span class="number">86</span>, <span class="number">4</span>, <span class="number">156</span>,
+                <span class="number">184</span>, <span class="number">85</span>, <span class="number">107</span>, <span class="number">249</span>, <span class="number">242</span>, <span class="number">172</span>, <span class="number">200</span>, <span class="number">66</span>, <span class="number">209</span>, <span class="number">57</span>, <span class="number">63</span>, <span class="number">38</span>, <span class="number">83</span>,
+            ])),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;my-ext-value&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;my-app&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;my-dlg&quot;</span>),
+        )
+        .<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">formatted</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">s</span>);
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;got: {}&quot;</span>, <span class="ident">formatted</span>);
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">formatted</span> <span class="op">==</span>
-                <span class="string">&quot;id=\&quot;dh37fgj492je\&quot;, ts=\&quot;1353832234\&quot;, nonce=\&quot;j4h3g2\&quot;, \
-                 mac=\&quot;CCO2lSpvIcATFl4rdrBBRVYEnLhVa/nyrMhC0Tk/JlM=\&quot;, ext=\&quot;my-ext-value\&quot;, \
-                 hash=\&quot;AQIDBA==\&quot;, app=\&quot;my-app\&quot;, dlg=\&quot;my-dlg\&quot;&quot;</span>)
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">formatted</span>
+                <span class="op">==</span> <span class="string">&quot;id=\&quot;dh37fgj492je\&quot;, ts=\&quot;1353832234\&quot;, nonce=\&quot;j4h3g2\&quot;, \
+                    mac=\&quot;CCO2lSpvIcATFl4rdrBBRVYEnLhVa/nyrMhC0Tk/JlM=\&quot;, ext=\&quot;my-ext-value\&quot;, \
+                    hash=\&quot;AQIDBA==\&quot;, app=\&quot;my-app\&quot;, dlg=\&quot;my-dlg\&quot;&quot;</span>
+        )
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">round_trip</span>() {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">new</span>(<span class="prelude-val">Some</span>(<span class="string">&quot;dh37fgj492je&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;j4h3g2&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">8</span>, <span class="number">35</span>, <span class="number">182</span>, <span class="number">149</span>, <span class="number">42</span>, <span class="number">111</span>, <span class="number">33</span>, <span class="number">192</span>, <span class="number">19</span>, <span class="number">22</span>, <span class="number">94</span>,
-                                                <span class="number">43</span>, <span class="number">118</span>, <span class="number">176</span>, <span class="number">65</span>, <span class="number">69</span>, <span class="number">86</span>, <span class="number">4</span>, <span class="number">156</span>, <span class="number">184</span>, <span class="number">85</span>, <span class="number">107</span>,
-                                                <span class="number">249</span>, <span class="number">242</span>, <span class="number">172</span>, <span class="number">200</span>, <span class="number">66</span>, <span class="number">209</span>, <span class="number">57</span>, <span class="number">63</span>, <span class="number">38</span>, <span class="number">83</span>])),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;my-ext-value&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;my-app&quot;</span>),
-                            <span class="prelude-val">Some</span>(<span class="string">&quot;my-dlg&quot;</span>))
-            .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">new</span>(
+            <span class="prelude-val">Some</span>(<span class="string">&quot;dh37fgj492je&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">1353832234</span>, <span class="number">0</span>)),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;j4h3g2&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">Mac</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[
+                <span class="number">8</span>, <span class="number">35</span>, <span class="number">182</span>, <span class="number">149</span>, <span class="number">42</span>, <span class="number">111</span>, <span class="number">33</span>, <span class="number">192</span>, <span class="number">19</span>, <span class="number">22</span>, <span class="number">94</span>, <span class="number">43</span>, <span class="number">118</span>, <span class="number">176</span>, <span class="number">65</span>, <span class="number">69</span>, <span class="number">86</span>, <span class="number">4</span>, <span class="number">156</span>,
+                <span class="number">184</span>, <span class="number">85</span>, <span class="number">107</span>, <span class="number">249</span>, <span class="number">242</span>, <span class="number">172</span>, <span class="number">200</span>, <span class="number">66</span>, <span class="number">209</span>, <span class="number">57</span>, <span class="number">63</span>, <span class="number">38</span>, <span class="number">83</span>,
+            ])),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;my-ext-value&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;my-app&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="string">&quot;my-dlg&quot;</span>),
+        )
+        .<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">formatted</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">s</span>);
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;got: {}&quot;</span>, <span class="ident">s</span>);
         <span class="kw">let</span> <span class="ident">s2</span> <span class="op">=</span> <span class="ident">Header</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">formatted</span>).<span class="ident">unwrap</span>();

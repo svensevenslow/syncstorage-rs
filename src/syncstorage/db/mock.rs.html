@@ -96,8 +96,8 @@
 }
 
 <span class="kw">impl</span> <span class="ident">DbPool</span> <span class="kw">for</span> <span class="ident">MockDbPool</span> {
-    <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">DbFuture</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">dyn</span> <span class="ident">Db</span><span class="op">&gt;&gt;</span> {
-        <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">future</span>::<span class="ident">ok</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">MockDb</span>::<span class="ident">new</span>()) <span class="kw">as</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">dyn</span> <span class="ident">Db</span><span class="op">&gt;</span>))
+    <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">DbFuture</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Db</span><span class="op">&gt;&gt;</span> {
+        <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">future</span>::<span class="ident">ok</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">MockDb</span>::<span class="ident">new</span>()) <span class="kw">as</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Db</span><span class="op">&gt;</span>))
     }
 }
 
@@ -131,7 +131,7 @@
         <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">future</span>::<span class="ident">ok</span>(()))
     }
 
-    <span class="kw">fn</span> <span class="ident">box_clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">dyn</span> <span class="ident">Db</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">box_clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Db</span><span class="op">&gt;</span> {
         <span class="ident">Box</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="ident">clone</span>())
     }
 

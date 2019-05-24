@@ -199,6 +199,9 @@
 <span id="199">199</span>
 <span id="200">200</span>
 <span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Error types for `web` modules.</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">single_match</span>)]</span>
@@ -207,15 +210,18 @@
 <span class="kw">use</span> <span class="ident">actix_web</span>::<span class="ident">http</span>::{<span class="ident">header</span>::<span class="ident">ToStrError</span>, <span class="ident">StatusCode</span>};
 <span class="kw">use</span> <span class="ident">actix_web</span>::<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">ActixError</span>;
 <span class="kw">use</span> <span class="ident">base64</span>::<span class="ident">DecodeError</span>;
-<span class="kw">use</span> <span class="ident">failure</span>::{<span class="ident">Backtrace</span>, <span class="ident">Context</span>, <span class="ident">Fail</span>, <span class="ident">SyncFailure</span>};
+<span class="kw">use</span> <span class="ident">failure</span>::{<span class="ident">Backtrace</span>, <span class="ident">Context</span>, <span class="ident">Fail</span>};
 <span class="kw">use</span> <span class="ident">hawk</span>::<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">ParseError</span>;
 <span class="kw">use</span> <span class="ident">hmac</span>::<span class="ident">crypto_mac</span>::{<span class="ident">InvalidKeyLength</span>, <span class="ident">MacError</span>};
-<span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">ser</span>::{<span class="ident">Serialize</span>, <span class="ident">SerializeSeq</span>, <span class="ident">Serializer</span>};
+<span class="kw">use</span> <span class="ident">serde</span>::{
+    <span class="ident">ser</span>::{<span class="ident">SerializeSeq</span>, <span class="ident">Serializer</span>},
+    <span class="ident">Serialize</span>,
+};
 <span class="kw">use</span> <span class="ident">serde_json</span>::{<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">JsonError</span>, <span class="ident">Value</span>};
 <span class="kw">use</span> <span class="ident">validator</span>;
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">extractors</span>::<span class="ident">RequestErrorLocation</span>;
-<span class="kw">use</span> <span class="ident">error</span>::<span class="ident">ApiError</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">error</span>::<span class="ident">ApiError</span>;
 
 <span class="doccomment">/// An error occurred during HAWK authentication.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
@@ -260,7 +266,7 @@
     <span class="ident">MissingPrefix</span>,
 
     <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;{}&quot;</span>, <span class="ident">_0</span>)]</span>
-    <span class="ident">Parse</span>(<span class="ident">SyncFailure</span><span class="op">&lt;</span><span class="ident">ParseError</span><span class="op">&gt;</span>),
+    <span class="ident">Parse</span>(<span class="ident">ParseError</span>),
 
     <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;id property is too short&quot;</span>)]</span>
     <span class="ident">TruncatedId</span>,
@@ -332,7 +338,7 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ParseError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ApiError</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">inner</span>: <span class="ident">ParseError</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">HawkErrorKind</span>::<span class="ident">Parse</span>(<span class="ident">SyncFailure</span>::<span class="ident">new</span>(<span class="ident">inner</span>)).<span class="ident">into</span>()
+        <span class="ident">HawkErrorKind</span>::<span class="ident">Parse</span>(<span class="ident">inner</span>).<span class="ident">into</span>()
     }
 }
 

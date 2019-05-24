@@ -243,6 +243,9 @@
 <span id="243">243</span>
 <span id="244">244</span>
 <span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Error types and macros.</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">single_match</span>)]</span>
@@ -250,11 +253,14 @@
 
 <span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">error</span>::<span class="ident">ResponseError</span>, <span class="ident">http</span>::<span class="ident">StatusCode</span>, <span class="ident">HttpResponse</span>};
 <span class="kw">use</span> <span class="ident">failure</span>::{<span class="ident">Backtrace</span>, <span class="ident">Context</span>, <span class="ident">Fail</span>};
-<span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">ser</span>::{<span class="ident">Serialize</span>, <span class="ident">SerializeMap</span>, <span class="ident">SerializeSeq</span>, <span class="ident">Serializer</span>};
+<span class="kw">use</span> <span class="ident">serde</span>::{
+    <span class="ident">ser</span>::{<span class="ident">SerializeMap</span>, <span class="ident">SerializeSeq</span>, <span class="ident">Serializer</span>},
+    <span class="ident">Serialize</span>,
+};
 
-<span class="kw">use</span> <span class="ident">db</span>::<span class="ident">error</span>::{<span class="ident">DbError</span>, <span class="ident">DbErrorKind</span>};
-<span class="kw">use</span> <span class="ident">web</span>::<span class="ident">error</span>::{<span class="ident">HawkError</span>, <span class="ident">ValidationError</span>, <span class="ident">ValidationErrorKind</span>};
-<span class="kw">use</span> <span class="ident">web</span>::<span class="ident">extractors</span>::<span class="ident">RequestErrorLocation</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">db</span>::<span class="ident">error</span>::{<span class="ident">DbError</span>, <span class="ident">DbErrorKind</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">web</span>::<span class="ident">error</span>::{<span class="ident">HawkError</span>, <span class="ident">ValidationError</span>, <span class="ident">ValidationErrorKind</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">web</span>::<span class="ident">extractors</span>::<span class="ident">RequestErrorLocation</span>;
 
 <span class="doccomment">/// Legacy Sync 1.1 error codes, which Sync 1.5 also returns by replacing the descriptive JSON</span>
 <span class="doccomment">/// information and replacing it with one of these error codes.</span>

@@ -858,11 +858,7 @@
 <span id="858">858</span>
 <span id="859">859</span>
 <span id="860">860</span>
-<span id="861">861</span>
-<span id="862">862</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">proc_macro_derive_resolution_fallback</span>)]</span>
-
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="self">self</span>, <span class="ident">cell</span>::<span class="ident">RefCell</span>, <span class="ident">collections</span>::<span class="ident">HashMap</span>, <span class="ident">fmt</span>, <span class="ident">ops</span>::<span class="ident">Deref</span>, <span class="ident">sync</span>::<span class="ident">Arc</span>};
 
 <span class="kw">use</span> <span class="ident">diesel</span>::{
@@ -887,13 +883,13 @@
     <span class="ident">pool</span>::<span class="ident">CollectionCache</span>,
     <span class="ident">schema</span>::{<span class="ident">bso</span>, <span class="ident">collections</span>, <span class="ident">user_collections</span>},
 };
-<span class="kw">use</span> <span class="ident">db</span>::{
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">db</span>::{
     <span class="ident">error</span>::{<span class="ident">DbError</span>, <span class="ident">DbErrorKind</span>},
     <span class="ident">params</span>, <span class="ident">results</span>,
     <span class="ident">util</span>::<span class="ident">SyncTimestamp</span>,
     <span class="ident">Db</span>, <span class="ident">DbFuture</span>, <span class="ident">Sorting</span>,
 };
-<span class="kw">use</span> <span class="ident">web</span>::<span class="ident">extractors</span>::{<span class="ident">BsoQueryParams</span>, <span class="ident">HawkIdentifier</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">web</span>::<span class="ident">extractors</span>::{<span class="ident">BsoQueryParams</span>, <span class="ident">HawkIdentifier</span>};
 
 <span class="macro">no_arg_sql_function</span><span class="macro">!</span>(<span class="ident">last_insert_id</span>, <span class="ident">Integer</span>);
 
@@ -1615,7 +1611,7 @@
         })))
     }
 
-    <span class="kw">fn</span> <span class="ident">box_clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">dyn</span> <span class="ident">Db</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">box_clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Db</span><span class="op">&gt;</span> {
         <span class="ident">Box</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="ident">clone</span>())
     }
 

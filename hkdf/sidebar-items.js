@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Hkdf",""],["InvalidLength",""]]});
+initSidebarItems({"struct":[["Hkdf","Structure representing the HKDF, capable of HKDF-Expand and HKDF-extract operations."],["InvalidLength","Structure for InvalidLength, used for output error handling."]]});

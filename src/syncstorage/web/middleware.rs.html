@@ -337,10 +337,10 @@
     <span class="ident">Future</span>,
 };
 
-<span class="kw">use</span> <span class="ident">db</span>::{<span class="ident">params</span>, <span class="ident">util</span>::<span class="ident">SyncTimestamp</span>, <span class="ident">Db</span>};
-<span class="kw">use</span> <span class="ident">error</span>::{<span class="ident">ApiError</span>, <span class="ident">ApiErrorKind</span>};
-<span class="kw">use</span> <span class="ident">server</span>::<span class="ident">ServerState</span>;
-<span class="kw">use</span> <span class="ident">web</span>::<span class="ident">extractors</span>::{<span class="ident">BsoParam</span>, <span class="ident">CollectionParam</span>, <span class="ident">HawkIdentifier</span>, <span class="ident">PreConditionHeader</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">db</span>::{<span class="ident">params</span>, <span class="ident">util</span>::<span class="ident">SyncTimestamp</span>, <span class="ident">Db</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">error</span>::{<span class="ident">ApiError</span>, <span class="ident">ApiErrorKind</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">server</span>::<span class="ident">ServerState</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">web</span>::<span class="ident">extractors</span>::{<span class="ident">BsoParam</span>, <span class="ident">CollectionParam</span>, <span class="ident">HawkIdentifier</span>, <span class="ident">PreConditionHeader</span>};
 
 <span class="doccomment">/// Default Timestamp used for WeaveTimestamp middleware.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
@@ -460,7 +460,7 @@
     }
 
     <span class="kw">fn</span> <span class="ident">response</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span>, <span class="ident">resp</span>: <span class="ident">HttpResponse</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Response</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">db</span>, <span class="ident">in_transaction</span>)) <span class="op">=</span> <span class="ident">req</span>.<span class="ident">extensions</span>().<span class="ident">get</span>::<span class="op">&lt;</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">dyn</span> <span class="ident">Db</span><span class="op">&gt;</span>, <span class="ident">bool</span>)<span class="op">&gt;</span>() {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">db</span>, <span class="ident">in_transaction</span>)) <span class="op">=</span> <span class="ident">req</span>.<span class="ident">extensions</span>().<span class="ident">get</span>::<span class="op">&lt;</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Db</span><span class="op">&gt;</span>, <span class="ident">bool</span>)<span class="op">&gt;</span>() {
             <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">in_transaction</span> {
                 <span class="kw">let</span> <span class="ident">fut</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">resp</span>.<span class="ident">error</span>() {
                     <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">db</span>.<span class="ident">commit</span>(),
@@ -492,7 +492,7 @@
                 <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Started</span>::<span class="ident">Response</span>(<span class="ident">e</span>.<span class="ident">into</span>())),
             };
         <span class="kw">let</span> <span class="ident">user_id</span> <span class="op">=</span> <span class="ident">HawkIdentifier</span>::<span class="ident">from_request</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>, <span class="kw-2">&amp;</span>())<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">db</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">dyn</span> <span class="ident">Db</span><span class="op">&gt;&gt;</span>::<span class="ident">from_request</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>, <span class="kw-2">&amp;</span>())<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">db</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Db</span><span class="op">&gt;&gt;</span>::<span class="ident">from_request</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>, <span class="kw-2">&amp;</span>())<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">collection</span> <span class="op">=</span> <span class="ident">CollectionParam</span>::<span class="ident">from_request</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>, <span class="kw-2">&amp;</span>())
             .<span class="ident">ok</span>()
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">v</span>.<span class="ident">collection</span>);
@@ -539,7 +539,7 @@
 
         <span class="comment">// Do the work needed to generate a timestamp otherwise</span>
         <span class="kw">let</span> <span class="ident">user_id</span> <span class="op">=</span> <span class="ident">HawkIdentifier</span>::<span class="ident">from_request</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>, <span class="kw-2">&amp;</span>())<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">db</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">dyn</span> <span class="ident">Db</span><span class="op">&gt;&gt;</span>::<span class="ident">from_request</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>, <span class="kw-2">&amp;</span>())<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">db</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Db</span><span class="op">&gt;&gt;</span>::<span class="ident">from_request</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>, <span class="kw-2">&amp;</span>())<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">collection</span> <span class="op">=</span> <span class="ident">CollectionParam</span>::<span class="ident">from_request</span>(<span class="kw-2">&amp;</span><span class="ident">req</span>, <span class="kw-2">&amp;</span>())
             .<span class="ident">ok</span>()
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">v</span>.<span class="ident">collection</span>);

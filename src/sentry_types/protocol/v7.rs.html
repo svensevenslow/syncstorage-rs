@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/sentry-types-0.8.1/src/protocol/v7.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>v7.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../sentry_types/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/sentry-types-0.11.0/src/protocol/v7.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>v7.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../sentry_types/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
 <span id="2">   2</span>
 <span id="3">   3</span>
 <span id="4">   4</span>
@@ -1453,37 +1453,6 @@
 <span id="1453">1453</span>
 <span id="1454">1454</span>
 <span id="1455">1455</span>
-<span id="1456">1456</span>
-<span id="1457">1457</span>
-<span id="1458">1458</span>
-<span id="1459">1459</span>
-<span id="1460">1460</span>
-<span id="1461">1461</span>
-<span id="1462">1462</span>
-<span id="1463">1463</span>
-<span id="1464">1464</span>
-<span id="1465">1465</span>
-<span id="1466">1466</span>
-<span id="1467">1467</span>
-<span id="1468">1468</span>
-<span id="1469">1469</span>
-<span id="1470">1470</span>
-<span id="1471">1471</span>
-<span id="1472">1472</span>
-<span id="1473">1473</span>
-<span id="1474">1474</span>
-<span id="1475">1475</span>
-<span id="1476">1476</span>
-<span id="1477">1477</span>
-<span id="1478">1478</span>
-<span id="1479">1479</span>
-<span id="1480">1480</span>
-<span id="1481">1481</span>
-<span id="1482">1482</span>
-<span id="1483">1483</span>
-<span id="1484">1484</span>
-<span id="1485">1485</span>
-<span id="1486">1486</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! The current latest sentry protocol version.</span>
 <span class="doccomment">//!</span>
@@ -1499,14 +1468,16 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>;
 
+<span class="kw">use</span> ::<span class="ident">debugid</span>::<span class="ident">DebugId</span>;
 <span class="kw">use</span> <span class="ident">chrono</span>::{<span class="ident">DateTime</span>, <span class="ident">Utc</span>};
-<span class="kw">use</span> <span class="ident">debugid</span>::<span class="ident">DebugId</span>;
+<span class="kw">use</span> <span class="ident">failure</span>::<span class="ident">Fail</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">Serializer</span>;
+<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 <span class="kw">use</span> <span class="ident">url</span>::<span class="ident">Url</span>;
 <span class="kw">use</span> <span class="ident">url_serde</span>;
 <span class="kw">use</span> <span class="ident">uuid</span>::<span class="ident">Uuid</span>;
 
-<span class="kw">use</span> <span class="ident">utils</span>::<span class="ident">ts_seconds_float</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">utils</span>::<span class="ident">ts_seconds_float</span>;
 
 <span class="doccomment">/// An arbitrary (JSON) value.</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">value</span> {
@@ -2075,15 +2046,14 @@
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>, <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Option::is_none&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">description</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// An optional link to online resources describing this error.</span>
-    <span class="attribute">#[<span class="ident">serde</span>(
-        <span class="ident">default</span>,
-        <span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;url_serde&quot;</span>,
-        <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Option::is_none&quot;</span>
-    )]</span>
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>, <span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;url_serde&quot;</span>, <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Option::is_none&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">help_link</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Url</span><span class="op">&gt;</span>,
     <span class="doccomment">/// An optional flag indicating whether this exception was handled.</span>
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>, <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Option::is_none&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">handled</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// An optional flag indicating a synthetic exception.</span>
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>, <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Option::is_none&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">synthetic</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Additional attributes depending on the mechanism type.</span>
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>, <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Map::is_empty&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">data</span>: <span class="ident">Map</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Value</span><span class="op">&gt;</span>,
@@ -2224,10 +2194,7 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Breadcrumb</span> {
     <span class="doccomment">/// The timestamp of the breadcrumb.  This is required.</span>
-    <span class="attribute">#[<span class="ident">serde</span>(
-        <span class="ident">default</span> <span class="op">=</span> <span class="string">&quot;breadcrumb::default_timestamp&quot;</span>,
-        <span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;ts_seconds_float&quot;</span>
-    )]</span>
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span> <span class="op">=</span> <span class="string">&quot;breadcrumb::default_timestamp&quot;</span>, <span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;ts_seconds_float&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">timestamp</span>: <span class="ident">DateTime</span><span class="op">&lt;</span><span class="ident">Utc</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The type of the breadcrumb.</span>
     <span class="attribute">#[<span class="ident">serde</span>(
@@ -2352,11 +2319,7 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Request</span> {
     <span class="doccomment">/// The current URL of the request.</span>
-    <span class="attribute">#[<span class="ident">serde</span>(
-        <span class="ident">default</span>,
-        <span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;url_serde&quot;</span>,
-        <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Option::is_none&quot;</span>
-    )]</span>
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>, <span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;url_serde&quot;</span>, <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Option::is_none&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">url</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Url</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The HTTP request method.</span>
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>, <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Option::is_none&quot;</span>)]</span>
@@ -2500,21 +2463,7 @@
     }
 }
 
-<span class="doccomment">/// Represents a repository reference.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RepoReference</span> {
-    <span class="doccomment">/// The name of the repository as it is registered in Sentry.</span>
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">String</span>,
-    <span class="doccomment">/// The optional prefix path to apply to source code when pairing it</span>
-    <span class="doccomment">/// up with files in the repository.</span>
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>, <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Option::is_none&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">prefix</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// The optional current revision of the local repository.</span>
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>, <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Option::is_none&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">revision</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-}
-
-<span class="doccomment">/// Represents a repository reference.</span>
+<span class="doccomment">/// Information on the SDK client.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ClientSdkInfo</span> {
     <span class="doccomment">/// The name of the SDK.</span>
@@ -2782,10 +2731,7 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Event</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="doccomment">/// The ID of the event</span>
-    <span class="attribute">#[<span class="ident">serde</span>(
-        <span class="ident">default</span> <span class="op">=</span> <span class="string">&quot;event::default_id&quot;</span>,
-        <span class="ident">serialize_with</span> <span class="op">=</span> <span class="string">&quot;event::serialize_id&quot;</span>
-    )]</span>
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span> <span class="op">=</span> <span class="string">&quot;event::default_id&quot;</span>, <span class="ident">serialize_with</span> <span class="op">=</span> <span class="string">&quot;event::serialize_id&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">event_id</span>: <span class="ident">Uuid</span>,
     <span class="doccomment">/// The level of the event (defaults to error)</span>
     <span class="attribute">#[<span class="ident">serde</span>(
@@ -2827,10 +2773,7 @@
     <span class="doccomment">/// The timestamp of when the event was created.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This can be set to `None` in which case the server will set a timestamp.</span>
-    <span class="attribute">#[<span class="ident">serde</span>(
-        <span class="ident">default</span> <span class="op">=</span> <span class="string">&quot;event::default_timestamp&quot;</span>,
-        <span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;ts_seconds_float&quot;</span>
-    )]</span>
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span> <span class="op">=</span> <span class="string">&quot;event::default_timestamp&quot;</span>, <span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;ts_seconds_float&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">timestamp</span>: <span class="ident">DateTime</span><span class="op">&lt;</span><span class="ident">Utc</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Optionally the server (or device) name of this event.</span>
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>, <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Option::is_none&quot;</span>)]</span>
@@ -2841,9 +2784,6 @@
     <span class="doccomment">/// An optional distribution identifer.</span>
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>, <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Option::is_none&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">dist</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Cow</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">str</span><span class="op">&gt;&gt;</span>,
-    <span class="doccomment">/// Repository references</span>
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>, <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Map::is_empty&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">repos</span>: <span class="ident">Map</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">RepoReference</span><span class="op">&gt;</span>,
     <span class="doccomment">/// An optional environment identifier.</span>
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>, <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Option::is_none&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">environment</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Cow</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">str</span><span class="op">&gt;&gt;</span>,
@@ -2902,7 +2842,6 @@
             <span class="ident">server_name</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
             <span class="ident">release</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
             <span class="ident">dist</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
-            <span class="ident">repos</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
             <span class="ident">environment</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
             <span class="ident">user</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
             <span class="ident">request</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
@@ -2948,7 +2887,6 @@
             <span class="ident">server_name</span>: <span class="self">self</span>.<span class="ident">server_name</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">Cow</span>::<span class="ident">Owned</span>(<span class="ident">x</span>.<span class="ident">into_owned</span>())),
             <span class="ident">release</span>: <span class="self">self</span>.<span class="ident">release</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">Cow</span>::<span class="ident">Owned</span>(<span class="ident">x</span>.<span class="ident">into_owned</span>())),
             <span class="ident">dist</span>: <span class="self">self</span>.<span class="ident">dist</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">Cow</span>::<span class="ident">Owned</span>(<span class="ident">x</span>.<span class="ident">into_owned</span>())),
-            <span class="ident">repos</span>: <span class="self">self</span>.<span class="ident">repos</span>,
             <span class="ident">environment</span>: <span class="self">self</span>.<span class="ident">environment</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">Cow</span>::<span class="ident">Owned</span>(<span class="ident">x</span>.<span class="ident">into_owned</span>())),
             <span class="ident">user</span>: <span class="self">self</span>.<span class="ident">user</span>,
             <span class="ident">request</span>: <span class="self">self</span>.<span class="ident">request</span>,

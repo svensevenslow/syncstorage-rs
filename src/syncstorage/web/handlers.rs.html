@@ -368,6 +368,7 @@
 <span id="368">368</span>
 <span id="369">369</span>
 <span id="370">370</span>
+<span id="371">371</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! API Handlers</span>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
@@ -375,11 +376,12 @@
 <span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">http</span>::<span class="ident">StatusCode</span>, <span class="ident">FutureResponse</span>, <span class="ident">HttpResponse</span>, <span class="ident">State</span>};
 <span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">future</span>::{<span class="self">self</span>, <span class="ident">Either</span>, <span class="ident">Future</span>};
 <span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">Serialize</span>;
+<span class="kw">use</span> <span class="ident">serde_json</span>::<span class="ident">json</span>;
 
-<span class="kw">use</span> <span class="ident">db</span>::{<span class="ident">params</span>, <span class="ident">results</span>::<span class="ident">Paginated</span>, <span class="ident">DbError</span>, <span class="ident">DbErrorKind</span>};
-<span class="kw">use</span> <span class="ident">error</span>::<span class="ident">ApiError</span>;
-<span class="kw">use</span> <span class="ident">server</span>::<span class="ident">ServerState</span>;
-<span class="kw">use</span> <span class="ident">web</span>::<span class="ident">extractors</span>::{
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">db</span>::{<span class="ident">params</span>, <span class="ident">results</span>::<span class="ident">Paginated</span>, <span class="ident">DbError</span>, <span class="ident">DbErrorKind</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">error</span>::<span class="ident">ApiError</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">server</span>::<span class="ident">ServerState</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">web</span>::<span class="ident">extractors</span>::{
     <span class="ident">BsoPutRequest</span>, <span class="ident">BsoRequest</span>, <span class="ident">CollectionPostRequest</span>, <span class="ident">CollectionRequest</span>, <span class="ident">HawkIdentifier</span>,
     <span class="ident">MetaRequest</span>, <span class="ident">ReplyFormat</span>,
 };

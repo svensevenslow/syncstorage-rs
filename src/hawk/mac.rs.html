@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/hawk-1.0.4/src/mac.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mac.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../hawk/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/hawk-3.0.0/src/mac.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mac.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../hawk/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -168,14 +168,42 @@
 <span id="168">168</span>
 <span id="169">169</span>
 <span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="ident">credentials</span>::<span class="ident">Key</span>;
-<span class="kw">use</span> <span class="ident">base64</span>;
-<span class="kw">use</span> <span class="ident">ring</span>::<span class="ident">constant_time</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">credentials</span>::<span class="ident">Key</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">error</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">base64</span>::{<span class="ident">display</span>::<span class="ident">Base64Display</span>, <span class="ident">STANDARD</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">Write</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Deref</span>;
-<span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">time</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::{<span class="ident">SystemTime</span>, <span class="ident">UNIX_EPOCH</span>};
 
 <span class="doccomment">/// The kind of MAC calcuation (corresponding to the first line of the message)</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">MacType</span> {
@@ -192,45 +220,54 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Mac</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>);
 
 <span class="kw">impl</span> <span class="ident">Mac</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">mac_type</span>: <span class="ident">MacType</span>,
-               <span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">Key</span>,
-               <span class="ident">ts</span>: <span class="ident">time</span>::<span class="ident">Timespec</span>,
-               <span class="ident">nonce</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-               <span class="ident">method</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-               <span class="ident">host</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-               <span class="ident">port</span>: <span class="ident">u16</span>,
-               <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-               <span class="ident">hash</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>,
-               <span class="ident">ext</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>)
-               <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Mac</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(
+        <span class="ident">mac_type</span>: <span class="ident">MacType</span>,
+        <span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">Key</span>,
+        <span class="ident">ts</span>: <span class="ident">SystemTime</span>,
+        <span class="ident">nonce</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+        <span class="ident">method</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+        <span class="ident">host</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+        <span class="ident">port</span>: <span class="ident">u16</span>,
+        <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+        <span class="ident">hash</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>,
+        <span class="ident">ext</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>,
+    ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Mac</span><span class="op">&gt;</span> {
+        <span class="comment">// Note: there&#39;s a \n after each item.</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(
+            <span class="number">15</span> <span class="op">+</span> <span class="number">1</span> <span class="op">+</span> <span class="comment">// mac_type (worst case since it doesn&#39;t really matter)</span>
+            <span class="number">10</span> <span class="op">+</span> <span class="number">1</span> <span class="op">+</span> <span class="comment">// ts (in practice this will be 10 bytes)</span>
+            <span class="ident">nonce</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="number">1</span> <span class="op">+</span>
+            <span class="ident">host</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="number">1</span> <span class="op">+</span>
+            <span class="number">6</span> <span class="op">+</span> <span class="number">1</span> <span class="op">+</span> <span class="comment">// Longer than 6 bytes of port seems very unlikely</span>
+            <span class="ident">path</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="number">1</span> <span class="op">+</span>
+            <span class="ident">hash</span>.<span class="ident">map_or</span>(<span class="number">0</span>, <span class="op">|</span><span class="ident">h</span><span class="op">|</span> <span class="ident">h</span>.<span class="ident">len</span>() <span class="op">*</span> <span class="number">4</span> <span class="op">/</span> <span class="number">3</span>) <span class="op">+</span> <span class="number">1</span> <span class="op">+</span>
+            <span class="ident">ext</span>.<span class="ident">map_or</span>(<span class="number">0</span>, <span class="ident">str</span>::<span class="ident">len</span>) <span class="op">+</span> <span class="number">1</span>,
+        );
 
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">buffer</span>,
-               <span class="string">&quot;{}\n&quot;</span>,
-               <span class="kw">match</span> <span class="ident">mac_type</span> {
-                   <span class="ident">MacType</span>::<span class="ident">Header</span> <span class="op">=&gt;</span> <span class="string">&quot;hawk.1.header&quot;</span>,
-                   <span class="ident">MacType</span>::<span class="ident">Response</span> <span class="op">=&gt;</span> <span class="string">&quot;hawk.1.response&quot;</span>,
-                   <span class="ident">MacType</span>::<span class="ident">Bewit</span> <span class="op">=&gt;</span> <span class="string">&quot;hawk.1.bewit&quot;</span>,
-               })<span class="question-mark">?</span>;
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="string">&quot;{}\n&quot;</span>, <span class="ident">ts</span>.<span class="ident">sec</span>)<span class="question-mark">?</span>;
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="string">&quot;{}\n&quot;</span>, <span class="ident">nonce</span>)<span class="question-mark">?</span>;
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="string">&quot;{}\n&quot;</span>, <span class="ident">method</span>)<span class="question-mark">?</span>;
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="string">&quot;{}\n&quot;</span>, <span class="ident">path</span>)<span class="question-mark">?</span>;
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="string">&quot;{}\n&quot;</span>, <span class="ident">host</span>)<span class="question-mark">?</span>;
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="string">&quot;{}\n&quot;</span>, <span class="ident">port</span>)<span class="question-mark">?</span>;
+        <span class="macro">writeln</span><span class="macro">!</span>(
+            <span class="ident">buffer</span>,
+            <span class="string">&quot;{mac_type}\n{ts}\n{nonce}\n{method}\n{path}\n{host}\n{port}&quot;</span>,
+            <span class="ident">mac_type</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">mac_type</span> {
+                <span class="ident">MacType</span>::<span class="ident">Header</span> <span class="op">=&gt;</span> <span class="string">&quot;hawk.1.header&quot;</span>,
+                <span class="ident">MacType</span>::<span class="ident">Response</span> <span class="op">=&gt;</span> <span class="string">&quot;hawk.1.response&quot;</span>,
+                <span class="ident">MacType</span>::<span class="ident">Bewit</span> <span class="op">=&gt;</span> <span class="string">&quot;hawk.1.bewit&quot;</span>,
+            },
+            <span class="ident">ts</span> <span class="op">=</span> <span class="ident">ts</span>.<span class="ident">duration_since</span>(<span class="ident">UNIX_EPOCH</span>).<span class="ident">unwrap_or_default</span>().<span class="ident">as_secs</span>(),
+            <span class="ident">nonce</span> <span class="op">=</span> <span class="ident">nonce</span>,
+            <span class="ident">method</span> <span class="op">=</span> <span class="ident">method</span>,
+            <span class="ident">path</span> <span class="op">=</span> <span class="ident">path</span>,
+            <span class="ident">host</span> <span class="op">=</span> <span class="ident">host</span>,
+            <span class="ident">port</span> <span class="op">=</span> <span class="ident">port</span>,
+        )<span class="question-mark">?</span>;
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">h</span>) <span class="op">=</span> <span class="ident">hash</span> {
-            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="string">&quot;{}\n&quot;</span>, <span class="ident">base64</span>::<span class="ident">encode</span>(<span class="ident">h</span>))<span class="question-mark">?</span>;
+            <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">Base64Display</span>::<span class="ident">with_config</span>(<span class="ident">h</span>, <span class="ident">STANDARD</span>))<span class="question-mark">?</span>;
         } <span class="kw">else</span> {
-            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="string">&quot;\n&quot;</span>)<span class="question-mark">?</span>;
+            <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">buffer</span>)<span class="question-mark">?</span>;
         }
+        <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">ext</span>.<span class="ident">unwrap_or_default</span>())<span class="question-mark">?</span>;
 
-        <span class="kw">match</span> <span class="ident">ext</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="string">&quot;{}\n&quot;</span>, <span class="ident">e</span>)<span class="question-mark">?</span>,
-            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="string">&quot;\n&quot;</span>)<span class="question-mark">?</span>,
-        };
-
-        <span class="prelude-val">Ok</span>(<span class="ident">Mac</span>(<span class="ident">key</span>.<span class="ident">sign</span>(<span class="ident">buffer</span>.<span class="ident">as_ref</span>())))
+        <span class="prelude-val">Ok</span>(<span class="ident">Mac</span>(<span class="ident">key</span>.<span class="ident">sign</span>(<span class="ident">buffer</span>.<span class="ident">as_ref</span>())<span class="question-mark">?</span>))
     }
 }
 
@@ -256,87 +293,108 @@
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">Mac</span> {
     <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">Mac</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">match</span> <span class="ident">constant_time</span>::<span class="ident">verify_slices_are_equal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[..], <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span>[..]) {
-            <span class="prelude-val">Ok</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-            <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="bool-val">false</span>,
-        }
+        <span class="kw">crate</span>::<span class="ident">crypto</span>::<span class="ident">constant_time_compare</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span>)
     }
 }
 
-
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">test</span>, <span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_ring&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_openssl&quot;</span>)))]</span>
 <span class="kw">mod</span> <span class="ident">test</span> {
     <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">Mac</span>, <span class="ident">MacType</span>};
-    <span class="kw">use</span> <span class="ident">time</span>::<span class="ident">Timespec</span>;
-    <span class="kw">use</span> <span class="ident">credentials</span>::<span class="ident">Key</span>;
-    <span class="kw">use</span> <span class="ident">ring</span>::<span class="ident">digest</span>;
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">credentials</span>::<span class="ident">Key</span>;
+    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::{<span class="ident">Duration</span>, <span class="ident">SystemTime</span>, <span class="ident">UNIX_EPOCH</span>};
 
     <span class="kw">fn</span> <span class="ident">key</span>() <span class="op">-&gt;</span> <span class="ident">Key</span> {
-        <span class="ident">Key</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">11u8</span>, <span class="number">19</span>, <span class="number">228</span>, <span class="number">209</span>, <span class="number">79</span>, <span class="number">189</span>, <span class="number">200</span>, <span class="number">59</span>, <span class="number">166</span>, <span class="number">47</span>, <span class="number">86</span>, <span class="number">254</span>, <span class="number">235</span>, <span class="number">184</span>, <span class="number">120</span>, <span class="number">197</span>,
-                      <span class="number">75</span>, <span class="number">152</span>, <span class="number">201</span>, <span class="number">79</span>, <span class="number">115</span>, <span class="number">61</span>, <span class="number">111</span>, <span class="number">242</span>, <span class="number">219</span>, <span class="number">187</span>, <span class="number">173</span>, <span class="number">14</span>, <span class="number">227</span>, <span class="number">108</span>, <span class="number">60</span>, <span class="number">232</span>],
-                 <span class="kw-2">&amp;</span><span class="ident">digest</span>::<span class="ident">SHA256</span>)
+        <span class="ident">Key</span>::<span class="ident">new</span>(
+            <span class="macro">vec</span><span class="macro">!</span>[
+                <span class="number">11u8</span>, <span class="number">19</span>, <span class="number">228</span>, <span class="number">209</span>, <span class="number">79</span>, <span class="number">189</span>, <span class="number">200</span>, <span class="number">59</span>, <span class="number">166</span>, <span class="number">47</span>, <span class="number">86</span>, <span class="number">254</span>, <span class="number">235</span>, <span class="number">184</span>, <span class="number">120</span>, <span class="number">197</span>, <span class="number">75</span>,
+                <span class="number">152</span>, <span class="number">201</span>, <span class="number">79</span>, <span class="number">115</span>, <span class="number">61</span>, <span class="number">111</span>, <span class="number">242</span>, <span class="number">219</span>, <span class="number">187</span>, <span class="number">173</span>, <span class="number">14</span>, <span class="number">227</span>, <span class="number">108</span>, <span class="number">60</span>, <span class="number">232</span>,
+            ],
+            <span class="kw">crate</span>::<span class="ident">SHA256</span>,
+        ).<span class="ident">unwrap</span>()
+    }
+
+    <span class="kw">fn</span> <span class="ident">sys_time</span>(<span class="ident">secs</span>: <span class="ident">u64</span>, <span class="ident">ns</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="ident">SystemTime</span> {
+        <span class="ident">UNIX_EPOCH</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">new</span>(<span class="ident">secs</span>, <span class="ident">ns</span>)
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_make_mac</span>() {
         <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>();
-        <span class="kw">let</span> <span class="ident">mac</span> <span class="op">=</span> <span class="ident">Mac</span>::<span class="ident">new</span>(<span class="ident">MacType</span>::<span class="ident">Header</span>,
-                           <span class="kw-2">&amp;</span><span class="ident">key</span>,
-                           <span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1000</span>, <span class="number">100</span>),
-                           <span class="string">&quot;nonny&quot;</span>,
-                           <span class="string">&quot;POST&quot;</span>,
-                           <span class="string">&quot;mysite.com&quot;</span>,
-                           <span class="number">443</span>,
-                           <span class="string">&quot;/v1/api&quot;</span>,
-                           <span class="prelude-val">None</span>,
-                           <span class="prelude-val">None</span>)
-            .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">mac</span> <span class="op">=</span> <span class="ident">Mac</span>::<span class="ident">new</span>(
+            <span class="ident">MacType</span>::<span class="ident">Header</span>,
+            <span class="kw-2">&amp;</span><span class="ident">key</span>,
+            <span class="ident">sys_time</span>(<span class="number">1000</span>, <span class="number">100</span>),
+            <span class="string">&quot;nonny&quot;</span>,
+            <span class="string">&quot;POST&quot;</span>,
+            <span class="string">&quot;mysite.com&quot;</span>,
+            <span class="number">443</span>,
+            <span class="string">&quot;/v1/api&quot;</span>,
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>,
+        )
+        .<span class="ident">unwrap</span>();
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;got {:?}&quot;</span>, <span class="ident">mac</span>);
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">mac</span>.<span class="number">0</span> <span class="op">==</span>
-                <span class="macro">vec</span><span class="macro">!</span>[<span class="number">192</span>, <span class="number">227</span>, <span class="number">235</span>, <span class="number">121</span>, <span class="number">157</span>, <span class="number">185</span>, <span class="number">197</span>, <span class="number">79</span>, <span class="number">189</span>, <span class="number">214</span>, <span class="number">235</span>, <span class="number">139</span>, <span class="number">9</span>, <span class="number">232</span>, <span class="number">99</span>, <span class="number">55</span>,
-                     <span class="number">67</span>, <span class="number">30</span>, <span class="number">68</span>, <span class="number">0</span>, <span class="number">150</span>, <span class="number">187</span>, <span class="number">192</span>, <span class="number">238</span>, <span class="number">21</span>, <span class="number">200</span>, <span class="number">209</span>, <span class="number">107</span>, <span class="number">245</span>, <span class="number">159</span>, <span class="number">243</span>, <span class="number">178</span>]);
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">mac</span>.<span class="number">0</span>
+                <span class="op">==</span> <span class="macro">vec</span><span class="macro">!</span>[
+                    <span class="number">192</span>, <span class="number">227</span>, <span class="number">235</span>, <span class="number">121</span>, <span class="number">157</span>, <span class="number">185</span>, <span class="number">197</span>, <span class="number">79</span>, <span class="number">189</span>, <span class="number">214</span>, <span class="number">235</span>, <span class="number">139</span>, <span class="number">9</span>, <span class="number">232</span>, <span class="number">99</span>, <span class="number">55</span>, <span class="number">67</span>,
+                    <span class="number">30</span>, <span class="number">68</span>, <span class="number">0</span>, <span class="number">150</span>, <span class="number">187</span>, <span class="number">192</span>, <span class="number">238</span>, <span class="number">21</span>, <span class="number">200</span>, <span class="number">209</span>, <span class="number">107</span>, <span class="number">245</span>, <span class="number">159</span>, <span class="number">243</span>, <span class="number">178</span>
+                ]
+        );
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_make_mac_hash</span>() {
         <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>();
         <span class="kw">let</span> <span class="ident">hash</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
-        <span class="kw">let</span> <span class="ident">mac</span> <span class="op">=</span> <span class="ident">Mac</span>::<span class="ident">new</span>(<span class="ident">MacType</span>::<span class="ident">Header</span>,
-                           <span class="kw-2">&amp;</span><span class="ident">key</span>,
-                           <span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1000</span>, <span class="number">100</span>),
-                           <span class="string">&quot;nonny&quot;</span>,
-                           <span class="string">&quot;POST&quot;</span>,
-                           <span class="string">&quot;mysite.com&quot;</span>,
-                           <span class="number">443</span>,
-                           <span class="string">&quot;/v1/api&quot;</span>,
-                           <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">hash</span>),
-                           <span class="prelude-val">None</span>)
-            .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">mac</span> <span class="op">=</span> <span class="ident">Mac</span>::<span class="ident">new</span>(
+            <span class="ident">MacType</span>::<span class="ident">Header</span>,
+            <span class="kw-2">&amp;</span><span class="ident">key</span>,
+            <span class="ident">sys_time</span>(<span class="number">1000</span>, <span class="number">100</span>),
+            <span class="string">&quot;nonny&quot;</span>,
+            <span class="string">&quot;POST&quot;</span>,
+            <span class="string">&quot;mysite.com&quot;</span>,
+            <span class="number">443</span>,
+            <span class="string">&quot;/v1/api&quot;</span>,
+            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">hash</span>),
+            <span class="prelude-val">None</span>,
+        )
+        .<span class="ident">unwrap</span>();
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;got {:?}&quot;</span>, <span class="ident">mac</span>);
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">mac</span>.<span class="number">0</span> <span class="op">==</span>
-                <span class="macro">vec</span><span class="macro">!</span>[<span class="number">61</span>, <span class="number">128</span>, <span class="number">208</span>, <span class="number">253</span>, <span class="number">88</span>, <span class="number">135</span>, <span class="number">190</span>, <span class="number">196</span>, <span class="number">1</span>, <span class="number">69</span>, <span class="number">153</span>, <span class="number">193</span>, <span class="number">124</span>, <span class="number">4</span>, <span class="number">195</span>, <span class="number">87</span>, <span class="number">38</span>,
-                     <span class="number">96</span>, <span class="number">181</span>, <span class="number">34</span>, <span class="number">65</span>, <span class="number">234</span>, <span class="number">58</span>, <span class="number">157</span>, <span class="number">175</span>, <span class="number">175</span>, <span class="number">145</span>, <span class="number">151</span>, <span class="number">61</span>, <span class="number">0</span>, <span class="number">57</span>, <span class="number">5</span>]);
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">mac</span>.<span class="number">0</span>
+                <span class="op">==</span> <span class="macro">vec</span><span class="macro">!</span>[
+                    <span class="number">61</span>, <span class="number">128</span>, <span class="number">208</span>, <span class="number">253</span>, <span class="number">88</span>, <span class="number">135</span>, <span class="number">190</span>, <span class="number">196</span>, <span class="number">1</span>, <span class="number">69</span>, <span class="number">153</span>, <span class="number">193</span>, <span class="number">124</span>, <span class="number">4</span>, <span class="number">195</span>, <span class="number">87</span>, <span class="number">38</span>, <span class="number">96</span>,
+                    <span class="number">181</span>, <span class="number">34</span>, <span class="number">65</span>, <span class="number">234</span>, <span class="number">58</span>, <span class="number">157</span>, <span class="number">175</span>, <span class="number">175</span>, <span class="number">145</span>, <span class="number">151</span>, <span class="number">61</span>, <span class="number">0</span>, <span class="number">57</span>, <span class="number">5</span>
+                ]
+        );
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_make_mac_ext</span>() {
         <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>();
         <span class="kw">let</span> <span class="ident">ext</span> <span class="op">=</span> <span class="string">&quot;ext-data&quot;</span>.<span class="ident">to_string</span>();
-        <span class="kw">let</span> <span class="ident">mac</span> <span class="op">=</span> <span class="ident">Mac</span>::<span class="ident">new</span>(<span class="ident">MacType</span>::<span class="ident">Header</span>,
-                           <span class="kw-2">&amp;</span><span class="ident">key</span>,
-                           <span class="ident">Timespec</span>::<span class="ident">new</span>(<span class="number">1000</span>, <span class="number">100</span>),
-                           <span class="string">&quot;nonny&quot;</span>,
-                           <span class="string">&quot;POST&quot;</span>,
-                           <span class="string">&quot;mysite.com&quot;</span>,
-                           <span class="number">443</span>,
-                           <span class="string">&quot;/v1/api&quot;</span>,
-                           <span class="prelude-val">None</span>,
-                           <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">ext</span>))
-            .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">mac</span> <span class="op">=</span> <span class="ident">Mac</span>::<span class="ident">new</span>(
+            <span class="ident">MacType</span>::<span class="ident">Header</span>,
+            <span class="kw-2">&amp;</span><span class="ident">key</span>,
+            <span class="ident">sys_time</span>(<span class="number">1000</span>, <span class="number">100</span>),
+            <span class="string">&quot;nonny&quot;</span>,
+            <span class="string">&quot;POST&quot;</span>,
+            <span class="string">&quot;mysite.com&quot;</span>,
+            <span class="number">443</span>,
+            <span class="string">&quot;/v1/api&quot;</span>,
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">ext</span>),
+        )
+        .<span class="ident">unwrap</span>();
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;got {:?}&quot;</span>, <span class="ident">mac</span>);
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">mac</span>.<span class="number">0</span> <span class="op">==</span>
-                <span class="macro">vec</span><span class="macro">!</span>[<span class="number">187</span>, <span class="number">104</span>, <span class="number">238</span>, <span class="number">100</span>, <span class="number">168</span>, <span class="number">112</span>, <span class="number">37</span>, <span class="number">68</span>, <span class="number">187</span>, <span class="number">141</span>, <span class="number">168</span>, <span class="number">155</span>, <span class="number">177</span>, <span class="number">193</span>, <span class="number">113</span>, <span class="number">0</span>,
-                     <span class="number">50</span>, <span class="number">105</span>, <span class="number">127</span>, <span class="number">36</span>, <span class="number">24</span>, <span class="number">117</span>, <span class="number">200</span>, <span class="number">251</span>, <span class="number">138</span>, <span class="number">199</span>, <span class="number">108</span>, <span class="number">14</span>, <span class="number">105</span>, <span class="number">123</span>, <span class="number">234</span>, <span class="number">119</span>]);
+        <span class="macro">assert</span><span class="macro">!</span>(
+            <span class="ident">mac</span>.<span class="number">0</span>
+                <span class="op">==</span> <span class="macro">vec</span><span class="macro">!</span>[
+                    <span class="number">187</span>, <span class="number">104</span>, <span class="number">238</span>, <span class="number">100</span>, <span class="number">168</span>, <span class="number">112</span>, <span class="number">37</span>, <span class="number">68</span>, <span class="number">187</span>, <span class="number">141</span>, <span class="number">168</span>, <span class="number">155</span>, <span class="number">177</span>, <span class="number">193</span>, <span class="number">113</span>, <span class="number">0</span>, <span class="number">50</span>,
+                    <span class="number">105</span>, <span class="number">127</span>, <span class="number">36</span>, <span class="number">24</span>, <span class="number">117</span>, <span class="number">200</span>, <span class="number">251</span>, <span class="number">138</span>, <span class="number">199</span>, <span class="number">108</span>, <span class="number">14</span>, <span class="number">105</span>, <span class="number">123</span>, <span class="number">234</span>, <span class="number">119</span>
+                ]
+        );
     }
 }
 </pre></div>

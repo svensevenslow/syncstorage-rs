@@ -533,6 +533,8 @@
 <span id="533">533</span>
 <span id="534">534</span>
 <span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Types for parsing and authenticating HAWK headers.</span>
 <span class="doccomment">//! Matches the [Python logic](https://github.com/mozilla-services/tokenlib).</span>
@@ -541,10 +543,10 @@
 <span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">FromRequest</span>, <span class="ident">HttpRequest</span>};
 <span class="kw">use</span> <span class="ident">base64</span>;
 <span class="kw">use</span> <span class="ident">chrono</span>::<span class="ident">offset</span>::<span class="ident">Utc</span>;
-<span class="kw">use</span> <span class="ident">hawk</span>::{<span class="ident">Header</span> <span class="kw">as</span> <span class="ident">HawkHeader</span>, <span class="ident">Key</span>, <span class="ident">RequestBuilder</span>};
+<span class="kw">use</span> <span class="ident">hawk</span>::{<span class="self">self</span>, <span class="ident">Header</span> <span class="kw">as</span> <span class="ident">HawkHeader</span>, <span class="ident">Key</span>, <span class="ident">RequestBuilder</span>};
 <span class="kw">use</span> <span class="ident">hkdf</span>::<span class="ident">Hkdf</span>;
 <span class="kw">use</span> <span class="ident">hmac</span>::{<span class="ident">Hmac</span>, <span class="ident">Mac</span>};
-<span class="kw">use</span> <span class="ident">ring</span>;
+<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 <span class="kw">use</span> <span class="ident">serde_json</span>;
 <span class="kw">use</span> <span class="ident">sha2</span>::<span class="ident">Sha256</span>;
 <span class="kw">use</span> <span class="ident">time</span>::<span class="ident">Duration</span>;
@@ -553,9 +555,9 @@
     <span class="ident">error</span>::{<span class="ident">HawkErrorKind</span>, <span class="ident">ValidationErrorKind</span>},
     <span class="ident">extractors</span>::<span class="ident">RequestErrorLocation</span>,
 };
-<span class="kw">use</span> <span class="ident">error</span>::<span class="ident">ApiResult</span>;
-<span class="kw">use</span> <span class="ident">server</span>::<span class="ident">ServerState</span>;
-<span class="kw">use</span> <span class="ident">settings</span>::<span class="ident">Secrets</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">error</span>::{<span class="ident">ApiErrorKind</span>, <span class="ident">ApiResult</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">server</span>::<span class="ident">ServerState</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">settings</span>::<span class="ident">Secrets</span>;
 
 <span class="doccomment">/// A parsed and authenticated JSON payload</span>
 <span class="doccomment">/// extracted from the signed `id` property</span>
@@ -613,10 +615,12 @@
         <span class="kw">let</span> <span class="ident">request</span> <span class="op">=</span> <span class="ident">RequestBuilder</span>::<span class="ident">new</span>(<span class="ident">method</span>, <span class="ident">host</span>, <span class="ident">port</span>, <span class="ident">path</span>).<span class="ident">request</span>();
         <span class="kw">if</span> <span class="ident">request</span>.<span class="ident">validate_header</span>(
             <span class="kw-2">&amp;</span><span class="ident">header</span>,
-            <span class="kw-2">&amp;</span><span class="ident">Key</span>::<span class="ident">new</span>(<span class="ident">token_secret</span>.<span class="ident">as_bytes</span>(), <span class="kw-2">&amp;</span><span class="ident">ring</span>::<span class="ident">digest</span>::<span class="ident">SHA256</span>),
+            <span class="kw-2">&amp;</span><span class="ident">Key</span>::<span class="ident">new</span>(<span class="ident">token_secret</span>.<span class="ident">as_bytes</span>(), <span class="ident">hawk</span>::<span class="ident">DigestAlgorithm</span>::<span class="ident">Sha256</span>)<span class="question-mark">?</span>,
             <span class="comment">// Allow plenty of leeway for clock skew, because</span>
             <span class="comment">// client timestamps tend to be all over the shop</span>
-            <span class="ident">Duration</span>::<span class="ident">weeks</span>(<span class="number">52</span>),
+            <span class="ident">Duration</span>::<span class="ident">weeks</span>(<span class="number">52</span>)
+                .<span class="ident">to_std</span>()
+                .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ApiErrorKind</span>::<span class="ident">Internal</span>(<span class="string">&quot;Duration::weeks&quot;</span>.<span class="ident">to_owned</span>()))<span class="question-mark">?</span>,
         ) {
             <span class="prelude-val">Ok</span>(<span class="ident">payload</span>)
         } <span class="kw">else</span> {
@@ -728,7 +732,7 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
     <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">HawkPayload</span>, <span class="ident">Secrets</span>};
-    <span class="kw">use</span> <span class="ident">settings</span>::<span class="ident">Settings</span>;
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">settings</span>::<span class="ident">Settings</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">valid_header</span>() {
