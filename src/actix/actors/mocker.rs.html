@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.8.2/src/actors/mocker.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mocker.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../actix/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1"> 1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.7.9/src/actors/mocker.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mocker.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../actix/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1"> 1</span>
 <span id="2"> 2</span>
 <span id="3"> 3</span>
 <span id="4"> 4</span>
@@ -82,11 +82,8 @@
 <span id="82">82</span>
 <span id="83">83</span>
 <span id="84">84</span>
-<span id="85">85</span>
-<span id="86">86</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="doccomment">//! Mocking utility actor.</span>
-<span class="doccomment">//!</span>
+<span class="doccomment">//! Mocking utility actor</span>
 <span class="doccomment">//! This actor wraps any actor, and replaces instances of that actor with</span>
 <span class="doccomment">//! mocker actor, which is able to accept all messages which the actor can</span>
 <span class="doccomment">//! receive.</span>
@@ -98,17 +95,16 @@
 <span class="doccomment">//! #[cfg(test)]</span>
 <span class="doccomment">//! type DBClientAct = Mocker&lt;DBClientActor&gt;;</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! Then, the actor should be used as a system service (or arbiter service, but</span>
-<span class="doccomment">//! take care that all the places which will use the mocked actor are on the</span>
+<span class="doccomment">//! Then, the actor should be used as a System Service (or Arbiter Service, but</span>
+<span class="doccomment">//! take care that all the places which will use the mocked actor is on the</span>
 <span class="doccomment">//! same arbiter). Thus, in a test, it will retrieve the mocker from the</span>
 <span class="doccomment">//! registry instead of the actual actor.</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! To set the mock function in the actor, the `init_actor` function</span>
-<span class="doccomment">//! is used, which allows the state of an actor to be set when it is</span>
-<span class="doccomment">//! started as an arbiter or system service. A closure which takes</span>
-<span class="doccomment">//! `Box&lt;Any&gt;` is evaluated for every message, and must return</span>
-<span class="doccomment">//! `Box&lt;Any&gt;`, specifically the return type for the message type</span>
-<span class="doccomment">//! send.</span>
+<span class="doccomment">//! To set the mock function in the actor, the init_actor function is used,</span>
+<span class="doccomment">//! which allows the state of an actor to be set when it is started as a</span>
+<span class="doccomment">//! arbiter or system service. A closure which takes Box&lt;Any&gt; is evaluated for</span>
+<span class="doccomment">//! every message, and must return Box&lt;Any&gt;, specifically the return type</span>
+<span class="doccomment">//! for the message type send.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! See the mock example to see how it can be used.</span>
 
@@ -116,12 +112,12 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">handler</span>::<span class="ident">MessageResponse</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">handler</span>::<span class="ident">MessageResponse</span>;
+<span class="kw">use</span> <span class="ident">prelude</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// This actor is able to wrap another actor and accept all the messages the</span>
 <span class="doccomment">/// wrapped actor can, passing it to a closure which can mock the response of</span>
-<span class="doccomment">/// the actor.</span>
+<span class="doccomment">/// the actors</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Mocker</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Sized</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
     <span class="ident">phantom</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
     <span class="ident">mock</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">FnMut</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Any</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Context</span><span class="op">&lt;</span><span class="ident">Mocker</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Any</span><span class="op">&gt;&gt;</span>,

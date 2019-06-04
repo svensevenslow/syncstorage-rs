@@ -17,8 +17,10 @@ overflow.</p>
 wrapping around on underflow and overflow.</p>
 </td></tr><tr class='module-item'><td><a class="trait" href="trait.CheckedMul.html" title='num_traits::CheckedMul trait'>CheckedMul</a></td><td class='docblock-short'><p>Performs multiplication that returns <code>None</code> instead of wrapping around on underflow or
 overflow.</p>
-</td></tr><tr class='module-item'><td><a class="trait" href="trait.CheckedShl.html" title='num_traits::CheckedShl trait'>CheckedShl</a></td><td class='docblock-short'><p>Performs a left shift that returns <code>None</code> on overflow.</p>
-</td></tr><tr class='module-item'><td><a class="trait" href="trait.CheckedShr.html" title='num_traits::CheckedShr trait'>CheckedShr</a></td><td class='docblock-short'><p>Performs a right shift that returns <code>None</code> on overflow.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.CheckedShl.html" title='num_traits::CheckedShl trait'>CheckedShl</a></td><td class='docblock-short'><p>Performs a left shift that returns <code>None</code> on shifts larger than
+the type width.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.CheckedShr.html" title='num_traits::CheckedShr trait'>CheckedShr</a></td><td class='docblock-short'><p>Performs a right shift that returns <code>None</code> on shifts larger than
+the type width.</p>
 </td></tr><tr class='module-item'><td><a class="trait" href="trait.CheckedSub.html" title='num_traits::CheckedSub trait'>CheckedSub</a></td><td class='docblock-short'><p>Performs subtraction that returns <code>None</code> instead of wrapping around on underflow.</p>
 </td></tr><tr class='module-item'><td><a class="trait" href="trait.Float.html" title='num_traits::Float trait'>Float</a></td><td class='docblock-short'><p>Generic trait for floating point numbers</p>
 </td></tr><tr class='module-item'><td><a class="trait" href="trait.FloatConst.html" title='num_traits::FloatConst trait'>FloatConst</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="trait" href="trait.FromPrimitive.html" title='num_traits::FromPrimitive trait'>FromPrimitive</a></td><td class='docblock-short'><p>A generic trait for converting a number to a value.</p>
@@ -33,7 +35,8 @@ taking the second operand by reference.</p>
 </td></tr><tr class='module-item'><td><a class="trait" href="trait.NumRef.html" title='num_traits::NumRef trait'>NumRef</a></td><td class='docblock-short'><p>The trait for <code>Num</code> types which also implement numeric operations taking
 the second operand by reference.</p>
 </td></tr><tr class='module-item'><td><a class="trait" href="trait.One.html" title='num_traits::One trait'>One</a></td><td class='docblock-short'><p>Defines a multiplicative identity element for <code>Self</code>.</p>
-</td></tr><tr class='module-item'><td><a class="trait" href="trait.PrimInt.html" title='num_traits::PrimInt trait'>PrimInt</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="trait" href="trait.RefNum.html" title='num_traits::RefNum trait'>RefNum</a></td><td class='docblock-short'><p>The trait for references which implement numeric operations, taking the
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.PrimInt.html" title='num_traits::PrimInt trait'>PrimInt</a></td><td class='docblock-short'><p>Generic trait for primitive integers.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.RefNum.html" title='num_traits::RefNum trait'>RefNum</a></td><td class='docblock-short'><p>The trait for references which implement numeric operations, taking the
 second operand either by value or by reference.</p>
 </td></tr><tr class='module-item'><td><a class="trait" href="trait.Saturating.html" title='num_traits::Saturating trait'>Saturating</a></td><td class='docblock-short'><p>Saturating math operations</p>
 </td></tr><tr class='module-item'><td><a class="trait" href="trait.Signed.html" title='num_traits::Signed trait'>Signed</a></td><td class='docblock-short'><p>Useful functions for signed numbers (i.e. numbers that can be negative).</p>

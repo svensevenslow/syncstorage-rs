@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.8.2/src/sync.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>sync.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../actix/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.7.9/src/sync.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>sync.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../actix/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -316,136 +316,92 @@
 <span id="316">316</span>
 <span id="317">317</span>
 <span id="318">318</span>
-<span id="319">319</span>
-<span id="320">320</span>
-<span id="321">321</span>
-<span id="322">322</span>
-<span id="323">323</span>
-<span id="324">324</span>
-<span id="325">325</span>
-<span id="326">326</span>
-<span id="327">327</span>
-<span id="328">328</span>
-<span id="329">329</span>
-<span id="330">330</span>
-<span id="331">331</span>
-<span id="332">332</span>
-<span id="333">333</span>
-<span id="334">334</span>
-<span id="335">335</span>
-<span id="336">336</span>
-<span id="337">337</span>
-<span id="338">338</span>
-<span id="339">339</span>
-<span id="340">340</span>
-<span id="341">341</span>
-<span id="342">342</span>
-<span id="343">343</span>
-<span id="344">344</span>
-<span id="345">345</span>
-<span id="346">346</span>
-<span id="347">347</span>
-<span id="348">348</span>
-<span id="349">349</span>
-<span id="350">350</span>
-<span id="351">351</span>
-<span id="352">352</span>
-<span id="353">353</span>
-<span id="354">354</span>
-<span id="355">355</span>
-<span id="356">356</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="doccomment">//! Sync Actors support</span>
+<span class="doccomment">//! Sync actors support</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! Sync Actors are actors that run multiple instances on a thread pool.</span>
-<span class="doccomment">//! This is useful for CPU bound, or concurrent workloads. There can only be</span>
-<span class="doccomment">//! a single Sync Actor type on a `SyncArbiter`. This means you can&#39;t have</span>
-<span class="doccomment">//! Actor type A and B, sharing the same thread pool. You need to create two</span>
-<span class="doccomment">//! SyncArbiters and have A and B spawn on unique `SyncArbiter`s respectively.</span>
-<span class="doccomment">//! For more information and examples, see `SyncArbiter`</span>
+<span class="doccomment">//! Sync actors could be used for cpu bound load. Only one sync actor</span>
+<span class="doccomment">//! runs within arbiter&#39;s thread. Sync actor process one message at a time.</span>
+<span class="doccomment">//! Sync arbiter can start multiple threads with separate instance of actor in</span>
+<span class="doccomment">//! each. Note on actor `stopping` lifecycle event, sync actor can not prevent</span>
+<span class="doccomment">//! stopping by returning `false` from `stopping` method.</span>
+<span class="doccomment">//! Multi consumer queue is used as a communication channel queue.</span>
+<span class="doccomment">//! To be able to start sync actor via `SyncArbiter`</span>
+<span class="doccomment">//! Actor has to use `SyncContext` as an execution context.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ## Example</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```rust</span>
+<span class="doccomment">//! # extern crate actix;</span>
+<span class="doccomment">//! # extern crate futures;</span>
+<span class="doccomment">//! use actix::prelude::*;</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! struct Fibonacci(pub u32);</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! impl Message for Fibonacci {</span>
+<span class="doccomment">//!     type Result = Result&lt;u64, ()&gt;;</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! struct SyncActor;</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! impl Actor for SyncActor {</span>
+<span class="doccomment">//!     type Context = SyncContext&lt;Self&gt;;</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! impl Handler&lt;Fibonacci&gt; for SyncActor {</span>
+<span class="doccomment">//!     type Result = Result&lt;u64, ()&gt;;</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!     fn handle(&amp;mut self, msg: Fibonacci, _: &amp;mut Self::Context) -&gt; Self::Result {</span>
+<span class="doccomment">//!         if msg.0 == 0 {</span>
+<span class="doccomment">//!             Err(())</span>
+<span class="doccomment">//!         } else if msg.0 == 1 {</span>
+<span class="doccomment">//!             Ok(1)</span>
+<span class="doccomment">//!         } else {</span>
+<span class="doccomment">//!             let mut i = 0;</span>
+<span class="doccomment">//!             let mut sum = 0;</span>
+<span class="doccomment">//!             let mut last = 0;</span>
+<span class="doccomment">//!             let mut curr = 1;</span>
+<span class="doccomment">//!             while i &lt; msg.0 - 1 {</span>
+<span class="doccomment">//!                 sum = last + curr;</span>
+<span class="doccomment">//!                 last = curr;</span>
+<span class="doccomment">//!                 curr = sum;</span>
+<span class="doccomment">//!                 i += 1;</span>
+<span class="doccomment">//!             }</span>
+<span class="doccomment">//!             Ok(sum)</span>
+<span class="doccomment">//!         }</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! fn main() {</span>
+<span class="doccomment">//!     System::run(|| {</span>
+<span class="doccomment">//!         // start sync arbiter with 2 threads</span>
+<span class="doccomment">//!         let addr = SyncArbiter::start(2, || SyncActor);</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!         // send 5 messages</span>
+<span class="doccomment">//!         for n in 5..10 {</span>
+<span class="doccomment">//!             addr.do_send(Fibonacci(n));</span>
+<span class="doccomment">//!         }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! #       System::current().stop();</span>
+<span class="doccomment">//!     });</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//! ```</span>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">thread</span>;
 
-<span class="kw">use</span> <span class="ident">actix_rt</span>::<span class="ident">System</span>;
 <span class="kw">use</span> <span class="ident">crossbeam_channel</span> <span class="kw">as</span> <span class="ident">cb_channel</span>;
 <span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">sync</span>::<span class="ident">oneshot</span>::<span class="ident">Sender</span> <span class="kw">as</span> <span class="ident">SyncSender</span>;
 <span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">Async</span>, <span class="ident">Future</span>, <span class="ident">Poll</span>, <span class="ident">Stream</span>};
-<span class="kw">use</span> <span class="ident">log</span>::<span class="ident">warn</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">actor</span>::{<span class="ident">Actor</span>, <span class="ident">ActorContext</span>, <span class="ident">ActorState</span>, <span class="ident">Running</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">address</span>::<span class="ident">channel</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">address</span>::{<span class="ident">Addr</span>, <span class="ident">AddressReceiver</span>, <span class="ident">Envelope</span>, <span class="ident">EnvelopeProxy</span>, <span class="ident">ToEnvelope</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">context</span>::<span class="ident">Context</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">handler</span>::{<span class="ident">Handler</span>, <span class="ident">Message</span>, <span class="ident">MessageResponse</span>};
+<span class="kw">use</span> <span class="ident">actor</span>::{<span class="ident">Actor</span>, <span class="ident">ActorContext</span>, <span class="ident">ActorState</span>, <span class="ident">Running</span>};
+<span class="kw">use</span> <span class="ident">address</span>::<span class="ident">channel</span>;
+<span class="kw">use</span> <span class="ident">address</span>::{<span class="ident">Addr</span>, <span class="ident">AddressReceiver</span>, <span class="ident">Envelope</span>, <span class="ident">EnvelopeProxy</span>, <span class="ident">ToEnvelope</span>};
+<span class="kw">use</span> <span class="ident">arbiter</span>::<span class="ident">Arbiter</span>;
+<span class="kw">use</span> <span class="ident">context</span>::<span class="ident">Context</span>;
+<span class="kw">use</span> <span class="ident">handler</span>::{<span class="ident">Handler</span>, <span class="ident">Message</span>, <span class="ident">MessageResponse</span>};
+<span class="kw">use</span> <span class="ident">system</span>::<span class="ident">System</span>;
 
-<span class="doccomment">/// SyncArbiter provides the resources for a single Sync Actor to run on a dedicated</span>
-<span class="doccomment">/// thread or threads. This is generally used for CPU bound concurrent workloads. It&#39;s</span>
-<span class="doccomment">/// important to note, that the SyncArbiter generates a single address for the pool</span>
-<span class="doccomment">/// of hosted Sync Actors. Any message sent to this Address, will be operated on by</span>
-<span class="doccomment">/// a single Sync Actor from the pool.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Sync Actors have a different lifecycle compared to Actors on the System</span>
-<span class="doccomment">/// Arbiter. For more, see `SyncContext`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ## Example</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```rust</span>
-<span class="doccomment">/// use actix::prelude::*;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// struct Fibonacci(pub u32);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # impl Message for Fibonacci {</span>
-<span class="doccomment">/// #     type Result = Result&lt;u64, ()&gt;;</span>
-<span class="doccomment">/// # }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// struct SyncActor;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// impl Actor for SyncActor {</span>
-<span class="doccomment">///     // It&#39;s important to note that you use &quot;SyncContext&quot; here instead of &quot;Context&quot;.</span>
-<span class="doccomment">///     type Context = SyncContext&lt;Self&gt;;</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// impl Handler&lt;Fibonacci&gt; for SyncActor {</span>
-<span class="doccomment">///     type Result = Result&lt;u64, ()&gt;;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///     fn handle(&amp;mut self, msg: Fibonacci, _: &amp;mut Self::Context) -&gt; Self::Result {</span>
-<span class="doccomment">///         if msg.0 == 0 {</span>
-<span class="doccomment">///             Err(())</span>
-<span class="doccomment">///         } else if msg.0 == 1 {</span>
-<span class="doccomment">///             Ok(1)</span>
-<span class="doccomment">///         } else {</span>
-<span class="doccomment">///             let mut i = 0;</span>
-<span class="doccomment">///             let mut sum = 0;</span>
-<span class="doccomment">///             let mut last = 0;</span>
-<span class="doccomment">///             let mut curr = 1;</span>
-<span class="doccomment">///             while i &lt; msg.0 - 1 {</span>
-<span class="doccomment">///                 sum = last + curr;</span>
-<span class="doccomment">///                 last = curr;</span>
-<span class="doccomment">///                 curr = sum;</span>
-<span class="doccomment">///                 i += 1;</span>
-<span class="doccomment">///             }</span>
-<span class="doccomment">///             Ok(sum)</span>
-<span class="doccomment">///         }</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// fn main() {</span>
-<span class="doccomment">///     System::run(|| {</span>
-<span class="doccomment">///         // Start the SyncArbiter with 2 threads, and receive the address of the Actor pool.</span>
-<span class="doccomment">///         let addr = SyncArbiter::start(2, || SyncActor);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///         // send 5 messages</span>
-<span class="doccomment">///         for n in 5..10 {</span>
-<span class="doccomment">///             // As there are 2 threads, there are at least 2 messages always being processed</span>
-<span class="doccomment">///             // concurrently by the SyncActor.</span>
-<span class="doccomment">///             addr.do_send(Fibonacci(n));</span>
-<span class="doccomment">///         }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// #       System::current().stop();</span>
-<span class="doccomment">///     });</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
+<span class="doccomment">/// Sync arbiter</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SyncArbiter</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&lt;</span><span class="ident">Context</span> <span class="op">=</span> <span class="ident">SyncContext</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>,
@@ -458,10 +414,8 @@
 <span class="kw">where</span>
     <span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&lt;</span><span class="ident">Context</span> <span class="op">=</span> <span class="ident">SyncContext</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>,
 {
-    <span class="doccomment">/// Start a new `SyncArbiter` with specified number of worker threads.</span>
-    <span class="doccomment">/// Returns a single address of the started actor. A single address is</span>
-    <span class="doccomment">/// used to communicate to the actor(s), and messages are handled by</span>
-    <span class="doccomment">/// the next available Actor in the `SyncArbiter`.</span>
+    <span class="doccomment">/// Start new sync arbiter with specified number of worker threads.</span>
+    <span class="doccomment">/// Returns address of the started actor.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">start</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">threads</span>: <span class="ident">usize</span>, <span class="ident">factory</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">Addr</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">F</span>: <span class="ident">Fn</span>() <span class="op">-&gt;</span> <span class="ident">A</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
@@ -481,7 +435,7 @@
         }
 
         <span class="kw">let</span> (<span class="ident">tx</span>, <span class="ident">rx</span>) <span class="op">=</span> <span class="ident">channel</span>::<span class="ident">channel</span>(<span class="number">0</span>);
-        <span class="ident">actix_rt</span>::<span class="ident">spawn</span>(<span class="self">Self</span> {
+        <span class="ident">Arbiter</span>::<span class="ident">spawn</span>(<span class="ident">SyncArbiter</span> {
             <span class="ident">queue</span>: <span class="prelude-val">Some</span>(<span class="ident">sender</span>),
             <span class="ident">msgs</span>: <span class="ident">rx</span>,
         });
@@ -531,7 +485,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">M</span><span class="op">&gt;</span> <span class="ident">ToEnvelope</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">M</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SyncContext</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&lt;</span><span class="ident">Context</span> <span class="op">=</span> <span class="self">Self</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Handler</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>,
+    <span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&lt;</span><span class="ident">Context</span> <span class="op">=</span> <span class="ident">SyncContext</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span> <span class="op">+</span> <span class="ident">Handler</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>,
     <span class="ident">M</span>: <span class="ident">Message</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     <span class="ident">M</span>::<span class="prelude-ty">Result</span>: <span class="ident">Send</span>,
 {
@@ -540,35 +494,7 @@
     }
 }
 
-<span class="doccomment">/// Sync actor execution context. This is used insted of impl Actor for your Actor</span>
-<span class="doccomment">/// instead of Context, if you intend this actor to run in a SyncArbiter.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Unlike Context, an Actor that uses a SyncContext can not be stopped</span>
-<span class="doccomment">/// by calling `stop` or `terminate`: Instead, these trigger a restart of</span>
-<span class="doccomment">/// the Actor. Similar, returning `false` from `fn stopping` can not prevent</span>
-<span class="doccomment">/// the restart or termination of the Actor.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ## Example</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```rust</span>
-<span class="doccomment">/// use actix::prelude::*;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # struct Fibonacci(pub u32);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # impl Message for Fibonacci {</span>
-<span class="doccomment">/// #     type Result = Result&lt;u64, ()&gt;;</span>
-<span class="doccomment">/// # }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// struct SyncActor;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// impl Actor for SyncActor {</span>
-<span class="doccomment">///     // It&#39;s important to note that you use &quot;SyncContext&quot; here instead of &quot;Context&quot;.</span>
-<span class="doccomment">///     type Context = SyncContext&lt;Self&gt;;</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # fn main() {</span>
-<span class="doccomment">/// # }</span>
-<span class="doccomment">/// ```</span>
+<span class="doccomment">/// Sync actor execution context</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SyncContext</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&lt;</span><span class="ident">Context</span> <span class="op">=</span> <span class="ident">SyncContext</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>,
@@ -584,9 +510,10 @@
 <span class="kw">where</span>
     <span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&lt;</span><span class="ident">Context</span> <span class="op">=</span> <span class="self">Self</span><span class="op">&gt;</span>,
 {
+    <span class="doccomment">/// Create new SyncContext</span>
     <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">factory</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>() <span class="op">-&gt;</span> <span class="ident">A</span><span class="op">&gt;</span>, <span class="ident">queue</span>: <span class="ident">cb_channel</span>::<span class="ident">Receiver</span><span class="op">&lt;</span><span class="ident">Envelope</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">act</span> <span class="op">=</span> <span class="ident">factory</span>();
-        <span class="self">Self</span> {
+        <span class="ident">SyncContext</span> {
             <span class="ident">queue</span>,
             <span class="ident">factory</span>,
             <span class="ident">act</span>: <span class="prelude-val">Some</span>(<span class="ident">act</span>),
@@ -640,21 +567,19 @@
 <span class="kw">where</span>
     <span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&lt;</span><span class="ident">Context</span> <span class="op">=</span> <span class="self">Self</span><span class="op">&gt;</span>,
 {
-    <span class="doccomment">/// Stop the current Actor. SyncContext will stop the existing Actor, and restart</span>
-    <span class="doccomment">/// a new Actor of the same type to replace it.</span>
+    <span class="doccomment">/// Stop current actor. SyncContext creates and starts new actor.</span>
     <span class="kw">fn</span> <span class="ident">stop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="self">self</span>.<span class="ident">stopping</span> <span class="op">=</span> <span class="bool-val">true</span>;
         <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">ActorState</span>::<span class="ident">Stopping</span>;
     }
 
-    <span class="doccomment">/// Terminate the current Actor. SyncContext will terminate the existing Actor, and restart</span>
-    <span class="doccomment">/// a new Actor of the same type to replace it.</span>
+    <span class="doccomment">/// Terminate actor execution. SyncContext creates and starts new actor.</span>
     <span class="kw">fn</span> <span class="ident">terminate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="self">self</span>.<span class="ident">stopping</span> <span class="op">=</span> <span class="bool-val">true</span>;
         <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">ActorState</span>::<span class="ident">Stopping</span>;
     }
 
-    <span class="doccomment">/// Get the Actor execution state.</span>
+    <span class="doccomment">/// Actor execution state</span>
     <span class="kw">fn</span> <span class="ident">state</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ActorState</span> {
         <span class="self">self</span>.<span class="ident">state</span>
     }
@@ -674,8 +599,7 @@
 <span class="kw">where</span>
     <span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&lt;</span><span class="ident">Context</span> <span class="op">=</span> <span class="ident">SyncContext</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span> <span class="op">+</span> <span class="ident">Handler</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>,
     <span class="ident">M</span>: <span class="ident">Message</span> <span class="op">+</span> <span class="ident">Send</span>,
-{
-}
+{}
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">M</span><span class="op">&gt;</span> <span class="ident">SyncContextEnvelope</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">M</span><span class="op">&gt;</span>
 <span class="kw">where</span>
@@ -684,7 +608,7 @@
     <span class="ident">M</span>::<span class="prelude-ty">Result</span>: <span class="ident">Send</span>,
 {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">msg</span>: <span class="ident">M</span>, <span class="ident">tx</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SyncSender</span><span class="op">&lt;</span><span class="ident">M</span>::<span class="prelude-ty">Result</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span> {
+        <span class="ident">SyncContextEnvelope</span> {
             <span class="ident">tx</span>,
             <span class="ident">msg</span>: <span class="prelude-val">Some</span>(<span class="ident">msg</span>),
             <span class="ident">actor</span>: <span class="ident">PhantomData</span>,

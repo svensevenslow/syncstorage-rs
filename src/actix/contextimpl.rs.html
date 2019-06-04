@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.8.2/src/contextimpl.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>contextimpl.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../actix/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.7.9/src/contextimpl.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>contextimpl.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../actix/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -438,28 +438,31 @@
 <span id="438">438</span>
 <span id="439">439</span>
 <span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="ident">bitflags</span>::<span class="ident">bitflags</span>;
 <span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">Async</span>, <span class="ident">Future</span>, <span class="ident">Poll</span>};
 <span class="kw">use</span> <span class="ident">smallvec</span>::<span class="ident">SmallVec</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">actor</span>::{
+<span class="kw">use</span> <span class="ident">actor</span>::{
     <span class="ident">Actor</span>, <span class="ident">ActorContext</span>, <span class="ident">ActorState</span>, <span class="ident">AsyncContext</span>, <span class="ident">Running</span>, <span class="ident">SpawnHandle</span>, <span class="ident">Supervised</span>,
 };
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">address</span>::{<span class="ident">Addr</span>, <span class="ident">AddressSenderProducer</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">contextitems</span>::<span class="ident">ActorWaitItem</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">fut</span>::<span class="ident">ActorFuture</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">mailbox</span>::<span class="ident">Mailbox</span>;
+<span class="kw">use</span> <span class="ident">address</span>::{<span class="ident">Addr</span>, <span class="ident">AddressSenderProducer</span>};
+<span class="kw">use</span> <span class="ident">contextitems</span>::<span class="ident">ActorWaitItem</span>;
+<span class="kw">use</span> <span class="ident">fut</span>::<span class="ident">ActorFuture</span>;
+<span class="kw">use</span> <span class="ident">mailbox</span>::<span class="ident">Mailbox</span>;
 
+<span class="doccomment">/// internal context state</span>
 <span class="macro">bitflags</span><span class="macro">!</span> {
-    <span class="doccomment">/// internal context state</span>
-    <span class="kw">struct</span> <span class="ident">ContextFlags</span>: <span class="ident">u8</span> {
-    <span class="kw">const</span> <span class="ident">STARTED</span> <span class="op">=</span>  <span class="number">0b0000_0001</span>;
-    <span class="kw">const</span> <span class="ident">RUNNING</span> <span class="op">=</span>  <span class="number">0b0000_0010</span>;
-    <span class="kw">const</span> <span class="ident">STOPPING</span> <span class="op">=</span> <span class="number">0b0000_0100</span>;
-    <span class="kw">const</span> <span class="ident">STOPPED</span> <span class="op">=</span>  <span class="number">0b0001_0000</span>;
-    <span class="kw">const</span> <span class="ident">MB_CAP_CHANGED</span> <span class="op">=</span> <span class="number">0b0010_0000</span>;
+    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ContextFlags</span>: <span class="ident">u8</span> {
+        <span class="kw">const</span> <span class="ident">STARTED</span> <span class="op">=</span>  <span class="number">0b0000_0001</span>;
+        <span class="kw">const</span> <span class="ident">RUNNING</span> <span class="op">=</span>  <span class="number">0b0000_0010</span>;
+        <span class="kw">const</span> <span class="ident">STOPPING</span> <span class="op">=</span> <span class="number">0b0000_0100</span>;
+        <span class="kw">const</span> <span class="ident">STOPPED</span> <span class="op">=</span>  <span class="number">0b0001_0000</span>;
+        <span class="kw">const</span> <span class="ident">MB_CAP_CHANGED</span> <span class="op">=</span> <span class="number">0b0010_0000</span>;
     }
 }
 
@@ -735,20 +738,6 @@
 
         <span class="ident">modified</span>
     }
-
-    <span class="kw">fn</span> <span class="ident">clean_cancled_handle</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
-        <span class="kw">while</span> <span class="self">self</span>.<span class="ident">ctx</span>.<span class="ident">parts</span>().<span class="ident">handles</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">2</span> {
-            <span class="kw">let</span> <span class="ident">handle</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">ctx</span>.<span class="ident">parts</span>().<span class="ident">handles</span>.<span class="ident">pop</span>().<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idx</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">while</span> <span class="ident">idx</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">items</span>.<span class="ident">len</span>() {
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">items</span>[<span class="ident">idx</span>].<span class="number">0</span> <span class="op">==</span> <span class="ident">handle</span> {
-                    <span class="self">self</span>.<span class="ident">items</span>.<span class="ident">swap_remove</span>(<span class="ident">idx</span>);
-                } <span class="kw">else</span> {
-                    <span class="ident">idx</span> <span class="op">+=</span> <span class="number">1</span>;
-                }
-            }
-        }
-    }
 }
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
@@ -768,7 +757,17 @@
 
             <span class="comment">// check cancelled handles, just in case</span>
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">merge</span>() {
-                <span class="self">self</span>.<span class="ident">clean_cancled_handle</span>();
+                <span class="kw">while</span> <span class="self">self</span>.<span class="ident">ctx</span>.<span class="ident">parts</span>().<span class="ident">handles</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">2</span> {
+                    <span class="kw">let</span> <span class="ident">handle</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">ctx</span>.<span class="ident">parts</span>().<span class="ident">handles</span>.<span class="ident">pop</span>().<span class="ident">unwrap</span>();
+                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idx</span> <span class="op">=</span> <span class="number">0</span>;
+                    <span class="kw">while</span> <span class="ident">idx</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">items</span>.<span class="ident">len</span>() {
+                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">items</span>[<span class="ident">idx</span>].<span class="number">0</span> <span class="op">==</span> <span class="ident">handle</span> {
+                            <span class="self">self</span>.<span class="ident">items</span>.<span class="ident">swap_remove</span>(<span class="ident">idx</span>);
+                        } <span class="kw">else</span> {
+                            <span class="ident">idx</span> <span class="op">+=</span> <span class="number">1</span>;
+                        }
+                    }
+                }
             }
         }
 
@@ -805,8 +804,17 @@
                             <span class="comment">// this code is not very efficient, relaying on fact that</span>
                             <span class="comment">// cancellation should be rear also number of futures</span>
                             <span class="comment">// in actor context should be small</span>
-                            <span class="self">self</span>.<span class="ident">clean_cancled_handle</span>();
-
+                            <span class="kw">while</span> <span class="self">self</span>.<span class="ident">ctx</span>.<span class="ident">parts</span>().<span class="ident">handles</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">2</span> {
+                                <span class="kw">let</span> <span class="ident">handle</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">ctx</span>.<span class="ident">parts</span>().<span class="ident">handles</span>.<span class="ident">pop</span>().<span class="ident">unwrap</span>();
+                                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idx</span> <span class="op">=</span> <span class="number">0</span>;
+                                <span class="kw">while</span> <span class="ident">idx</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">items</span>.<span class="ident">len</span>() {
+                                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">items</span>[<span class="ident">idx</span>].<span class="number">0</span> <span class="op">==</span> <span class="ident">handle</span> {
+                                        <span class="self">self</span>.<span class="ident">items</span>.<span class="ident">swap_remove</span>(<span class="ident">idx</span>);
+                                    } <span class="kw">else</span> {
+                                        <span class="ident">idx</span> <span class="op">+=</span> <span class="number">1</span>;
+                                    }
+                                }
+                            }
                             <span class="kw">continue</span> <span class="lifetime">&#39;outer</span>;
                         }
 

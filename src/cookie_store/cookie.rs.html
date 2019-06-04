@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/cookie_store-0.5.1/src/cookie.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cookie.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cookie_store/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/cookie_store-0.7.0/src/cookie.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cookie.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cookie_store/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -884,21 +884,14 @@
 <span id="884">884</span>
 <span id="885">885</span>
 <span id="886">886</span>
-<span id="887">887</span>
-<span id="888">888</span>
-<span id="889">889</span>
-<span id="890">890</span>
-<span id="891">891</span>
-<span id="892">892</span>
-<span id="893">893</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">cookie_domain</span>::<span class="ident">CookieDomain</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">cookie_expiration</span>::<span class="ident">CookieExpiration</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">cookie_path</span>::<span class="ident">CookiePath</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">utils</span>::{<span class="ident">is_http_scheme</span>, <span class="ident">is_secure</span>};
-<span class="kw">use</span> ::<span class="ident">cookie</span>::{<span class="ident">Cookie</span> <span class="kw">as</span> <span class="ident">RawCookie</span>, <span class="ident">CookieBuilder</span> <span class="kw">as</span> <span class="ident">RawCookieBuilder</span>, <span class="ident">ParseError</span>};
-<span class="kw">use</span> <span class="ident">serde_derive</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
+<span class="kw">use</span> <span class="ident">cookie</span>::{<span class="ident">Cookie</span> <span class="kw">as</span> <span class="ident">RawCookie</span>, <span class="ident">CookieBuilder</span> <span class="kw">as</span> <span class="ident">RawCookieBuilder</span>, <span class="ident">ParseError</span>};
+<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">borrow</span>::<span class="ident">Cow</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Deref</span>;
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">error</span>, <span class="ident">fmt</span>};
@@ -987,7 +980,7 @@
 }
 
 <span class="kw">mod</span> <span class="ident">serde_raw_cookie</span> {
-    <span class="kw">use</span> ::<span class="ident">cookie</span>::<span class="ident">Cookie</span> <span class="kw">as</span> <span class="ident">RawCookie</span>;
+    <span class="kw">use</span> <span class="ident">cookie</span>::<span class="ident">Cookie</span> <span class="kw">as</span> <span class="ident">RawCookie</span>;
     <span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">de</span>::<span class="ident">Error</span>;
     <span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">de</span>::<span class="ident">Unexpected</span>;
     <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Deserializer</span>, <span class="ident">Serialize</span>, <span class="ident">Serializer</span>};
@@ -1171,7 +1164,7 @@
     <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">Cookie</span>;
     <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">cookie_domain</span>::<span class="ident">CookieDomain</span>;
     <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">cookie_expiration</span>::<span class="ident">CookieExpiration</span>;
-    <span class="kw">use</span> ::<span class="ident">cookie</span>::<span class="ident">Cookie</span> <span class="kw">as</span> <span class="ident">RawCookie</span>;
+    <span class="kw">use</span> <span class="ident">cookie</span>::<span class="ident">Cookie</span> <span class="kw">as</span> <span class="ident">RawCookie</span>;
     <span class="kw">use</span> <span class="ident">time</span>::{<span class="ident">now_utc</span>, <span class="ident">Duration</span>, <span class="ident">Tm</span>};
     <span class="kw">use</span> <span class="ident">url</span>::<span class="ident">Url</span>;
 
@@ -1631,158 +1624,151 @@
     }
 }
 
-<span class="kw">mod</span> <span class="ident">serde</span> {
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-    <span class="kw">mod</span> <span class="ident">tests</span> {
-        <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">cookie</span>::<span class="ident">Cookie</span>;
-        <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">cookie_expiration</span>::<span class="ident">CookieExpiration</span>;
-        <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">utils</span>::<span class="ident">test</span> <span class="kw">as</span> <span class="ident">test_utils</span>;
-        <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">utils</span>::<span class="ident">test</span>::<span class="kw-2">*</span>;
-        <span class="kw">use</span> <span class="ident">serde_json</span>::<span class="ident">json</span>;
-        <span class="kw">use</span> <span class="ident">time</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">serde_tests</span> {
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">cookie</span>::<span class="ident">Cookie</span>;
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">cookie_expiration</span>::<span class="ident">CookieExpiration</span>;
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">utils</span>::<span class="ident">test</span> <span class="kw">as</span> <span class="ident">test_utils</span>;
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">utils</span>::<span class="ident">test</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">serde_json</span>::<span class="ident">json</span>;
+    <span class="kw">use</span> <span class="ident">time</span>;
 
-        <span class="kw">fn</span> <span class="ident">encode_decode</span>(<span class="ident">c</span>: <span class="kw-2">&amp;</span><span class="ident">Cookie</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>, <span class="ident">expected</span>: <span class="ident">serde_json</span>::<span class="ident">Value</span>) {
-            <span class="kw">let</span> <span class="ident">encoded</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">to_value</span>(<span class="ident">c</span>).<span class="ident">unwrap</span>();
-            <span class="macro">assert_eq</span><span class="macro">!</span>(
-                <span class="ident">expected</span>,
-                <span class="ident">encoded</span>,
-                <span class="string">&quot;\nexpected: &#39;{}&#39;\n encoded: &#39;{}&#39;&quot;</span>,
-                <span class="ident">expected</span>.<span class="ident">to_string</span>(),
-                <span class="ident">encoded</span>.<span class="ident">to_string</span>()
-            );
-            <span class="kw">let</span> <span class="ident">decoded</span>: <span class="ident">Cookie</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">from_value</span>(<span class="ident">encoded</span>).<span class="ident">unwrap</span>();
-            <span class="macro">assert_eq</span><span class="macro">!</span>(
-                <span class="kw-2">*</span><span class="ident">c</span>,
-                <span class="ident">decoded</span>,
-                <span class="string">&quot;\nexpected: &#39;{}&#39;\n decoded: &#39;{}&#39;&quot;</span>,
-                <span class="ident">c</span>.<span class="ident">to_string</span>(),
-                <span class="ident">decoded</span>.<span class="ident">to_string</span>()
-            );
-        }
+    <span class="kw">fn</span> <span class="ident">encode_decode</span>(<span class="ident">c</span>: <span class="kw-2">&amp;</span><span class="ident">Cookie</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>, <span class="ident">expected</span>: <span class="ident">serde_json</span>::<span class="ident">Value</span>) {
+        <span class="kw">let</span> <span class="ident">encoded</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">to_value</span>(<span class="ident">c</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">expected</span>,
+            <span class="ident">encoded</span>,
+            <span class="string">&quot;\nexpected: &#39;{}&#39;\n encoded: &#39;{}&#39;&quot;</span>,
+            <span class="ident">expected</span>.<span class="ident">to_string</span>(),
+            <span class="ident">encoded</span>.<span class="ident">to_string</span>()
+        );
+        <span class="kw">let</span> <span class="ident">decoded</span>: <span class="ident">Cookie</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">from_value</span>(<span class="ident">encoded</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="kw-2">*</span><span class="ident">c</span>,
+            <span class="ident">decoded</span>,
+            <span class="string">&quot;\nexpected: &#39;{}&#39;\n decoded: &#39;{}&#39;&quot;</span>,
+            <span class="ident">c</span>.<span class="ident">to_string</span>(),
+            <span class="ident">decoded</span>.<span class="ident">to_string</span>()
+        );
+    }
 
-        <span class="attribute">#[<span class="ident">test</span>]</span>
-        <span class="kw">fn</span> <span class="ident">serde</span>() {
-            <span class="ident">encode_decode</span>(
-                <span class="kw-2">&amp;</span><span class="ident">test_utils</span>::<span class="ident">make_cookie</span>(
-                    <span class="string">&quot;cookie1=value1&quot;</span>,
-                    <span class="string">&quot;http://example.com/foo/bar&quot;</span>,
-                    <span class="prelude-val">None</span>,
-                    <span class="prelude-val">None</span>,
-                ),
-                <span class="macro">json</span><span class="macro">!</span>({
-                    <span class="string">&quot;raw_cookie&quot;</span>: <span class="string">&quot;cookie1=value1&quot;</span>,
-                    <span class="string">&quot;path&quot;</span>: [<span class="string">&quot;/foo&quot;</span>, <span class="bool-val">false</span>],
-                    <span class="string">&quot;domain&quot;</span>: { <span class="string">&quot;HostOnly&quot;</span>: <span class="string">&quot;example.com&quot;</span> },
-                    <span class="string">&quot;expires&quot;</span>: <span class="string">&quot;SessionEnd&quot;</span>
-                }),
-            );
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">serde</span>() {
+        <span class="ident">encode_decode</span>(
+            <span class="kw-2">&amp;</span><span class="ident">test_utils</span>::<span class="ident">make_cookie</span>(<span class="string">&quot;cookie1=value1&quot;</span>, <span class="string">&quot;http://example.com/foo/bar&quot;</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
+            <span class="macro">json</span><span class="macro">!</span>({
+                <span class="string">&quot;raw_cookie&quot;</span>: <span class="string">&quot;cookie1=value1&quot;</span>,
+                <span class="string">&quot;path&quot;</span>: [<span class="string">&quot;/foo&quot;</span>, <span class="bool-val">false</span>],
+                <span class="string">&quot;domain&quot;</span>: { <span class="string">&quot;HostOnly&quot;</span>: <span class="string">&quot;example.com&quot;</span> },
+                <span class="string">&quot;expires&quot;</span>: <span class="string">&quot;SessionEnd&quot;</span>
+            }),
+        );
 
-            <span class="ident">encode_decode</span>(
-                <span class="kw-2">&amp;</span><span class="ident">test_utils</span>::<span class="ident">make_cookie</span>(
-                    <span class="string">&quot;cookie2=value2; Domain=example.com&quot;</span>,
-                    <span class="string">&quot;http://foo.example.com/foo/bar&quot;</span>,
-                    <span class="prelude-val">None</span>,
-                    <span class="prelude-val">None</span>,
-                ),
-                <span class="macro">json</span><span class="macro">!</span>({
-                    <span class="string">&quot;raw_cookie&quot;</span>: <span class="string">&quot;cookie2=value2&quot;</span>,
-                    <span class="string">&quot;path&quot;</span>: [<span class="string">&quot;/foo&quot;</span>, <span class="bool-val">false</span>],
-                    <span class="string">&quot;domain&quot;</span>: { <span class="string">&quot;Suffix&quot;</span>: <span class="string">&quot;example.com&quot;</span> },
-                    <span class="string">&quot;expires&quot;</span>: <span class="string">&quot;SessionEnd&quot;</span>
-                }),
-            );
-
-            <span class="ident">encode_decode</span>(
-                <span class="kw-2">&amp;</span><span class="ident">test_utils</span>::<span class="ident">make_cookie</span>(
-                    <span class="string">&quot;cookie3=value3; Path=/foo/bar&quot;</span>,
-                    <span class="string">&quot;http://foo.example.com/foo&quot;</span>,
-                    <span class="prelude-val">None</span>,
-                    <span class="prelude-val">None</span>,
-                ),
-                <span class="macro">json</span><span class="macro">!</span>({
-                    <span class="string">&quot;raw_cookie&quot;</span>: <span class="string">&quot;cookie3=value3&quot;</span>,
-                    <span class="string">&quot;path&quot;</span>: [<span class="string">&quot;/foo/bar&quot;</span>, <span class="bool-val">true</span>],
-                    <span class="string">&quot;domain&quot;</span>: { <span class="string">&quot;HostOnly&quot;</span>: <span class="string">&quot;foo.example.com&quot;</span> },
-                    <span class="string">&quot;expires&quot;</span>: <span class="string">&quot;SessionEnd&quot;</span>,
-                }),
-            );
-
-            <span class="kw">let</span> <span class="ident">at_utc</span> <span class="op">=</span> <span class="ident">time</span>::<span class="ident">strptime</span>(<span class="string">&quot;2015-08-11T16:41:42Z&quot;</span>, <span class="string">&quot;%Y-%m-%dT%H:%M:%SZ&quot;</span>).<span class="ident">unwrap</span>();
-            <span class="ident">encode_decode</span>(
-                <span class="kw-2">&amp;</span><span class="ident">test_utils</span>::<span class="ident">make_cookie</span>(
-                    <span class="string">&quot;cookie4=value4&quot;</span>,
-                    <span class="string">&quot;http://example.com/foo/bar&quot;</span>,
-                    <span class="prelude-val">Some</span>(<span class="ident">at_utc</span>),
-                    <span class="prelude-val">None</span>,
-                ),
-                <span class="macro">json</span><span class="macro">!</span>({
-                    <span class="string">&quot;raw_cookie&quot;</span>: <span class="string">&quot;cookie4=value4&quot;</span>,
-                    <span class="string">&quot;path&quot;</span>: [<span class="string">&quot;/foo&quot;</span>, <span class="bool-val">false</span>],
-                    <span class="string">&quot;domain&quot;</span>: { <span class="string">&quot;HostOnly&quot;</span>: <span class="string">&quot;example.com&quot;</span> },
-                    <span class="string">&quot;expires&quot;</span>: { <span class="string">&quot;AtUtc&quot;</span>: <span class="ident">at_utc</span>.<span class="ident">rfc3339</span>().<span class="ident">to_string</span>() },
-                }),
-            );
-
-            <span class="kw">let</span> <span class="ident">expires</span> <span class="op">=</span> <span class="ident">test_utils</span>::<span class="ident">make_cookie</span>(
-                <span class="string">&quot;cookie5=value5&quot;</span>,
-                <span class="string">&quot;http://example.com/foo/bar&quot;</span>,
-                <span class="prelude-val">Some</span>(<span class="ident">in_minutes</span>(<span class="number">10</span>)),
+        <span class="ident">encode_decode</span>(
+            <span class="kw-2">&amp;</span><span class="ident">test_utils</span>::<span class="ident">make_cookie</span>(
+                <span class="string">&quot;cookie2=value2; Domain=example.com&quot;</span>,
+                <span class="string">&quot;http://foo.example.com/foo/bar&quot;</span>,
                 <span class="prelude-val">None</span>,
-            );
-            <span class="kw">let</span> <span class="ident">utc_tm</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">expires</span>.<span class="ident">expires</span> {
-                <span class="ident">CookieExpiration</span>::<span class="ident">AtUtc</span>(<span class="kw-2">ref</span> <span class="ident">utc_tm</span>) <span class="op">=&gt;</span> <span class="ident">utc_tm</span>,
-                <span class="ident">CookieExpiration</span>::<span class="ident">SessionEnd</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
-            };
+                <span class="prelude-val">None</span>,
+            ),
+            <span class="macro">json</span><span class="macro">!</span>({
+                <span class="string">&quot;raw_cookie&quot;</span>: <span class="string">&quot;cookie2=value2&quot;</span>,
+                <span class="string">&quot;path&quot;</span>: [<span class="string">&quot;/foo&quot;</span>, <span class="bool-val">false</span>],
+                <span class="string">&quot;domain&quot;</span>: { <span class="string">&quot;Suffix&quot;</span>: <span class="string">&quot;example.com&quot;</span> },
+                <span class="string">&quot;expires&quot;</span>: <span class="string">&quot;SessionEnd&quot;</span>
+            }),
+        );
 
-            <span class="ident">encode_decode</span>(
-                <span class="kw-2">&amp;</span><span class="ident">expires</span>,
-                <span class="macro">json</span><span class="macro">!</span>({
-                    <span class="string">&quot;raw_cookie&quot;</span>: <span class="string">&quot;cookie5=value5&quot;</span>,
-                    <span class="string">&quot;path&quot;</span>:[<span class="string">&quot;/foo&quot;</span>, <span class="bool-val">false</span>],
-                    <span class="string">&quot;domain&quot;</span>: { <span class="string">&quot;HostOnly&quot;</span>: <span class="string">&quot;example.com&quot;</span> },
-                    <span class="string">&quot;expires&quot;</span>: { <span class="string">&quot;AtUtc&quot;</span>: <span class="ident">utc_tm</span>.<span class="ident">rfc3339</span>().<span class="ident">to_string</span>() },
-                }),
-            );
-            <span class="kw">let</span> <span class="ident">max_age</span> <span class="op">=</span> <span class="ident">test_utils</span>::<span class="ident">make_cookie</span>(
-                <span class="string">&quot;cookie6=value6&quot;</span>,
+        <span class="ident">encode_decode</span>(
+            <span class="kw-2">&amp;</span><span class="ident">test_utils</span>::<span class="ident">make_cookie</span>(
+                <span class="string">&quot;cookie3=value3; Path=/foo/bar&quot;</span>,
+                <span class="string">&quot;http://foo.example.com/foo&quot;</span>,
+                <span class="prelude-val">None</span>,
+                <span class="prelude-val">None</span>,
+            ),
+            <span class="macro">json</span><span class="macro">!</span>({
+                <span class="string">&quot;raw_cookie&quot;</span>: <span class="string">&quot;cookie3=value3&quot;</span>,
+                <span class="string">&quot;path&quot;</span>: [<span class="string">&quot;/foo/bar&quot;</span>, <span class="bool-val">true</span>],
+                <span class="string">&quot;domain&quot;</span>: { <span class="string">&quot;HostOnly&quot;</span>: <span class="string">&quot;foo.example.com&quot;</span> },
+                <span class="string">&quot;expires&quot;</span>: <span class="string">&quot;SessionEnd&quot;</span>,
+            }),
+        );
+
+        <span class="kw">let</span> <span class="ident">at_utc</span> <span class="op">=</span> <span class="ident">time</span>::<span class="ident">strptime</span>(<span class="string">&quot;2015-08-11T16:41:42Z&quot;</span>, <span class="string">&quot;%Y-%m-%dT%H:%M:%SZ&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="ident">encode_decode</span>(
+            <span class="kw-2">&amp;</span><span class="ident">test_utils</span>::<span class="ident">make_cookie</span>(
+                <span class="string">&quot;cookie4=value4&quot;</span>,
                 <span class="string">&quot;http://example.com/foo/bar&quot;</span>,
                 <span class="prelude-val">Some</span>(<span class="ident">at_utc</span>),
-                <span class="prelude-val">Some</span>(<span class="number">10</span>),
-            );
-            <span class="kw">let</span> <span class="ident">utc_tm</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">max_age</span>.<span class="ident">expires</span> {
-                <span class="ident">CookieExpiration</span>::<span class="ident">AtUtc</span>(<span class="kw-2">ref</span> <span class="ident">utc_tm</span>) <span class="op">=&gt;</span> <span class="ident">utc_tm</span>,
-                <span class="ident">CookieExpiration</span>::<span class="ident">SessionEnd</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
-            };
-            <span class="ident">encode_decode</span>(
-                <span class="kw-2">&amp;</span><span class="ident">max_age</span>,
-                <span class="macro">json</span><span class="macro">!</span>({
-                    <span class="string">&quot;raw_cookie&quot;</span>: <span class="string">&quot;cookie6=value6&quot;</span>,
-                    <span class="string">&quot;path&quot;</span>:[<span class="string">&quot;/foo&quot;</span>, <span class="bool-val">false</span>],
-                    <span class="string">&quot;domain&quot;</span>: { <span class="string">&quot;HostOnly&quot;</span>: <span class="string">&quot;example.com&quot;</span> },
-                    <span class="string">&quot;expires&quot;</span>: { <span class="string">&quot;AtUtc&quot;</span>: <span class="ident">utc_tm</span>.<span class="ident">rfc3339</span>().<span class="ident">to_string</span>() },
-                }),
-            );
-
-            <span class="kw">let</span> <span class="ident">max_age</span> <span class="op">=</span> <span class="ident">test_utils</span>::<span class="ident">make_cookie</span>(
-                <span class="string">&quot;cookie7=value7&quot;</span>,
-                <span class="string">&quot;http://example.com/foo/bar&quot;</span>,
                 <span class="prelude-val">None</span>,
-                <span class="prelude-val">Some</span>(<span class="number">10</span>),
-            );
-            <span class="kw">let</span> <span class="ident">utc_tm</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">max_age</span>.<span class="ident">expires</span> {
-                <span class="ident">CookieExpiration</span>::<span class="ident">AtUtc</span>(<span class="kw-2">ref</span> <span class="ident">utc_tm</span>) <span class="op">=&gt;</span> <span class="ident">utc_tm</span>,
-                <span class="ident">CookieExpiration</span>::<span class="ident">SessionEnd</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
-            };
-            <span class="ident">encode_decode</span>(
-                <span class="kw-2">&amp;</span><span class="ident">max_age</span>,
-                <span class="macro">json</span><span class="macro">!</span>({
-                    <span class="string">&quot;raw_cookie&quot;</span>: <span class="string">&quot;cookie7=value7&quot;</span>,
-                    <span class="string">&quot;path&quot;</span>:[<span class="string">&quot;/foo&quot;</span>, <span class="bool-val">false</span>],
-                    <span class="string">&quot;domain&quot;</span>: { <span class="string">&quot;HostOnly&quot;</span>: <span class="string">&quot;example.com&quot;</span> },
-                    <span class="string">&quot;expires&quot;</span>: { <span class="string">&quot;AtUtc&quot;</span>: <span class="ident">utc_tm</span>.<span class="ident">rfc3339</span>().<span class="ident">to_string</span>() },
-                }),
-            );
-        }
+            ),
+            <span class="macro">json</span><span class="macro">!</span>({
+                <span class="string">&quot;raw_cookie&quot;</span>: <span class="string">&quot;cookie4=value4&quot;</span>,
+                <span class="string">&quot;path&quot;</span>: [<span class="string">&quot;/foo&quot;</span>, <span class="bool-val">false</span>],
+                <span class="string">&quot;domain&quot;</span>: { <span class="string">&quot;HostOnly&quot;</span>: <span class="string">&quot;example.com&quot;</span> },
+                <span class="string">&quot;expires&quot;</span>: { <span class="string">&quot;AtUtc&quot;</span>: <span class="ident">at_utc</span>.<span class="ident">rfc3339</span>().<span class="ident">to_string</span>() },
+            }),
+        );
+
+        <span class="kw">let</span> <span class="ident">expires</span> <span class="op">=</span> <span class="ident">test_utils</span>::<span class="ident">make_cookie</span>(
+            <span class="string">&quot;cookie5=value5&quot;</span>,
+            <span class="string">&quot;http://example.com/foo/bar&quot;</span>,
+            <span class="prelude-val">Some</span>(<span class="ident">in_minutes</span>(<span class="number">10</span>)),
+            <span class="prelude-val">None</span>,
+        );
+        <span class="kw">let</span> <span class="ident">utc_tm</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">expires</span>.<span class="ident">expires</span> {
+            <span class="ident">CookieExpiration</span>::<span class="ident">AtUtc</span>(<span class="kw-2">ref</span> <span class="ident">utc_tm</span>) <span class="op">=&gt;</span> <span class="ident">utc_tm</span>,
+            <span class="ident">CookieExpiration</span>::<span class="ident">SessionEnd</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
+        };
+
+        <span class="ident">encode_decode</span>(
+            <span class="kw-2">&amp;</span><span class="ident">expires</span>,
+            <span class="macro">json</span><span class="macro">!</span>({
+                <span class="string">&quot;raw_cookie&quot;</span>: <span class="string">&quot;cookie5=value5&quot;</span>,
+                <span class="string">&quot;path&quot;</span>:[<span class="string">&quot;/foo&quot;</span>, <span class="bool-val">false</span>],
+                <span class="string">&quot;domain&quot;</span>: { <span class="string">&quot;HostOnly&quot;</span>: <span class="string">&quot;example.com&quot;</span> },
+                <span class="string">&quot;expires&quot;</span>: { <span class="string">&quot;AtUtc&quot;</span>: <span class="ident">utc_tm</span>.<span class="ident">rfc3339</span>().<span class="ident">to_string</span>() },
+            }),
+        );
+        <span class="kw">let</span> <span class="ident">max_age</span> <span class="op">=</span> <span class="ident">test_utils</span>::<span class="ident">make_cookie</span>(
+            <span class="string">&quot;cookie6=value6&quot;</span>,
+            <span class="string">&quot;http://example.com/foo/bar&quot;</span>,
+            <span class="prelude-val">Some</span>(<span class="ident">at_utc</span>),
+            <span class="prelude-val">Some</span>(<span class="number">10</span>),
+        );
+        <span class="kw">let</span> <span class="ident">utc_tm</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">max_age</span>.<span class="ident">expires</span> {
+            <span class="ident">CookieExpiration</span>::<span class="ident">AtUtc</span>(<span class="kw-2">ref</span> <span class="ident">utc_tm</span>) <span class="op">=&gt;</span> <span class="ident">utc_tm</span>,
+            <span class="ident">CookieExpiration</span>::<span class="ident">SessionEnd</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
+        };
+        <span class="ident">encode_decode</span>(
+            <span class="kw-2">&amp;</span><span class="ident">max_age</span>,
+            <span class="macro">json</span><span class="macro">!</span>({
+                <span class="string">&quot;raw_cookie&quot;</span>: <span class="string">&quot;cookie6=value6&quot;</span>,
+                <span class="string">&quot;path&quot;</span>:[<span class="string">&quot;/foo&quot;</span>, <span class="bool-val">false</span>],
+                <span class="string">&quot;domain&quot;</span>: { <span class="string">&quot;HostOnly&quot;</span>: <span class="string">&quot;example.com&quot;</span> },
+                <span class="string">&quot;expires&quot;</span>: { <span class="string">&quot;AtUtc&quot;</span>: <span class="ident">utc_tm</span>.<span class="ident">rfc3339</span>().<span class="ident">to_string</span>() },
+            }),
+        );
+
+        <span class="kw">let</span> <span class="ident">max_age</span> <span class="op">=</span> <span class="ident">test_utils</span>::<span class="ident">make_cookie</span>(
+            <span class="string">&quot;cookie7=value7&quot;</span>,
+            <span class="string">&quot;http://example.com/foo/bar&quot;</span>,
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">Some</span>(<span class="number">10</span>),
+        );
+        <span class="kw">let</span> <span class="ident">utc_tm</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">max_age</span>.<span class="ident">expires</span> {
+            <span class="ident">CookieExpiration</span>::<span class="ident">AtUtc</span>(<span class="kw-2">ref</span> <span class="ident">utc_tm</span>) <span class="op">=&gt;</span> <span class="ident">utc_tm</span>,
+            <span class="ident">CookieExpiration</span>::<span class="ident">SessionEnd</span> <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
+        };
+        <span class="ident">encode_decode</span>(
+            <span class="kw-2">&amp;</span><span class="ident">max_age</span>,
+            <span class="macro">json</span><span class="macro">!</span>({
+                <span class="string">&quot;raw_cookie&quot;</span>: <span class="string">&quot;cookie7=value7&quot;</span>,
+                <span class="string">&quot;path&quot;</span>:[<span class="string">&quot;/foo&quot;</span>, <span class="bool-val">false</span>],
+                <span class="string">&quot;domain&quot;</span>: { <span class="string">&quot;HostOnly&quot;</span>: <span class="string">&quot;example.com&quot;</span> },
+                <span class="string">&quot;expires&quot;</span>: { <span class="string">&quot;AtUtc&quot;</span>: <span class="ident">utc_tm</span>.<span class="ident">rfc3339</span>().<span class="ident">to_string</span>() },
+            }),
+        );
     }
 }
 </pre></div>

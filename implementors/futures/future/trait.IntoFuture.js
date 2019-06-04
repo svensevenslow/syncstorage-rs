@@ -1,5 +1,4 @@
 (function() {var implementors = {};
-implementors["actix_http"] = [{text:"impl <a class=\"trait\" href=\"futures/future/trait.IntoFuture.html\" title=\"trait futures::future::IntoFuture\">IntoFuture</a> for <a class=\"struct\" href=\"actix_http/struct.Response.html\" title=\"struct actix_http::Response\">Response</a>",synthetic:false,types:["actix_http::response::Response"]},{text:"impl <a class=\"trait\" href=\"futures/future/trait.IntoFuture.html\" title=\"trait futures::future::IntoFuture\">IntoFuture</a> for <a class=\"struct\" href=\"actix_http/struct.ResponseBuilder.html\" title=\"struct actix_http::ResponseBuilder\">ResponseBuilder</a>",synthetic:false,types:["actix_http::response::ResponseBuilder"]},];
 implementors["futures"] = [];
 
             if (window.register_implementors) {

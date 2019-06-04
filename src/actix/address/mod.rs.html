@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.8.2/src/address/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../actix/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.7.9/src/address/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../actix/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -331,87 +331,38 @@
 <span id="331">331</span>
 <span id="332">332</span>
 <span id="333">333</span>
-<span id="334">334</span>
-<span id="335">335</span>
-<span id="336">336</span>
-<span id="337">337</span>
-<span id="338">338</span>
-<span id="339">339</span>
-<span id="340">340</span>
-<span id="341">341</span>
-<span id="342">342</span>
-<span id="343">343</span>
-<span id="344">344</span>
-<span id="345">345</span>
-<span id="346">346</span>
-<span id="347">347</span>
-<span id="348">348</span>
-<span id="349">349</span>
-<span id="350">350</span>
-<span id="351">351</span>
-<span id="352">352</span>
-<span id="353">353</span>
-<span id="354">354</span>
-<span id="355">355</span>
-<span id="356">356</span>
-<span id="357">357</span>
-<span id="358">358</span>
-<span id="359">359</span>
-<span id="360">360</span>
-<span id="361">361</span>
-<span id="362">362</span>
-<span id="363">363</span>
-<span id="364">364</span>
-<span id="365">365</span>
-<span id="366">366</span>
-<span id="367">367</span>
-<span id="368">368</span>
-<span id="369">369</span>
-<span id="370">370</span>
-<span id="371">371</span>
-<span id="372">372</span>
-<span id="373">373</span>
-<span id="374">374</span>
-<span id="375">375</span>
-<span id="376">376</span>
-<span id="377">377</span>
-<span id="378">378</span>
-<span id="379">379</span>
-<span id="380">380</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="ident">derive_more</span>::<span class="ident">Display</span>;
-<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">error</span>, <span class="ident">fmt</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">hash</span>::{<span class="ident">Hash</span>, <span class="ident">Hasher</span>};
+<span class="kw">use</span> <span class="ident">failure</span>;
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">channel</span>;
 <span class="kw">mod</span> <span class="ident">envelope</span>;
 <span class="kw">mod</span> <span class="ident">message</span>;
 <span class="kw">mod</span> <span class="ident">queue</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">actor</span>::<span class="ident">Actor</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">handler</span>::{<span class="ident">Handler</span>, <span class="ident">Message</span>};
+<span class="kw">use</span> <span class="ident">actor</span>::<span class="ident">Actor</span>;
+<span class="kw">use</span> <span class="ident">handler</span>::{<span class="ident">Handler</span>, <span class="ident">Message</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">envelope</span>::{<span class="ident">Envelope</span>, <span class="ident">EnvelopeProxy</span>, <span class="ident">ToEnvelope</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">message</span>::{<span class="ident">RecipientRequest</span>, <span class="ident">Request</span>};
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="self">self</span>::<span class="ident">channel</span>::{<span class="ident">AddressReceiver</span>, <span class="ident">AddressSenderProducer</span>};
-<span class="kw">use</span> <span class="self">self</span>::<span class="ident">channel</span>::{<span class="ident">AddressSender</span>, <span class="ident">Sender</span>, <span class="ident">WeakAddressSender</span>};
+<span class="kw">use</span> <span class="self">self</span>::<span class="ident">channel</span>::{<span class="ident">AddressSender</span>, <span class="ident">Sender</span>};
 
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SendError</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="ident">Full</span>(<span class="ident">T</span>),
     <span class="ident">Closed</span>(<span class="ident">T</span>),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Display</span>)]</span>
-<span class="doccomment">/// The errors that can occur during the message delivery process.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Fail</span>)]</span>
+<span class="doccomment">/// Set of error that can occurred during message delivery process</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">MailboxError</span> {
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Mailbox has closed&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Mailbox has closed&quot;</span>)]</span>
     <span class="ident">Closed</span>,
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Message delivery timed out&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Message delivery timed out&quot;</span>)]</span>
     <span class="ident">Timeout</span>,
 }
-
-<span class="kw">impl</span> <span class="ident">error</span>::<span class="ident">Error</span> <span class="kw">for</span> <span class="ident">MailboxError</span> {}
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">SendError</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_inner</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">T</span> {
@@ -420,8 +371,6 @@
         }
     }
 }
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">error</span>::<span class="ident">Error</span> <span class="kw">for</span> <span class="ident">SendError</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {}
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">SendError</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
@@ -441,13 +390,17 @@
     }
 }
 
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">failure</span>::<span class="ident">Fail</span> <span class="kw">for</span> <span class="ident">SendError</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
+<span class="kw">where</span> <span class="ident">T</span>: <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> {
+}
+
 <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">MailboxError</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;MailboxError({})&quot;</span>, <span class="self">self</span>)
     }
 }
 
-<span class="doccomment">/// The address of an actor.</span>
+<span class="doccomment">/// Address of the actor</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Addr</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&gt;</span> {
     <span class="ident">tx</span>: <span class="ident">AddressSender</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>,
@@ -459,16 +412,16 @@
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="doccomment">/// Returns whether the actor is still alive.</span>
+    <span class="doccomment">/// Indicates if actor is still alive</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">connected</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">tx</span>.<span class="ident">connected</span>()
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="doccomment">/// Sends a message unconditionally, ignoring any potential errors.</span>
+    <span class="doccomment">/// Send message unconditionally</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// The message is always queued, even if the mailbox for the receiver is full.</span>
-    <span class="doccomment">/// If the mailbox is closed, the message is silently dropped.</span>
+    <span class="doccomment">/// This method ignores actor&#39;s mailbox capacity, it silently fails if</span>
+    <span class="doccomment">/// mailbox is closed.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">do_send</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">M</span>)
     <span class="kw">where</span>
         <span class="ident">M</span>: <span class="ident">Message</span> <span class="op">+</span> <span class="ident">Send</span>,
@@ -479,10 +432,10 @@
         <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tx</span>.<span class="ident">do_send</span>(<span class="ident">msg</span>);
     }
 
-    <span class="doccomment">/// Tries to send a message.</span>
+    <span class="doccomment">/// Try send message</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// This method fails if actor&#39;s mailbox is full or closed. This</span>
-    <span class="doccomment">/// method registers the current task in the receiver&#39;s queue.</span>
+    <span class="doccomment">/// This method fails if actor&#39;s mailbox is full or closed. This method</span>
+    <span class="doccomment">/// register current task in receivers queue.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">try_send</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">M</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">SendError</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;&gt;</span>
     <span class="kw">where</span>
         <span class="ident">M</span>: <span class="ident">Message</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
@@ -494,11 +447,10 @@
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="doccomment">/// Sends an asynchronous message and waits for a response.</span>
+    <span class="doccomment">/// Send asynchronous message and wait for response.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// The communication channel to the actor is bounded. If the</span>
-    <span class="doccomment">/// returned `Future` object gets dropped, the message is</span>
-    <span class="doccomment">/// cancelled.</span>
+    <span class="doccomment">/// Communication channel to the actor is bounded. if returned `Future`</span>
+    <span class="doccomment">/// object get dropped, message cancels.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">M</span>) <span class="op">-&gt;</span> <span class="ident">Request</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">M</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">M</span>: <span class="ident">Message</span> <span class="op">+</span> <span class="ident">Send</span>,
@@ -508,14 +460,12 @@
     {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tx</span>.<span class="ident">send</span>(<span class="ident">msg</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">rx</span>) <span class="op">=&gt;</span> <span class="ident">Request</span>::<span class="ident">new</span>(<span class="prelude-val">Some</span>(<span class="ident">rx</span>), <span class="prelude-val">None</span>),
-            <span class="prelude-val">Err</span>(<span class="ident">SendError</span>::<span class="ident">Full</span>(<span class="ident">msg</span>)) <span class="op">=&gt;</span> {
-                <span class="ident">Request</span>::<span class="ident">new</span>(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>((<span class="self">self</span>.<span class="ident">tx</span>.<span class="ident">clone</span>(), <span class="ident">msg</span>)))
-            }
+            <span class="prelude-val">Err</span>(<span class="ident">SendError</span>::<span class="ident">Full</span>(<span class="ident">msg</span>)) <span class="op">=&gt;</span> <span class="ident">Request</span>::<span class="ident">new</span>(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>((<span class="self">self</span>.<span class="ident">tx</span>.<span class="ident">clone</span>(), <span class="ident">msg</span>))),
             <span class="prelude-val">Err</span>(<span class="ident">SendError</span>::<span class="ident">Closed</span>(<span class="kw">_</span>)) <span class="op">=&gt;</span> <span class="ident">Request</span>::<span class="ident">new</span>(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
         }
     }
 
-    <span class="doccomment">/// Returns the `Recipient` for a specific message type.</span>
+    <span class="doccomment">/// Get `Recipient` for specific message type</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">recipient</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Recipient</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">A</span>: <span class="ident">Handler</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>,
@@ -524,13 +474,6 @@
         <span class="ident">M</span>::<span class="prelude-ty">Result</span>: <span class="ident">Send</span>,
     {
         <span class="self">self</span>.<span class="ident">into</span>()
-    }
-
-    <span class="doccomment">/// Returns a downgraded `WeakAddr`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">downgrade</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">WeakAddr</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
-        <span class="ident">WeakAddr</span> {
-            <span class="ident">wtx</span>: <span class="self">self</span>.<span class="ident">tx</span>.<span class="ident">downgrade</span>(),
-        }
     }
 }
 
@@ -556,37 +499,10 @@
     }
 }
 
-<span class="doccomment">/// A weakly referenced counterpart to `Addr&lt;A&gt;`.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">WeakAddr</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&gt;</span> {
-    <span class="ident">wtx</span>: <span class="ident">WeakAddressSender</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&gt;</span> <span class="ident">WeakAddr</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Attempts to upgrade the `WeakAddr&lt;A&gt;` pointer to an `Addr&lt;A&gt;`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Returns `None` if the actor has since been dropped or the</span>
-    <span class="doccomment">/// underlying address is disconnected.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">upgrade</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Addr</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">wtx</span>.<span class="ident">upgrade</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">tx</span>) <span class="op">=&gt;</span> {
-                <span class="kw">if</span> <span class="ident">tx</span>.<span class="ident">connected</span>() {
-                    <span class="prelude-val">Some</span>(<span class="ident">Addr</span>::<span class="ident">new</span>(<span class="ident">tx</span>))
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">None</span>
-                }
-            }
-            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-        }
-    }
-}
-
-<span class="doccomment">/// The `Recipient` type allows to send one specific message to an</span>
-<span class="doccomment">/// actor.</span>
+<span class="doccomment">/// `Recipient` type allows to send one specific message to an actor.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// You can get a recipient using the `Addr::recipient()` method. It</span>
-<span class="doccomment">/// is possible to use the `Clone::clone()` method to get a cloned</span>
-<span class="doccomment">/// recipient.</span>
+<span class="doccomment">/// You can get recipient with `Addr&lt;_, _&gt;::recipient()` method.</span>
+<span class="doccomment">/// It is possible to use `Clone::clone()` method to get cloned recipient.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Recipient</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Message</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">M</span>: <span class="ident">Message</span> <span class="op">+</span> <span class="ident">Send</span>,
@@ -600,44 +516,36 @@
     <span class="ident">M</span>: <span class="ident">Message</span> <span class="op">+</span> <span class="ident">Send</span>,
     <span class="ident">M</span>::<span class="prelude-ty">Result</span>: <span class="ident">Send</span>,
 {
-    <span class="doccomment">/// Creates a new recipient.</span>
+    <span class="doccomment">/// Create new recipient</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">tx</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Sender</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Recipient</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> {
         <span class="ident">Recipient</span> { <span class="ident">tx</span> }
     }
 
-    <span class="doccomment">/// Sends a message.</span>
+    <span class="doccomment">/// Send message</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// Deliver the message even if the recipient&#39;s mailbox is full.</span>
+    <span class="doccomment">/// Deliver message even if recipient&#39;s mailbox is full</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">do_send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">M</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">SendError</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;&gt;</span> {
         <span class="self">self</span>.<span class="ident">tx</span>.<span class="ident">do_send</span>(<span class="ident">msg</span>)
     }
 
-    <span class="doccomment">/// Attempts to send a message.</span>
+    <span class="doccomment">/// Try send message</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// This method fails if the actor&#39;s mailbox is full or</span>
-    <span class="doccomment">/// closed. This method registers the current task in the</span>
-    <span class="doccomment">/// receivers queue.</span>
+    <span class="doccomment">/// This method fails if actor&#39;s mailbox is full or closed. This method</span>
+    <span class="doccomment">/// register current task in receivers queue.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">try_send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">M</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">SendError</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;&gt;</span> {
         <span class="self">self</span>.<span class="ident">tx</span>.<span class="ident">try_send</span>(<span class="ident">msg</span>)
     }
 
-    <span class="doccomment">/// Sends a message and asynchronously wait for a response.</span>
+    <span class="doccomment">/// Send message and asynchronously wait for response.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// The communication channel to the actor is bounded. If the</span>
-    <span class="doccomment">/// returned `Request` object gets dropped, the message is</span>
-    <span class="doccomment">/// cancelled.</span>
+    <span class="doccomment">/// Communication channel to the actor is bounded. if returned `Request`</span>
+    <span class="doccomment">/// object get dropped, message cancels.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">M</span>) <span class="op">-&gt;</span> <span class="ident">RecipientRequest</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tx</span>.<span class="ident">send</span>(<span class="ident">msg</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">rx</span>) <span class="op">=&gt;</span> <span class="ident">RecipientRequest</span>::<span class="ident">new</span>(<span class="prelude-val">Some</span>(<span class="ident">rx</span>), <span class="prelude-val">None</span>),
-            <span class="prelude-val">Err</span>(<span class="ident">SendError</span>::<span class="ident">Full</span>(<span class="ident">msg</span>)) <span class="op">=&gt;</span> {
-                <span class="ident">RecipientRequest</span>::<span class="ident">new</span>(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>((<span class="self">self</span>.<span class="ident">tx</span>.<span class="ident">boxed</span>(), <span class="ident">msg</span>)))
-            }
+            <span class="prelude-val">Err</span>(<span class="ident">SendError</span>::<span class="ident">Full</span>(<span class="ident">msg</span>)) <span class="op">=&gt;</span> <span class="ident">RecipientRequest</span>::<span class="ident">new</span>(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>((<span class="self">self</span>.<span class="ident">tx</span>.<span class="ident">boxed</span>(), <span class="ident">msg</span>))),
             <span class="prelude-val">Err</span>(<span class="ident">SendError</span>::<span class="ident">Closed</span>(<span class="kw">_</span>)) <span class="op">=&gt;</span> <span class="ident">RecipientRequest</span>::<span class="ident">new</span>(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
         }
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">connected</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">tx</span>.<span class="ident">connected</span>()
     }
 }
 
@@ -693,8 +601,8 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">Future</span>;
+    <span class="kw">use</span> <span class="ident">prelude</span>::<span class="kw-2">*</span>;
 
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">atomic</span>::{<span class="ident">AtomicUsize</span>, <span class="ident">Ordering</span>};
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
@@ -718,7 +626,7 @@
         <span class="kw">type</span> <span class="prelude-ty">Result</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">SetCounter</span> <span class="kw">as</span> <span class="ident">Message</span><span class="op">&gt;</span>::<span class="prelude-ty">Result</span>;
 
         <span class="kw">fn</span> <span class="ident">handle</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ping</span>: <span class="ident">SetCounter</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Context</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="prelude-ty">Result</span> {
-            <span class="self">self</span>.<span class="number">0</span>.<span class="ident">store</span>(<span class="ident">ping</span>.<span class="number">0</span>, <span class="ident">Ordering</span>::<span class="ident">Relaxed</span>)
+            <span class="self">self</span>.<span class="number">0</span>.<span class="ident">store</span>(<span class="ident">ping</span>.<span class="number">0</span>, <span class="ident">Ordering</span>::<span class="ident">Relaxed</span>);
         }
     }
 
@@ -748,13 +656,11 @@
                 .<span class="ident">join</span>(<span class="ident">send3</span>)
                 .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
                     <span class="ident">System</span>::<span class="ident">current</span>().<span class="ident">stop</span>();
-                })
-                .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
+                }).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
                     <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Message over limit should be delivered, but it is not!&quot;</span>);
                 });
             <span class="ident">Arbiter</span>::<span class="ident">spawn</span>(<span class="ident">send</span>);
-        })
-        .<span class="ident">unwrap</span>();
+        });
 
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">count</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Relaxed</span>), <span class="number">3</span>);
     }

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.8.2/src/address/channel.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>channel.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../actix/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-0.7.9/src/address/channel.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>channel.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../actix/index.html'><img src='../../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -931,58 +931,13 @@
 <span id="931">931</span>
 <span id="932">932</span>
 <span id="933">933</span>
-<span id="934">934</span>
-<span id="935">935</span>
-<span id="936">936</span>
-<span id="937">937</span>
-<span id="938">938</span>
-<span id="939">939</span>
-<span id="940">940</span>
-<span id="941">941</span>
-<span id="942">942</span>
-<span id="943">943</span>
-<span id="944">944</span>
-<span id="945">945</span>
-<span id="946">946</span>
-<span id="947">947</span>
-<span id="948">948</span>
-<span id="949">949</span>
-<span id="950">950</span>
-<span id="951">951</span>
-<span id="952">952</span>
-<span id="953">953</span>
-<span id="954">954</span>
-<span id="955">955</span>
-<span id="956">956</span>
-<span id="957">957</span>
-<span id="958">958</span>
-<span id="959">959</span>
-<span id="960">960</span>
-<span id="961">961</span>
-<span id="962">962</span>
-<span id="963">963</span>
-<span id="964">964</span>
-<span id="965">965</span>
-<span id="966">966</span>
-<span id="967">967</span>
-<span id="968">968</span>
-<span id="969">969</span>
-<span id="970">970</span>
-<span id="971">971</span>
-<span id="972">972</span>
-<span id="973">973</span>
-<span id="974">974</span>
-<span id="975">975</span>
-<span id="976">976</span>
-<span id="977">977</span>
-<span id="978">978</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! This is copy of [sync/mpsc/](https://github.com/alexcrichton/futures-rs)</span>
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">hash</span>::{<span class="ident">Hash</span>, <span class="ident">Hasher</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">atomic</span>::<span class="ident">Ordering</span>::{<span class="ident">Relaxed</span>, <span class="ident">SeqCst</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">AtomicUsize</span>};
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::{<span class="ident">Arc</span>, <span class="ident">Weak</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">thread</span>, <span class="ident">usize</span>};
 
 <span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">sync</span>::<span class="ident">oneshot</span>::{<span class="ident">channel</span> <span class="kw">as</span> <span class="ident">sync_channel</span>, <span class="ident">Receiver</span>};
@@ -991,8 +946,8 @@
 
 <span class="kw">use</span> <span class="ident">parking_lot</span>::<span class="ident">Mutex</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">actor</span>::<span class="ident">Actor</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">handler</span>::{<span class="ident">Handler</span>, <span class="ident">Message</span>};
+<span class="kw">use</span> <span class="ident">actor</span>::<span class="ident">Actor</span>;
+<span class="kw">use</span> <span class="ident">handler</span>::{<span class="ident">Handler</span>, <span class="ident">Message</span>};
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">envelope</span>::{<span class="ident">Envelope</span>, <span class="ident">ToEnvelope</span>};
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">queue</span>::{<span class="ident">PopResult</span>, <span class="ident">Queue</span>};
@@ -1012,8 +967,6 @@
     <span class="kw">fn</span> <span class="ident">boxed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Sender</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;&gt;</span>;
 
     <span class="kw">fn</span> <span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span>;
-
-    <span class="kw">fn</span> <span class="ident">connected</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>;
 }
 
 <span class="doccomment">/// The transmission end of a channel which is used to send values.</span>
@@ -1042,19 +995,6 @@
     }
 }
 
-<span class="doccomment">/// A weakly referenced version of `AddressSender`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This is created by the `AddressSender::downgrade` method.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">WeakAddressSender</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&gt;</span> {
-    <span class="ident">inner</span>: <span class="ident">Weak</span><span class="op">&lt;</span><span class="ident">Inner</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>,
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">WeakAddressSender</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="ident">fmt</span>.<span class="ident">debug_struct</span>(<span class="string">&quot;WeakAddressSender&quot;</span>).<span class="ident">finish</span>()
-    }
-}
-
 <span class="kw">trait</span> <span class="ident">AssertKinds</span>: <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="ident">Clone</span> {}
 
 <span class="doccomment">/// The receiving end of a channel which implements the `Stream` trait.</span>
@@ -1079,13 +1019,13 @@
     <span class="comment">// channel as well as a flag signalling that the channel is closed.</span>
     <span class="ident">state</span>: <span class="ident">AtomicUsize</span>,
 
-    <span class="comment">// Atomic, FIFO queue used to send messages to the receiver.</span>
+    <span class="comment">// Atomic, FIFO queue used to send messages to the receiver</span>
     <span class="ident">message_queue</span>: <span class="ident">Queue</span><span class="op">&lt;</span><span class="ident">Envelope</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span>,
 
     <span class="comment">// Atomic, FIFO queue used to send parked task handles to the receiver.</span>
     <span class="ident">parked_queue</span>: <span class="ident">Queue</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">SenderTask</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
 
-    <span class="comment">// Number of senders in existence.</span>
+    <span class="comment">// Number of senders in existence</span>
     <span class="ident">num_senders</span>: <span class="ident">AtomicUsize</span>,
 
     <span class="comment">// Handle to the receiver&#39;s task.</span>
@@ -1212,7 +1152,7 @@
 
     <span class="doccomment">/// Attempts to send a message on this `Sender&lt;A&gt;` with blocking.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// This function must be called from inside of a task.</span>
+    <span class="doccomment">/// This function, must be called from inside of a task.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">M</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Receiver</span><span class="op">&lt;</span><span class="ident">M</span>::<span class="prelude-ty">Result</span><span class="op">&gt;</span>, <span class="ident">SendError</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;&gt;</span>
     <span class="kw">where</span>
         <span class="ident">A</span>: <span class="ident">Handler</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>,
@@ -1287,19 +1227,9 @@
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">inc_num_messages</span>().<span class="ident">is_none</span>() {
             <span class="prelude-val">Err</span>(<span class="ident">SendError</span>::<span class="ident">Closed</span>(<span class="ident">msg</span>))
         } <span class="kw">else</span> {
-            <span class="comment">// If inc_num_messages returned Some(park_self), then the mailbox is still active.</span>
-            <span class="comment">// We ignore the boolean (indicating to park and wait) in the Some, and queue the</span>
-            <span class="comment">// message regardless.</span>
             <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">A</span>::<span class="ident">Context</span> <span class="kw">as</span> <span class="ident">ToEnvelope</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">M</span><span class="op">&gt;&gt;</span>::<span class="ident">pack</span>(<span class="ident">msg</span>, <span class="prelude-val">None</span>);
             <span class="self">self</span>.<span class="ident">queue_push_and_signal</span>(<span class="ident">env</span>);
             <span class="prelude-val">Ok</span>(())
-        }
-    }
-
-    <span class="doccomment">/// Downgrade to `WeakAddressSender` which can later be upgraded</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">downgrade</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">WeakAddressSender</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
-        <span class="ident">WeakAddressSender</span> {
-            <span class="ident">inner</span>: <span class="ident">Arc</span>::<span class="ident">downgrade</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>),
         }
     }
 
@@ -1442,10 +1372,6 @@
     <span class="kw">fn</span> <span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
         <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">as_ref</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="kw">_</span> <span class="kw">as</span> <span class="ident">usize</span>
     }
-
-    <span class="kw">fn</span> <span class="ident">connected</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">connected</span>()
-    }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&gt;</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">AddressSender</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
@@ -1503,23 +1429,6 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&gt;</span> <span class="ident">Hash</span> <span class="kw">for</span> <span class="ident">AddressSender</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">hash</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">Hasher</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">H</span>) {
         (<span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">as_ref</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">Inner</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>).<span class="ident">hash</span>(<span class="ident">state</span>);
-    }
-}
-
-<span class="comment">//</span>
-<span class="comment">//</span>
-<span class="comment">// ===== impl WeakSender =====</span>
-<span class="comment">//</span>
-<span class="comment">//</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&gt;</span> <span class="ident">WeakAddressSender</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Attempts to upgrade the `WeakAddressSender&lt;A&gt;` pointer to an [`AddressSender&lt;A&gt;`]</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Returns [`None`] if the actor has since been dropped.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">upgrade</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">AddressSender</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;&gt;</span> {
-        <span class="kw">match</span> <span class="ident">Weak</span>::<span class="ident">upgrade</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">inner</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">AddressSenderProducer</span> { <span class="ident">inner</span> }.<span class="ident">sender</span>()),
-            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-        }
     }
 }
 
@@ -1602,20 +1511,20 @@
 <span class="comment">//</span>
 <span class="comment">//</span>
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Actor</span><span class="op">&gt;</span> <span class="ident">AddressReceiver</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Returns whether any senders are still connected.</span>
+    <span class="doccomment">/// Are any senders still connected</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">connected</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">num_senders</span>.<span class="ident">load</span>(<span class="ident">SeqCst</span>) <span class="op">!=</span> <span class="number">0</span>
     }
 
-    <span class="doccomment">/// Returns the channel capacity.</span>
+    <span class="doccomment">/// Get channel capacity</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">capacity</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
         <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">buffer</span>.<span class="ident">load</span>(<span class="ident">Relaxed</span>)
     }
 
-    <span class="doccomment">/// Sets the channel capacity.</span>
+    <span class="doccomment">/// Set channel capacity</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// This method wakes up all waiting senders if the new capacity</span>
-    <span class="doccomment">/// is greater than the current one.</span>
+    <span class="doccomment">/// This method wakes up all waiting senders if new capacity is greater</span>
+    <span class="doccomment">/// than current</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_capacity</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">cap</span>: <span class="ident">usize</span>) {
         <span class="kw">let</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">buffer</span>.<span class="ident">load</span>(<span class="ident">Relaxed</span>);
         <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">buffer</span>.<span class="ident">store</span>(<span class="ident">cap</span>, <span class="ident">Relaxed</span>);
@@ -1640,7 +1549,7 @@
         }
     }
 
-    <span class="doccomment">/// Returns the sender side of the channel.</span>
+    <span class="doccomment">/// Get sender side of the channel</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sender</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">AddressSender</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
         <span class="comment">// this code same as Sender::clone</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">curr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">num_senders</span>.<span class="ident">load</span>(<span class="ident">SeqCst</span>);
@@ -1668,7 +1577,7 @@
         }
     }
 
-    <span class="doccomment">/// Creates the sender producer.</span>
+    <span class="doccomment">/// Create sender producer</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sender_producer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">AddressSenderProducer</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> {
         <span class="ident">AddressSenderProducer</span> {
             <span class="ident">inner</span>: <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">clone</span>(),
@@ -1885,7 +1794,7 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">prelude</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">thread</span>, <span class="ident">time</span>};
 
     <span class="kw">struct</span> <span class="ident">Act</span>;
@@ -1909,16 +1818,18 @@
             <span class="kw">let</span> (<span class="ident">s1</span>, <span class="kw-2">mut</span> <span class="ident">recv</span>) <span class="op">=</span> <span class="ident">channel</span>::<span class="op">&lt;</span><span class="ident">Act</span><span class="op">&gt;</span>(<span class="number">1</span>);
             <span class="kw">let</span> <span class="ident">s2</span> <span class="op">=</span> <span class="ident">recv</span>.<span class="ident">sender</span>();
 
-            <span class="kw">let</span> <span class="ident">arb</span> <span class="op">=</span> <span class="ident">Arbiter</span>::<span class="ident">new</span>();
-            <span class="ident">arb</span>.<span class="ident">exec_fn</span>(<span class="kw">move</span> <span class="op">||</span> {
+            <span class="kw">let</span> <span class="ident">arb</span> <span class="op">=</span> <span class="ident">Arbiter</span>::<span class="ident">new</span>(<span class="string">&quot;s1&quot;</span>);
+            <span class="ident">arb</span>.<span class="ident">do_send</span>(<span class="ident">msgs</span>::<span class="ident">Execute</span>::<span class="ident">new</span>(<span class="kw">move</span> <span class="op">||</span> <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), ()<span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">s1</span>.<span class="ident">send</span>(<span class="ident">Ping</span>);
-            });
+                <span class="prelude-val">Ok</span>(())
+            }));
             <span class="ident">thread</span>::<span class="ident">sleep</span>(<span class="ident">time</span>::<span class="ident">Duration</span>::<span class="ident">from_millis</span>(<span class="number">100</span>));
-            <span class="kw">let</span> <span class="ident">arb2</span> <span class="op">=</span> <span class="ident">Arbiter</span>::<span class="ident">new</span>();
-            <span class="ident">arb2</span>.<span class="ident">exec_fn</span>(<span class="kw">move</span> <span class="op">||</span> {
+            <span class="kw">let</span> <span class="ident">arb2</span> <span class="op">=</span> <span class="ident">Arbiter</span>::<span class="ident">new</span>(<span class="string">&quot;s1&quot;</span>);
+            <span class="ident">arb2</span>.<span class="ident">do_send</span>(<span class="ident">msgs</span>::<span class="ident">Execute</span>::<span class="ident">new</span>(<span class="kw">move</span> <span class="op">||</span> <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), ()<span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">s2</span>.<span class="ident">send</span>(<span class="ident">Ping</span>);
                 <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">s2</span>.<span class="ident">send</span>(<span class="ident">Ping</span>);
-            });
+                <span class="prelude-val">Ok</span>(())
+            }));
 
             <span class="ident">thread</span>::<span class="ident">sleep</span>(<span class="ident">time</span>::<span class="ident">Duration</span>::<span class="ident">from_millis</span>(<span class="number">100</span>));
             <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">decode_state</span>(<span class="ident">recv</span>.<span class="ident">inner</span>.<span class="ident">state</span>.<span class="ident">load</span>(<span class="ident">SeqCst</span>));
@@ -1951,8 +1862,7 @@
             <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">p</span>.<span class="ident">is_none</span>());
 
             <span class="ident">System</span>::<span class="ident">current</span>().<span class="ident">stop</span>();
-        })
-        .<span class="ident">unwrap</span>();
+        });
     }
 }
 </pre></div>

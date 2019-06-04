@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-resolver-0.11.0/src/config.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>config.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../trust_dns_resolver/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-resolver-0.10.3/src/config.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>config.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../trust_dns_resolver/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -567,22 +567,6 @@
 <span id="567">567</span>
 <span id="568">568</span>
 <span id="569">569</span>
-<span id="570">570</span>
-<span id="571">571</span>
-<span id="572">572</span>
-<span id="573">573</span>
-<span id="574">574</span>
-<span id="575">575</span>
-<span id="576">576</span>
-<span id="577">577</span>
-<span id="578">578</span>
-<span id="579">579</span>
-<span id="580">580</span>
-<span id="581">581</span>
-<span id="582">582</span>
-<span id="583">583</span>
-<span id="584">584</span>
-<span id="585">585</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2015-2017 Benjamin Fry &lt;benjaminfry@me.com&gt;</span>
 <span class="comment">//</span>
@@ -794,8 +778,8 @@
 
 <span class="kw">impl</span> <span class="ident">Protocol</span> {
     <span class="doccomment">/// Returns true if this is a datagram oriented protocol, e.g. UDP</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_datagram</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_datagram</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
             <span class="ident">Protocol</span>::<span class="ident">Udp</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
             <span class="ident">Protocol</span>::<span class="ident">Tcp</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-tls&quot;</span>)]</span>
@@ -808,13 +792,13 @@
     }
 
     <span class="doccomment">/// Returns true if this is a stream oriented protocol, e.g. TCP</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_stream</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_stream</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="op">!</span><span class="self">self</span>.<span class="ident">is_datagram</span>()
     }
 
     <span class="doccomment">/// Is this an encrypted protocol, i.e. TLS or HTTPS</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_encrypted</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_encrypted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
             <span class="ident">Protocol</span>::<span class="ident">Udp</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             <span class="ident">Protocol</span>::<span class="ident">Tcp</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dns-over-tls&quot;</span>)]</span>
@@ -865,12 +849,12 @@
 
         <span class="kw">for</span> <span class="ident">ip</span> <span class="kw">in</span> <span class="ident">ips</span> {
             <span class="kw">let</span> <span class="ident">udp</span> <span class="op">=</span> <span class="ident">NameServerConfig</span> {
-                <span class="ident">socket_addr</span>: <span class="ident">SocketAddr</span>::<span class="ident">new</span>(<span class="kw-2">*</span><span class="ident">ip</span>, <span class="ident">port</span>),
+                <span class="ident">socket_addr</span>: <span class="ident">SocketAddr</span>::<span class="ident">new</span>(<span class="ident">ip</span>.<span class="ident">clone</span>(), <span class="ident">port</span>),
                 <span class="ident">protocol</span>: <span class="ident">Protocol</span>::<span class="ident">Udp</span>,
                 <span class="ident">tls_dns_name</span>: <span class="prelude-val">None</span>,
             };
             <span class="kw">let</span> <span class="ident">tcp</span> <span class="op">=</span> <span class="ident">NameServerConfig</span> {
-                <span class="ident">socket_addr</span>: <span class="ident">SocketAddr</span>::<span class="ident">new</span>(<span class="kw-2">*</span><span class="ident">ip</span>, <span class="ident">port</span>),
+                <span class="ident">socket_addr</span>: <span class="ident">SocketAddr</span>::<span class="ident">new</span>(<span class="ident">ip</span>.<span class="ident">clone</span>(), <span class="ident">port</span>),
                 <span class="ident">protocol</span>: <span class="ident">Protocol</span>::<span class="ident">Tcp</span>,
                 <span class="ident">tls_dns_name</span>: <span class="prelude-val">None</span>,
             };
@@ -895,7 +879,7 @@
 
         <span class="kw">for</span> <span class="ident">ip</span> <span class="kw">in</span> <span class="ident">ips</span> {
             <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">NameServerConfig</span> {
-                <span class="ident">socket_addr</span>: <span class="ident">SocketAddr</span>::<span class="ident">new</span>(<span class="kw-2">*</span><span class="ident">ip</span>, <span class="ident">port</span>),
+                <span class="ident">socket_addr</span>: <span class="ident">SocketAddr</span>::<span class="ident">new</span>(<span class="ident">ip</span>.<span class="ident">clone</span>(), <span class="ident">port</span>),
                 <span class="ident">protocol</span>,
                 <span class="ident">tls_dns_name</span>: <span class="prelude-val">Some</span>(<span class="ident">tls_dns_name</span>.<span class="ident">clone</span>()),
             };
@@ -1033,12 +1017,6 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">NameServerConfigGroup</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span>::<span class="ident">new</span>()
-    }
-}
-
 <span class="kw">impl</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">NameServerConfigGroup</span> {
     <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NameServerConfig</span><span class="op">&gt;</span>;
     <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Target</span> {
@@ -1134,14 +1112,6 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`MAX_TTL`]: ../dns_lru/const.MAX_TTL.html</span>
     <span class="kw">pub</span> <span class="ident">negative_max_ttl</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Default is to distrust negative responses from upstream nameservers</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Currently only SERVFAIL responses are continued on, this may be expanded to include NXDOMAIN or NoError/Empty responses</span>
-    <span class="kw">pub</span> <span class="ident">distrust_nx_responses</span>: <span class="ident">bool</span>,
-    <span class="doccomment">/// Concurrent requests where more than one Nameserver is registered, the default is 2</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// 0 or 1 will configure this to execute all requests serially</span>
-    <span class="kw">pub</span> <span class="ident">num_concurrent_reqs</span>: <span class="ident">usize</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">ResolverOpts</span> {
@@ -1164,8 +1134,6 @@
             <span class="ident">negative_min_ttl</span>: <span class="prelude-val">None</span>,
             <span class="ident">positive_max_ttl</span>: <span class="prelude-val">None</span>,
             <span class="ident">negative_max_ttl</span>: <span class="prelude-val">None</span>,
-            <span class="ident">distrust_nx_responses</span>: <span class="bool-val">true</span>,
-            <span class="ident">num_concurrent_reqs</span>: <span class="number">2</span>,
         }
     }
 }

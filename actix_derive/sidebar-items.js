@@ -1,1 +1,1 @@
-initSidebarItems({"derive":[["Message",""],["MessageResponse",""]]});
+initSidebarItems({"derive":[["Message",""]]});

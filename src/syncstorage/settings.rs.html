@@ -182,6 +182,9 @@
 <span id="182">182</span>
 <span id="183">183</span>
 <span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Application settings objects and initialization</span>
 
@@ -205,6 +208,7 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Settings</span> {
     <span class="kw">pub</span> <span class="ident">debug</span>: <span class="ident">bool</span>,
     <span class="kw">pub</span> <span class="ident">port</span>: <span class="ident">u16</span>,
+    <span class="kw">pub</span> <span class="ident">host</span>: <span class="ident">String</span>,
     <span class="kw">pub</span> <span class="ident">database_url</span>: <span class="ident">String</span>,
     <span class="kw">pub</span> <span class="ident">database_pool_max_size</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
@@ -224,6 +228,7 @@
         <span class="ident">Settings</span> {
             <span class="ident">debug</span>: <span class="bool-val">false</span>,
             <span class="ident">port</span>: <span class="ident">DEFAULT_PORT</span>,
+            <span class="ident">host</span>: <span class="string">&quot;127.0.0.1&quot;</span>.<span class="ident">to_string</span>(),
             <span class="ident">database_url</span>: <span class="string">&quot;mysql://root@127.0.0.1/syncstorage&quot;</span>.<span class="ident">to_string</span>(),
             <span class="ident">database_pool_max_size</span>: <span class="prelude-val">None</span>,
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
@@ -242,6 +247,7 @@
         <span class="comment">// https://github.com/mehcode/config-rs/issues/60</span>
         <span class="ident">s</span>.<span class="ident">set_default</span>(<span class="string">&quot;debug&quot;</span>, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
         <span class="ident">s</span>.<span class="ident">set_default</span>(<span class="string">&quot;port&quot;</span>, <span class="ident">i64</span>::<span class="ident">from</span>(<span class="ident">DEFAULT_PORT</span>))<span class="question-mark">?</span>;
+        <span class="ident">s</span>.<span class="ident">set_default</span>(<span class="string">&quot;host&quot;</span>, <span class="string">&quot;127.0.0.1&quot;</span>)<span class="question-mark">?</span>;
         <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
         <span class="ident">s</span>.<span class="ident">set_default</span>(<span class="string">&quot;database_use_test_transactions&quot;</span>, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
         <span class="ident">s</span>.<span class="ident">set_default</span>(<span class="string">&quot;master_secret&quot;</span>, <span class="string">&quot;&quot;</span>)<span class="question-mark">?</span>;

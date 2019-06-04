@@ -283,7 +283,7 @@
 
             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">build_app</span>(<span class="ident">state</span>), <span class="ident">build_dockerflow</span>(<span class="ident">dfstate</span>)]
         })
-        .<span class="ident">bind</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;127.0.0.1:{}&quot;</span>, <span class="ident">settings</span>.<span class="ident">port</span>))
+        .<span class="ident">bind</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}:{}&quot;</span>, <span class="ident">settings</span>.<span class="ident">host</span>, <span class="ident">settings</span>.<span class="ident">port</span>))
         .<span class="ident">unwrap</span>()
         .<span class="ident">start</span>();
         <span class="prelude-val">Ok</span>(<span class="ident">sys</span>)
