@@ -12,6 +12,9 @@ use crate::settings::{Secrets, ServerLimits, Settings};
 use crate::web::handlers;
 use crate::web::middleware;
 
+const BSO_ID_REGEX: &str = r"[ -~]{1,64}";
+const COLLECTION_ID_REGEX: &str = r"[a-zA-Z0-9._-]{1,32}";
+
 macro_rules! init_routes {
     ($app:expr) => {
         $app.resource("/{uid}/info/collections", |r| {
@@ -44,12 +47,19 @@ macro_rules! init_routes {
             r.method(http::Method::GET).with(handlers::get_collection);
             r.method(http::Method::POST).with(handlers::post_collection);
         })
+        //.resource(&cfg_path("/{uid}/storage/{collection}/{bso}"), |r| {
         .resource("/{uid}/storage/{collection}/{bso}", |r| {
             r.method(http::Method::DELETE).with(handlers::delete_bso);
             r.method(http::Method::GET).with(handlers::get_bso);
             r.method(http::Method::PUT).with(handlers::put_bso);
         })
     };
+}
+
+fn cfg_path(path: &str) -> String {
+    path
+        .replace("{collection}", &format!("{{collection:{}}}", COLLECTION_ID_REGEX))
+        .replace("{bso}", &format!("{{bso:{}}}", BSO_ID_REGEX))
 }
 
 // The tests depend on the init_routes! macro, so this mod must come after it
