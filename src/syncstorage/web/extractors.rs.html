@@ -1626,7 +1626,6 @@
 <span id="1626">1626</span>
 <span id="1627">1627</span>
 <span id="1628">1628</span>
-<span id="1629">1629</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Request header/body/query extractors</span>
 <span class="doccomment">//!</span>
@@ -2730,9 +2729,8 @@
     }
 
     <span class="comment">// String is too long for valid name</span>
-    <span class="kw">const</span> <span class="ident">INVALID_COLLECTION_NAME</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> <span class="op">=</span>
-        <span class="string">&quot;abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz&quot;</span>;
-    <span class="kw">const</span> <span class="ident">INVALID_BSO_NAME</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> <span class="op">=</span>
+    <span class="kw">const</span> <span class="ident">INVALID_COLLECTION_NAME</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz&quot;</span>;
+    <span class="kw">const</span> <span class="ident">INVALID_BSO_NAME</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span>
         <span class="string">&quot;abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz&quot;</span>;
 
     <span class="kw">fn</span> <span class="ident">make_db</span>() <span class="op">-&gt;</span> (<span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Db</span><span class="op">&gt;</span>, <span class="ident">bool</span>) {
@@ -2965,7 +2963,7 @@
             <span class="number">5000</span>,
         );
         <span class="kw">let</span> <span class="ident">bso_body</span> <span class="op">=</span> <span class="macro">json</span><span class="macro">!</span>({
-            <span class="string">&quot;payload&quot;</span>: <span class="string">&quot;xxx&quot;</span>, <span class="string">&quot;sortindex&quot;</span>: <span class="op">-</span><span class="number">9999999999</span> <span class="kw">as</span> <span class="ident">i64</span>,
+            <span class="string">&quot;payload&quot;</span>: <span class="string">&quot;xxx&quot;</span>, <span class="string">&quot;sortindex&quot;</span>: <span class="op">-</span><span class="number">9_999_999_999</span> <span class="kw">as</span> <span class="ident">i64</span>,
         });
         <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">with_state</span>(<span class="ident">state</span>)
             .<span class="ident">header</span>(<span class="string">&quot;authorization&quot;</span>, <span class="ident">header</span>)

@@ -657,7 +657,7 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test_default</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="ident">HawkPayload</span> {
-            <span class="ident">expires</span>: <span class="ident">Utc</span>::<span class="ident">now</span>().<span class="ident">timestamp</span>() <span class="kw">as</span> <span class="ident">f64</span> <span class="op">+</span> <span class="number">200000.0</span>,
+            <span class="ident">expires</span>: <span class="ident">Utc</span>::<span class="ident">now</span>().<span class="ident">timestamp</span>() <span class="kw">as</span> <span class="ident">f64</span> <span class="op">+</span> <span class="number">200_000.0</span>,
             <span class="ident">node</span>: <span class="string">&quot;friendly-node&quot;</span>.<span class="ident">to_string</span>(),
             <span class="ident">salt</span>: <span class="string">&quot;saltysalt&quot;</span>.<span class="ident">to_string</span>(),
             <span class="ident">user_id</span>: <span class="number">1</span>,
@@ -762,7 +762,7 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fixture</span> <span class="op">=</span> <span class="ident">TestFixture</span>::<span class="ident">new</span>();
         <span class="ident">fixture</span>.<span class="ident">header</span>.<span class="ident">mac</span> <span class="op">=</span> <span class="string">&quot;xRVjP7607eZUWCBxJKwTo1CsLcNf4TZwUUNrLPUqkdQ=&quot;</span>.<span class="ident">to_string</span>();
         <span class="ident">fixture</span>.<span class="ident">header</span>.<span class="ident">nonce</span> <span class="op">=</span> <span class="string">&quot;1d4mRs0=&quot;</span>.<span class="ident">to_string</span>();
-        <span class="ident">fixture</span>.<span class="ident">header</span>.<span class="ident">ts</span> <span class="op">=</span> <span class="number">1536198978</span>;
+        <span class="ident">fixture</span>.<span class="ident">header</span>.<span class="ident">ts</span> <span class="op">=</span> <span class="number">1_536_198_978</span>;
         <span class="ident">fixture</span>.<span class="ident">request</span>.<span class="ident">method</span> <span class="op">=</span> <span class="string">&quot;POST&quot;</span>.<span class="ident">to_string</span>();
         <span class="ident">fixture</span>
             .<span class="ident">request</span>
@@ -897,7 +897,7 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">bad_ts</span>() {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fixture</span> <span class="op">=</span> <span class="ident">TestFixture</span>::<span class="ident">new</span>();
-        <span class="ident">fixture</span>.<span class="ident">header</span>.<span class="ident">ts</span> <span class="op">=</span> <span class="number">1536198978</span>;
+        <span class="ident">fixture</span>.<span class="ident">header</span>.<span class="ident">ts</span> <span class="op">=</span> <span class="number">1_536_198_978</span>;
 
         <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">HawkPayload</span>::<span class="ident">new</span>(
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>.<span class="ident">header</span>.<span class="ident">to_string</span>(),
@@ -1002,7 +1002,7 @@
                     <span class="string">&quot;eyJub2RlIjogImh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsICJ1aWQiOiAxLCAiZXhwaXJlcyI6IDE1MzYxOTkyNzQsICJmeGFfdWlkIjogIjMxOWI5OGY5OTYxZmYxZGJkZDA3MzEzY2Q2YmE5MjVhIiwgInNhbHQiOiAiYjAyNjBlIiwgImRldmljZV9pZCI6ICJjMDlkMjZmYWYyYjQ5YWI2NGEyODgyOTA3MjA2ZDBiNSJ96drmQ_KNFOe7U3g1D8ZX5-he2Bv2aRvKZzBPrCjHKO4=&quot;</span>,
                     <span class="string">&quot;+1oGdzqpxYndK5ejQLdnZpXgGSt/IlxNh5MvcR6j7t4=&quot;</span>,
                     <span class="string">&quot;omxLZWE=&quot;</span>,
-                    <span class="number">1536198980</span>,
+                    <span class="number">1_536_198_980</span>,
                 ),
                 <span class="ident">request</span>: <span class="ident">Request</span>::<span class="ident">new</span>(
                     <span class="string">&quot;GET&quot;</span>,
@@ -1021,7 +1021,7 @@
                     <span class="ident">master_secret</span>: <span class="ident">Secrets</span>::<span class="ident">new</span>(<span class="string">&quot;Ted Koppel is a robot&quot;</span>),
                 },
                 <span class="ident">expected</span>: <span class="ident">HawkPayload</span> {
-                    <span class="ident">expires</span>: <span class="number">1536199274.0</span>,
+                    <span class="ident">expires</span>: <span class="number">1_536_199_274.0</span>,
                     <span class="ident">node</span>: <span class="string">&quot;http://localhost:5000&quot;</span>.<span class="ident">to_string</span>(),
                     <span class="ident">salt</span>: <span class="string">&quot;b0260e&quot;</span>.<span class="ident">to_string</span>(),
                     <span class="ident">user_id</span>: <span class="number">1</span>,

@@ -125,6 +125,7 @@
 <span id="125">125</span>
 <span id="126">126</span>
 <span id="127">127</span>
+<span id="128">128</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">u64</span>;
 
@@ -155,7 +156,7 @@
     <span class="doccomment">/// Create a string value compatible with existing Sync Timestamp headers</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Represents the timestamp as second since epoch with two decimal places of precision.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_header</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_header</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:.*}&quot;</span>, <span class="number">2</span>, <span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">/</span> <span class="number">1000.0</span>)
     }
 
@@ -200,7 +201,7 @@
     }
 
     <span class="doccomment">/// Return the timestamp as an i64 milliseconds since epoch</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_i64</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">i64</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_i64</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">i64</span> {
         <span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">i64</span>
     }
 
@@ -247,6 +248,7 @@
     <span class="ident">Deserialize</span>::<span class="ident">deserialize</span>(<span class="ident">d</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">result</span>: <span class="ident">f64</span><span class="op">|</span> (<span class="ident">result</span> <span class="op">*</span> <span class="number">1_000f64</span>) <span class="kw">as</span> <span class="ident">u64</span>)
 }
 
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">trivially_copy_pass_by_ref</span>)]</span>
 <span class="kw">fn</span> <span class="ident">serialize_ts</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">u64</span>, <span class="ident">s</span>: <span class="ident">S</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S</span>::<span class="prelude-val">Ok</span>, <span class="ident">S</span>::<span class="ident">Error</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">S</span>: <span class="ident">Serializer</span>,

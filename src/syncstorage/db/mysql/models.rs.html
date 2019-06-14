@@ -1221,7 +1221,7 @@
                         <span class="ident">bso</span>::<span class="ident">sortindex</span>.<span class="ident">eq</span>(<span class="ident">sortindex</span>),
                         <span class="ident">bso</span>::<span class="ident">payload</span>.<span class="ident">eq</span>(<span class="ident">payload</span>),
                         <span class="ident">bso</span>::<span class="ident">modified</span>.<span class="ident">eq</span>(<span class="ident">timestamp</span>),
-                        <span class="ident">bso</span>::<span class="ident">expiry</span>.<span class="ident">eq</span>(<span class="ident">timestamp</span> <span class="op">+</span> (<span class="ident">ttl</span> <span class="kw">as</span> <span class="ident">i64</span> <span class="op">*</span> <span class="number">1000</span>)),
+                        <span class="ident">bso</span>::<span class="ident">expiry</span>.<span class="ident">eq</span>(<span class="ident">timestamp</span> <span class="op">+</span> (<span class="ident">i64</span>::<span class="ident">from</span>(<span class="ident">ttl</span>) <span class="op">*</span> <span class="number">1000</span>)),
                     ))
                     .<span class="ident">execute</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">conn</span>)<span class="question-mark">?</span>;
             }
@@ -1273,7 +1273,7 @@
             <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">query</span>,
         };
 
-        <span class="kw">let</span> <span class="ident">limit</span> <span class="op">=</span> <span class="ident">limit</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">limit</span><span class="op">|</span> <span class="ident">i64</span>::<span class="ident">from</span>(<span class="ident">limit</span>)).<span class="ident">unwrap_or</span>(<span class="op">-</span><span class="number">1</span>);
+        <span class="kw">let</span> <span class="ident">limit</span> <span class="op">=</span> <span class="ident">limit</span>.<span class="ident">map</span>(<span class="ident">i64</span>::<span class="ident">from</span>).<span class="ident">unwrap_or</span>(<span class="op">-</span><span class="number">1</span>);
         <span class="comment">// fetch an extra row to detect if there are more rows that</span>
         <span class="comment">// match the query conditions</span>
         <span class="ident">query</span> <span class="op">=</span> <span class="ident">query</span>.<span class="ident">limit</span>(<span class="kw">if</span> <span class="ident">limit</span> <span class="op">&gt;=</span> <span class="number">0</span> { <span class="ident">limit</span> <span class="op">+</span> <span class="number">1</span> } <span class="kw">else</span> { <span class="ident">limit</span> });
@@ -1710,7 +1710,7 @@
 <span class="kw">fn</span> <span class="ident">put_bso_as_changeset</span>(<span class="ident">bso</span>: <span class="kw-2">&amp;</span><span class="ident">params</span>::<span class="ident">PutBso</span>, <span class="ident">modified</span>: <span class="ident">i64</span>) <span class="op">-&gt;</span> <span class="ident">UpdateBSO</span> {
     <span class="ident">UpdateBSO</span> {
         <span class="ident">sortindex</span>: <span class="ident">bso</span>.<span class="ident">sortindex</span>,
-        <span class="ident">expiry</span>: <span class="ident">bso</span>.<span class="ident">ttl</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">ttl</span><span class="op">|</span> <span class="ident">modified</span> <span class="op">+</span> (<span class="ident">ttl</span> <span class="kw">as</span> <span class="ident">i64</span> <span class="op">*</span> <span class="number">1000</span>)),
+        <span class="ident">expiry</span>: <span class="ident">bso</span>.<span class="ident">ttl</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">ttl</span><span class="op">|</span> <span class="ident">modified</span> <span class="op">+</span> (<span class="ident">i64</span>::<span class="ident">from</span>(<span class="ident">ttl</span>) <span class="op">*</span> <span class="number">1000</span>)),
         <span class="ident">payload</span>: <span class="ident">bso</span>.<span class="ident">payload</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">payload</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">payload</span>),
         <span class="ident">modified</span>: <span class="kw">if</span> <span class="ident">bso</span>.<span class="ident">payload</span>.<span class="ident">is_some</span>() <span class="op">||</span> <span class="ident">bso</span>.<span class="ident">sortindex</span>.<span class="ident">is_some</span>() {
             <span class="prelude-val">Some</span>(<span class="ident">modified</span>)

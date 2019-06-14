@@ -445,7 +445,7 @@
         <span class="ident">meta</span>.<span class="ident">db</span>
             .<span class="ident">delete_storage</span>(<span class="ident">meta</span>.<span class="ident">user_id</span>)
             .<span class="ident">map_err</span>(<span class="ident">From</span>::<span class="ident">from</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">result</span><span class="op">|</span> <span class="ident">HttpResponse</span>::<span class="prelude-val">Ok</span>().<span class="ident">json</span>(<span class="ident">result</span>)),
+            .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">HttpResponse</span>::<span class="prelude-val">Ok</span>().<span class="ident">json</span>(())),
     )
 }
 
