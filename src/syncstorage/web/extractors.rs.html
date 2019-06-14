@@ -1626,6 +1626,10 @@
 <span id="1626">1626</span>
 <span id="1627">1627</span>
 <span id="1628">1628</span>
+<span id="1629">1629</span>
+<span id="1630">1630</span>
+<span id="1631">1631</span>
+<span id="1632">1632</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Request header/body/query extractors</span>
 <span class="doccomment">//!</span>
@@ -1644,7 +1648,7 @@
 <span class="kw">use</span> <span class="ident">mime</span>;
 <span class="kw">use</span> <span class="ident">regex</span>::<span class="ident">Regex</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::{
-    <span class="ident">de</span>::{<span class="ident">Deserializer</span>, <span class="ident">Error</span> <span class="kw">as</span> <span class="ident">SerdeError</span>},
+    <span class="ident">de</span>::{<span class="ident">Deserializer</span>, <span class="ident">Error</span> <span class="kw">as</span> <span class="ident">SerdeError</span>, <span class="ident">IgnoredAny</span>},
     <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>,
 };
 <span class="kw">use</span> <span class="ident">serde_json</span>::<span class="ident">Value</span>;
@@ -1676,7 +1680,7 @@
     <span class="ident">uid</span>: <span class="ident">u64</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>, <span class="ident">Validate</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Validate</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BatchBsoBody</span> {
     <span class="attribute">#[<span class="ident">validate</span>(<span class="ident">custom</span> <span class="op">=</span> <span class="string">&quot;validate_body_bso_id&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">id</span>: <span class="ident">String</span>,
@@ -1691,8 +1695,8 @@
     <span class="doccomment">/// Function to convert valid raw JSON BSO body to a BatchBsoBody</span>
     <span class="kw">fn</span> <span class="ident">from_raw_bso</span>(<span class="ident">val</span>: <span class="kw-2">&amp;</span><span class="ident">Value</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">BatchBsoBody</span>, <span class="ident">String</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">val</span>.<span class="ident">as_object</span>().<span class="ident">ok_or</span>(<span class="string">&quot;invalid json&quot;</span>)<span class="question-mark">?</span>;
-        <span class="comment">// Verify all the keys are valid</span>
-        <span class="kw">let</span> <span class="ident">valid_keys</span> <span class="op">=</span> [<span class="string">&quot;id&quot;</span>, <span class="string">&quot;sortindex&quot;</span>, <span class="string">&quot;payload&quot;</span>, <span class="string">&quot;ttl&quot;</span>];
+        <span class="comment">// Verify all the keys are valid. modified is allowed but ignored</span>
+        <span class="kw">let</span> <span class="ident">valid_keys</span> <span class="op">=</span> [<span class="string">&quot;id&quot;</span>, <span class="string">&quot;sortindex&quot;</span>, <span class="string">&quot;payload&quot;</span>, <span class="string">&quot;ttl&quot;</span>, <span class="string">&quot;modified&quot;</span>];
         <span class="kw">for</span> <span class="ident">key_name</span> <span class="kw">in</span> <span class="ident">map</span>.<span class="ident">keys</span>() {
             <span class="kw">if</span> <span class="op">!</span><span class="ident">valid_keys</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">key_name</span>.<span class="ident">as_str</span>()) {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;unknown field {}&quot;</span>, <span class="ident">key_name</span>));
@@ -1879,6 +1883,7 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>, <span class="ident">Validate</span>)]</span>
+<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">deny_unknown_fields</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BsoBody</span> {
     <span class="attribute">#[<span class="ident">validate</span>(<span class="ident">custom</span> <span class="op">=</span> <span class="string">&quot;validate_body_bso_id&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
@@ -1887,6 +1892,9 @@
     <span class="kw">pub</span> <span class="ident">payload</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="attribute">#[<span class="ident">validate</span>(<span class="ident">custom</span> <span class="op">=</span> <span class="string">&quot;validate_body_bso_ttl&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">ttl</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Any client-supplied value for this field is ignored</span>
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span>(<span class="ident">deserialize</span> <span class="op">=</span> <span class="string">&quot;modified&quot;</span>), <span class="ident">skip_serializing</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">_ignored_modified</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IgnoredAny</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BsoBody</span> {
