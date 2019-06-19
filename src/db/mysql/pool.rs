@@ -6,8 +6,8 @@ use std::{
 
 use diesel::{
     mysql::MysqlConnection,
-    r2d2::{ConnectionManager, Pool},
-    Connection,
+    r2d2::{ConnectionManager, ManageConnection, Pool},
+    Connection
 };
 use futures::future::lazy;
 use tokio_threadpool::ThreadPool;
@@ -30,26 +30,27 @@ pub fn run_embedded_migrations(settings: &Settings) -> Result<()> {
 }
 
 #[derive(Clone)]
-pub struct MysqlDbPool {
+pub struct SyncDbPool<T>
+where T: ManageConnection + 'static + Send {
     /// Pool of db connections
-    pool: Pool<ConnectionManager<MysqlConnection>>,
+    pool: Pool<T>,
     /// Thread Pool for running synchronous db calls
     thread_pool: Arc<ThreadPool>,
     /// In-memory cache of collection_ids and their names
     coll_cache: Arc<CollectionCache>,
 }
 
-impl MysqlDbPool {
+impl<T> SyncDbPool<T>
+where T: ManageConnection + 'static + Send {
     /// Creates a new pool of Mysql db connections.
     ///
     /// Also initializes the Mysql db, ensuring all migrations are ran.
-    pub fn new(settings: &Settings) -> Result<Self> {
+    pub fn new(settings: &Settings, manager: T) -> Result<Self> {
         run_embedded_migrations(settings)?;
-        Self::new_without_migrations(settings)
+        Self::new_without_migrations(settings, manager)
     }
 
-    pub fn new_without_migrations(settings: &Settings) -> Result<Self> {
-        let manager = ConnectionManager::<MysqlConnection>::new(settings.database_url.clone());
+    pub fn new_without_migrations(settings: &Settings, manager: T) -> Result<Self> {
         let builder = Pool::builder().max_size(settings.database_pool_max_size.unwrap_or(10));
 
         #[cfg(test)]
@@ -80,7 +81,8 @@ impl MysqlDbPool {
     }
 }
 
-impl DbPool for MysqlDbPool {
+impl<T> DbPool for SyncDbPool<T>
+where T: ManageConnection + 'static + Send {
     fn get(&self) -> DbFuture<Box<dyn Db>> {
         let pool = self.clone();
         Box::new(self.thread_pool.spawn_handle(lazy(move || {
@@ -91,9 +93,10 @@ impl DbPool for MysqlDbPool {
     }
 }
 
-impl fmt::Debug for MysqlDbPool {
+impl<T> fmt::Debug for SyncDbPool<T>
+where T: ManageConnection + 'static + Send {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "MysqlDbPool {{ coll_cache: {:?} }}", self.coll_cache)
+        write!(f, "SyncDbPool {{ coll_cache: {:?} }}", self.coll_cache)
     }
 }
 

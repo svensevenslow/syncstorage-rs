@@ -7,4 +7,4 @@ mod schema;
 #[cfg(test)]
 mod test;
 
-pub use self::pool::MysqlDbPool;
+pub use self::pool::SyncDbPool;

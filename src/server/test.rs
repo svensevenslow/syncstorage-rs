@@ -10,7 +10,7 @@ use serde_json;
 use sha2::Sha256;
 
 use super::*;
-use crate::db::mysql::pool::MysqlDbPool;
+use crate::db::mysql::pool::SyncDbPool;
 use crate::db::params;
 use crate::db::results::{DeleteBso, GetBso, PostBsos, PutBso};
 use crate::db::util::SyncTimestamp;
@@ -38,7 +38,7 @@ fn setup() -> TestServer {
         };
 
         let state = ServerState {
-            db_pool: Box::new(MysqlDbPool::new(&settings).unwrap()),
+            db_pool: Box::new(SyncDbPool::new(&settings).unwrap()),
             limits: Arc::clone(&SERVER_LIMITS),
             secrets: Arc::clone(&SECRETS),
             port: 8000,

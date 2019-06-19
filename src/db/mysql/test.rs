@@ -10,7 +10,7 @@ use rand::{distributions::Alphanumeric, thread_rng, Rng};
 
 use crate::db::mysql::{
     models::{MysqlDb, Result, DEFAULT_BSO_TTL},
-    pool::MysqlDbPool,
+    pool::SyncDbPool,
     schema::collections,
 };
 use crate::db::util::SyncTimestamp;
@@ -45,7 +45,7 @@ pub fn db() -> Result<MysqlDb> {
         master_secret: Secrets::default(),
     };
 
-    let pool = MysqlDbPool::new(&settings)?;
+    let pool = SyncDbPool::new(&settings)?;
     pool.get_sync()
 }
 
