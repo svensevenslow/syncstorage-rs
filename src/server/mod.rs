@@ -3,9 +3,10 @@
 use std::sync::Arc;
 
 use actix::{System, SystemRunner};
+use actix_cors::Cors;
 use actix_http::body::{MessageBody, Body};
 use actix_service::{NewService};
-use actix_web::{middleware::cors::Cors, web, App, HttpRequest, HttpResponse, HttpServer, dev::ServiceRequest, dev::ServiceResponse};
+use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, dev::ServiceRequest, dev::ServiceResponse};
 use actix_web::error::Error;
 //use num_cpus;
 use serde_json::json;
