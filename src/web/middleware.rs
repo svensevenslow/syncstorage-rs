@@ -168,6 +168,7 @@ B: 'static
                         _ => db.lock_for_write(lc)
                     }
                     .or_else(move|e| {
+                        dbg!(format!("Failed to get database lock: {:?}", e));
                         db2.rollback().and_then(|_| future::err(e))
                     })
                 )

@@ -30,6 +30,7 @@ fn setup() -> TestServer {
         let settings = Settings {
             debug: true,
             port: 8000,
+            host: settings.host,
             database_url: settings.database_url,
             database_pool_max_size: Some(1),
             database_use_test_transactions: true,
@@ -186,7 +187,7 @@ fn delete_all() {
 #[test]
 fn delete_collection() {
     let start = SyncTimestamp::default();
-    test_endpoint(http::Method::DELETE, "/1.5/42/storage/bookmarks", "0.0");
+    test_endpoint(http::Method::DELETE, "/1.5/42/storage/bookmarks", "0.00");
     test_endpoint_with_response(
         http::Method::DELETE,
         "/1.5/42/storage/bookmarks?ids=1,",
@@ -229,7 +230,7 @@ fn post_collection() {
             id: "foo".to_string(),
             sortindex: Some(0),
             payload: Some("bar".to_string()),
-            ttl: Some(31536000),
+            ttl: Some(31_536_000),
         }],
         result: PostBsos {
             assert!(result.modified >= start);
@@ -273,7 +274,8 @@ fn put_bso() {
             id: Some("wibble".to_string()),
             sortindex: Some(0),
             payload: Some("wibble".to_string()),
-            ttl: Some(31536000),
+            ttl: Some(31_536_000),
+            ..Default::default()
         },
         result: PutBso {
             assert!(result >= start);
@@ -299,7 +301,8 @@ fn invalid_content_type() {
             id: Some("wibble".to_string()),
             sortindex: Some(0),
             payload: Some("wibble".to_string()),
-            ttl: Some(31536000),
+            ttl: Some(31_536_000),
+            ..Default::default()
         })
         .unwrap();
 
@@ -317,7 +320,8 @@ fn invalid_content_type() {
             id: Some("wibble".to_string()),
             sortindex: Some(0),
             payload: Some("wibble".to_string()),
-            ttl: Some(31536000),
+            ttl: Some(31_536_000),
+            ..Default::default()
         }]))
         .unwrap();
 

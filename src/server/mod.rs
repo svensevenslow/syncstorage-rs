@@ -118,7 +118,7 @@ impl Server {
                         .body(include_str!("../../version.json"))
                 })))
         })
-        .bind(format!("127.0.0.1:{}", settings.port))
+        .bind(format!("{}:{}", settings.host, settings.port))
         .unwrap()
         .start();
         Ok(sys)

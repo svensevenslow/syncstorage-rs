@@ -6,7 +6,7 @@ use diesel::{
     deserialize::{self, FromSql},
     sql_types::BigInt,
 };
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::{ser, Deserialize, Deserializer, Serialize, Serializer};
 
 use super::{DbError, DbErrorKind};
 
@@ -27,8 +27,8 @@ impl SyncTimestamp {
     /// Create a string value compatible with existing Sync Timestamp headers
     ///
     /// Represents the timestamp as second since epoch with two decimal places of precision.
-    pub fn as_header(&self) -> String {
-        format!("{:.*}", 2, self.0 as f64 / 1000.0)
+    pub fn as_header(self) -> String {
+        format_ts(self.0)
     }
 
     /// Create a `SyncTimestamp` from a string header
@@ -72,7 +72,7 @@ impl SyncTimestamp {
     }
 
     /// Return the timestamp as an i64 milliseconds since epoch
-    pub fn as_i64(&self) -> i64 {
+    pub fn as_i64(self) -> i64 {
         self.0 as i64
     }
 
@@ -112,10 +112,16 @@ where
     }
 }
 
+
 impl Into<f64> for SyncTimestamp {
     fn into(self) -> f64 {
         self.0 as f64
     }
+}
+
+/// Format a timestamp as second since epoch with two decimal places of precision.
+fn format_ts(val: u64) -> String {
+    format!("{:.*}", 2, val as f64 / 1000.0)
 }
 
 pub fn deserialize_ts<'de, D>(d: D) -> Result<u64, D::Error>
@@ -125,9 +131,15 @@ where
     Deserialize::deserialize(d).map(|result: f64| (result * 1_000f64) as u64)
 }
 
+#[allow(clippy::trivially_copy_pass_by_ref)]
 fn serialize_ts<S>(x: &u64, s: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
 {
-    s.serialize_f64(*x as f64 / 1000.0)
+    // Using serde_json::Number w/ the arbitrary_precision feature enabled to
+    // persist the two decimal places of precision (vs serialize_f64 which
+    // renders e.g. 0.00 as 0.0)
+    let precise: serde_json::Number =
+        serde_json::from_str(&format_ts(*x)).map_err(ser::Error::custom)?;
+    precise.serialize(s)
 }

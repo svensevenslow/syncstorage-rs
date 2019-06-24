@@ -10,9 +10,10 @@ use actix_web::web::{Json, JsonConfig, Query};
 use actix_web::{error::ErrorInternalServerError, Error, FromRequest, HttpRequest};
 use futures::{future, Future};
 use lazy_static::lazy_static;
+use mime;
 use regex::Regex;
 use serde::{
-    de::{Deserializer, Error as SerdeError},
+    de::{Deserializer, Error as SerdeError, IgnoredAny},
     Deserialize, Serialize,
 };
 use serde_json::Value;
@@ -44,7 +45,7 @@ pub struct UidParam {
     uid: u64,
 }
 
-#[derive(Debug, Deserialize, Serialize, Validate)]
+#[derive(Debug, Deserialize, Validate)]
 pub struct BatchBsoBody {
     #[validate(custom = "validate_body_bso_id")]
     pub id: String,
@@ -59,8 +60,8 @@ impl BatchBsoBody {
     /// Function to convert valid raw JSON BSO body to a BatchBsoBody
     fn from_raw_bso(val: &Value) -> Result<BatchBsoBody, String> {
         let map = val.as_object().ok_or("invalid json")?;
-        // Verify all the keys are valid
-        let valid_keys = ["id", "sortindex", "payload", "ttl"];
+        // Verify all the keys are valid. modified is allowed but ignored
+        let valid_keys = ["id", "sortindex", "payload", "ttl", "modified"];
         for key_name in map.keys() {
             if !valid_keys.contains(&key_name.as_str()) {
                 return Err(format!("unknown field {}", key_name));
@@ -150,12 +151,9 @@ impl FromRequest for BsoBodies {
             let bsos: Vec<Value> = if newlines {
                 let mut bsos = Vec::new();
                 for item in body.lines() {
-                    // Skip any blanks
-                    if item == "" {
-                        continue;
-                    }
                     // Check that its a valid JSON map like we expect
                     if let Ok(raw_json) = serde_json::from_str::<Value>(&item) {
+                        dbg!(format!("### Raw json: {:?}", raw_json));
                         bsos.push(raw_json);
                     } else {
                         // Per Python version, BSO's must json deserialize
@@ -244,6 +242,7 @@ impl FromRequest for BsoBodies {
 }
 
 #[derive(Default, Deserialize, Serialize, Validate)]
+#[serde(deny_unknown_fields)]
 pub struct BsoBody {
     #[validate(custom = "validate_body_bso_id")]
     pub id: Option<String>,
@@ -252,6 +251,9 @@ pub struct BsoBody {
     pub payload: Option<String>,
     #[validate(custom = "validate_body_bso_ttl")]
     pub ttl: Option<u32>,
+    /// Any client-supplied value for this field is ignored
+    #[serde(rename(deserialize = "modified"), skip_serializing)]
+    pub _ignored_modified: Option<IgnoredAny>,
 }
 
 impl FromRequest for BsoBody {
@@ -280,7 +282,9 @@ impl FromRequest for BsoBody {
         let mut config = JsonConfig::default();
         let state = req.app_data::<ServerState>().clone().unwrap();
         let max_request_size = state.limits.max_request_bytes as usize;
-        config.limit(max_request_size);
+        config
+            .limit(max_request_size)
+            .content_type(|ct| ct == mime::TEXT_PLAIN);
 
         let max_payload_size = state.limits.max_record_payload_bytes as usize;
         let fut = <Json<BsoBody>>::from_request(req, &mut payload)
@@ -728,7 +732,10 @@ impl FromRequest for Box<dyn Db> {
     fn from_request(req: &HttpRequest, _: &mut Payload) -> Self::Future {
         req.extensions()
             .get::<(Box<dyn Db>, bool)>()
-            .ok_or_else(|| ErrorInternalServerError("Unexpected Db error"))
+            .ok_or_else(|| {
+                dbg!("No database handle associated with request, Did the lock attempt fail?");
+                ErrorInternalServerError("Unexpected DB error")
+            })
             .map(|(db, _)| db.clone())
     }
 }
@@ -1135,9 +1142,8 @@ mod tests {
     }
 
     // String is too long for valid name
-    const INVALID_COLLECTION_NAME: &'static str =
-        "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
-    const INVALID_BSO_NAME: &'static str =
+    const INVALID_COLLECTION_NAME: &str = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
+    const INVALID_BSO_NAME: &str =
         "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
 
     fn make_db() -> (Box<dyn Db>, bool) {
@@ -1370,7 +1376,7 @@ mod tests {
             5000,
         );
         let bso_body = json!({
-            "payload": "xxx", "sortindex": -9999999999 as i64,
+            "payload": "xxx", "sortindex": -9_999_999_999 as i64,
         });
         let req = TestRequest::with_state(state)
             .header("authorization", header)
