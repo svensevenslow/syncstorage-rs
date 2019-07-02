@@ -140,9 +140,6 @@
 <span id="140">140</span>
 <span id="141">141</span>
 <span id="142">142</span>
-<span id="143">143</span>
-<span id="144">144</span>
-<span id="145">145</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Main application server</span>
 
@@ -158,47 +155,6 @@
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">web</span>::<span class="ident">handlers</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">web</span>::<span class="ident">middleware</span>;
 
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">init_routes</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">app</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> {
-        <span class="macro-nonterminal">$</span><span class="macro-nonterminal">app</span>.<span class="ident">resource</span>(<span class="string">&quot;/{uid}/info/collections&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_collections</span>);
-        })
-        .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/info/collection_counts&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>)
-                .<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_collection_counts</span>);
-        })
-        .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/info/collection_usage&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>)
-                .<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_collection_usage</span>);
-        })
-        .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/info/configuration&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>)
-                .<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_configuration</span>);
-        })
-        .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/info/quota&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_quota</span>);
-        })
-        .<span class="ident">resource</span>(<span class="string">&quot;/{uid}&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">DELETE</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">delete_all</span>);
-        })
-        .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/storage&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">DELETE</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">delete_all</span>);
-        })
-        .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/storage/{collection}&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">DELETE</span>)
-                .<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">delete_collection</span>);
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_collection</span>);
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">POST</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">post_collection</span>);
-        })
-        .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/storage/{collection}/{bso}&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">DELETE</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">delete_bso</span>);
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_bso</span>);
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">PUT</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">put_bso</span>);
-        })
-    };
-}
-
-<span class="comment">// The tests depend on the init_routes! macro, so this mod must come after it</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span>;
 
@@ -222,7 +178,45 @@
         .<span class="ident">middleware</span>(<span class="ident">middleware</span>::<span class="ident">WeaveTimestamp</span>)
         .<span class="ident">middleware</span>(<span class="ident">middleware</span>::<span class="ident">DbTransaction</span>)
         .<span class="ident">middleware</span>(<span class="ident">middleware</span>::<span class="ident">PreConditionCheck</span>)
-        .<span class="ident">configure</span>(<span class="op">|</span><span class="ident">app</span><span class="op">|</span> <span class="macro">init_routes</span><span class="macro">!</span>(<span class="ident">Cors</span>::<span class="ident">for_app</span>(<span class="ident">app</span>)).<span class="ident">register</span>())
+        .<span class="ident">configure</span>(<span class="op">|</span><span class="ident">app</span><span class="op">|</span> {
+            <span class="ident">Cors</span>::<span class="ident">for_app</span>(<span class="ident">app</span>)
+                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/info/collections&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_collections</span>);
+                })
+                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/info/collection_counts&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>)
+                        .<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_collection_counts</span>);
+                })
+                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/info/collection_usage&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>)
+                        .<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_collection_usage</span>);
+                })
+                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/info/configuration&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>)
+                        .<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_configuration</span>);
+                })
+                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/info/quota&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_quota</span>);
+                })
+                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">DELETE</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">delete_all</span>);
+                })
+                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/storage&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">DELETE</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">delete_all</span>);
+                })
+                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/storage/{collection}&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">DELETE</span>)
+                        .<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">delete_collection</span>);
+                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_collection</span>);
+                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">POST</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">post_collection</span>);
+                })
+                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/storage/{collection}/{bso}&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">DELETE</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">delete_bso</span>);
+                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_bso</span>);
+                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">PUT</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">put_bso</span>);
+                })
+                .<span class="ident">register</span>()
+        })
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build_dockerflow</span>(<span class="ident">state</span>: <span class="ident">ServerState</span>) <span class="op">-&gt;</span> <span class="ident">App</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> {
