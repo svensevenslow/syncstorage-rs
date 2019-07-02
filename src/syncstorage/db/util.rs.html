@@ -136,6 +136,12 @@
 <span id="136">136</span>
 <span id="137">137</span>
 <span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">u64</span>;
 
@@ -197,6 +203,12 @@
             ))<span class="question-mark">?</span>;
         }
         <span class="prelude-val">Ok</span>(<span class="ident">SyncTimestamp</span>::<span class="ident">from_milliseconds</span>(<span class="ident">val</span> <span class="kw">as</span> <span class="ident">u64</span>))
+    }
+
+    <span class="doccomment">/// Exposed separately for db-tests</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;db_test&quot;</span>))]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">_from_i64</span>(<span class="ident">val</span>: <span class="ident">i64</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">DbError</span><span class="op">&gt;</span> {
+        <span class="ident">SyncTimestamp</span>::<span class="ident">from_i64</span>(<span class="ident">val</span>)
     }
 
     <span class="doccomment">/// Create a `SyncTimestamp` from the milliseconds since epoch</span>

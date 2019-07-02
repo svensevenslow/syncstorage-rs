@@ -172,7 +172,7 @@
 <span class="kw">use</span> <span class="ident">tokio_threadpool</span>::<span class="ident">ThreadPool</span>;
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">models</span>::{<span class="ident">MysqlDb</span>, <span class="prelude-ty">Result</span>};
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;db_test&quot;</span>))]</span>
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">test</span>::<span class="ident">TestTransactionCustomizer</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">db</span>::{<span class="ident">error</span>::<span class="ident">DbError</span>, <span class="ident">Db</span>, <span class="ident">DbFuture</span>, <span class="ident">DbPool</span>, <span class="ident">STD_COLLS</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">settings</span>::<span class="ident">Settings</span>;
@@ -211,7 +211,7 @@
         <span class="kw">let</span> <span class="ident">manager</span> <span class="op">=</span> <span class="ident">ConnectionManager</span>::<span class="op">&lt;</span><span class="ident">MysqlConnection</span><span class="op">&gt;</span>::<span class="ident">new</span>(<span class="ident">settings</span>.<span class="ident">database_url</span>.<span class="ident">clone</span>());
         <span class="kw">let</span> <span class="ident">builder</span> <span class="op">=</span> <span class="ident">Pool</span>::<span class="ident">builder</span>().<span class="ident">max_size</span>(<span class="ident">settings</span>.<span class="ident">database_pool_max_size</span>.<span class="ident">unwrap_or</span>(<span class="number">10</span>));
 
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;db_test&quot;</span>))]</span>
         <span class="kw">let</span> <span class="ident">builder</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">settings</span>.<span class="ident">database_use_test_transactions</span> {
             <span class="ident">builder</span>.<span class="ident">connection_customizer</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">TestTransactionCustomizer</span>))
         } <span class="kw">else</span> {

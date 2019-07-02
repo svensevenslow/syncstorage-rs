@@ -195,6 +195,23 @@
 <span id="195">195</span>
 <span id="196">196</span>
 <span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Generic db abstration.</span>
 
@@ -371,6 +388,23 @@
             }),
         )
     }
+
+    <span class="doccomment">/// Internal methods used by the db tests</span>
+
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;db_test&quot;</span>))]</span>
+    <span class="kw">fn</span> <span class="ident">get_collection_id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">DbFuture</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>;
+
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;db_test&quot;</span>))]</span>
+    <span class="kw">fn</span> <span class="ident">create_collection</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">DbFuture</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>;
+
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;db_test&quot;</span>))]</span>
+    <span class="kw">fn</span> <span class="ident">touch_collection</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">params</span>: <span class="ident">params</span>::<span class="ident">TouchCollection</span>) <span class="op">-&gt;</span> <span class="ident">DbFuture</span><span class="op">&lt;</span><span class="ident">SyncTimestamp</span><span class="op">&gt;</span>;
+
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;db_test&quot;</span>))]</span>
+    <span class="kw">fn</span> <span class="ident">timestamp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">SyncTimestamp</span>;
+
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;db_test&quot;</span>))]</span>
+    <span class="kw">fn</span> <span class="ident">set_timestamp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">timestamp</span>: <span class="ident">SyncTimestamp</span>);
 }
 
 <span class="kw">impl</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Db</span><span class="op">&gt;</span> {
