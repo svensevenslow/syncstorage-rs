@@ -1632,7 +1632,6 @@
 <span id="1632">1632</span>
 <span id="1633">1633</span>
 <span id="1634">1634</span>
-<span id="1635">1635</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Request header/body/query extractors</span>
 <span class="doccomment">//!</span>
@@ -1797,7 +1796,6 @@
                 <span class="kw">for</span> <span class="ident">item</span> <span class="kw">in</span> <span class="ident">body</span>.<span class="ident">lines</span>() {
                     <span class="comment">// Check that its a valid JSON map like we expect</span>
                     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">raw_json</span>) <span class="op">=</span> <span class="ident">serde_json</span>::<span class="ident">from_str</span>::<span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">item</span>) {
-                        <span class="macro">dbg</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;### Raw json: {:?}&quot;</span>, <span class="ident">raw_json</span>));
                         <span class="ident">bsos</span>.<span class="ident">push</span>(<span class="ident">raw_json</span>);
                     } <span class="kw">else</span> {
                         <span class="comment">// Per Python version, BSO&#39;s must json deserialize</span>
@@ -2002,7 +2000,7 @@
 }
 
 <span class="doccomment">/// Collection parameter extractor</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Deserialize</span>, <span class="ident">Validate</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Validate</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CollectionParam</span> {
     <span class="attribute">#[<span class="ident">validate</span>(<span class="ident">regex</span> <span class="op">=</span> <span class="string">&quot;VALID_COLLECTION_ID_REGEX&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">collection</span>: <span class="ident">String</span>,

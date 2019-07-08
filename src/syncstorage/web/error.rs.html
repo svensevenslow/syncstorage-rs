@@ -202,6 +202,12 @@
 <span id="202">202</span>
 <span id="203">203</span>
 <span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Error types for `web` modules.</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">single_match</span>)]</span>
@@ -321,6 +327,12 @@
                     <span class="string">&quot;content-type&quot;</span> <span class="op">=&gt;</span> <span class="ident">StatusCode</span>::<span class="ident">UNSUPPORTED_MEDIA_TYPE</span>,
                     <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">StatusCode</span>::<span class="ident">BAD_REQUEST</span>,
                 }
+            }
+            <span class="ident">ValidationErrorKind</span>::<span class="ident">FromDetails</span>(<span class="kw-2">ref</span> <span class="ident">_description</span>, <span class="kw-2">ref</span> <span class="ident">location</span>, <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">name</span>))
+                <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">location</span> <span class="op">==</span> <span class="ident">RequestErrorLocation</span>::<span class="ident">Path</span>
+                    <span class="op">&amp;&amp;</span> [<span class="string">&quot;bso&quot;</span>, <span class="string">&quot;collection&quot;</span>].<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>.<span class="ident">as_ref</span>()) <span class="op">=&gt;</span>
+            {
+                <span class="ident">StatusCode</span>::<span class="ident">NOT_FOUND</span>
             }
             <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">StatusCode</span>::<span class="ident">BAD_REQUEST</span>,
         };
