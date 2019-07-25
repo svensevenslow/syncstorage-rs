@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/miniz_oxide_c_api-0.2.1/src/lib_oxide.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib_oxide.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../miniz_oxide_c_api/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/miniz_oxide_c_api-0.2.2/src/lib_oxide.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib_oxide.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../miniz_oxide_c_api/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -668,11 +668,53 @@
 <span id="668">668</span>
 <span id="669">669</span>
 <span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
+<span id="674">674</span>
+<span id="675">675</span>
+<span id="676">676</span>
+<span id="677">677</span>
+<span id="678">678</span>
+<span id="679">679</span>
+<span id="680">680</span>
+<span id="681">681</span>
+<span id="682">682</span>
+<span id="683">683</span>
+<span id="684">684</span>
+<span id="685">685</span>
+<span id="686">686</span>
+<span id="687">687</span>
+<span id="688">688</span>
+<span id="689">689</span>
+<span id="690">690</span>
+<span id="691">691</span>
+<span id="692">692</span>
+<span id="693">693</span>
+<span id="694">694</span>
+<span id="695">695</span>
+<span id="696">696</span>
+<span id="697">697</span>
+<span id="698">698</span>
+<span id="699">699</span>
+<span id="700">700</span>
+<span id="701">701</span>
+<span id="702">702</span>
+<span id="703">703</span>
+<span id="704">704</span>
+<span id="705">705</span>
+<span id="706">706</span>
+<span id="707">707</span>
+<span id="708">708</span>
+<span id="709">709</span>
+<span id="710">710</span>
+<span id="711">711</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! This module mainly contains functionality replicating the miniz higher level API.</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">cmp</span>, <span class="ident">mem</span>, <span class="ident">ptr</span>, <span class="ident">slice</span>, <span class="ident">usize</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">Cursor</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">alloc</span>::{<span class="ident">alloc_zeroed</span>, <span class="ident">dealloc</span>, <span class="ident">Layout</span>};
 
 <span class="kw">use</span> <span class="ident">libc</span>::{<span class="self">self</span>, <span class="ident">c_char</span>, <span class="ident">c_int</span>, <span class="ident">c_uint</span>, <span class="ident">c_ulong</span>, <span class="ident">c_void</span>, <span class="ident">size_t</span>};
 
@@ -758,7 +800,7 @@ pub fn update_crc32(crc32: c_uint, data: &amp;[u8]) -&gt; c_uint {
     <span class="kw">pub</span> <span class="ident">opaque</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>,
 
     <span class="comment">// TODO: Not sure</span>
-    <span class="kw">pub</span> <span class="ident">data_type</span>: <span class="ident">c_int</span>,
+    <span class="kw">pub</span> <span class="ident">data_type</span>: <span class="ident">StateTypeEnum</span>,
     <span class="doccomment">/// Adler32 checksum of the data that has been compressed or uncompressed.</span>
     <span class="kw">pub</span> <span class="ident">adler</span>: <span class="ident">c_uint</span>,
     <span class="doccomment">/// Reserved</span>
@@ -783,7 +825,7 @@ pub fn update_crc32(crc32: c_uint, data: &amp;[u8]) -&gt; c_uint {
             <span class="ident">zfree</span>: <span class="prelude-val">None</span>,
             <span class="ident">opaque</span>: <span class="ident">ptr</span>::<span class="ident">null_mut</span>(),
 
-            <span class="ident">data_type</span>: <span class="number">0</span>,
+            <span class="ident">data_type</span>: <span class="ident">StateTypeEnum</span>::<span class="prelude-val">None</span>,
             <span class="ident">adler</span>: <span class="number">0</span>,
             <span class="ident">reserved</span>: <span class="number">0</span>,
         }
@@ -807,25 +849,38 @@ pub fn update_crc32(crc32: c_uint, data: &amp;[u8]) -&gt; c_uint {
     <span class="ident">libc</span>::<span class="ident">free</span>(<span class="ident">address</span>)
 }
 
+<span class="doccomment">/// Enum to keep track of what type the internal state is when moving over the C API boundary.</span>
+<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">C</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>,<span class="ident">Copy</span>,<span class="ident">Clone</span>,<span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">StateTypeEnum</span> {
+    <span class="prelude-val">None</span> <span class="op">=</span> <span class="number">0</span>,
+    <span class="ident">Inflate</span>,
+    <span class="ident">Deflate</span>,
+}
+
 <span class="doccomment">/// Trait used for states that can be carried by BoxedState.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">StateType</span> {
     <span class="kw">fn</span> <span class="ident">drop_state</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>);
+    <span class="kw">const</span> <span class="ident">STATE_TYPE</span>: <span class="ident">StateTypeEnum</span>;
 }
 <span class="kw">impl</span> <span class="ident">StateType</span> <span class="kw">for</span> <span class="ident">tdefl_compressor</span> {
+    <span class="kw">const</span> <span class="ident">STATE_TYPE</span>: <span class="ident">StateTypeEnum</span> <span class="op">=</span> <span class="ident">StateTypeEnum</span>::<span class="ident">Deflate</span>;
     <span class="kw">fn</span> <span class="ident">drop_state</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="self">self</span>.<span class="ident">drop_inner</span>();
     }
 }
 <span class="kw">impl</span> <span class="ident">StateType</span> <span class="kw">for</span> <span class="ident">inflate_state</span> {
+    <span class="kw">const</span> <span class="ident">STATE_TYPE</span>: <span class="ident">StateTypeEnum</span> <span class="op">=</span> <span class="ident">StateTypeEnum</span>::<span class="ident">Inflate</span>;
     <span class="kw">fn</span> <span class="ident">drop_state</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {}
 }
 
 <span class="doccomment">/// Wrapper for a heap-allocated compressor/decompressor that frees the stucture on drop.</span>
 <span class="kw">struct</span> <span class="ident">BoxedState</span><span class="op">&lt;</span><span class="ident">ST</span>: <span class="ident">StateType</span><span class="op">&gt;</span> {
     <span class="ident">inner</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">ST</span>,
-    <span class="ident">alloc</span>: <span class="ident">mz_alloc_func</span>,
-    <span class="ident">free</span>: <span class="ident">mz_free_func</span>,
+    <span class="ident">alloc</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">mz_alloc_func</span><span class="op">&gt;</span>,
+    <span class="ident">free</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">mz_free_func</span><span class="op">&gt;</span>,
     <span class="ident">opaque</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>,
+    <span class="ident">layout</span>: <span class="ident">Layout</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">ST</span>: <span class="ident">StateType</span><span class="op">&gt;</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">BoxedState</span><span class="op">&lt;</span><span class="ident">ST</span><span class="op">&gt;</span> {
@@ -842,9 +897,10 @@ pub fn update_crc32(crc32: c_uint, data: &amp;[u8]) -&gt; c_uint {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">stream</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">mz_stream</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="ident">BoxedState</span> {
             <span class="ident">inner</span>: <span class="ident">stream</span>.<span class="ident">state</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">ST</span>,
-            <span class="ident">alloc</span>: <span class="ident">stream</span>.<span class="ident">zalloc</span>.<span class="ident">unwrap_or</span>(<span class="ident">def_alloc_func</span>),
-            <span class="ident">free</span>: <span class="ident">stream</span>.<span class="ident">zfree</span>.<span class="ident">unwrap_or</span>(<span class="ident">def_free_func</span>),
+            <span class="ident">alloc</span>: <span class="ident">stream</span>.<span class="ident">zalloc</span>,
+            <span class="ident">free</span>: <span class="ident">stream</span>.<span class="ident">zfree</span>,
             <span class="ident">opaque</span>: <span class="ident">stream</span>.<span class="ident">opaque</span>,
+            <span class="ident">layout</span>: <span class="ident">Layout</span>::<span class="ident">new</span>::<span class="op">&lt;</span><span class="ident">ST</span><span class="op">&gt;</span>(),
         }
     }
 
@@ -859,7 +915,10 @@ pub fn update_crc32(crc32: c_uint, data: &amp;[u8]) -&gt; c_uint {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">MZError</span>::<span class="ident">Param</span>);
         }
 
-        <span class="self">self</span>.<span class="ident">inner</span> <span class="op">=</span> <span class="kw">unsafe</span> { (<span class="self">self</span>.<span class="ident">alloc</span>)(<span class="self">self</span>.<span class="ident">opaque</span>, <span class="number">1</span>, <span class="ident">mem</span>::<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">ST</span><span class="op">&gt;</span>()) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">ST</span> };
+        <span class="comment">// We use the default rust allocator for now. To use a custom allocator we could need to</span>
+        <span class="comment">// add support for the internal allocations using the same one.</span>
+        <span class="self">self</span>.<span class="ident">inner</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">alloc_zeroed</span>(<span class="self">self</span>.<span class="ident">layout</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">ST</span> };
+
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">is_null</span>() {
             <span class="prelude-val">Err</span>(<span class="ident">MZError</span>::<span class="ident">Mem</span>)
         } <span class="kw">else</span> {
@@ -871,7 +930,7 @@ pub fn update_crc32(crc32: c_uint, data: &amp;[u8]) -&gt; c_uint {
         <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">is_null</span>() {
             <span class="kw">unsafe</span> {
                 <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">as_mut</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">drop_state</span>());
-                (<span class="self">self</span>.<span class="ident">free</span>)(<span class="self">self</span>.<span class="ident">opaque</span>, <span class="self">self</span>.<span class="ident">inner</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>)
+                <span class="ident">dealloc</span>(<span class="self">self</span>.<span class="ident">inner</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>, <span class="self">self</span>.<span class="ident">layout</span>);
             }
             <span class="self">self</span>.<span class="ident">inner</span> <span class="op">=</span> <span class="ident">ptr</span>::<span class="ident">null_mut</span>();
         }
@@ -892,7 +951,30 @@ pub fn update_crc32(crc32: c_uint, data: &amp;[u8]) -&gt; c_uint {
 
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;io</span>, <span class="ident">ST</span>: <span class="ident">StateType</span><span class="op">&gt;</span> <span class="ident">StreamOxide</span><span class="op">&lt;</span><span class="lifetime">&#39;io</span>, <span class="ident">ST</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a new StreamOxide wrapper from a [mz_stream] object.</span>
+    <span class="doccomment">/// Custom allocation functions are not supported, supplying an mz_stream with allocation</span>
+    <span class="doccomment">/// function will cause creation to fail.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Unsafe as the mz_stream object is not guaranteed to be valid. It is up to the</span>
+    <span class="doccomment">/// caller to ensure it is.</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">stream</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">mz_stream</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span>::<span class="ident">try_new</span>(<span class="ident">stream</span>)
+            .<span class="ident">expect</span>(<span class="string">&quot;Failed to create StreamOxide, wrong state type or tried to specify allocators.&quot;</span>)
+    }
+
+    <span class="doccomment">/// Try to create a new StreamOxide wrapper from a [mz_stream] object.</span>
+    <span class="doccomment">/// Custom allocation functions are not supported, supplying an mz_stream with allocation</span>
+    <span class="doccomment">/// functions will cause creation to fail.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Unsafe as the mz_stream object is not guaranteed to be valid. It is up to the</span>
+    <span class="doccomment">/// caller to ensure it is.</span>
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">try_new</span>(<span class="ident">stream</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">mz_stream</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">MZError</span><span class="op">&gt;</span> {
+        <span class="comment">// Make sure we don&#39;t make an inflate stream from a deflate stream and vice versa.</span>
+        <span class="kw">if</span> <span class="ident">stream</span>.<span class="ident">data_type</span> <span class="op">!=</span> <span class="ident">ST</span>::<span class="ident">STATE_TYPE</span>
+            <span class="op">||</span> <span class="ident">stream</span>.<span class="ident">zalloc</span>.<span class="ident">is_some</span>() <span class="op">||</span> <span class="ident">stream</span>.<span class="ident">zfree</span>.<span class="ident">is_some</span>() {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">MZError</span>::<span class="ident">Param</span>);
+        }
+
         <span class="kw">let</span> <span class="ident">in_slice</span> <span class="op">=</span> <span class="ident">stream</span>.<span class="ident">next_in</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">ptr</span><span class="op">|</span> {
             <span class="ident">slice</span>::<span class="ident">from_raw_parts</span>(<span class="ident">ptr</span>, <span class="ident">stream</span>.<span class="ident">avail_in</span> <span class="kw">as</span> <span class="ident">usize</span>)
         });
@@ -901,14 +983,14 @@ pub fn update_crc32(crc32: c_uint, data: &amp;[u8]) -&gt; c_uint {
             <span class="ident">slice</span>::<span class="ident">from_raw_parts_mut</span>(<span class="ident">ptr</span>, <span class="ident">stream</span>.<span class="ident">avail_out</span> <span class="kw">as</span> <span class="ident">usize</span>)
         });
 
-        <span class="ident">StreamOxide</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">StreamOxide</span> {
             <span class="ident">next_in</span>: <span class="ident">in_slice</span>,
             <span class="ident">total_in</span>: <span class="ident">stream</span>.<span class="ident">total_in</span>,
             <span class="ident">next_out</span>: <span class="ident">out_slice</span>,
             <span class="ident">total_out</span>: <span class="ident">stream</span>.<span class="ident">total_out</span>,
             <span class="ident">state</span>: <span class="ident">BoxedState</span>::<span class="ident">new</span>(<span class="ident">stream</span>),
             <span class="ident">adler</span>: <span class="ident">stream</span>.<span class="ident">adler</span>,
-        }
+        })
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_mz_stream</span>(<span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">mz_stream</span> {
@@ -932,12 +1014,12 @@ pub fn update_crc32(crc32: c_uint, data: &amp;[u8]) -&gt; c_uint {
 
             <span class="ident">msg</span>: <span class="ident">ptr</span>::<span class="ident">null</span>(),
 
-            <span class="ident">zalloc</span>: <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">state</span>.<span class="ident">alloc</span>),
-            <span class="ident">zfree</span>: <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">state</span>.<span class="ident">free</span>),
+            <span class="ident">zalloc</span>: <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">alloc</span>,
+            <span class="ident">zfree</span>: <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">free</span>,
             <span class="ident">opaque</span>: <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">opaque</span>,
             <span class="ident">state</span>: <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">forget</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">mz_internal_state</span>,
 
-            <span class="ident">data_type</span>: <span class="number">0</span>,
+            <span class="ident">data_type</span>: <span class="ident">ST</span>::<span class="ident">STATE_TYPE</span>,
             <span class="ident">adler</span>: <span class="self">self</span>.<span class="ident">adler</span>,
             <span class="ident">reserved</span>: <span class="number">0</span>,
         }

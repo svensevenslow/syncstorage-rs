@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `yup_oauth2` crate."><meta name="keywords" content="rust, rustlang, rust-lang, yup_oauth2"><title>yup_oauth2 - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="shortcut icon" href="../favicon.ico"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../yup_oauth2/index.html'><img src='../rust-logo.png' alt='logo' width='100'></a><p class='location'>Crate yup_oauth2</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all yup_oauth2's items</p></a><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'yup_oauth2', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/yup_oauth2/lib.rs.html#1-102' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>yup_oauth2</a></span></h1><div class='docblock'><p>This library can be used to acquire oauth2.0 authentication for services.</p>
+<p>For your application to use this library, you will have to obtain an application
+id and secret by
+<a href="https://developers.google.com/youtube/registering_an_application">following this guide</a> (for
+Google services) respectively the documentation of the API provider you want to connect to.</p>
+<h1 id="device-flow-usage" class="section-header"><a href="#device-flow-usage">Device Flow Usage</a></h1>
+<p>As the <code>DeviceFlow</code> involves polling, the <code>DeviceFlowHelper</code> should be used
+as means to adhere to the protocol, and remain resilient to all kinds of errors
+that can occour on the way.</p>
+<h1 id="service-account-flow" class="section-header"><a href="#service-account-flow">Service account &quot;flow&quot;</a></h1>
+<p>When using service account credentials, no user interaction is required. The access token
+can be obtained automatically using the private key of the client (which you can download
+from the API provider). See <code>examples/service_account/</code> for an example on how to use service
+account credentials. See
+<a href="https://developers.google.com/identity/protocols/OAuth2ServiceAccount">developers.google.com</a>
+for a detailed description of the protocol. This crate implements OAuth for Service Accounts
+based on the Google APIs; it may or may not work with other providers.</p>
+<h1 id="installed-flow-usage" class="section-header"><a href="#installed-flow-usage">Installed Flow Usage</a></h1>
+<p>The <code>InstalledFlow</code> involves showing a URL to the user (or opening it in a browser)
+and then either prompting the user to enter a displayed code, or make the authorizing
+website redirect to a web server spun up by this library and running on localhost.</p>
+<p>In order to use the interactive method, use the <code>InstalledInteractive</code> <code>FlowType</code>;
+for the redirect method, use <code>InstalledRedirect</code>, with the port number to let the
+server listen on.</p>
+<p>You can implement your own <code>AuthenticatorDelegate</code> in order to customize the flow;
+the <code>InstalledFlow</code> uses the <code>present_user_url</code> method.</p>
+<p>The returned <code>Token</code> is stored permanently in the given token storage in order to
+authorize future API requests to the same scopes.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serde_derive</span>;
+ 
+<span class="kw">use</span> <span class="ident">yup_oauth2</span>::{<span class="ident">Authenticator</span>, <span class="ident">DefaultAuthenticatorDelegate</span>, <span class="ident">PollInformation</span>, <span class="ident">ConsoleApplicationSecret</span>, <span class="ident">MemoryStorage</span>, <span class="ident">GetToken</span>};
+<span class="kw">use</span> <span class="ident">serde_json</span> <span class="kw">as</span> <span class="ident">json</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">default</span>::<span class="ident">Default</span>;
+<span class="kw">use</span> <span class="ident">hyper</span>::{<span class="ident">Client</span>, <span class="ident">net</span>::<span class="ident">HttpsConnector</span>};
+<span class="kw">use</span> <span class="ident">hyper_native_tls</span>::<span class="ident">NativeTlsClient</span>;
+
+<span class="kw">let</span> <span class="ident">secret</span> <span class="op">=</span> <span class="ident">json</span>::<span class="ident">from_str</span>::<span class="op">&lt;</span><span class="ident">ConsoleApplicationSecret</span><span class="op">&gt;</span>(<span class="ident">SECRET</span>).<span class="ident">unwrap</span>().<span class="ident">installed</span>.<span class="ident">unwrap</span>();
+<span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Authenticator</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">secret</span>, <span class="ident">DefaultAuthenticatorDelegate</span>,
+                        <span class="ident">Client</span>::<span class="ident">with_connector</span>(<span class="ident">HttpsConnector</span>::<span class="ident">new</span>(<span class="ident">NativeTlsClient</span>::<span class="ident">new</span>().<span class="ident">unwrap</span>())),
+                        <span class="op">&lt;</span><span class="ident">MemoryStorage</span> <span class="kw">as</span> <span class="ident">Default</span><span class="op">&gt;</span>::<span class="ident">default</span>(), <span class="prelude-val">None</span>)
+                        .<span class="ident">token</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;https://www.googleapis.com/auth/youtube.upload&quot;</span>]);
+<span class="kw">match</span> <span class="ident">res</span> {
+    <span class="prelude-val">Ok</span>(<span class="ident">t</span>) <span class="op">=&gt;</span> {
+    <span class="comment">// now you can use t.access_token to authenticate API calls within your</span>
+    <span class="comment">// given scopes. It will not be valid forever, but Authenticator will automatically</span>
+    <span class="comment">// refresh the token for you.</span>
+    },
+    <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Failed to acquire token: {}&quot;</span>, <span class="ident">err</span>),
+}</pre></div>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.ApplicationSecret.html" title='yup_oauth2::ApplicationSecret struct'>ApplicationSecret</a></td><td class='docblock-short'><p>Represents either 'installed' or 'web' applications in a json secrets file.
+See <code>ConsoleApplicationSecret</code> for more information</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Authenticator.html" title='yup_oauth2::Authenticator struct'>Authenticator</a></td><td class='docblock-short'><p>A generalized authenticator which will keep tokens valid and store them.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ConsoleApplicationSecret.html" title='yup_oauth2::ConsoleApplicationSecret struct'>ConsoleApplicationSecret</a></td><td class='docblock-short'><p>A type to facilitate reading and writing the json secret file
+as returned by the <a href="https://code.google.com/apis/console">google developer console</a></p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.DefaultAuthenticatorDelegate.html" title='yup_oauth2::DefaultAuthenticatorDelegate struct'>DefaultAuthenticatorDelegate</a></td><td class='docblock-short'><p>Uses all default implementations by AuthenticatorDelegate, and makes the trait's
+implementation usable in the first place.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.DeviceFlow.html" title='yup_oauth2::DeviceFlow struct'>DeviceFlow</a></td><td class='docblock-short'><p>Implements the <a href="https://developers.google.com/youtube/v3/guides/authentication#devices">Oauth2 Device Flow</a>
+It operates in two steps:</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.DiskTokenStorage.html" title='yup_oauth2::DiskTokenStorage struct'>DiskTokenStorage</a></td><td class='docblock-short'><p>Serializes tokens to a JSON file on disk.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.InstalledFlow.html" title='yup_oauth2::InstalledFlow struct'>InstalledFlow</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.MemoryStorage.html" title='yup_oauth2::MemoryStorage struct'>MemoryStorage</a></td><td class='docblock-short'><p>A storage that remembers values for one session only.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.NullStorage.html" title='yup_oauth2::NullStorage struct'>NullStorage</a></td><td class='docblock-short'><p>A storage that remembers nothing.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PollInformation.html" title='yup_oauth2::PollInformation struct'>PollInformation</a></td><td class='docblock-short'><p>Contains state of pending authentication requests</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.RefreshFlow.html" title='yup_oauth2::RefreshFlow struct'>RefreshFlow</a></td><td class='docblock-short'><p>Implements the <a href="https://developers.google.com/youtube/v3/guides/authentication#devices">Outh2 Refresh Token Flow</a>.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Scheme.html" title='yup_oauth2::Scheme struct'>Scheme</a></td><td class='docblock-short'><p>A scheme for use in <code>hyper::header::Authorization</code></p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ServiceAccountAccess.html" title='yup_oauth2::ServiceAccountAccess struct'>ServiceAccountAccess</a></td><td class='docblock-short'><p>A token source (<code>GetToken</code>) yielding OAuth tokens for services that use ServiceAccount authorization.
+This token source caches token and automatically renews expired ones.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ServiceAccountKey.html" title='yup_oauth2::ServiceAccountKey struct'>ServiceAccountKey</a></td><td class='docblock-short'><p>JSON schema of secret service account key. You can obtain the key from
+the Cloud Console at https://console.cloud.google.com/.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Token.html" title='yup_oauth2::Token struct'>Token</a></td><td class='docblock-short'><p>Represents a token as returned by OAuth2 servers.</p>
+</td></tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table><tr class='module-item'><td><a class="enum" href="enum.FlowType.html" title='yup_oauth2::FlowType enum'>FlowType</a></td><td class='docblock-short'><p>All known authentication types, for suitable constants</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.InstalledFlowReturnMethod.html" title='yup_oauth2::InstalledFlowReturnMethod enum'>InstalledFlowReturnMethod</a></td><td class='docblock-short'><p>cf. https://developers.google.com/identity/protocols/OAuth2InstalledApp#choosingredirecturi</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.PollError.html" title='yup_oauth2::PollError enum'>PollError</a></td><td class='docblock-short'><p>Encapsulates all possible results of a <code>poll_token(...)</code> operation</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.RefreshResult.html" title='yup_oauth2::RefreshResult enum'>RefreshResult</a></td><td class='docblock-short'><p>All possible outcomes of the refresh flow</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Retry.html" title='yup_oauth2::Retry enum'>Retry</a></td><td class='docblock-short'><p>A utility type to indicate how operations DeviceFlowHelper operations should be retried</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.TokenType.html" title='yup_oauth2::TokenType enum'>TokenType</a></td><td class='docblock-short'><p>Represents all implemented token types</p>
+</td></tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+<table><tr class='module-item'><td><a class="constant" href="constant.GOOGLE_DEVICE_CODE_URL.html" title='yup_oauth2::GOOGLE_DEVICE_CODE_URL constant'>GOOGLE_DEVICE_CODE_URL</a></td><td class='docblock-short'></td></tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table><tr class='module-item'><td><a class="trait" href="trait.AuthenticatorDelegate.html" title='yup_oauth2::AuthenticatorDelegate trait'>AuthenticatorDelegate</a></td><td class='docblock-short'><p>A partially implemented trait to interact with the <code>Authenticator</code></p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.GetToken.html" title='yup_oauth2::GetToken trait'>GetToken</a></td><td class='docblock-short'><p>A provider for authorization tokens, yielding tokens valid for a given scope.
+The <code>api_key()</code> method is an alternative in case there are no scopes or
+if no user is involved.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.TokenStorage.html" title='yup_oauth2::TokenStorage trait'>TokenStorage</a></td><td class='docblock-short'><p>Implements a specialized storage to set and retrieve <code>Token</code> instances.
+The <code>scope_hash</code> represents the signature of the scopes for which the given token
+should be stored or retrieved.
+For completeness, the underlying, sorted scopes are provided as well. They might be
+useful for presentation to the user.</p>
+</td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table><tr class='module-item'><td><a class="fn" href="fn.parse_application_secret.html" title='yup_oauth2::parse_application_secret fn'>parse_application_secret</a></td><td class='docblock-short'><p>Read an application secret from a JSON string.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.read_application_secret.html" title='yup_oauth2::read_application_secret fn'>read_application_secret</a></td><td class='docblock-short'><p>Read an application secret from a file.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.service_account_key_from_file.html" title='yup_oauth2::service_account_key_from_file fn'>service_account_key_from_file</a></td><td class='docblock-short'><p>Read a service account key from a JSON file. You can download the JSON keys from the Google
+Cloud Console or the respective console of your service provider.</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../";window.currentCrate = "yup_oauth2";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

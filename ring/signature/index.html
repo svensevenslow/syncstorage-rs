@@ -194,7 +194,9 @@ formats, as it also handles the parsing.</p>
 </td></tr><tr class='module-item'><td><a class="struct" href="struct.Ed25519KeyPair.html" title='ring::signature::Ed25519KeyPair struct'>Ed25519KeyPair</a></td><td class='docblock-short'><p>An Ed25519 key pair, for signing.</p>
 </td></tr><tr class='module-item'><td><a class="struct" href="struct.EdDSAParameters.html" title='ring::signature::EdDSAParameters struct'>EdDSAParameters</a></td><td class='docblock-short'><p>Parameters for EdDSA signing and verification.</p>
 </td></tr><tr class='module-item'><td><a class="struct" href="struct.KeyPair.html" title='ring::signature::KeyPair struct'>KeyPair</a></td><td class='docblock-short'><p>A key pair for signing.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.RSAKeyPair.html" title='ring::signature::RSAKeyPair struct'>RSAKeyPair</a></td><td class='docblock-short'><p>An RSA key pair, used for signing. Feature: <code>rsa_signing</code>.</p>
 </td></tr><tr class='module-item'><td><a class="struct" href="struct.RSAParameters.html" title='ring::signature::RSAParameters struct'>RSAParameters</a></td><td class='docblock-short'><p>Parameters for RSA verification.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.RSASigningState.html" title='ring::signature::RSASigningState struct'>RSASigningState</a></td><td class='docblock-short'><p>State used for RSA Signing. Feature: <code>rsa_signing</code>.</p>
 </td></tr><tr class='module-item'><td><a class="struct" href="struct.Signature.html" title='ring::signature::Signature struct'>Signature</a></td><td class='docblock-short'><p>A public key signature returned from a signing operation.</p>
 </td></tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
 <table><tr class='module-item'><td><a class="constant" href="constant.ED25519_PUBLIC_KEY_LEN.html" title='ring::signature::ED25519_PUBLIC_KEY_LEN constant'>ED25519_PUBLIC_KEY_LEN</a></td><td class='docblock-short'><p>The length of an Ed25519 public key.</p>
@@ -234,14 +236,21 @@ PKCS#1.5 padding, and SHA-384.</p>
 PKCS#1.5 padding, and SHA-512.</p>
 </td></tr><tr class='module-item'><td><a class="static" href="static.RSA_PKCS1_3072_8192_SHA384.html" title='ring::signature::RSA_PKCS1_3072_8192_SHA384 static'>RSA_PKCS1_3072_8192_SHA384</a></td><td class='docblock-short'><p>Verification of signatures using RSA keys of 3072-8192 bits,
 PKCS#1.5 padding, and SHA-384.</p>
+</td></tr><tr class='module-item'><td><a class="static" href="static.RSA_PKCS1_SHA256.html" title='ring::signature::RSA_PKCS1_SHA256 static'>RSA_PKCS1_SHA256</a></td><td class='docblock-short'><p>PKCS#1 1.5 padding using SHA-256 for RSA signatures.</p>
+</td></tr><tr class='module-item'><td><a class="static" href="static.RSA_PKCS1_SHA384.html" title='ring::signature::RSA_PKCS1_SHA384 static'>RSA_PKCS1_SHA384</a></td><td class='docblock-short'><p>PKCS#1 1.5 padding using SHA-384 for RSA signatures.</p>
+</td></tr><tr class='module-item'><td><a class="static" href="static.RSA_PKCS1_SHA512.html" title='ring::signature::RSA_PKCS1_SHA512 static'>RSA_PKCS1_SHA512</a></td><td class='docblock-short'><p>PKCS#1 1.5 padding using SHA-512 for RSA signatures.</p>
 </td></tr><tr class='module-item'><td><a class="static" href="static.RSA_PSS_2048_8192_SHA256.html" title='ring::signature::RSA_PSS_2048_8192_SHA256 static'>RSA_PSS_2048_8192_SHA256</a></td><td class='docblock-short'><p>Verification of signatures using RSA keys of 2048-8192 bits,
 PSS padding, and SHA-256.</p>
 </td></tr><tr class='module-item'><td><a class="static" href="static.RSA_PSS_2048_8192_SHA384.html" title='ring::signature::RSA_PSS_2048_8192_SHA384 static'>RSA_PSS_2048_8192_SHA384</a></td><td class='docblock-short'><p>Verification of signatures using RSA keys of 2048-8192 bits,
 PSS padding, and SHA-384.</p>
 </td></tr><tr class='module-item'><td><a class="static" href="static.RSA_PSS_2048_8192_SHA512.html" title='ring::signature::RSA_PSS_2048_8192_SHA512 static'>RSA_PSS_2048_8192_SHA512</a></td><td class='docblock-short'><p>Verification of signatures using RSA keys of 2048-8192 bits,
 PSS padding, and SHA-512.</p>
+</td></tr><tr class='module-item'><td><a class="static" href="static.RSA_PSS_SHA256.html" title='ring::signature::RSA_PSS_SHA256 static'>RSA_PSS_SHA256</a></td><td class='docblock-short'><p>RSA PSS padding using SHA-256 for RSA signatures.</p>
+</td></tr><tr class='module-item'><td><a class="static" href="static.RSA_PSS_SHA384.html" title='ring::signature::RSA_PSS_SHA384 static'>RSA_PSS_SHA384</a></td><td class='docblock-short'><p>RSA PSS padding using SHA-384 for RSA signatures.</p>
+</td></tr><tr class='module-item'><td><a class="static" href="static.RSA_PSS_SHA512.html" title='ring::signature::RSA_PSS_SHA512 static'>RSA_PSS_SHA512</a></td><td class='docblock-short'><p>RSA PSS padding using SHA-512 for RSA signatures.</p>
 </td></tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
-<table><tr class='module-item'><td><a class="trait" href="trait.SigningAlgorithm.html" title='ring::signature::SigningAlgorithm trait'>SigningAlgorithm</a></td><td class='docblock-short'><p>An algorithm for signing.</p>
+<table><tr class='module-item'><td><a class="trait" href="trait.RSAEncoding.html" title='ring::signature::RSAEncoding trait'>RSAEncoding</a></td><td class='docblock-short'><p>An RSA signature encoding as described in <a href="https://tools.ietf.org/html/rfc3447#section-8">RFC 3447 Section 8</a>.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.SigningAlgorithm.html" title='ring::signature::SigningAlgorithm trait'>SigningAlgorithm</a></td><td class='docblock-short'><p>An algorithm for signing.</p>
 </td></tr><tr class='module-item'><td><a class="trait" href="trait.VerificationAlgorithm.html" title='ring::signature::VerificationAlgorithm trait'>VerificationAlgorithm</a></td><td class='docblock-short'><p>A signature verification algorithm.</p>
 </td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table><tr class='module-item'><td><a class="fn" href="fn.key_pair_from_pkcs8.html" title='ring::signature::key_pair_from_pkcs8 fn'>key_pair_from_pkcs8</a></td><td class='docblock-short'><p>Returns a key for signing that is parsed from a PKCS#8 document.</p>

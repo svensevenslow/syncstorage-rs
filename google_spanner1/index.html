@@ -1,0 +1,449 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `google_spanner1` crate."><meta name="keywords" content="rust, rustlang, rust-lang, google_spanner1"><title>google_spanner1 - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="shortcut icon" href="../favicon.ico"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../google_spanner1/index.html'><img src='../rust-logo.png' alt='logo' width='100'></a><p class='location'>Crate google_spanner1</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all google_spanner1's items</p></a><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'google_spanner1', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/google_spanner1/lib.rs.html#5-15231' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>google_spanner1</a></span></h1><div class='docblock'><p>This documentation was generated from <em>Spanner</em> crate version <em>1.0.10+20190613</em>, where <em>20190613</em> is the exact revision of the <em>spanner:v1</em> schema built by the <a href="http://www.makotemplates.org/">mako</a> code generator <em>v1.0.10</em>.</p>
+<p>Everything else about the <em>Spanner</em> <em>v1</em> API can be found at the
+<a href="https://cloud.google.com/spanner/">official documentation site</a>.
+The original source code is <a href="https://github.com/Byron/google-apis-rs/tree/master/gen/spanner1">on github</a>.</p>
+<h1 id="features" class="section-header"><a href="#features">Features</a></h1>
+<p>Handle the following <em>Resources</em> with ease from the central <a href="struct.Spanner.html">hub</a> ...</p>
+<ul>
+<li>projects</li>
+<li><a href="struct.ProjectInstanceConfigGetCall.html"><em>instance configs get</em></a>, <a href="struct.ProjectInstanceConfigListCall.html"><em>instance configs list</em></a>, <a href="struct.ProjectInstanceCreateCall.html"><em>instances create</em></a>, <a href="struct.ProjectInstanceDatabaseCreateCall.html"><em>instances databases create</em></a>, <a href="struct.ProjectInstanceDatabaseDropDatabaseCall.html"><em>instances databases drop database</em></a>, <a href="struct.ProjectInstanceDatabaseGetCall.html"><em>instances databases get</em></a>, <a href="struct.ProjectInstanceDatabaseGetDdlCall.html"><em>instances databases get ddl</em></a>, <a href="struct.ProjectInstanceDatabaseGetIamPolicyCall.html"><em>instances databases get iam policy</em></a>, <a href="struct.ProjectInstanceDatabaseListCall.html"><em>instances databases list</em></a>, <a href="struct.ProjectInstanceDatabaseOperationCancelCall.html"><em>instances databases operations cancel</em></a>, <a href="struct.ProjectInstanceDatabaseOperationDeleteCall.html"><em>instances databases operations delete</em></a>, <a href="struct.ProjectInstanceDatabaseOperationGetCall.html"><em>instances databases operations get</em></a>, <a href="struct.ProjectInstanceDatabaseOperationListCall.html"><em>instances databases operations list</em></a>, <a href="struct.ProjectInstanceDatabaseSessionBeginTransactionCall.html"><em>instances databases sessions begin transaction</em></a>, <a href="struct.ProjectInstanceDatabaseSessionCommitCall.html"><em>instances databases sessions commit</em></a>, <a href="struct.ProjectInstanceDatabaseSessionCreateCall.html"><em>instances databases sessions create</em></a>, <a href="struct.ProjectInstanceDatabaseSessionDeleteCall.html"><em>instances databases sessions delete</em></a>, <a href="struct.ProjectInstanceDatabaseSessionExecuteBatchDmlCall.html"><em>instances databases sessions execute batch dml</em></a>, <a href="struct.ProjectInstanceDatabaseSessionExecuteSqlCall.html"><em>instances databases sessions execute sql</em></a>, <a href="struct.ProjectInstanceDatabaseSessionExecuteStreamingSqlCall.html"><em>instances databases sessions execute streaming sql</em></a>, <a href="struct.ProjectInstanceDatabaseSessionGetCall.html"><em>instances databases sessions get</em></a>, <a href="struct.ProjectInstanceDatabaseSessionListCall.html"><em>instances databases sessions list</em></a>, <a href="struct.ProjectInstanceDatabaseSessionPartitionQueryCall.html"><em>instances databases sessions partition query</em></a>, <a href="struct.ProjectInstanceDatabaseSessionPartitionReadCall.html"><em>instances databases sessions partition read</em></a>, <a href="struct.ProjectInstanceDatabaseSessionReadCall.html"><em>instances databases sessions read</em></a>, <a href="struct.ProjectInstanceDatabaseSessionRollbackCall.html"><em>instances databases sessions rollback</em></a>, <a href="struct.ProjectInstanceDatabaseSessionStreamingReadCall.html"><em>instances databases sessions streaming read</em></a>, <a href="struct.ProjectInstanceDatabaseSetIamPolicyCall.html"><em>instances databases set iam policy</em></a>, <a href="struct.ProjectInstanceDatabaseTestIamPermissionCall.html"><em>instances databases test iam permissions</em></a>, <a href="struct.ProjectInstanceDatabaseUpdateDdlCall.html"><em>instances databases update ddl</em></a>, <a href="struct.ProjectInstanceDeleteCall.html"><em>instances delete</em></a>, <a href="struct.ProjectInstanceGetCall.html"><em>instances get</em></a>, <a href="struct.ProjectInstanceGetIamPolicyCall.html"><em>instances get iam policy</em></a>, <a href="struct.ProjectInstanceListCall.html"><em>instances list</em></a>, <a href="struct.ProjectInstanceOperationCancelCall.html"><em>instances operations cancel</em></a>, <a href="struct.ProjectInstanceOperationDeleteCall.html"><em>instances operations delete</em></a>, <a href="struct.ProjectInstanceOperationGetCall.html"><em>instances operations get</em></a>, <a href="struct.ProjectInstanceOperationListCall.html"><em>instances operations list</em></a>, <a href="struct.ProjectInstancePatchCall.html"><em>instances patch</em></a>, <a href="struct.ProjectInstanceSetIamPolicyCall.html"><em>instances set iam policy</em></a> and <a href="struct.ProjectInstanceTestIamPermissionCall.html"><em>instances test iam permissions</em></a></li>
+</ul>
+<p>Not what you are looking for ? Find all other Google APIs in their Rust <a href="http://byron.github.io/google-apis-rs">documentation index</a>.</p>
+<h1 id="structure-of-this-library" class="section-header"><a href="#structure-of-this-library">Structure of this Library</a></h1>
+<p>The API is structured into the following primary items:</p>
+<ul>
+<li><strong><a href="struct.Spanner.html">Hub</a></strong>
+<ul>
+<li>a central object to maintain state and allow accessing all <em>Activities</em></li>
+<li>creates <a href="trait.MethodsBuilder.html"><em>Method Builders</em></a> which in turn
+allow access to individual <a href="trait.CallBuilder.html"><em>Call Builders</em></a></li>
+</ul>
+</li>
+<li><strong><a href="trait.Resource.html">Resources</a></strong>
+<ul>
+<li>primary types that you can apply <em>Activities</em> to</li>
+<li>a collection of properties and <em>Parts</em></li>
+<li><strong><a href="trait.Part.html">Parts</a></strong>
+<ul>
+<li>a collection of properties</li>
+<li>never directly used in <em>Activities</em></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong><a href="trait.CallBuilder.html">Activities</a></strong>
+<ul>
+<li>operations to apply to <em>Resources</em></li>
+</ul>
+</li>
+</ul>
+<p>All <em>structures</em> are marked with applicable traits to further categorize them and ease browsing.</p>
+<p>Generally speaking, you can invoke <em>Activities</em> like this:</p>
+<pre><code class="language-Rust,ignore">let r = hub.resource().activity(...).doit()
+</code></pre>
+<p>Or specifically ...</p>
+
+<div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">hub</span>.<span class="ident">projects</span>().<span class="ident">instances_databases_operations_cancel</span>(...).<span class="ident">doit</span>()
+<span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">hub</span>.<span class="ident">projects</span>().<span class="ident">instances_databases_drop_database</span>(...).<span class="ident">doit</span>()
+<span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">hub</span>.<span class="ident">projects</span>().<span class="ident">instances_operations_delete</span>(...).<span class="ident">doit</span>()
+<span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">hub</span>.<span class="ident">projects</span>().<span class="ident">instances_databases_operations_delete</span>(...).<span class="ident">doit</span>()
+<span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">hub</span>.<span class="ident">projects</span>().<span class="ident">instances_delete</span>(...).<span class="ident">doit</span>()
+<span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">hub</span>.<span class="ident">projects</span>().<span class="ident">instances_operations_cancel</span>(...).<span class="ident">doit</span>()
+<span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">hub</span>.<span class="ident">projects</span>().<span class="ident">instances_databases_sessions_rollback</span>(...).<span class="ident">doit</span>()
+<span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">hub</span>.<span class="ident">projects</span>().<span class="ident">instances_databases_sessions_delete</span>(...).<span class="ident">doit</span>()</pre></div>
+<p>The <code>resource()</code> and <code>activity(...)</code> calls create <a href="http://en.wikipedia.org/wiki/Builder_pattern">builders</a>. The second one dealing with <code>Activities</code>
+supports various methods to configure the impending operation (not shown here). It is made such that all required arguments have to be
+specified right away (i.e. <code>(...)</code>), whereas all optional ones can be <a href="http://en.wikipedia.org/wiki/Builder_pattern">build up</a> as desired.
+The <code>doit()</code> method performs the actual communication with the server and returns the respective result.</p>
+<h1 id="usage" class="section-header"><a href="#usage">Usage</a></h1><h2 id="setting-up-your-project" class="section-header"><a href="#setting-up-your-project">Setting up your Project</a></h2>
+<p>To use this library, you would put the following lines into your <code>Cargo.toml</code> file:</p>
+<pre><code class="language-toml">[dependencies]
+google-spanner1 = &quot;*&quot;
+# This project intentionally uses an old version of Hyper. See
+# https://github.com/Byron/google-apis-rs/issues/173 for more
+# information.
+hyper = &quot;^0.10&quot;
+hyper-rustls = &quot;^0.6&quot;
+serde = &quot;^1.0&quot;
+serde_json = &quot;^1.0&quot;
+yup-oauth2 = &quot;^1.0&quot;
+</code></pre>
+<h2 id="a-complete-example" class="section-header"><a href="#a-complete-example">A complete example</a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">hyper</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">hyper_rustls</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">yup_oauth2</span> <span class="kw">as</span> <span class="ident">oauth2</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">google_spanner1</span> <span class="kw">as</span> <span class="ident">spanner1</span>;
+<span class="kw">use</span> <span class="ident">spanner1</span>::<span class="ident">RollbackRequest</span>;
+<span class="kw">use</span> <span class="ident">spanner1</span>::{<span class="prelude-ty">Result</span>, <span class="ident">Error</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">default</span>::<span class="ident">Default</span>;
+<span class="kw">use</span> <span class="ident">oauth2</span>::{<span class="ident">Authenticator</span>, <span class="ident">DefaultAuthenticatorDelegate</span>, <span class="ident">ApplicationSecret</span>, <span class="ident">MemoryStorage</span>};
+<span class="kw">use</span> <span class="ident">spanner1</span>::<span class="ident">Spanner</span>;
+ 
+<span class="comment">// Get an ApplicationSecret instance by some means. It contains the `client_id` and </span>
+<span class="comment">// `client_secret`, among other things.</span>
+<span class="kw">let</span> <span class="ident">secret</span>: <span class="ident">ApplicationSecret</span> <span class="op">=</span> <span class="ident">Default</span>::<span class="ident">default</span>();
+<span class="comment">// Instantiate the authenticator. It will choose a suitable authentication flow for you, </span>
+<span class="comment">// unless you replace  `None` with the desired Flow.</span>
+<span class="comment">// Provide your own `AuthenticatorDelegate` to adjust the way it operates and get feedback about </span>
+<span class="comment">// what&#39;s going on. You probably want to bring in your own `TokenStorage` to persist tokens and</span>
+<span class="comment">// retrieve them from storage.</span>
+<span class="kw">let</span> <span class="ident">auth</span> <span class="op">=</span> <span class="ident">Authenticator</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">secret</span>, <span class="ident">DefaultAuthenticatorDelegate</span>,
+                              <span class="ident">hyper</span>::<span class="ident">Client</span>::<span class="ident">with_connector</span>(<span class="ident">hyper</span>::<span class="ident">net</span>::<span class="ident">HttpsConnector</span>::<span class="ident">new</span>(<span class="ident">hyper_rustls</span>::<span class="ident">TlsClient</span>::<span class="ident">new</span>())),
+                              <span class="op">&lt;</span><span class="ident">MemoryStorage</span> <span class="kw">as</span> <span class="ident">Default</span><span class="op">&gt;</span>::<span class="ident">default</span>(), <span class="prelude-val">None</span>);
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hub</span> <span class="op">=</span> <span class="ident">Spanner</span>::<span class="ident">new</span>(<span class="ident">hyper</span>::<span class="ident">Client</span>::<span class="ident">with_connector</span>(<span class="ident">hyper</span>::<span class="ident">net</span>::<span class="ident">HttpsConnector</span>::<span class="ident">new</span>(<span class="ident">hyper_rustls</span>::<span class="ident">TlsClient</span>::<span class="ident">new</span>())), <span class="ident">auth</span>);
+<span class="comment">// As the method needs a request, you would usually fill it with the desired information</span>
+<span class="comment">// into the respective structure. Some of the parts shown here might not be applicable !</span>
+<span class="comment">// Values shown here are possibly random and not representative !</span>
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">RollbackRequest</span>::<span class="ident">default</span>();
+ 
+<span class="comment">// You can configure optional parameters by calling the respective setters at will, and</span>
+<span class="comment">// execute the final call using `doit()`.</span>
+<span class="comment">// Values shown here are possibly random and not representative !</span>
+<span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">hub</span>.<span class="ident">projects</span>().<span class="ident">instances_databases_sessions_rollback</span>(<span class="ident">req</span>, <span class="string">&quot;session&quot;</span>)
+             .<span class="ident">doit</span>();
+ 
+<span class="kw">match</span> <span class="ident">result</span> {
+    <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">e</span> {
+        <span class="comment">// The Error enum provides details about what exactly happened.</span>
+        <span class="comment">// You can also just use its `Debug`, `Display` or `Error` traits</span>
+         <span class="ident">Error</span>::<span class="ident">HttpError</span>(<span class="kw">_</span>)
+        <span class="op">|</span><span class="ident">Error</span>::<span class="ident">MissingAPIKey</span>
+        <span class="op">|</span><span class="ident">Error</span>::<span class="ident">MissingToken</span>(<span class="kw">_</span>)
+        <span class="op">|</span><span class="ident">Error</span>::<span class="ident">Cancelled</span>
+        <span class="op">|</span><span class="ident">Error</span>::<span class="ident">UploadSizeLimitExceeded</span>(<span class="kw">_</span>, <span class="kw">_</span>)
+        <span class="op">|</span><span class="ident">Error</span>::<span class="ident">Failure</span>(<span class="kw">_</span>)
+        <span class="op">|</span><span class="ident">Error</span>::<span class="ident">BadRequest</span>(<span class="kw">_</span>)
+        <span class="op">|</span><span class="ident">Error</span>::<span class="ident">FieldClash</span>(<span class="kw">_</span>)
+        <span class="op">|</span><span class="ident">Error</span>::<span class="ident">JsonDecodeError</span>(<span class="kw">_</span>, <span class="kw">_</span>) <span class="op">=&gt;</span> <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">e</span>),
+    },
+    <span class="prelude-val">Ok</span>(<span class="ident">res</span>) <span class="op">=&gt;</span> <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Success: {:?}&quot;</span>, <span class="ident">res</span>),
+}</pre></div>
+<h2 id="handling-errors" class="section-header"><a href="#handling-errors">Handling Errors</a></h2>
+<p>All errors produced by the system are provided either as <a href="enum.Result.html">Result</a> enumeration as return value of
+the doit() methods, or handed as possibly intermediate results to either the
+<a href="trait.Delegate.html">Hub Delegate</a>, or the <a href="https://docs.rs/yup-oauth2/*/yup_oauth2/trait.AuthenticatorDelegate.html">Authenticator Delegate</a>.</p>
+<p>When delegates handle errors or intermediate values, they may have a chance to instruct the system to retry. This
+makes the system potentially resilient to all kinds of errors.</p>
+<h2 id="uploads-and-downloads" class="section-header"><a href="#uploads-and-downloads">Uploads and Downloads</a></h2>
+<p>If a method supports downloads, the response body, which is part of the <a href="enum.Result.html">Result</a>, should be
+read by you to obtain the media.
+If such a method also supports a <a href="trait.ResponseResult.html">Response Result</a>, it will return that by default.
+You can see it as meta-data for the actual media. To trigger a media download, you will have to set up the builder by making
+this call: <code>.param(&quot;alt&quot;, &quot;media&quot;)</code>.</p>
+<p>Methods supporting uploads can do so using up to 2 different protocols:
+<em>simple</em> and <em>resumable</em>. The distinctiveness of each is represented by customized
+<code>doit(...)</code> methods, which are then named <code>upload(...)</code> and <code>upload_resumable(...)</code> respectively.</p>
+<h2 id="customization-and-callbacks" class="section-header"><a href="#customization-and-callbacks">Customization and Callbacks</a></h2>
+<p>You may alter the way an <code>doit()</code> method is called by providing a <a href="trait.Delegate.html">delegate</a> to the
+<a href="trait.CallBuilder.html">Method Builder</a> before making the final <code>doit()</code> call.
+Respective methods will be called to provide progress information, as well as determine whether the system should
+retry on failure.</p>
+<p>The <a href="trait.Delegate.html">delegate trait</a> is default-implemented, allowing you to customize it with minimal effort.</p>
+<h2 id="optional-parts-in-server-requests" class="section-header"><a href="#optional-parts-in-server-requests">Optional Parts in Server-Requests</a></h2>
+<p>All structures provided by this library are made to be <a href="trait.RequestValue.html">enocodable</a> and
+<a href="trait.ResponseResult.html">decodable</a> via <em>json</em>. Optionals are used to indicate that partial requests are responses
+are valid.
+Most optionals are are considered <a href="trait.Part.html">Parts</a> which are identifiable by name, which will be sent to
+the server to indicate either the set parts of the request or the desired parts in the response.</p>
+<h2 id="builder-arguments" class="section-header"><a href="#builder-arguments">Builder Arguments</a></h2>
+<p>Using <a href="trait.CallBuilder.html">method builders</a>, you are able to prepare an action call by repeatedly calling it's methods.
+These will always take a single argument, for which the following statements are true.</p>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Plain_old_data_structure">PODs</a> are handed by copy</li>
+<li>strings are passed as <code>&amp;str</code></li>
+<li><a href="trait.RequestValue.html">request values</a> are moved</li>
+</ul>
+<p>Arguments will always be copied or cloned into the builder, to make them independent of their original life times.</p>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.BeginTransactionRequest.html" title='google_spanner1::BeginTransactionRequest struct'>BeginTransactionRequest</a></td><td class='docblock-short'><p>The request for BeginTransaction.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Binding.html" title='google_spanner1::Binding struct'>Binding</a></td><td class='docblock-short'><p>Associates <code>members</code> with a <code>role</code>.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ChildLink.html" title='google_spanner1::ChildLink struct'>ChildLink</a></td><td class='docblock-short'><p>Metadata associated with a parent-child relationship appearing in a
+PlanNode.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Chunk.html" title='google_spanner1::Chunk struct'>Chunk</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.CommitRequest.html" title='google_spanner1::CommitRequest struct'>CommitRequest</a></td><td class='docblock-short'><p>The request for Commit.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.CommitResponse.html" title='google_spanner1::CommitResponse struct'>CommitResponse</a></td><td class='docblock-short'><p>The response for Commit.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ContentRange.html" title='google_spanner1::ContentRange struct'>ContentRange</a></td><td class='docblock-short'><p>Implements the Content-Range header, for serialization only</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.CreateDatabaseRequest.html" title='google_spanner1::CreateDatabaseRequest struct'>CreateDatabaseRequest</a></td><td class='docblock-short'><p>The request for CreateDatabase.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.CreateInstanceRequest.html" title='google_spanner1::CreateInstanceRequest struct'>CreateInstanceRequest</a></td><td class='docblock-short'><p>The request for CreateInstance.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.CreateSessionRequest.html" title='google_spanner1::CreateSessionRequest struct'>CreateSessionRequest</a></td><td class='docblock-short'><p>The request for CreateSession.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Database.html" title='google_spanner1::Database struct'>Database</a></td><td class='docblock-short'><p>A Cloud Spanner database.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.DefaultDelegate.html" title='google_spanner1::DefaultDelegate struct'>DefaultDelegate</a></td><td class='docblock-short'><p>A delegate with a conservative default implementation, which is used if no other delegate is
+set.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Delete.html" title='google_spanner1::Delete struct'>Delete</a></td><td class='docblock-short'><p>Arguments to delete operations.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.DummyNetworkStream.html" title='google_spanner1::DummyNetworkStream struct'>DummyNetworkStream</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.Empty.html" title='google_spanner1::Empty struct'>Empty</a></td><td class='docblock-short'><p>A generic empty message that you can re-use to avoid defining duplicated
+empty messages in your APIs. A typical example is to use it as the request
+or the response type of an API method. For instance:</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ErrorResponse.html" title='google_spanner1::ErrorResponse struct'>ErrorResponse</a></td><td class='docblock-short'><p>A utility to represent detailed errors we might see in case there are BadRequests.
+The latter happen if the sent parameters or request structures are unsound</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ExecuteBatchDmlRequest.html" title='google_spanner1::ExecuteBatchDmlRequest struct'>ExecuteBatchDmlRequest</a></td><td class='docblock-short'><p>The request for ExecuteBatchDml</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ExecuteBatchDmlResponse.html" title='google_spanner1::ExecuteBatchDmlResponse struct'>ExecuteBatchDmlResponse</a></td><td class='docblock-short'><p>The response for ExecuteBatchDml. Contains a list
+of ResultSet, one for each DML statement that has successfully executed.
+If a statement fails, the error is returned as part of the response payload.
+Clients can determine whether all DML statements have run successfully, or if
+a statement failed, using one of the following approaches:</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ExecuteSqlRequest.html" title='google_spanner1::ExecuteSqlRequest struct'>ExecuteSqlRequest</a></td><td class='docblock-short'><p>The request for ExecuteSql and
+ExecuteStreamingSql.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Expr.html" title='google_spanner1::Expr struct'>Expr</a></td><td class='docblock-short'><p>Represents an expression text. Example:</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Field.html" title='google_spanner1::Field struct'>Field</a></td><td class='docblock-short'><p>Message representing a single field of a struct.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.GetDatabaseDdlResponse.html" title='google_spanner1::GetDatabaseDdlResponse struct'>GetDatabaseDdlResponse</a></td><td class='docblock-short'><p>The response for GetDatabaseDdl.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.GetIamPolicyRequest.html" title='google_spanner1::GetIamPolicyRequest struct'>GetIamPolicyRequest</a></td><td class='docblock-short'><p>Request message for <code>GetIamPolicy</code> method.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Instance.html" title='google_spanner1::Instance struct'>Instance</a></td><td class='docblock-short'><p>An isolated set of Cloud Spanner resources on which databases can be hosted.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.InstanceConfig.html" title='google_spanner1::InstanceConfig struct'>InstanceConfig</a></td><td class='docblock-short'><p>A possible configuration for a Cloud Spanner instance. Configurations
+define the geographic placement of nodes and their replication.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.JsonServerError.html" title='google_spanner1::JsonServerError struct'>JsonServerError</a></td><td class='docblock-short'><p>A utility type which can decode a server response that indicates error</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.KeyRange.html" title='google_spanner1::KeyRange struct'>KeyRange</a></td><td class='docblock-short'><p>KeyRange represents a range of rows in a table or index.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.KeySet.html" title='google_spanner1::KeySet struct'>KeySet</a></td><td class='docblock-short'><p><code>KeySet</code> defines a collection of Cloud Spanner keys and/or key ranges. All
+the keys are expected to be in the same table or index. The keys need
+not be sorted in any particular way.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ListDatabasesResponse.html" title='google_spanner1::ListDatabasesResponse struct'>ListDatabasesResponse</a></td><td class='docblock-short'><p>The response for ListDatabases.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ListInstanceConfigsResponse.html" title='google_spanner1::ListInstanceConfigsResponse struct'>ListInstanceConfigsResponse</a></td><td class='docblock-short'><p>The response for ListInstanceConfigs.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ListInstancesResponse.html" title='google_spanner1::ListInstancesResponse struct'>ListInstancesResponse</a></td><td class='docblock-short'><p>The response for ListInstances.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ListOperationsResponse.html" title='google_spanner1::ListOperationsResponse struct'>ListOperationsResponse</a></td><td class='docblock-short'><p>The response message for Operations.ListOperations.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ListSessionsResponse.html" title='google_spanner1::ListSessionsResponse struct'>ListSessionsResponse</a></td><td class='docblock-short'><p>The response for ListSessions.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.MethodInfo.html" title='google_spanner1::MethodInfo struct'>MethodInfo</a></td><td class='docblock-short'><p>Contains information about an API request.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.MultiPartReader.html" title='google_spanner1::MultiPartReader struct'>MultiPartReader</a></td><td class='docblock-short'><p>Provides a <code>Read</code> interface that converts multiple parts into the protocol
+identified by <a href="https://tools.ietf.org/html/rfc2387">RFC2387</a>.
+<strong>Note</strong>: This implementation is just as rich as it needs to be to perform uploads
+to google APIs, and might not be a fully-featured implementation.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Mutation.html" title='google_spanner1::Mutation struct'>Mutation</a></td><td class='docblock-short'><p>A modification to one or more Cloud Spanner rows.  Mutations can be
+applied to a Cloud Spanner database by sending them in a
+Commit call.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Operation.html" title='google_spanner1::Operation struct'>Operation</a></td><td class='docblock-short'><p>This resource represents a long-running operation that is the result of a
+network API call.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PartialResultSet.html" title='google_spanner1::PartialResultSet struct'>PartialResultSet</a></td><td class='docblock-short'><p>Partial results from a streaming read or SQL query. Streaming reads and
+SQL queries better tolerate large result sets, large rows, and large
+values, but are a little trickier to consume.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Partition.html" title='google_spanner1::Partition struct'>Partition</a></td><td class='docblock-short'><p>Information returned for each partition returned in a
+PartitionResponse.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PartitionOptions.html" title='google_spanner1::PartitionOptions struct'>PartitionOptions</a></td><td class='docblock-short'><p>Options for a PartitionQueryRequest and
+PartitionReadRequest.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PartitionQueryRequest.html" title='google_spanner1::PartitionQueryRequest struct'>PartitionQueryRequest</a></td><td class='docblock-short'><p>The request for PartitionQuery</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PartitionReadRequest.html" title='google_spanner1::PartitionReadRequest struct'>PartitionReadRequest</a></td><td class='docblock-short'><p>The request for PartitionRead</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PartitionResponse.html" title='google_spanner1::PartitionResponse struct'>PartitionResponse</a></td><td class='docblock-short'><p>The response for PartitionQuery
+or PartitionRead</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PartitionedDml.html" title='google_spanner1::PartitionedDml struct'>PartitionedDml</a></td><td class='docblock-short'><p>Message type to initiate a Partitioned DML transaction.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PlanNode.html" title='google_spanner1::PlanNode struct'>PlanNode</a></td><td class='docblock-short'><p>Node information for nodes appearing in a QueryPlan.plan_nodes.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Policy.html" title='google_spanner1::Policy struct'>Policy</a></td><td class='docblock-short'><p>Defines an Identity and Access Management (IAM) policy. It is used to
+specify access control policies for Cloud Platform resources.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceConfigGetCall.html" title='google_spanner1::ProjectInstanceConfigGetCall struct'>ProjectInstanceConfigGetCall</a></td><td class='docblock-short'><p>Gets information about a particular instance configuration.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceConfigListCall.html" title='google_spanner1::ProjectInstanceConfigListCall struct'>ProjectInstanceConfigListCall</a></td><td class='docblock-short'><p>Lists the supported instance configurations for a given project.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceCreateCall.html" title='google_spanner1::ProjectInstanceCreateCall struct'>ProjectInstanceCreateCall</a></td><td class='docblock-short'><p>Creates an instance and begins preparing it to begin serving. The
+returned long-running operation
+can be used to track the progress of preparing the new
+instance. The instance name is assigned by the caller. If the
+named instance already exists, <code>CreateInstance</code> returns
+<code>ALREADY_EXISTS</code>.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseCreateCall.html" title='google_spanner1::ProjectInstanceDatabaseCreateCall struct'>ProjectInstanceDatabaseCreateCall</a></td><td class='docblock-short'><p>Creates a new Cloud Spanner database and starts to prepare it for serving.
+The returned long-running operation will
+have a name of the format <code>&lt;database_name&gt;/operations/&lt;operation_id&gt;</code> and
+can be used to track preparation of the database. The
+metadata field type is
+CreateDatabaseMetadata. The
+response field type is
+Database, if successful.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseDropDatabaseCall.html" title='google_spanner1::ProjectInstanceDatabaseDropDatabaseCall struct'>ProjectInstanceDatabaseDropDatabaseCall</a></td><td class='docblock-short'><p>Drops (aka deletes) a Cloud Spanner database.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseGetCall.html" title='google_spanner1::ProjectInstanceDatabaseGetCall struct'>ProjectInstanceDatabaseGetCall</a></td><td class='docblock-short'><p>Gets the state of a Cloud Spanner database.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseGetDdlCall.html" title='google_spanner1::ProjectInstanceDatabaseGetDdlCall struct'>ProjectInstanceDatabaseGetDdlCall</a></td><td class='docblock-short'><p>Returns the schema of a Cloud Spanner database as a list of formatted
+DDL statements. This method does not show pending schema updates, those may
+be queried using the Operations API.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseGetIamPolicyCall.html" title='google_spanner1::ProjectInstanceDatabaseGetIamPolicyCall struct'>ProjectInstanceDatabaseGetIamPolicyCall</a></td><td class='docblock-short'><p>Gets the access control policy for a database resource.
+Returns an empty policy if a database exists but does
+not have a policy set.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseListCall.html" title='google_spanner1::ProjectInstanceDatabaseListCall struct'>ProjectInstanceDatabaseListCall</a></td><td class='docblock-short'><p>Lists Cloud Spanner databases.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseOperationCancelCall.html" title='google_spanner1::ProjectInstanceDatabaseOperationCancelCall struct'>ProjectInstanceDatabaseOperationCancelCall</a></td><td class='docblock-short'><p>Starts asynchronous cancellation on a long-running operation.  The server
+makes a best effort to cancel the operation, but success is not
+guaranteed.  If the server doesn't support this method, it returns
+<code>google.rpc.Code.UNIMPLEMENTED</code>.  Clients can use
+Operations.GetOperation or
+other methods to check whether the cancellation succeeded or whether the
+operation completed despite cancellation. On successful cancellation,
+the operation is not deleted; instead, it becomes an operation with
+an Operation.error value with a google.rpc.Status.code of 1,
+corresponding to <code>Code.CANCELLED</code>.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseOperationDeleteCall.html" title='google_spanner1::ProjectInstanceDatabaseOperationDeleteCall struct'>ProjectInstanceDatabaseOperationDeleteCall</a></td><td class='docblock-short'><p>Deletes a long-running operation. This method indicates that the client is
+no longer interested in the operation result. It does not cancel the
+operation. If the server doesn't support this method, it returns
+<code>google.rpc.Code.UNIMPLEMENTED</code>.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseOperationGetCall.html" title='google_spanner1::ProjectInstanceDatabaseOperationGetCall struct'>ProjectInstanceDatabaseOperationGetCall</a></td><td class='docblock-short'><p>Gets the latest state of a long-running operation.  Clients can use this
+method to poll the operation result at intervals as recommended by the API
+service.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseOperationListCall.html" title='google_spanner1::ProjectInstanceDatabaseOperationListCall struct'>ProjectInstanceDatabaseOperationListCall</a></td><td class='docblock-short'><p>Lists operations that match the specified filter in the request. If the
+server doesn't support this method, it returns <code>UNIMPLEMENTED</code>.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseSessionBeginTransactionCall.html" title='google_spanner1::ProjectInstanceDatabaseSessionBeginTransactionCall struct'>ProjectInstanceDatabaseSessionBeginTransactionCall</a></td><td class='docblock-short'><p>Begins a new transaction. This step can often be skipped:
+Read, ExecuteSql and
+Commit can begin a new transaction as a
+side-effect.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseSessionCommitCall.html" title='google_spanner1::ProjectInstanceDatabaseSessionCommitCall struct'>ProjectInstanceDatabaseSessionCommitCall</a></td><td class='docblock-short'><p>Commits a transaction. The request includes the mutations to be
+applied to rows in the database.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseSessionCreateCall.html" title='google_spanner1::ProjectInstanceDatabaseSessionCreateCall struct'>ProjectInstanceDatabaseSessionCreateCall</a></td><td class='docblock-short'><p>Creates a new session. A session can be used to perform
+transactions that read and/or modify data in a Cloud Spanner database.
+Sessions are meant to be reused for many consecutive
+transactions.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseSessionDeleteCall.html" title='google_spanner1::ProjectInstanceDatabaseSessionDeleteCall struct'>ProjectInstanceDatabaseSessionDeleteCall</a></td><td class='docblock-short'><p>Ends a session, releasing server resources associated with it. This will
+asynchronously trigger cancellation of any operations that are running with
+this session.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseSessionExecuteBatchDmlCall.html" title='google_spanner1::ProjectInstanceDatabaseSessionExecuteBatchDmlCall struct'>ProjectInstanceDatabaseSessionExecuteBatchDmlCall</a></td><td class='docblock-short'><p>Executes a batch of SQL DML statements. This method allows many statements
+to be run with lower latency than submitting them sequentially with
+ExecuteSql.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseSessionExecuteSqlCall.html" title='google_spanner1::ProjectInstanceDatabaseSessionExecuteSqlCall struct'>ProjectInstanceDatabaseSessionExecuteSqlCall</a></td><td class='docblock-short'><p>Executes an SQL statement, returning all results in a single reply. This
+method cannot be used to return a result set larger than 10 MiB;
+if the query yields more data than that, the query fails with
+a <code>FAILED_PRECONDITION</code> error.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseSessionExecuteStreamingSqlCall.html" title='google_spanner1::ProjectInstanceDatabaseSessionExecuteStreamingSqlCall struct'>ProjectInstanceDatabaseSessionExecuteStreamingSqlCall</a></td><td class='docblock-short'><p>Like ExecuteSql, except returns the result
+set as a stream. Unlike ExecuteSql, there
+is no limit on the size of the returned result set. However, no
+individual row in the result set can exceed 100 MiB, and no
+column value can exceed 10 MiB.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseSessionGetCall.html" title='google_spanner1::ProjectInstanceDatabaseSessionGetCall struct'>ProjectInstanceDatabaseSessionGetCall</a></td><td class='docblock-short'><p>Gets a session. Returns <code>NOT_FOUND</code> if the session does not exist.
+This is mainly useful for determining whether a session is still
+alive.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseSessionListCall.html" title='google_spanner1::ProjectInstanceDatabaseSessionListCall struct'>ProjectInstanceDatabaseSessionListCall</a></td><td class='docblock-short'><p>Lists all sessions in a given database.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseSessionPartitionQueryCall.html" title='google_spanner1::ProjectInstanceDatabaseSessionPartitionQueryCall struct'>ProjectInstanceDatabaseSessionPartitionQueryCall</a></td><td class='docblock-short'><p>Creates a set of partition tokens that can be used to execute a query
+operation in parallel.  Each of the returned partition tokens can be used
+by ExecuteStreamingSql to specify a subset
+of the query result to read.  The same session and read-only transaction
+must be used by the PartitionQueryRequest used to create the
+partition tokens and the ExecuteSqlRequests that use the partition tokens.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseSessionPartitionReadCall.html" title='google_spanner1::ProjectInstanceDatabaseSessionPartitionReadCall struct'>ProjectInstanceDatabaseSessionPartitionReadCall</a></td><td class='docblock-short'><p>Creates a set of partition tokens that can be used to execute a read
+operation in parallel.  Each of the returned partition tokens can be used
+by StreamingRead to specify a subset of the read
+result to read.  The same session and read-only transaction must be used by
+the PartitionReadRequest used to create the partition tokens and the
+ReadRequests that use the partition tokens.  There are no ordering
+guarantees on rows returned among the returned partition tokens, or even
+within each individual StreamingRead call issued with a partition_token.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseSessionReadCall.html" title='google_spanner1::ProjectInstanceDatabaseSessionReadCall struct'>ProjectInstanceDatabaseSessionReadCall</a></td><td class='docblock-short'><p>Reads rows from the database using key lookups and scans, as a
+simple key/value style alternative to
+ExecuteSql.  This method cannot be used to
+return a result set larger than 10 MiB; if the read matches more
+data than that, the read fails with a <code>FAILED_PRECONDITION</code>
+error.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseSessionRollbackCall.html" title='google_spanner1::ProjectInstanceDatabaseSessionRollbackCall struct'>ProjectInstanceDatabaseSessionRollbackCall</a></td><td class='docblock-short'><p>Rolls back a transaction, releasing any locks it holds. It is a good
+idea to call this for any transaction that includes one or more
+Read or ExecuteSql requests and
+ultimately decides not to commit.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseSessionStreamingReadCall.html" title='google_spanner1::ProjectInstanceDatabaseSessionStreamingReadCall struct'>ProjectInstanceDatabaseSessionStreamingReadCall</a></td><td class='docblock-short'><p>Like Read, except returns the result set as a
+stream. Unlike Read, there is no limit on the
+size of the returned result set. However, no individual row in
+the result set can exceed 100 MiB, and no column value can exceed
+10 MiB.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseSetIamPolicyCall.html" title='google_spanner1::ProjectInstanceDatabaseSetIamPolicyCall struct'>ProjectInstanceDatabaseSetIamPolicyCall</a></td><td class='docblock-short'><p>Sets the access control policy on a database resource.
+Replaces any existing policy.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseTestIamPermissionCall.html" title='google_spanner1::ProjectInstanceDatabaseTestIamPermissionCall struct'>ProjectInstanceDatabaseTestIamPermissionCall</a></td><td class='docblock-short'><p>Returns permissions that the caller has on the specified database resource.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDatabaseUpdateDdlCall.html" title='google_spanner1::ProjectInstanceDatabaseUpdateDdlCall struct'>ProjectInstanceDatabaseUpdateDdlCall</a></td><td class='docblock-short'><p>Updates the schema of a Cloud Spanner database by
+creating/altering/dropping tables, columns, indexes, etc. The returned
+long-running operation will have a name of
+the format <code>&lt;database_name&gt;/operations/&lt;operation_id&gt;</code> and can be used to
+track execution of the schema change(s). The
+metadata field type is
+UpdateDatabaseDdlMetadata.  The operation has no response.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceDeleteCall.html" title='google_spanner1::ProjectInstanceDeleteCall struct'>ProjectInstanceDeleteCall</a></td><td class='docblock-short'><p>Deletes an instance.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceGetCall.html" title='google_spanner1::ProjectInstanceGetCall struct'>ProjectInstanceGetCall</a></td><td class='docblock-short'><p>Gets information about a particular instance.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceGetIamPolicyCall.html" title='google_spanner1::ProjectInstanceGetIamPolicyCall struct'>ProjectInstanceGetIamPolicyCall</a></td><td class='docblock-short'><p>Gets the access control policy for an instance resource. Returns an empty
+policy if an instance exists but does not have a policy set.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceListCall.html" title='google_spanner1::ProjectInstanceListCall struct'>ProjectInstanceListCall</a></td><td class='docblock-short'><p>Lists all instances in the given project.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceOperationCancelCall.html" title='google_spanner1::ProjectInstanceOperationCancelCall struct'>ProjectInstanceOperationCancelCall</a></td><td class='docblock-short'><p>Starts asynchronous cancellation on a long-running operation.  The server
+makes a best effort to cancel the operation, but success is not
+guaranteed.  If the server doesn't support this method, it returns
+<code>google.rpc.Code.UNIMPLEMENTED</code>.  Clients can use
+Operations.GetOperation or
+other methods to check whether the cancellation succeeded or whether the
+operation completed despite cancellation. On successful cancellation,
+the operation is not deleted; instead, it becomes an operation with
+an Operation.error value with a google.rpc.Status.code of 1,
+corresponding to <code>Code.CANCELLED</code>.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceOperationDeleteCall.html" title='google_spanner1::ProjectInstanceOperationDeleteCall struct'>ProjectInstanceOperationDeleteCall</a></td><td class='docblock-short'><p>Deletes a long-running operation. This method indicates that the client is
+no longer interested in the operation result. It does not cancel the
+operation. If the server doesn't support this method, it returns
+<code>google.rpc.Code.UNIMPLEMENTED</code>.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceOperationGetCall.html" title='google_spanner1::ProjectInstanceOperationGetCall struct'>ProjectInstanceOperationGetCall</a></td><td class='docblock-short'><p>Gets the latest state of a long-running operation.  Clients can use this
+method to poll the operation result at intervals as recommended by the API
+service.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceOperationListCall.html" title='google_spanner1::ProjectInstanceOperationListCall struct'>ProjectInstanceOperationListCall</a></td><td class='docblock-short'><p>Lists operations that match the specified filter in the request. If the
+server doesn't support this method, it returns <code>UNIMPLEMENTED</code>.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstancePatchCall.html" title='google_spanner1::ProjectInstancePatchCall struct'>ProjectInstancePatchCall</a></td><td class='docblock-short'><p>Updates an instance, and begins allocating or releasing resources
+as requested. The returned long-running
+operation can be used to track the
+progress of updating the instance. If the named instance does not
+exist, returns <code>NOT_FOUND</code>.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceSetIamPolicyCall.html" title='google_spanner1::ProjectInstanceSetIamPolicyCall struct'>ProjectInstanceSetIamPolicyCall</a></td><td class='docblock-short'><p>Sets the access control policy on an instance resource. Replaces any
+existing policy.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectInstanceTestIamPermissionCall.html" title='google_spanner1::ProjectInstanceTestIamPermissionCall struct'>ProjectInstanceTestIamPermissionCall</a></td><td class='docblock-short'><p>Returns permissions that the caller has on the specified instance resource.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ProjectMethods.html" title='google_spanner1::ProjectMethods struct'>ProjectMethods</a></td><td class='docblock-short'><p>A builder providing access to all methods supported on <em>project</em> resources.
+It is not used directly, but through the <code>Spanner</code> hub.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.QueryPlan.html" title='google_spanner1::QueryPlan struct'>QueryPlan</a></td><td class='docblock-short'><p>Contains an ordered list of nodes appearing in the query plan.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.RangeResponseHeader.html" title='google_spanner1::RangeResponseHeader struct'>RangeResponseHeader</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.ReadOnly.html" title='google_spanner1::ReadOnly struct'>ReadOnly</a></td><td class='docblock-short'><p>Message type to initiate a read-only transaction.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ReadRequest.html" title='google_spanner1::ReadRequest struct'>ReadRequest</a></td><td class='docblock-short'><p>The request for Read and
+StreamingRead.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ReadWrite.html" title='google_spanner1::ReadWrite struct'>ReadWrite</a></td><td class='docblock-short'><p>Message type to initiate a read-write transaction. Currently this
+transaction type has no options.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ReplicaInfo.html" title='google_spanner1::ReplicaInfo struct'>ReplicaInfo</a></td><td class='docblock-short'><p>There is no detailed description.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ResultSet.html" title='google_spanner1::ResultSet struct'>ResultSet</a></td><td class='docblock-short'><p>Results from Read or
+ExecuteSql.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ResultSetMetadata.html" title='google_spanner1::ResultSetMetadata struct'>ResultSetMetadata</a></td><td class='docblock-short'><p>Metadata about a ResultSet or PartialResultSet.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ResultSetStats.html" title='google_spanner1::ResultSetStats struct'>ResultSetStats</a></td><td class='docblock-short'><p>Additional statistics about a ResultSet or PartialResultSet.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ResumableUploadHelper.html" title='google_spanner1::ResumableUploadHelper struct'>ResumableUploadHelper</a></td><td class='docblock-short'><p>A utility type to perform a resumable upload from start to end.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.RollbackRequest.html" title='google_spanner1::RollbackRequest struct'>RollbackRequest</a></td><td class='docblock-short'><p>The request for Rollback.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ServerError.html" title='google_spanner1::ServerError struct'>ServerError</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.ServerMessage.html" title='google_spanner1::ServerMessage struct'>ServerMessage</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.Session.html" title='google_spanner1::Session struct'>Session</a></td><td class='docblock-short'><p>A session in the Cloud Spanner API.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SetIamPolicyRequest.html" title='google_spanner1::SetIamPolicyRequest struct'>SetIamPolicyRequest</a></td><td class='docblock-short'><p>Request message for <code>SetIamPolicy</code> method.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ShortRepresentation.html" title='google_spanner1::ShortRepresentation struct'>ShortRepresentation</a></td><td class='docblock-short'><p>Condensed representation of a node and its subtree. Only present for
+<code>SCALAR</code> PlanNode(s).</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Spanner.html" title='google_spanner1::Spanner struct'>Spanner</a></td><td class='docblock-short'><p>Central instance to access all Spanner related resource activities</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Statement.html" title='google_spanner1::Statement struct'>Statement</a></td><td class='docblock-short'><p>A single DML statement.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Status.html" title='google_spanner1::Status struct'>Status</a></td><td class='docblock-short'><p>The <code>Status</code> type defines a logical error model that is suitable for
+different programming environments, including REST APIs and RPC APIs. It is
+used by <a href="https://github.com/grpc">gRPC</a>. Each <code>Status</code> message contains
+three pieces of data: error code, error message, and error details.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.StructType.html" title='google_spanner1::StructType struct'>StructType</a></td><td class='docblock-short'><p><code>StructType</code> defines the fields of a STRUCT type.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.TestIamPermissionsRequest.html" title='google_spanner1::TestIamPermissionsRequest struct'>TestIamPermissionsRequest</a></td><td class='docblock-short'><p>Request message for <code>TestIamPermissions</code> method.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.TestIamPermissionsResponse.html" title='google_spanner1::TestIamPermissionsResponse struct'>TestIamPermissionsResponse</a></td><td class='docblock-short'><p>Response message for <code>TestIamPermissions</code> method.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Transaction.html" title='google_spanner1::Transaction struct'>Transaction</a></td><td class='docblock-short'><p>A transaction.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.TransactionOptions.html" title='google_spanner1::TransactionOptions struct'>TransactionOptions</a></td><td class='docblock-short'><p>Transactions</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.TransactionSelector.html" title='google_spanner1::TransactionSelector struct'>TransactionSelector</a></td><td class='docblock-short'><p>This message is used to select the transaction in which a
+Read or
+ExecuteSql call runs.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Type.html" title='google_spanner1::Type struct'>Type</a></td><td class='docblock-short'><p><code>Type</code> indicates the type of a Cloud Spanner value, as might be stored in a
+table cell or returned from an SQL query.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.UpdateDatabaseDdlRequest.html" title='google_spanner1::UpdateDatabaseDdlRequest struct'>UpdateDatabaseDdlRequest</a></td><td class='docblock-short'><p>Enqueues the given DDL statements to be applied, in order but not
+necessarily all at once, to the database schema at some point (or
+points) in the future. The server checks that the statements
+are executable (syntactically valid, name tables that exist, etc.)
+before enqueueing them, but they may still fail upon
+later execution (e.g., if a statement from another batch of
+statements is applied first and it conflicts in some way, or if
+there is some data-related problem like a <code>NULL</code> value in a column to
+which <code>NOT NULL</code> would be added). If a statement fails, all
+subsequent statements in the batch are automatically cancelled.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.UpdateInstanceRequest.html" title='google_spanner1::UpdateInstanceRequest struct'>UpdateInstanceRequest</a></td><td class='docblock-short'><p>The request for UpdateInstance.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Write.html" title='google_spanner1::Write struct'>Write</a></td><td class='docblock-short'><p>Arguments to insert, update, insert_or_update, and
+replace operations.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.XUploadContentType.html" title='google_spanner1::XUploadContentType struct'>XUploadContentType</a></td><td class='docblock-short'><p>The <code>X-Upload-Content-Type</code> header.</p>
+</td></tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table><tr class='module-item'><td><a class="enum" href="enum.Error.html" title='google_spanner1::Error enum'>Error</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="enum" href="enum.Scope.html" title='google_spanner1::Scope enum'>Scope</a></td><td class='docblock-short'><p>Identifies the an OAuth2 authorization scope.
+A scope is needed when requesting an
+<a href="https://developers.google.com/youtube/v3/guides/authentication">authorization token</a>.</p>
+</td></tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table><tr class='module-item'><td><a class="trait" href="trait.CallBuilder.html" title='google_spanner1::CallBuilder trait'>CallBuilder</a></td><td class='docblock-short'><p>Identifies types which represent builders for a particular resource method</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.Delegate.html" title='google_spanner1::Delegate trait'>Delegate</a></td><td class='docblock-short'><p>A trait specifying functionality to help controlling any request performed by the API.
+The trait has a conservative default implementation.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.Hub.html" title='google_spanner1::Hub trait'>Hub</a></td><td class='docblock-short'><p>Identifies the Hub. There is only one per library, this trait is supposed
+to make intended use more explicit.
+The hub allows to access all resource methods more easily.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.MethodsBuilder.html" title='google_spanner1::MethodsBuilder trait'>MethodsBuilder</a></td><td class='docblock-short'><p>Identifies types for building methods of a particular resource type</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.NestedType.html" title='google_spanner1::NestedType trait'>NestedType</a></td><td class='docblock-short'><p>Identifies types which are only used by other types internally.
+They have no special meaning, this trait just marks them for completeness.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.Part.html" title='google_spanner1::Part trait'>Part</a></td><td class='docblock-short'><p>Identifies types which are only used as part of other types, which
+usually are carrying the <code>Resource</code> trait.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.ReadSeek.html" title='google_spanner1::ReadSeek trait'>ReadSeek</a></td><td class='docblock-short'><p>A utility to specify reader types which provide seeking capabilities too</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.RequestValue.html" title='google_spanner1::RequestValue trait'>RequestValue</a></td><td class='docblock-short'><p>Identifies types which are used in API requests.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.Resource.html" title='google_spanner1::Resource trait'>Resource</a></td><td class='docblock-short'><p>Identifies types which can be inserted and deleted.
+Types with this trait are most commonly used by clients of this API.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.ResponseResult.html" title='google_spanner1::ResponseResult trait'>ResponseResult</a></td><td class='docblock-short'><p>Identifies types which are used in API responses.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.ToParts.html" title='google_spanner1::ToParts trait'>ToParts</a></td><td class='docblock-short'><p>A trait for all types that can convert themselves into a <em>parts</em> string</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.UnusedType.html" title='google_spanner1::UnusedType trait'>UnusedType</a></td><td class='docblock-short'><p>Identifies types which are not actually used by the API
+This might be a bug within the google API schema.</p>
+</td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table><tr class='module-item'><td><a class="fn" href="fn.remove_json_null_values.html" title='google_spanner1::remove_json_null_values fn'>remove_json_null_values</a></td><td class='docblock-short'></td></tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table><tr class='module-item'><td><a class="type" href="type.Result.html" title='google_spanner1::Result type'>Result</a></td><td class='docblock-short'><p>A universal result type used as return for all calls.</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../";window.currentCrate = "google_spanner1";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

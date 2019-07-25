@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["BATCH_LIFETIME","Rough guesstimate of the maximum reasonable life span of a batch."]],"fn":[["append",""],["batch_string_to_bsos","Deserialize a batch string into bsos"],["bsos_to_batch_string","Serialize bsos into strings separated by newlines"],["commit",""],["create",""],["delete",""],["get",""],["validate",""]]});

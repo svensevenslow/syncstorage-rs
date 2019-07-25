@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["embedded_migrations",""]],"struct":[["CollectionCache",""],["SpannerDbPool","Run the diesel embedded migrations"]]});
