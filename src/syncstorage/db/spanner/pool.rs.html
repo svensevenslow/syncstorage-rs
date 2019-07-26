@@ -204,7 +204,7 @@
         <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">SpannerConnectionManager</span>::<span class="ident">new</span>(<span class="ident">settings</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">pool</span> <span class="op">=</span> <span class="ident">r2d2</span>::<span class="ident">Pool</span>::<span class="ident">builder</span>().<span class="ident">build</span>(<span class="ident">m</span>).<span class="ident">unwrap</span>();
         <span class="prelude-val">Ok</span>(<span class="self">Self</span> {
-            <span class="ident">pool</span>: <span class="ident">pool</span>,
+            <span class="ident">pool</span>,
             <span class="ident">thread_pool</span>: <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">ThreadPool</span>::<span class="ident">new</span>()),
             <span class="ident">coll_cache</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
         })

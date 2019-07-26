@@ -1287,9 +1287,6 @@
 <span id="1287">1287</span>
 <span id="1288">1288</span>
 <span id="1289">1289</span>
-<span id="1290">1290</span>
-<span id="1291">1291</span>
-<span id="1292">1292</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">future</span>;
 <span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">lazy</span>;
@@ -1824,11 +1821,8 @@
                 <span class="prelude-val">Some</span>(<span class="ident">rows</span>) <span class="op">=&gt;</span> {
                     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">timestamps</span> <span class="op">=</span> <span class="ident">results</span>::<span class="ident">GetCollectionTimestamps</span>::<span class="ident">new</span>();
                     <span class="ident">rows</span>.<span class="ident">iter</span>().<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">row</span><span class="op">|</span> {
-                        <span class="kw">match</span> <span class="ident">SyncTimestamp</span>::<span class="ident">from_i64</span>(<span class="ident">row</span>[<span class="number">1</span>].<span class="ident">parse</span>().<span class="ident">unwrap</span>()) {
-                            <span class="prelude-val">Ok</span>(<span class="ident">timestamp</span>) <span class="op">=&gt;</span> {
-                                <span class="ident">timestamps</span>.<span class="ident">insert</span>(<span class="ident">row</span>[<span class="number">0</span>].<span class="ident">clone</span>(), <span class="ident">timestamp</span>);
-                            }
-                            <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {}
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">timestamp</span>) <span class="op">=</span> <span class="ident">SyncTimestamp</span>::<span class="ident">from_i64</span>(<span class="ident">row</span>[<span class="number">1</span>].<span class="ident">parse</span>().<span class="ident">unwrap</span>()) {
+                            <span class="ident">timestamps</span>.<span class="ident">insert</span>(<span class="ident">row</span>[<span class="number">0</span>].<span class="ident">clone</span>(), <span class="ident">timestamp</span>);
                         }
                     });
                     <span class="prelude-val">Ok</span>(<span class="ident">timestamps</span>)
@@ -2163,7 +2157,7 @@
                     <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;arg{}&quot;</span>, <span class="ident">i</span>.<span class="ident">to_string</span>()).<span class="ident">to_string</span>(),
                     <span class="ident">ids</span>[<span class="ident">i</span>].<span class="ident">to_string</span>(),
                 );
-                <span class="ident">i</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>;
+                <span class="ident">i</span> <span class="op">+=</span> <span class="number">1</span>;
             }
             <span class="ident">query</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{})&quot;</span>, <span class="ident">query</span>).<span class="ident">to_string</span>();
         }
@@ -2560,7 +2554,7 @@
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;db_test&quot;</span>))]</span>
-    <span class="kw">fn</span> <span class="ident">touch_collection</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">param</span>: <span class="ident">params</span>::<span class="ident">TouchCollection</span>) <span class="op">-&gt;</span> <span class="ident">DbFuture</span><span class="op">&lt;</span><span class="ident">SyncTimestamp</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">touch_collection</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_param</span>: <span class="ident">params</span>::<span class="ident">TouchCollection</span>) <span class="op">-&gt;</span> <span class="ident">DbFuture</span><span class="op">&lt;</span><span class="ident">SyncTimestamp</span><span class="op">&gt;</span> {
         <span class="comment">/*
         let db = self.clone();
         Box::new(self.thread_pool.spawn_handle(lazy(move || {
