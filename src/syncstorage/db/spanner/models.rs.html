@@ -1198,95 +1198,6 @@
 <span id="1198">1198</span>
 <span id="1199">1199</span>
 <span id="1200">1200</span>
-<span id="1201">1201</span>
-<span id="1202">1202</span>
-<span id="1203">1203</span>
-<span id="1204">1204</span>
-<span id="1205">1205</span>
-<span id="1206">1206</span>
-<span id="1207">1207</span>
-<span id="1208">1208</span>
-<span id="1209">1209</span>
-<span id="1210">1210</span>
-<span id="1211">1211</span>
-<span id="1212">1212</span>
-<span id="1213">1213</span>
-<span id="1214">1214</span>
-<span id="1215">1215</span>
-<span id="1216">1216</span>
-<span id="1217">1217</span>
-<span id="1218">1218</span>
-<span id="1219">1219</span>
-<span id="1220">1220</span>
-<span id="1221">1221</span>
-<span id="1222">1222</span>
-<span id="1223">1223</span>
-<span id="1224">1224</span>
-<span id="1225">1225</span>
-<span id="1226">1226</span>
-<span id="1227">1227</span>
-<span id="1228">1228</span>
-<span id="1229">1229</span>
-<span id="1230">1230</span>
-<span id="1231">1231</span>
-<span id="1232">1232</span>
-<span id="1233">1233</span>
-<span id="1234">1234</span>
-<span id="1235">1235</span>
-<span id="1236">1236</span>
-<span id="1237">1237</span>
-<span id="1238">1238</span>
-<span id="1239">1239</span>
-<span id="1240">1240</span>
-<span id="1241">1241</span>
-<span id="1242">1242</span>
-<span id="1243">1243</span>
-<span id="1244">1244</span>
-<span id="1245">1245</span>
-<span id="1246">1246</span>
-<span id="1247">1247</span>
-<span id="1248">1248</span>
-<span id="1249">1249</span>
-<span id="1250">1250</span>
-<span id="1251">1251</span>
-<span id="1252">1252</span>
-<span id="1253">1253</span>
-<span id="1254">1254</span>
-<span id="1255">1255</span>
-<span id="1256">1256</span>
-<span id="1257">1257</span>
-<span id="1258">1258</span>
-<span id="1259">1259</span>
-<span id="1260">1260</span>
-<span id="1261">1261</span>
-<span id="1262">1262</span>
-<span id="1263">1263</span>
-<span id="1264">1264</span>
-<span id="1265">1265</span>
-<span id="1266">1266</span>
-<span id="1267">1267</span>
-<span id="1268">1268</span>
-<span id="1269">1269</span>
-<span id="1270">1270</span>
-<span id="1271">1271</span>
-<span id="1272">1272</span>
-<span id="1273">1273</span>
-<span id="1274">1274</span>
-<span id="1275">1275</span>
-<span id="1276">1276</span>
-<span id="1277">1277</span>
-<span id="1278">1278</span>
-<span id="1279">1279</span>
-<span id="1280">1280</span>
-<span id="1281">1281</span>
-<span id="1282">1282</span>
-<span id="1283">1283</span>
-<span id="1284">1284</span>
-<span id="1285">1285</span>
-<span id="1286">1286</span>
-<span id="1287">1287</span>
-<span id="1288">1288</span>
-<span id="1289">1289</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">future</span>;
 <span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">lazy</span>;
@@ -1432,13 +1343,6 @@
             <span class="self">self</span>.<span class="ident">coll_cache</span>.<span class="ident">put</span>(<span class="ident">val</span>, <span class="ident">name</span>.<span class="ident">to_owned</span>())<span class="question-mark">?</span>;
         };
         <span class="ident">rv</span>
-        <span class="comment">//let id = sql_query(&quot;SELECT id FROM collections WHERE name = ?&quot;)</span>
-        <span class="comment">//    .bind::&lt;Text, _&gt;(name)</span>
-        <span class="comment">//    .get_result::&lt;IdResult&gt;(&amp;self.conn)</span>
-        <span class="comment">//    .optional()?</span>
-        <span class="comment">//    .ok_or(DbErrorKind::CollectionNotFound)?</span>
-        <span class="comment">//    .id;</span>
-        <span class="comment">//self.coll_cache.put(id, name.to_owned())?;</span>
     }
 
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">create_collection</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> {
@@ -1500,13 +1404,6 @@
                 <span class="self">self</span>.<span class="ident">coll_cache</span>.<span class="ident">put</span>(<span class="ident">val</span>, <span class="ident">name</span>.<span class="ident">to_owned</span>())<span class="question-mark">?</span>;
             };
         };
-        <span class="comment">// let id = self.conn.transaction(|| {</span>
-        <span class="comment">//     sql_query(&quot;INSERT INTO collections (name) VALUES (?)&quot;)</span>
-        <span class="comment">//         .bind::&lt;Text, _&gt;(name)</span>
-        <span class="comment">//         .execute(&amp;self.conn)?;</span>
-        <span class="comment">//     collections::table.select(last_insert_id).first(&amp;self.conn)</span>
-        <span class="comment">// })?;</span>
-        <span class="comment">// self.coll_cache.put(id, name.to_owned())?;</span>
         <span class="ident">id</span>
     }
 
@@ -1570,25 +1467,6 @@
             .<span class="ident">coll_locks</span>
             .<span class="ident">insert</span>((<span class="ident">user_id</span>, <span class="ident">collection_id</span>), <span class="ident">CollectionLock</span>::<span class="ident">Read</span>);
 
-        <span class="comment">// let modified = user_collections::table</span>
-        <span class="comment">//     .select(user_collections::modified)</span>
-        <span class="comment">//     .filter(user_collections::user_id.eq(user_id as i32))</span>
-        <span class="comment">//     .filter(user_collections::collection_id.eq(collection_id))</span>
-        <span class="comment">//     .lock_in_share_mode()</span>
-        <span class="comment">//     .first(&amp;self.conn)</span>
-        <span class="comment">//     .optional()?;</span>
-        <span class="comment">// if let Some(modified) = modified {</span>
-        <span class="comment">//     let modified = SyncTimestamp::from_i64(modified)?;</span>
-        <span class="comment">//     self.session</span>
-        <span class="comment">//         .borrow_mut()</span>
-        <span class="comment">//         .coll_modified_cache</span>
-        <span class="comment">//         .insert((user_id, collection_id), modified);</span>
-        <span class="comment">// }</span>
-        <span class="comment">// // XXX: who&#39;s responsible for unlocking (removing the entry)</span>
-        <span class="comment">// self.session</span>
-        <span class="comment">//     .borrow_mut()</span>
-        <span class="comment">//     .coll_locks</span>
-        <span class="comment">//     .insert((user_id, collection_id), CollectionLock::Read);</span>
         <span class="prelude-val">Ok</span>(())
     }
 
@@ -1635,28 +1513,6 @@
             .<span class="ident">coll_locks</span>
             .<span class="ident">insert</span>((<span class="ident">user_id</span>, <span class="ident">collection_id</span>), <span class="ident">CollectionLock</span>::<span class="ident">Write</span>);
 
-        <span class="comment">// let modified = user_collections::table</span>
-        <span class="comment">//     .select(user_collections::modified)</span>
-        <span class="comment">//     .filter(user_collections::user_id.eq(user_id as i32))</span>
-        <span class="comment">//     .filter(user_collections::collection_id.eq(collection_id))</span>
-        <span class="comment">//     .for_update()</span>
-        <span class="comment">//     .first(&amp;self.conn)</span>
-        <span class="comment">//     .optional()?;</span>
-        <span class="comment">// if let Some(modified) = modified {</span>
-        <span class="comment">//     let modified = SyncTimestamp::from_i64(modified)?;</span>
-        <span class="comment">//     // Forbid the write if it would not properly incr the timestamp</span>
-        <span class="comment">//     if modified &gt;= self.timestamp() {</span>
-        <span class="comment">//         Err(DbErrorKind::Conflict)?</span>
-        <span class="comment">//     }</span>
-        <span class="comment">//     self.session</span>
-        <span class="comment">//         .borrow_mut()</span>
-        <span class="comment">//         .coll_modified_cache</span>
-        <span class="comment">//         .insert((user_id, collection_id), modified);</span>
-        <span class="comment">// }</span>
-        <span class="comment">// self.session</span>
-        <span class="comment">//     .borrow_mut()</span>
-        <span class="comment">//     .coll_locks</span>
-        <span class="comment">//     .insert((user_id, collection_id), CollectionLock::Write);</span>
         <span class="prelude-val">Ok</span>(())
     }
 
@@ -1684,10 +1540,6 @@
                 <span class="prelude-val">Ok</span>(())
             }
         }
-        <span class="comment">// Ok(self</span>
-        <span class="comment">//     .conn</span>
-        <span class="comment">//     .transaction_manager()</span>
-        <span class="comment">//     .begin_transaction(&amp;self.conn)?)</span>
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">commit_sync</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
@@ -1712,11 +1564,6 @@
                 <span class="prelude-val">Ok</span>(())
             }
         }
-
-        <span class="comment">// Ok(self</span>
-        <span class="comment">//     .conn</span>
-        <span class="comment">//     .transaction_manager()</span>
-        <span class="comment">//     .commit_transaction(&amp;self.conn)?)</span>
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rollback_sync</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
@@ -1739,10 +1586,6 @@
                 <span class="prelude-val">Ok</span>(())
             }
         }
-        <span class="comment">// Ok(self</span>
-        <span class="comment">//     .conn</span>
-        <span class="comment">//     .transaction_manager()</span>
-        <span class="comment">//     .rollback_transaction(&amp;self.conn)?)</span>
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_collection_timestamp_sync</span>(
@@ -1785,13 +1628,6 @@
             <span class="comment">// TODO Return the correct error</span>
             <span class="prelude-val">Err</span>(<span class="ident">_e</span>) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">DbErrorKind</span>::<span class="ident">CollectionNotFound</span>.<span class="ident">into</span>()),
         }
-        <span class="comment">// user_collections::table</span>
-        <span class="comment">//     .select(user_collections::modified)</span>
-        <span class="comment">//     .filter(user_collections::user_id.eq(user_id as i32))</span>
-        <span class="comment">//     .filter(user_collections::collection_id.eq(collection_id))</span>
-        <span class="comment">//     .first(&amp;self.conn)</span>
-        <span class="comment">//     .optional()?</span>
-        <span class="comment">//     .ok_or_else(|| DbErrorKind::CollectionNotFound.into())</span>
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_collection_timestamps_sync</span>(
@@ -1832,13 +1668,6 @@
             <span class="comment">// TODO Return the correct error</span>
             <span class="prelude-val">Err</span>(<span class="ident">_e</span>) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">DbErrorKind</span>::<span class="ident">CollectionNotFound</span>.<span class="ident">into</span>()),
         }
-        <span class="comment">// user_collections::table</span>
-        <span class="comment">//     .select(user_collections::modified)</span>
-        <span class="comment">//     .filter(user_collections::user_id.eq(user_id as i32))</span>
-        <span class="comment">//     .filter(user_collections::collection_id.eq(collection_id))</span>
-        <span class="comment">//     .first(&amp;self.conn)</span>
-        <span class="comment">//     .optional()?</span>
-        <span class="comment">//     .ok_or_else(|| DbErrorKind::CollectionNotFound.into())</span>
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_collection_counts_sync</span>(
@@ -1943,13 +1772,6 @@
             <span class="comment">// TODO Return the correct error</span>
             <span class="prelude-val">Err</span>(<span class="ident">_e</span>) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">DbErrorKind</span>::<span class="ident">CollectionNotFound</span>.<span class="ident">into</span>()),
         }
-        <span class="comment">// user_collections::table</span>
-        <span class="comment">//     .select(user_collections::modified)</span>
-        <span class="comment">//     .filter(user_collections::user_id.eq(user_id as i32))</span>
-        <span class="comment">//     .filter(user_collections::collection_id.eq(collection_id))</span>
-        <span class="comment">//     .first(&amp;self.conn)</span>
-        <span class="comment">//     .optional()?</span>
-        <span class="comment">//     .ok_or_else(|| DbErrorKind::CollectionNotFound.into())</span>
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_storage_usage_sync</span>(
