@@ -1195,9 +1195,6 @@
 <span id="1195">1195</span>
 <span id="1196">1196</span>
 <span id="1197">1197</span>
-<span id="1198">1198</span>
-<span id="1199">1199</span>
-<span id="1200">1200</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">future</span>;
 <span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">lazy</span>;
@@ -2376,17 +2373,14 @@
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;db_test&quot;</span>))]</span>
-    <span class="kw">fn</span> <span class="ident">touch_collection</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_param</span>: <span class="ident">params</span>::<span class="ident">TouchCollection</span>) <span class="op">-&gt;</span> <span class="ident">DbFuture</span><span class="op">&lt;</span><span class="ident">SyncTimestamp</span><span class="op">&gt;</span> {
-        <span class="comment">/*
-        let db = self.clone();
-        Box::new(self.thread_pool.spawn_handle(lazy(move || {
-            future::result(
-                db.touch_collection(param.user_id.legacy_id as u32, param.collection_id)
-                    .map_err(Into::into),
+    <span class="kw">fn</span> <span class="ident">touch_collection</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">param</span>: <span class="ident">params</span>::<span class="ident">TouchCollection</span>) <span class="op">-&gt;</span> <span class="ident">DbFuture</span><span class="op">&lt;</span><span class="ident">SyncTimestamp</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">db</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">clone</span>();
+        <span class="ident">Box</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="ident">thread_pool</span>.<span class="ident">spawn_handle</span>(<span class="ident">lazy</span>(<span class="kw">move</span> <span class="op">||</span> {
+            <span class="ident">future</span>::<span class="ident">result</span>(
+                <span class="ident">db</span>.<span class="ident">touch_collection</span>(<span class="ident">param</span>.<span class="ident">user_id</span>.<span class="ident">legacy_id</span> <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">param</span>.<span class="ident">collection_id</span>)
+                    .<span class="ident">map_err</span>(<span class="ident">Into</span>::<span class="ident">into</span>),
             )
         })))
-         */</span>
-        <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">future</span>::<span class="ident">ok</span>(<span class="ident">Default</span>::<span class="ident">default</span>()))
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;db_test&quot;</span>))]</span>
