@@ -1453,7 +1453,7 @@ mod tests {
             .to_http_request();
         req.extensions_mut().insert(make_db());
         let result = BsoRequest::extract(&req).unwrap();
-        assert_eq!(result.user_id.legacy_id, u64::from_str(&USER_ID).unwrap());
+        assert_eq!(result.user_id.legacy_id, *USER_ID_U64);
         assert_eq!(&result.collection, "tabs");
         assert_eq!(&result.bso, "asdf");
     }
@@ -1519,7 +1519,7 @@ mod tests {
         let result = BsoPutRequest::from_request(&req, &mut payload.into())
             .wait()
             .unwrap();
-        assert_eq!(result.user_id.legacy_id, u64::from_str(&USER_ID).unwrap());
+        assert_eq!(result.user_id.legacy_id, *USER_ID_U64);
         assert_eq!(&result.collection, "tabs");
         assert_eq!(&result.bso, "asdf");
         assert_eq!(result.body.payload, Some("x".to_string()));
@@ -1575,7 +1575,7 @@ mod tests {
             .to_http_request();
         req.extensions_mut().insert(make_db());
         let result = CollectionRequest::extract(&req).unwrap();
-        assert_eq!(result.user_id.legacy_id, u64::from_str(&USER_ID).unwrap());
+        assert_eq!(result.user_id.legacy_id, *USER_ID_U64);
         assert_eq!(&result.collection, "tabs");
     }
 
@@ -1622,7 +1622,7 @@ mod tests {
             {"id": "456", "payload": "xxxasdf", "sortindex": 23}
         ]);
         let result = post_collection("", &bso_body).unwrap();
-        assert_eq!(result.user_id.legacy_id, u64::from_str(&USER_ID).unwrap());
+        assert_eq!(result.user_id.legacy_id, *USER_ID_U64);
         assert_eq!(&result.collection, "tabs");
         assert_eq!(result.bsos.valid.len(), 2);
         assert!(result.batch.is_none());
@@ -1636,7 +1636,7 @@ mod tests {
             {"id": "2", "sortindex": -99, "hop": "low"}
         ]);
         let result = post_collection("", &bso_body).unwrap();
-        assert_eq!(result.user_id.legacy_id, u64::from_str(&USER_ID).unwrap());
+        assert_eq!(result.user_id.legacy_id, *USER_ID_U64);
         assert_eq!(&result.collection, "tabs");
         assert_eq!(result.bsos.invalid.len(), 2);
     }
@@ -1650,7 +1650,7 @@ mod tests {
             {"id": "456", "payload": "xxxasdf", "sortindex": 23}
         ]);
         let result = post_collection("batch=True", &bso_body).unwrap();
-        assert_eq!(result.user_id.legacy_id, u64::from_str(&USER_ID).unwrap());
+        assert_eq!(result.user_id.legacy_id, *USER_ID_U64);
         assert_eq!(&result.collection, "tabs");
         assert_eq!(result.bsos.valid.len(), 2);
         let batch = result.batch.unwrap();
@@ -1776,7 +1776,7 @@ mod tests {
             .to_http_request();
         HawkIdentifier::extrude(&req)
             .and_then(|result| {
-                assert_eq!(result.legacy_id, u64::from_str(&USER_ID).unwrap());
+                assert_eq!(result.legacy_id, *USER_ID_U64);
                 Ok(())
             })
             .unwrap();
