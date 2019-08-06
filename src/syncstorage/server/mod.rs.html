@@ -140,20 +140,68 @@
 <span id="140">140</span>
 <span id="141">141</span>
 <span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Main application server</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
 
-<span class="kw">use</span> <span class="ident">actix</span>::{<span class="ident">System</span>, <span class="ident">SystemRunner</span>};
-<span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">http</span>, <span class="ident">middleware</span>::<span class="ident">cors</span>::<span class="ident">Cors</span>, <span class="ident">server</span>::<span class="ident">HttpServer</span>, <span class="ident">App</span>, <span class="ident">HttpResponse</span>};
-<span class="comment">//use num_cpus;</span>
+<span class="kw">use</span> <span class="ident">actix_cors</span>::<span class="ident">Cors</span>;
+<span class="kw">use</span> <span class="ident">actix_rt</span>::{<span class="ident">System</span>, <span class="ident">SystemRunner</span>};
+<span class="kw">use</span> <span class="ident">actix_web</span>::{
+    <span class="ident">http</span>::<span class="ident">StatusCode</span>, <span class="ident">middleware</span>::<span class="ident">errhandlers</span>::<span class="ident">ErrorHandlers</span>, <span class="ident">web</span>, <span class="ident">App</span>, <span class="ident">HttpRequest</span>, <span class="ident">HttpResponse</span>,
+    <span class="ident">HttpServer</span>,
+};
+<span class="comment">// use num_cpus;</span>
 <span class="kw">use</span> <span class="ident">serde_json</span>::<span class="ident">json</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">db</span>::{<span class="ident">pool_from_settings</span>, <span class="ident">DbError</span>, <span class="ident">DbPool</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">error</span>::<span class="ident">ApiError</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">settings</span>::{<span class="ident">Secrets</span>, <span class="ident">ServerLimits</span>, <span class="ident">Settings</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">web</span>::<span class="ident">handlers</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">web</span>::<span class="ident">middleware</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">web</span>::{<span class="ident">handlers</span>, <span class="ident">middleware</span>};
+
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">BSO_ID_REGEX</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">r&quot;[ -~]{1,64}&quot;</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">COLLECTION_ID_REGEX</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">r&quot;[a-zA-Z0-9._-]{1,32}&quot;</span>;
+<span class="kw">const</span> <span class="ident">MYSQL_UID_REGEX</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">r&quot;[0-9]{1,10}&quot;</span>;
+<span class="kw">const</span> <span class="ident">SYNC_VERSION_PATH</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;1.5&quot;</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span>;
@@ -172,84 +220,121 @@
     <span class="kw">pub</span> <span class="ident">port</span>: <span class="ident">u16</span>,
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build_app</span>(<span class="ident">state</span>: <span class="ident">ServerState</span>) <span class="op">-&gt;</span> <span class="ident">App</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> {
-    <span class="ident">App</span>::<span class="ident">with_state</span>(<span class="ident">state</span>)
-        .<span class="ident">prefix</span>(<span class="string">&quot;/1.5&quot;</span>)
-        .<span class="ident">middleware</span>(<span class="ident">middleware</span>::<span class="ident">WeaveTimestamp</span>)
-        .<span class="ident">middleware</span>(<span class="ident">middleware</span>::<span class="ident">DbTransaction</span>)
-        .<span class="ident">middleware</span>(<span class="ident">middleware</span>::<span class="ident">PreConditionCheck</span>)
-        .<span class="ident">configure</span>(<span class="op">|</span><span class="ident">app</span><span class="op">|</span> {
-            <span class="ident">Cors</span>::<span class="ident">for_app</span>(<span class="ident">app</span>)
-                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/info/collections&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_collections</span>);
-                })
-                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/info/collection_counts&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>)
-                        .<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_collection_counts</span>);
-                })
-                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/info/collection_usage&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>)
-                        .<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_collection_usage</span>);
-                })
-                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/info/configuration&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>)
-                        .<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_configuration</span>);
-                })
-                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/info/quota&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_quota</span>);
-                })
-                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">DELETE</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">delete_all</span>);
-                })
-                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/storage&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">DELETE</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">delete_all</span>);
-                })
-                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/storage/{collection}&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">DELETE</span>)
-                        .<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">delete_collection</span>);
-                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_collection</span>);
-                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">POST</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">post_collection</span>);
-                })
-                .<span class="ident">resource</span>(<span class="string">&quot;/{uid}/storage/{collection}/{bso}&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">DELETE</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">delete_bso</span>);
-                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">get_bso</span>);
-                    <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">PUT</span>).<span class="ident">with</span>(<span class="ident">handlers</span>::<span class="ident">put_bso</span>);
-                })
-                .<span class="ident">register</span>()
-        })
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cfg_path</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+    <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">path</span>
+        .<span class="ident">replace</span>(
+            <span class="string">&quot;{collection}&quot;</span>,
+            <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{{collection:{}}}&quot;</span>, <span class="ident">COLLECTION_ID_REGEX</span>),
+        )
+        .<span class="ident">replace</span>(<span class="string">&quot;{bso}&quot;</span>, <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{{bso:{}}}&quot;</span>, <span class="ident">BSO_ID_REGEX</span>));
+    <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;/{}/{{uid:{}}}{}&quot;</span>, <span class="ident">SYNC_VERSION_PATH</span>, <span class="ident">MYSQL_UID_REGEX</span>, <span class="ident">path</span>)
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build_dockerflow</span>(<span class="ident">state</span>: <span class="ident">ServerState</span>) <span class="op">-&gt;</span> <span class="ident">App</span><span class="op">&lt;</span><span class="ident">ServerState</span><span class="op">&gt;</span> {
-    <span class="ident">App</span>::<span class="ident">with_state</span>(<span class="ident">state</span>)
-        <span class="comment">// Handle the resource that don&#39;t need to go through middleware</span>
-        .<span class="ident">resource</span>(<span class="string">&quot;/__heartbeat__&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-            <span class="comment">// if addidtional information is desired, point to an appropriate handler.</span>
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>).<span class="ident">f</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="macro">json</span><span class="macro">!</span>({<span class="string">&quot;status&quot;</span>: <span class="string">&quot;ok&quot;</span>, <span class="string">&quot;version&quot;</span>: <span class="macro">env</span><span class="macro">!</span>(<span class="string">&quot;CARGO_PKG_VERSION&quot;</span>)});
-                <span class="ident">HttpResponse</span>::<span class="prelude-val">Ok</span>()
-                    .<span class="ident">content_type</span>(<span class="string">&quot;application/json&quot;</span>)
-                    .<span class="ident">body</span>(<span class="ident">body</span>.<span class="ident">to_string</span>())
-            });
-        })
-        .<span class="ident">resource</span>(<span class="string">&quot;/__lbheartbeat__&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-            <span class="comment">// used by the load balancers, just return OK.</span>
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>).<span class="ident">f</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
-                <span class="ident">HttpResponse</span>::<span class="prelude-val">Ok</span>()
-                    .<span class="ident">content_type</span>(<span class="string">&quot;application/json&quot;</span>)
-                    .<span class="ident">body</span>(<span class="string">&quot;{}&quot;</span>)
-            });
-        })
-        .<span class="ident">resource</span>(<span class="string">&quot;/__version__&quot;</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
-            <span class="comment">// return the contents of the version.json file created by circleci and stored in the docker root</span>
-            <span class="ident">r</span>.<span class="ident">method</span>(<span class="ident">http</span>::<span class="ident">Method</span>::<span class="ident">GET</span>).<span class="ident">f</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
-                <span class="ident">HttpResponse</span>::<span class="prelude-val">Ok</span>()
-                    .<span class="ident">content_type</span>(<span class="string">&quot;application/json&quot;</span>)
-                    .<span class="ident">body</span>(<span class="macro">include_str</span><span class="macro">!</span>(<span class="string">&quot;../../version.json&quot;</span>))
-            });
-        })
-}
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Server</span>;
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Server</span> {}
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">build_app</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">state</span>: <span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">limits</span>: <span class="ident">expr</span>) <span class="op">=&gt;</span> {
+        <span class="ident">App</span>::<span class="ident">new</span>()
+            .<span class="ident">data</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">state</span>)
+            <span class="comment">// Middleware is applied LIFO</span>
+
+            <span class="comment">// These will wrap all outbound responses with matching status codes.</span>
+            .<span class="ident">wrap</span>(<span class="ident">ErrorHandlers</span>::<span class="ident">new</span>().<span class="ident">handler</span>(<span class="ident">StatusCode</span>::<span class="ident">NOT_FOUND</span>, <span class="ident">ApiError</span>::<span class="ident">render_404</span>))
+            <span class="comment">// These are our wrappers</span>
+            .<span class="ident">wrap</span>(<span class="ident">middleware</span>::<span class="ident">PreConditionCheck</span>::<span class="ident">new</span>())
+            .<span class="ident">wrap</span>(<span class="ident">middleware</span>::<span class="ident">DbTransaction</span>::<span class="ident">new</span>())
+            .<span class="ident">wrap</span>(<span class="ident">middleware</span>::<span class="ident">WeaveTimestamp</span>::<span class="ident">new</span>())
+            <span class="comment">// Followed by the &quot;official middleware&quot; so they run first.</span>
+            .<span class="ident">wrap</span>(<span class="ident">Cors</span>::<span class="ident">default</span>())
+            .<span class="ident">service</span>(
+                <span class="ident">web</span>::<span class="ident">resource</span>(<span class="kw-2">&amp;</span><span class="ident">cfg_path</span>(<span class="string">&quot;/info/collections&quot;</span>))
+                    .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">get</span>().<span class="ident">to_async</span>(<span class="ident">handlers</span>::<span class="ident">get_collections</span>)),
+            )
+            .<span class="ident">service</span>(
+                <span class="ident">web</span>::<span class="ident">resource</span>(<span class="kw-2">&amp;</span><span class="ident">cfg_path</span>(<span class="string">&quot;/info/collection_counts&quot;</span>))
+                    .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">get</span>().<span class="ident">to_async</span>(<span class="ident">handlers</span>::<span class="ident">get_collection_counts</span>)),
+            )
+            .<span class="ident">service</span>(
+                <span class="ident">web</span>::<span class="ident">resource</span>(<span class="kw-2">&amp;</span><span class="ident">cfg_path</span>(<span class="string">&quot;/info/collection_usage&quot;</span>))
+                    .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">get</span>().<span class="ident">to_async</span>(<span class="ident">handlers</span>::<span class="ident">get_collection_usage</span>)),
+            )
+            .<span class="ident">service</span>(
+                <span class="ident">web</span>::<span class="ident">resource</span>(<span class="kw-2">&amp;</span><span class="ident">cfg_path</span>(<span class="string">&quot;/info/configuration&quot;</span>))
+                    .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">get</span>().<span class="ident">to_async</span>(<span class="ident">handlers</span>::<span class="ident">get_configuration</span>)),
+            )
+            .<span class="ident">service</span>(
+                <span class="ident">web</span>::<span class="ident">resource</span>(<span class="kw-2">&amp;</span><span class="ident">cfg_path</span>(<span class="string">&quot;/info/quota&quot;</span>))
+                    .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">get</span>().<span class="ident">to_async</span>(<span class="ident">handlers</span>::<span class="ident">get_quota</span>)),
+            )
+            .<span class="ident">service</span>(
+                <span class="ident">web</span>::<span class="ident">resource</span>(<span class="kw-2">&amp;</span><span class="ident">cfg_path</span>(<span class="string">&quot;&quot;</span>)).<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">delete</span>().<span class="ident">to_async</span>(<span class="ident">handlers</span>::<span class="ident">delete_all</span>)),
+            )
+            .<span class="ident">service</span>(
+                <span class="ident">web</span>::<span class="ident">resource</span>(<span class="kw-2">&amp;</span><span class="ident">cfg_path</span>(<span class="string">&quot;/storage&quot;</span>))
+                    .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">delete</span>().<span class="ident">to_async</span>(<span class="ident">handlers</span>::<span class="ident">delete_all</span>)),
+            )
+            .<span class="ident">service</span>(
+                <span class="ident">web</span>::<span class="ident">resource</span>(<span class="kw-2">&amp;</span><span class="ident">cfg_path</span>(<span class="string">&quot;/storage/{collection}&quot;</span>))
+                    .<span class="ident">data</span>(
+                        <span class="comment">// Declare the payload limit for &quot;normal&quot; collections.</span>
+                        <span class="ident">web</span>::<span class="ident">PayloadConfig</span>::<span class="ident">new</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">limits</span>.<span class="ident">max_request_bytes</span> <span class="kw">as</span> <span class="ident">usize</span>),
+                    )
+                    .<span class="ident">data</span>(
+                        <span class="comment">// Declare the payload limits for &quot;JSON&quot; payloads</span>
+                        <span class="comment">// (Specify &quot;text/plain&quot; for legacy client reasons)</span>
+                        <span class="ident">web</span>::<span class="ident">JsonConfig</span>::<span class="ident">default</span>()
+                            .<span class="ident">limit</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">limits</span>.<span class="ident">max_request_bytes</span> <span class="kw">as</span> <span class="ident">usize</span>)
+                            .<span class="ident">content_type</span>(<span class="op">|</span><span class="ident">ct</span><span class="op">|</span> <span class="ident">ct</span> <span class="op">==</span> <span class="ident">mime</span>::<span class="ident">TEXT_PLAIN</span>),
+                    )
+                    .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">delete</span>().<span class="ident">to_async</span>(<span class="ident">handlers</span>::<span class="ident">delete_collection</span>))
+                    .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">get</span>().<span class="ident">to_async</span>(<span class="ident">handlers</span>::<span class="ident">get_collection</span>))
+                    .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">post</span>().<span class="ident">to_async</span>(<span class="ident">handlers</span>::<span class="ident">post_collection</span>)),
+            )
+            .<span class="ident">service</span>(
+                <span class="ident">web</span>::<span class="ident">resource</span>(<span class="kw-2">&amp;</span><span class="ident">cfg_path</span>(<span class="string">&quot;/storage/{collection}/{bso}&quot;</span>))
+                    .<span class="ident">data</span>(<span class="ident">web</span>::<span class="ident">PayloadConfig</span>::<span class="ident">new</span>(
+                        <span class="macro-nonterminal">$</span><span class="macro-nonterminal">limits</span>.<span class="ident">max_request_bytes</span> <span class="kw">as</span> <span class="ident">usize</span>,
+                    ))
+                    .<span class="ident">data</span>(
+                        <span class="ident">web</span>::<span class="ident">JsonConfig</span>::<span class="ident">default</span>()
+                            .<span class="ident">limit</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">limits</span>.<span class="ident">max_request_bytes</span> <span class="kw">as</span> <span class="ident">usize</span>)
+                            .<span class="ident">content_type</span>(<span class="op">|</span><span class="ident">ct</span><span class="op">|</span> <span class="ident">ct</span> <span class="op">==</span> <span class="ident">mime</span>::<span class="ident">TEXT_PLAIN</span>),
+                    )
+                    .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">delete</span>().<span class="ident">to_async</span>(<span class="ident">handlers</span>::<span class="ident">delete_bso</span>))
+                    .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">get</span>().<span class="ident">to_async</span>(<span class="ident">handlers</span>::<span class="ident">get_bso</span>))
+                    .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">put</span>().<span class="ident">to_async</span>(<span class="ident">handlers</span>::<span class="ident">put_bso</span>)),
+            )
+            <span class="comment">// Dockerflow</span>
+            .<span class="ident">service</span>(
+                <span class="ident">web</span>::<span class="ident">resource</span>(<span class="string">&quot;/__heartbeat__&quot;</span>).<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">get</span>().<span class="ident">to</span>(<span class="op">|</span><span class="kw">_</span>: <span class="ident">HttpRequest</span><span class="op">|</span> {
+                    <span class="comment">// if additional information is desired, point to an appropriate</span>
+                    <span class="comment">// handler.</span>
+                    <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="macro">json</span><span class="macro">!</span>({<span class="string">&quot;status&quot;</span>: <span class="string">&quot;ok&quot;</span>, <span class="string">&quot;version&quot;</span>: <span class="macro">env</span><span class="macro">!</span>(<span class="string">&quot;CARGO_PKG_VERSION&quot;</span>)});
+                    <span class="ident">HttpResponse</span>::<span class="prelude-val">Ok</span>()
+                        .<span class="ident">content_type</span>(<span class="string">&quot;application/json&quot;</span>)
+                        .<span class="ident">body</span>(<span class="ident">body</span>.<span class="ident">to_string</span>())
+                })),
+            )
+            .<span class="ident">service</span>(
+                <span class="ident">web</span>::<span class="ident">resource</span>(<span class="string">&quot;/__lbheartbeat__&quot;</span>).<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">get</span>().<span class="ident">to</span>(<span class="op">|</span><span class="kw">_</span>: <span class="ident">HttpRequest</span><span class="op">|</span> {
+                    <span class="comment">// used by the load balancers, just return OK.</span>
+                    <span class="ident">HttpResponse</span>::<span class="prelude-val">Ok</span>()
+                        .<span class="ident">content_type</span>(<span class="string">&quot;application/json&quot;</span>)
+                        .<span class="ident">body</span>(<span class="string">&quot;{}&quot;</span>)
+                })),
+            )
+            .<span class="ident">service</span>(
+                <span class="ident">web</span>::<span class="ident">resource</span>(<span class="string">&quot;/__version__&quot;</span>).<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">get</span>().<span class="ident">to</span>(<span class="op">|</span><span class="kw">_</span>: <span class="ident">HttpRequest</span><span class="op">|</span> {
+                    <span class="comment">// return the contents of the version.json file created by circleci</span>
+                    <span class="comment">// and stored in the docker root</span>
+                    <span class="ident">HttpResponse</span>::<span class="prelude-val">Ok</span>()
+                        .<span class="ident">content_type</span>(<span class="string">&quot;application/json&quot;</span>)
+                        .<span class="ident">body</span>(<span class="macro">include_str</span><span class="macro">!</span>(<span class="string">&quot;../../version.json&quot;</span>))
+                })),
+            )
+    };
+}
 
 <span class="kw">impl</span> <span class="ident">Server</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_settings</span>(<span class="ident">settings</span>: <span class="ident">Settings</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">SystemRunner</span>, <span class="ident">DbError</span><span class="op">&gt;</span> {
@@ -268,14 +353,7 @@
                 <span class="ident">port</span>,
             };
 
-            <span class="kw">let</span> <span class="ident">dfstate</span> <span class="op">=</span> <span class="ident">ServerState</span> {
-                <span class="ident">db_pool</span>: <span class="ident">db_pool</span>.<span class="ident">clone</span>(),
-                <span class="ident">limits</span>: <span class="ident">Arc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">limits</span>),
-                <span class="ident">secrets</span>: <span class="ident">Arc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">secrets</span>),
-                <span class="ident">port</span>,
-            };
-
-            <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">build_app</span>(<span class="ident">state</span>), <span class="ident">build_dockerflow</span>(<span class="ident">dfstate</span>)]
+            <span class="macro">build_app</span><span class="macro">!</span>(<span class="ident">state</span>, <span class="ident">limits</span>)
         })
         .<span class="ident">bind</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}:{}&quot;</span>, <span class="ident">settings</span>.<span class="ident">host</span>, <span class="ident">settings</span>.<span class="ident">port</span>))
         .<span class="ident">unwrap</span>()

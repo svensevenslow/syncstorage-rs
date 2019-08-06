@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.5.0/src/xfer/dns_exchange.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>dns_exchange.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../trust_dns_proto/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.7.4/src/xfer/dns_exchange.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>dns_exchange.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../trust_dns_proto/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -262,6 +262,7 @@
 <span id="262">262</span>
 <span id="263">263</span>
 <span id="264">264</span>
+<span id="265">265</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2015-2018 Benjamin Fry &lt;benjaminfry@me.com&gt;</span>
 <span class="comment">//</span>
@@ -276,8 +277,8 @@
 <span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">sync</span>::<span class="ident">mpsc</span>::{<span class="ident">unbounded</span>, <span class="ident">UnboundedReceiver</span>};
 <span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">Async</span>, <span class="ident">Future</span>, <span class="ident">Poll</span>};
 
-<span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">xfer</span>::{<span class="ident">DnsRequest</span>, <span class="ident">DnsRequestSender</span>, <span class="ident">DnsRequestStreamHandle</span>, <span class="ident">DnsResponse</span>, <span class="ident">OneshotDnsRequest</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">error</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">xfer</span>::{<span class="ident">DnsRequest</span>, <span class="ident">DnsRequestSender</span>, <span class="ident">DnsRequestStreamHandle</span>, <span class="ident">DnsResponse</span>, <span class="ident">OneshotDnsRequest</span>};
 
 <span class="doccomment">/// This is a generic Exchange implemented over multiplexed DNS connection providers.</span>
 <span class="doccomment">///</span>
@@ -347,6 +348,7 @@
     <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> ();
     <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">ProtoError</span>;
 
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">unused_unit</span>)]</span>
     <span class="kw">fn</span> <span class="ident">poll</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="comment">// this will not accept incoming data while there is data to send</span>
         <span class="comment">//  makes this self throttling.</span>
@@ -384,7 +386,7 @@
                     <span class="comment">// if there is no peer, this connection should die...</span>
                     <span class="kw">let</span> (<span class="ident">dns_request</span>, <span class="ident">serial_response</span>): (<span class="ident">DnsRequest</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="ident">dns_request</span>.<span class="ident">unwrap</span>();
 
-                    <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;sending message via: {}&quot;</span>, <span class="self">self</span>.<span class="ident">io_stream</span>);
+                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;sending message via: {}&quot;</span>, <span class="self">self</span>.<span class="ident">io_stream</span>);
 
                     <span class="kw">match</span> <span class="ident">serial_response</span>.<span class="ident">send_response</span>(<span class="self">self</span>.<span class="ident">io_stream</span>.<span class="ident">send_message</span>(<span class="ident">dns_request</span>)) {
                         <span class="prelude-val">Ok</span>(()) <span class="op">=&gt;</span> (),

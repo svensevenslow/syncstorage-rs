@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-web-0.7.19/src/route.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>route.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../actix_web/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/actix-web-1.0.5/src/route.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>route.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../actix_web/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -457,331 +457,189 @@
 <span id="457">457</span>
 <span id="458">458</span>
 <span id="459">459</span>
-<span id="460">460</span>
-<span id="461">461</span>
-<span id="462">462</span>
-<span id="463">463</span>
-<span id="464">464</span>
-<span id="465">465</span>
-<span id="466">466</span>
-<span id="467">467</span>
-<span id="468">468</span>
-<span id="469">469</span>
-<span id="470">470</span>
-<span id="471">471</span>
-<span id="472">472</span>
-<span id="473">473</span>
-<span id="474">474</span>
-<span id="475">475</span>
-<span id="476">476</span>
-<span id="477">477</span>
-<span id="478">478</span>
-<span id="479">479</span>
-<span id="480">480</span>
-<span id="481">481</span>
-<span id="482">482</span>
-<span id="483">483</span>
-<span id="484">484</span>
-<span id="485">485</span>
-<span id="486">486</span>
-<span id="487">487</span>
-<span id="488">488</span>
-<span id="489">489</span>
-<span id="490">490</span>
-<span id="491">491</span>
-<span id="492">492</span>
-<span id="493">493</span>
-<span id="494">494</span>
-<span id="495">495</span>
-<span id="496">496</span>
-<span id="497">497</span>
-<span id="498">498</span>
-<span id="499">499</span>
-<span id="500">500</span>
-<span id="501">501</span>
-<span id="502">502</span>
-<span id="503">503</span>
-<span id="504">504</span>
-<span id="505">505</span>
-<span id="506">506</span>
-<span id="507">507</span>
-<span id="508">508</span>
-<span id="509">509</span>
-<span id="510">510</span>
-<span id="511">511</span>
-<span id="512">512</span>
-<span id="513">513</span>
-<span id="514">514</span>
-<span id="515">515</span>
-<span id="516">516</span>
-<span id="517">517</span>
-<span id="518">518</span>
-<span id="519">519</span>
-<span id="520">520</span>
-<span id="521">521</span>
-<span id="522">522</span>
-<span id="523">523</span>
-<span id="524">524</span>
-<span id="525">525</span>
-<span id="526">526</span>
-<span id="527">527</span>
-<span id="528">528</span>
-<span id="529">529</span>
-<span id="530">530</span>
-<span id="531">531</span>
-<span id="532">532</span>
-<span id="533">533</span>
-<span id="534">534</span>
-<span id="535">535</span>
-<span id="536">536</span>
-<span id="537">537</span>
-<span id="538">538</span>
-<span id="539">539</span>
-<span id="540">540</span>
-<span id="541">541</span>
-<span id="542">542</span>
-<span id="543">543</span>
-<span id="544">544</span>
-<span id="545">545</span>
-<span id="546">546</span>
-<span id="547">547</span>
-<span id="548">548</span>
-<span id="549">549</span>
-<span id="550">550</span>
-<span id="551">551</span>
-<span id="552">552</span>
-<span id="553">553</span>
-<span id="554">554</span>
-<span id="555">555</span>
-<span id="556">556</span>
-<span id="557">557</span>
-<span id="558">558</span>
-<span id="559">559</span>
-<span id="560">560</span>
-<span id="561">561</span>
-<span id="562">562</span>
-<span id="563">563</span>
-<span id="564">564</span>
-<span id="565">565</span>
-<span id="566">566</span>
-<span id="567">567</span>
-<span id="568">568</span>
-<span id="569">569</span>
-<span id="570">570</span>
-<span id="571">571</span>
-<span id="572">572</span>
-<span id="573">573</span>
-<span id="574">574</span>
-<span id="575">575</span>
-<span id="576">576</span>
-<span id="577">577</span>
-<span id="578">578</span>
-<span id="579">579</span>
-<span id="580">580</span>
-<span id="581">581</span>
-<span id="582">582</span>
-<span id="583">583</span>
-<span id="584">584</span>
-<span id="585">585</span>
-<span id="586">586</span>
-<span id="587">587</span>
-<span id="588">588</span>
-<span id="589">589</span>
-<span id="590">590</span>
-<span id="591">591</span>
-<span id="592">592</span>
-<span id="593">593</span>
-<span id="594">594</span>
-<span id="595">595</span>
-<span id="596">596</span>
-<span id="597">597</span>
-<span id="598">598</span>
-<span id="599">599</span>
-<span id="600">600</span>
-<span id="601">601</span>
-<span id="602">602</span>
-<span id="603">603</span>
-<span id="604">604</span>
-<span id="605">605</span>
-<span id="606">606</span>
-<span id="607">607</span>
-<span id="608">608</span>
-<span id="609">609</span>
-<span id="610">610</span>
-<span id="611">611</span>
-<span id="612">612</span>
-<span id="613">613</span>
-<span id="614">614</span>
-<span id="615">615</span>
-<span id="616">616</span>
-<span id="617">617</span>
-<span id="618">618</span>
-<span id="619">619</span>
-<span id="620">620</span>
-<span id="621">621</span>
-<span id="622">622</span>
-<span id="623">623</span>
-<span id="624">624</span>
-<span id="625">625</span>
-<span id="626">626</span>
-<span id="627">627</span>
-<span id="628">628</span>
-<span id="629">629</span>
-<span id="630">630</span>
-<span id="631">631</span>
-<span id="632">632</span>
-<span id="633">633</span>
-<span id="634">634</span>
-<span id="635">635</span>
-<span id="636">636</span>
-<span id="637">637</span>
-<span id="638">638</span>
-<span id="639">639</span>
-<span id="640">640</span>
-<span id="641">641</span>
-<span id="642">642</span>
-<span id="643">643</span>
-<span id="644">644</span>
-<span id="645">645</span>
-<span id="646">646</span>
-<span id="647">647</span>
-<span id="648">648</span>
-<span id="649">649</span>
-<span id="650">650</span>
-<span id="651">651</span>
-<span id="652">652</span>
-<span id="653">653</span>
-<span id="654">654</span>
-<span id="655">655</span>
-<span id="656">656</span>
-<span id="657">657</span>
-<span id="658">658</span>
-<span id="659">659</span>
-<span id="660">660</span>
-<span id="661">661</span>
-<span id="662">662</span>
-<span id="663">663</span>
-<span id="664">664</span>
-<span id="665">665</span>
-<span id="666">666</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">rc</span>::<span class="ident">Rc</span>;
 
-<span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">Async</span>, <span class="ident">Future</span>, <span class="ident">Poll</span>};
+<span class="kw">use</span> <span class="ident">actix_http</span>::{<span class="ident">http</span>::<span class="ident">Method</span>, <span class="ident">Error</span>};
+<span class="kw">use</span> <span class="ident">actix_service</span>::{<span class="ident">NewService</span>, <span class="ident">Service</span>};
+<span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">future</span>::{<span class="ident">ok</span>, <span class="ident">Either</span>, <span class="ident">FutureResult</span>};
+<span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">Async</span>, <span class="ident">Future</span>, <span class="ident">IntoFuture</span>, <span class="ident">Poll</span>};
 
-<span class="kw">use</span> <span class="ident">error</span>::<span class="ident">Error</span>;
-<span class="kw">use</span> <span class="ident">handler</span>::{
-    <span class="ident">AsyncHandler</span>, <span class="ident">AsyncResult</span>, <span class="ident">AsyncResultItem</span>, <span class="ident">FromRequest</span>, <span class="ident">Handler</span>, <span class="ident">Responder</span>,
-    <span class="ident">RouteHandler</span>, <span class="ident">WrapHandler</span>,
-};
-<span class="kw">use</span> <span class="ident">http</span>::<span class="ident">StatusCode</span>;
-<span class="kw">use</span> <span class="ident">httprequest</span>::<span class="ident">HttpRequest</span>;
-<span class="kw">use</span> <span class="ident">httpresponse</span>::<span class="ident">HttpResponse</span>;
-<span class="kw">use</span> <span class="ident">middleware</span>::{
-    <span class="ident">Finished</span> <span class="kw">as</span> <span class="ident">MiddlewareFinished</span>, <span class="ident">Middleware</span>, <span class="ident">Response</span> <span class="kw">as</span> <span class="ident">MiddlewareResponse</span>,
-    <span class="ident">Started</span> <span class="kw">as</span> <span class="ident">MiddlewareStarted</span>,
-};
-<span class="kw">use</span> <span class="ident">pred</span>::<span class="ident">Predicate</span>;
-<span class="kw">use</span> <span class="ident">with</span>::{<span class="ident">WithAsyncFactory</span>, <span class="ident">WithFactory</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">extract</span>::<span class="ident">FromRequest</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">guard</span>::{<span class="self">self</span>, <span class="ident">Guard</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">handler</span>::{<span class="ident">AsyncFactory</span>, <span class="ident">AsyncHandler</span>, <span class="ident">Extract</span>, <span class="ident">Factory</span>, <span class="ident">Handler</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">responder</span>::<span class="ident">Responder</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">service</span>::{<span class="ident">ServiceRequest</span>, <span class="ident">ServiceResponse</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">HttpResponse</span>;
+
+<span class="kw">type</span> <span class="ident">BoxedRouteService</span><span class="op">&lt;</span><span class="ident">Req</span>, <span class="ident">Res</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span>
+    <span class="kw">dyn</span> <span class="ident">Service</span><span class="op">&lt;</span>
+        <span class="ident">Request</span> <span class="op">=</span> <span class="ident">Req</span>,
+        <span class="ident">Response</span> <span class="op">=</span> <span class="ident">Res</span>,
+        <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>,
+        <span class="ident">Future</span> <span class="op">=</span> <span class="ident">Either</span><span class="op">&lt;</span>
+            <span class="ident">FutureResult</span><span class="op">&lt;</span><span class="ident">Res</span>, <span class="ident">Error</span><span class="op">&gt;</span>,
+            <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">Res</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span><span class="op">&gt;&gt;</span>,
+        <span class="op">&gt;</span>,
+    <span class="op">&gt;</span>,
+<span class="op">&gt;</span>;
+
+<span class="kw">type</span> <span class="ident">BoxedRouteNewService</span><span class="op">&lt;</span><span class="ident">Req</span>, <span class="ident">Res</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span>
+    <span class="kw">dyn</span> <span class="ident">NewService</span><span class="op">&lt;</span>
+        <span class="ident">Config</span> <span class="op">=</span> (),
+        <span class="ident">Request</span> <span class="op">=</span> <span class="ident">Req</span>,
+        <span class="ident">Response</span> <span class="op">=</span> <span class="ident">Res</span>,
+        <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>,
+        <span class="ident">InitError</span> <span class="op">=</span> (),
+        <span class="ident">Service</span> <span class="op">=</span> <span class="ident">BoxedRouteService</span><span class="op">&lt;</span><span class="ident">Req</span>, <span class="ident">Res</span><span class="op">&gt;</span>,
+        <span class="ident">Future</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">BoxedRouteService</span><span class="op">&lt;</span><span class="ident">Req</span>, <span class="ident">Res</span><span class="op">&gt;</span>, <span class="ident">Error</span> <span class="op">=</span> ()<span class="op">&gt;&gt;</span>,
+    <span class="op">&gt;</span>,
+<span class="op">&gt;</span>;
 
 <span class="doccomment">/// Resource route definition</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Route uses builder-like pattern for configuration.</span>
 <span class="doccomment">/// If handler is not explicitly set, default *404 Not Found* handler is used.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Route</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="ident">preds</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Predicate</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">handler</span>: <span class="ident">InnerHandler</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Route</span> {
+    <span class="ident">service</span>: <span class="ident">BoxedRouteNewService</span><span class="op">&lt;</span><span class="ident">ServiceRequest</span>, <span class="ident">ServiceResponse</span><span class="op">&gt;</span>,
+    <span class="ident">guards</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Guard</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Route</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-&gt;</span> <span class="ident">Route</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
+<span class="kw">impl</span> <span class="ident">Route</span> {
+    <span class="doccomment">/// Create new route which matches any request.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">Route</span> {
         <span class="ident">Route</span> {
-            <span class="ident">preds</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
-            <span class="ident">handler</span>: <span class="ident">InnerHandler</span>::<span class="ident">new</span>(<span class="op">|</span><span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw">_</span><span class="op">|</span> <span class="ident">HttpResponse</span>::<span class="ident">new</span>(<span class="ident">StatusCode</span>::<span class="ident">NOT_FOUND</span>)),
+            <span class="ident">service</span>: <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">RouteNewService</span>::<span class="ident">new</span>(<span class="ident">Extract</span>::<span class="ident">new</span>(<span class="ident">Handler</span>::<span class="ident">new</span>(<span class="op">||</span> {
+                <span class="ident">HttpResponse</span>::<span class="ident">NotFound</span>()
+            })))),
+            <span class="ident">guards</span>: <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">Vec</span>::<span class="ident">new</span>()),
+        }
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">take_guards</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Guard</span><span class="op">&gt;&gt;</span> {
+        <span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">replace</span>(<span class="ident">Rc</span>::<span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">guards</span>).<span class="ident">unwrap</span>(), <span class="ident">Vec</span>::<span class="ident">new</span>())
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">NewService</span> <span class="kw">for</span> <span class="ident">Route</span> {
+    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> ();
+    <span class="kw">type</span> <span class="ident">Request</span> <span class="op">=</span> <span class="ident">ServiceRequest</span>;
+    <span class="kw">type</span> <span class="ident">Response</span> <span class="op">=</span> <span class="ident">ServiceResponse</span>;
+    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type</span> <span class="ident">InitError</span> <span class="op">=</span> ();
+    <span class="kw">type</span> <span class="ident">Service</span> <span class="op">=</span> <span class="ident">RouteService</span>;
+    <span class="kw">type</span> <span class="ident">Future</span> <span class="op">=</span> <span class="ident">CreateRouteService</span>;
+
+    <span class="kw">fn</span> <span class="ident">new_service</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>()) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Future</span> {
+        <span class="ident">CreateRouteService</span> {
+            <span class="ident">fut</span>: <span class="self">self</span>.<span class="ident">service</span>.<span class="ident">new_service</span>(<span class="kw-2">&amp;</span>()),
+            <span class="ident">guards</span>: <span class="self">self</span>.<span class="ident">guards</span>.<span class="ident">clone</span>(),
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">Route</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">check</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">req</span>.<span class="ident">state</span>();
-        <span class="kw">for</span> <span class="ident">pred</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">preds</span> {
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">pred</span>.<span class="ident">check</span>(<span class="ident">req</span>, <span class="ident">state</span>) {
+<span class="kw">type</span> <span class="ident">RouteFuture</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span>
+    <span class="kw">dyn</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">BoxedRouteService</span><span class="op">&lt;</span><span class="ident">ServiceRequest</span>, <span class="ident">ServiceResponse</span><span class="op">&gt;</span>, <span class="ident">Error</span> <span class="op">=</span> ()<span class="op">&gt;</span>,
+<span class="op">&gt;</span>;
+
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CreateRouteService</span> {
+    <span class="ident">fut</span>: <span class="ident">RouteFuture</span>,
+    <span class="ident">guards</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Guard</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">Future</span> <span class="kw">for</span> <span class="ident">CreateRouteService</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">RouteService</span>;
+    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> ();
+
+    <span class="kw">fn</span> <span class="ident">poll</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">fut</span>.<span class="ident">poll</span>()<span class="question-mark">?</span> {
+            <span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">service</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">RouteService</span> {
+                <span class="ident">service</span>,
+                <span class="ident">guards</span>: <span class="self">self</span>.<span class="ident">guards</span>.<span class="ident">clone</span>(),
+            })),
+            <span class="ident">Async</span>::<span class="ident">NotReady</span> <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>),
+        }
+    }
+}
+
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RouteService</span> {
+    <span class="ident">service</span>: <span class="ident">BoxedRouteService</span><span class="op">&lt;</span><span class="ident">ServiceRequest</span>, <span class="ident">ServiceResponse</span><span class="op">&gt;</span>,
+    <span class="ident">guards</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Guard</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">RouteService</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ServiceRequest</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">for</span> <span class="ident">f</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">guards</span>.<span class="ident">iter</span>() {
+            <span class="kw">if</span> <span class="op">!</span><span class="ident">f</span>.<span class="ident">check</span>(<span class="ident">req</span>.<span class="ident">head</span>()) {
                 <span class="kw">return</span> <span class="bool-val">false</span>;
             }
         }
         <span class="bool-val">true</span>
     }
+}
 
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">handle</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">AsyncResult</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">handler</span>.<span class="ident">handle</span>(<span class="ident">req</span>)
+<span class="kw">impl</span> <span class="ident">Service</span> <span class="kw">for</span> <span class="ident">RouteService</span> {
+    <span class="kw">type</span> <span class="ident">Request</span> <span class="op">=</span> <span class="ident">ServiceRequest</span>;
+    <span class="kw">type</span> <span class="ident">Response</span> <span class="op">=</span> <span class="ident">ServiceResponse</span>;
+    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type</span> <span class="ident">Future</span> <span class="op">=</span> <span class="ident">Either</span><span class="op">&lt;</span>
+        <span class="ident">FutureResult</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Response</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span>,
+        <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">Response</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;&gt;</span>,
+    <span class="op">&gt;</span>;
+
+    <span class="kw">fn</span> <span class="ident">poll_ready</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span>(), <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">service</span>.<span class="ident">poll_ready</span>()
     }
 
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">compose</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">req</span>: <span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>, <span class="ident">mws</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Middleware</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;&gt;</span><span class="op">&gt;&gt;</span>,
-    ) <span class="op">-&gt;</span> <span class="ident">AsyncResult</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span> {
-        <span class="ident">AsyncResult</span>::<span class="ident">future</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">Compose</span>::<span class="ident">new</span>(<span class="ident">req</span>, <span class="ident">mws</span>, <span class="self">self</span>.<span class="ident">handler</span>.<span class="ident">clone</span>())))
+    <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">req</span>: <span class="ident">ServiceRequest</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Future</span> {
+        <span class="self">self</span>.<span class="ident">service</span>.<span class="ident">call</span>(<span class="ident">req</span>)
     }
+}
 
-    <span class="doccomment">/// Add match predicate to route.</span>
+<span class="kw">impl</span> <span class="ident">Route</span> {
+    <span class="doccomment">/// Add method guard to the route.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```rust</span>
-    <span class="doccomment">/// # extern crate actix_web;</span>
     <span class="doccomment">/// # use actix_web::*;</span>
     <span class="doccomment">/// # fn main() {</span>
-    <span class="doccomment">/// App::new().resource(&quot;/path&quot;, |r| {</span>
-    <span class="doccomment">///     r.route()</span>
-    <span class="doccomment">///         .filter(pred::Get())</span>
-    <span class="doccomment">///         .filter(pred::Header(&quot;content-type&quot;, &quot;text/plain&quot;))</span>
-    <span class="doccomment">///         .f(|req| HttpResponse::Ok())</span>
-    <span class="doccomment">/// })</span>
-    <span class="doccomment">/// #      .finish();</span>
+    <span class="doccomment">/// App::new().service(web::resource(&quot;/path&quot;).route(</span>
+    <span class="doccomment">///     web::get()</span>
+    <span class="doccomment">///         .method(http::Method::CONNECT)</span>
+    <span class="doccomment">///         .guard(guard::Header(&quot;content-type&quot;, &quot;text/plain&quot;))</span>
+    <span class="doccomment">///         .to(|req: HttpRequest| HttpResponse::Ok()))</span>
+    <span class="doccomment">/// );</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">filter</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Predicate</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">p</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">preds</span>.<span class="ident">push</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">p</span>));
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">method</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">method</span>: <span class="ident">Method</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">Rc</span>::<span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">guards</span>)
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">push</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">guard</span>::<span class="ident">Method</span>(<span class="ident">method</span>)));
         <span class="self">self</span>
     }
 
-    <span class="doccomment">/// Set handler object. Usually call to this method is last call</span>
-    <span class="doccomment">/// during route configuration, so it does not return reference to self.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">h</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">Handler</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) {
-        <span class="self">self</span>.<span class="ident">handler</span> <span class="op">=</span> <span class="ident">InnerHandler</span>::<span class="ident">new</span>(<span class="ident">handler</span>);
-    }
-
-    <span class="doccomment">/// Set handler function. Usually call to this method is last call</span>
-    <span class="doccomment">/// during route configuration, so it does not return reference to self.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">f</span><span class="op">&lt;</span><span class="ident">F</span>, <span class="ident">R</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">F</span>)
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">R</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">R</span>: <span class="ident">Responder</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-    {
-        <span class="self">self</span>.<span class="ident">handler</span> <span class="op">=</span> <span class="ident">InnerHandler</span>::<span class="ident">new</span>(<span class="ident">handler</span>);
-    }
-
-    <span class="doccomment">/// Set async handler function.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">a</span><span class="op">&lt;</span><span class="ident">H</span>, <span class="ident">R</span>, <span class="ident">F</span>, <span class="ident">E</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>)
-    <span class="kw">where</span>
-        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">F</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">F</span>: <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">R</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">E</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">R</span>: <span class="ident">Responder</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">E</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Error</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-    {
-        <span class="self">self</span>.<span class="ident">handler</span> <span class="op">=</span> <span class="ident">InnerHandler</span>::<span class="ident">async</span>(<span class="ident">handler</span>);
-    }
-
-    <span class="doccomment">/// Set handler function, use request extractor for parameters.</span>
+    <span class="doccomment">/// Add guard to the route.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```rust</span>
-    <span class="doccomment">/// # extern crate bytes;</span>
-    <span class="doccomment">/// # extern crate actix_web;</span>
-    <span class="doccomment">/// # extern crate futures;</span>
+    <span class="doccomment">/// # use actix_web::*;</span>
+    <span class="doccomment">/// # fn main() {</span>
+    <span class="doccomment">/// App::new().service(web::resource(&quot;/path&quot;).route(</span>
+    <span class="doccomment">///     web::route()</span>
+    <span class="doccomment">///         .guard(guard::Get())</span>
+    <span class="doccomment">///         .guard(guard::Header(&quot;content-type&quot;, &quot;text/plain&quot;))</span>
+    <span class="doccomment">///         .to(|req: HttpRequest| HttpResponse::Ok()))</span>
+    <span class="doccomment">/// );</span>
+    <span class="doccomment">/// # }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guard</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Guard</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">Rc</span>::<span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">guards</span>).<span class="ident">unwrap</span>().<span class="ident">push</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">f</span>));
+        <span class="self">self</span>
+    }
+
+    <span class="doccomment">/// Set handler function, use request extractors for parameters.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```rust</span>
     <span class="doccomment">/// #[macro_use] extern crate serde_derive;</span>
-    <span class="doccomment">/// use actix_web::{http, App, Path, Result};</span>
+    <span class="doccomment">/// use actix_web::{web, http, App};</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// #[derive(Deserialize)]</span>
     <span class="doccomment">/// struct Info {</span>
@@ -789,27 +647,24 @@
     <span class="doccomment">/// }</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// /// extract path info using serde</span>
-    <span class="doccomment">/// fn index(info: Path&lt;Info&gt;) -&gt; Result&lt;String&gt; {</span>
-    <span class="doccomment">///     Ok(format!(&quot;Welcome {}!&quot;, info.username))</span>
+    <span class="doccomment">/// fn index(info: web::Path&lt;Info&gt;) -&gt; String {</span>
+    <span class="doccomment">///     format!(&quot;Welcome {}!&quot;, info.username)</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// fn main() {</span>
-    <span class="doccomment">///     let app = App::new().resource(</span>
-    <span class="doccomment">///         &quot;/{username}/index.html&quot;, // &lt;- define path parameters</span>
-    <span class="doccomment">///         |r| r.method(http::Method::GET).with(index),</span>
-    <span class="doccomment">///     ); // &lt;- use `with` extractor</span>
+    <span class="doccomment">///     let app = App::new().service(</span>
+    <span class="doccomment">///         web::resource(&quot;/{username}/index.html&quot;) // &lt;- define path parameters</span>
+    <span class="doccomment">///             .route(web::get().to(index))        // &lt;- register handler</span>
+    <span class="doccomment">///     );</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// It is possible to use multiple extractors for one handler function.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```rust</span>
-    <span class="doccomment">/// # extern crate bytes;</span>
-    <span class="doccomment">/// # extern crate actix_web;</span>
-    <span class="doccomment">/// # extern crate futures;</span>
-    <span class="doccomment">/// #[macro_use] extern crate serde_derive;</span>
     <span class="doccomment">/// # use std::collections::HashMap;</span>
-    <span class="doccomment">/// use actix_web::{http, App, Json, Path, Query, Result};</span>
+    <span class="doccomment">/// # use serde_derive::Deserialize;</span>
+    <span class="doccomment">/// use actix_web::{web, App};</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// #[derive(Deserialize)]</span>
     <span class="doccomment">/// struct Info {</span>
@@ -817,74 +672,35 @@
     <span class="doccomment">/// }</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// /// extract path info using serde</span>
-    <span class="doccomment">/// fn index(</span>
-    <span class="doccomment">///     path: Path&lt;Info&gt;, query: Query&lt;HashMap&lt;String, String&gt;&gt;, body: Json&lt;Info&gt;,</span>
-    <span class="doccomment">/// ) -&gt; Result&lt;String&gt; {</span>
-    <span class="doccomment">///     Ok(format!(&quot;Welcome {}!&quot;, path.username))</span>
+    <span class="doccomment">/// fn index(path: web::Path&lt;Info&gt;, query: web::Query&lt;HashMap&lt;String, String&gt;&gt;, body: web::Json&lt;Info&gt;) -&gt; String {</span>
+    <span class="doccomment">///     format!(&quot;Welcome {}!&quot;, path.username)</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// fn main() {</span>
-    <span class="doccomment">///     let app = App::new().resource(</span>
-    <span class="doccomment">///         &quot;/{username}/index.html&quot;, // &lt;- define path parameters</span>
-    <span class="doccomment">///         |r| r.method(http::Method::GET).with(index),</span>
-    <span class="doccomment">///     ); // &lt;- use `with` extractor</span>
+    <span class="doccomment">///     let app = App::new().service(</span>
+    <span class="doccomment">///         web::resource(&quot;/{username}/index.html&quot;) // &lt;- define path parameters</span>
+    <span class="doccomment">///             .route(web::get().to(index))</span>
+    <span class="doccomment">///     );</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">R</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">F</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to</span><span class="op">&lt;</span><span class="ident">F</span>, <span class="ident">T</span>, <span class="ident">R</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">Route</span>
     <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">WithFactory</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">S</span>, <span class="ident">R</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+        <span class="ident">F</span>: <span class="ident">Factory</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">R</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+        <span class="ident">T</span>: <span class="ident">FromRequest</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
         <span class="ident">R</span>: <span class="ident">Responder</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">T</span>: <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class="self">self</span>.<span class="ident">h</span>(<span class="ident">handler</span>.<span class="ident">create</span>());
+        <span class="self">self</span>.<span class="ident">service</span> <span class="op">=</span>
+            <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">RouteNewService</span>::<span class="ident">new</span>(<span class="ident">Extract</span>::<span class="ident">new</span>(<span class="ident">Handler</span>::<span class="ident">new</span>(<span class="ident">handler</span>))));
+        <span class="self">self</span>
     }
 
-    <span class="doccomment">/// Set handler function. Same as `.with()` but it allows to configure</span>
-    <span class="doccomment">/// extractor. Configuration closure accepts config objects as tuple.</span>
+    <span class="doccomment">/// Set async handler function, use request extractors for parameters.</span>
+    <span class="doccomment">/// This method has to be used if your handler function returns `impl Future&lt;&gt;`</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```rust</span>
-    <span class="doccomment">/// # extern crate bytes;</span>
-    <span class="doccomment">/// # extern crate actix_web;</span>
-    <span class="doccomment">/// # extern crate futures;</span>
+    <span class="doccomment">/// # use futures::future::ok;</span>
     <span class="doccomment">/// #[macro_use] extern crate serde_derive;</span>
-    <span class="doccomment">/// use actix_web::{http, App, Path, Result};</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// /// extract text data from request</span>
-    <span class="doccomment">/// fn index(body: String) -&gt; Result&lt;String&gt; {</span>
-    <span class="doccomment">///     Ok(format!(&quot;Body {}!&quot;, body))</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// fn main() {</span>
-    <span class="doccomment">///     let app = App::new().resource(&quot;/index.html&quot;, |r| {</span>
-    <span class="doccomment">///         r.method(http::Method::GET)</span>
-    <span class="doccomment">///                .with_config(index, |cfg| { // &lt;- register handler</span>
-    <span class="doccomment">///                   cfg.0.limit(4096);  // &lt;- limit size of the payload</span>
-    <span class="doccomment">///                 })</span>
-    <span class="doccomment">///     });</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_config</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">R</span>, <span class="ident">C</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">F</span>, <span class="ident">cfg_f</span>: <span class="ident">C</span>)
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">WithFactory</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">S</span>, <span class="ident">R</span><span class="op">&gt;</span>,
-        <span class="ident">R</span>: <span class="ident">Responder</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">T</span>: <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">C</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">T</span>::<span class="ident">Config</span>),
-    {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cfg</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">T</span>::<span class="ident">Config</span> <span class="kw">as</span> <span class="ident">Default</span><span class="op">&gt;</span>::<span class="ident">default</span>();
-        <span class="ident">cfg_f</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cfg</span>);
-        <span class="self">self</span>.<span class="ident">h</span>(<span class="ident">handler</span>.<span class="ident">create_with_config</span>(<span class="ident">cfg</span>));
-    }
-
-    <span class="doccomment">/// Set async handler function, use request extractor for parameters.</span>
-    <span class="doccomment">/// Also this method needs to be used if your handler function returns</span>
-    <span class="doccomment">/// `impl Future&lt;&gt;`</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```rust</span>
-    <span class="doccomment">/// # extern crate bytes;</span>
-    <span class="doccomment">/// # extern crate actix_web;</span>
-    <span class="doccomment">/// # extern crate futures;</span>
-    <span class="doccomment">/// #[macro_use] extern crate serde_derive;</span>
-    <span class="doccomment">/// use actix_web::{http, App, Error, Path};</span>
+    <span class="doccomment">/// use actix_web::{web, App, Error};</span>
     <span class="doccomment">/// use futures::Future;</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// #[derive(Deserialize)]</span>
@@ -893,442 +709,212 @@
     <span class="doccomment">/// }</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// /// extract path info using serde</span>
-    <span class="doccomment">/// fn index(info: Path&lt;Info&gt;) -&gt; Box&lt;Future&lt;Item = &amp;&#39;static str, Error = Error&gt;&gt; {</span>
-    <span class="doccomment">///     unimplemented!()</span>
+    <span class="doccomment">/// fn index(info: web::Path&lt;Info&gt;) -&gt; impl Future&lt;Item = &amp;&#39;static str, Error = Error&gt; {</span>
+    <span class="doccomment">///     ok(&quot;Hello World!&quot;)</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// fn main() {</span>
-    <span class="doccomment">///     let app = App::new().resource(</span>
-    <span class="doccomment">///         &quot;/{username}/index.html&quot;, // &lt;- define path parameters</span>
-    <span class="doccomment">///         |r| r.method(http::Method::GET).with_async(index),</span>
-    <span class="doccomment">///     ); // &lt;- use `with` extractor</span>
+    <span class="doccomment">///     let app = App::new().service(</span>
+    <span class="doccomment">///         web::resource(&quot;/{username}/index.html&quot;) // &lt;- define path parameters</span>
+    <span class="doccomment">///             .route(web::get().to_async(index))  // &lt;- register async handler</span>
+    <span class="doccomment">///     );</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_async</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">R</span>, <span class="ident">I</span>, <span class="ident">E</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">F</span>)
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">wrong_self_convention</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_async</span><span class="op">&lt;</span><span class="ident">F</span>, <span class="ident">T</span>, <span class="ident">R</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span>
     <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">WithAsyncFactory</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">S</span>, <span class="ident">R</span>, <span class="ident">I</span>, <span class="ident">E</span><span class="op">&gt;</span>,
-        <span class="ident">R</span>: <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">I</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">E</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">I</span>: <span class="ident">Responder</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">E</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Error</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">T</span>: <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+        <span class="ident">F</span>: <span class="ident">AsyncFactory</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">R</span><span class="op">&gt;</span>,
+        <span class="ident">T</span>: <span class="ident">FromRequest</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+        <span class="ident">R</span>: <span class="ident">IntoFuture</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+        <span class="ident">R</span>::<span class="ident">Item</span>: <span class="ident">Responder</span>,
+        <span class="ident">R</span>::<span class="ident">Error</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Error</span><span class="op">&gt;</span>,
     {
-        <span class="self">self</span>.<span class="ident">h</span>(<span class="ident">handler</span>.<span class="ident">create</span>());
-    }
-
-    <span class="doccomment">/// Set async handler function, use request extractor for parameters.</span>
-    <span class="doccomment">/// This method allows to configure extractor. Configuration closure</span>
-    <span class="doccomment">/// accepts config objects as tuple.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```rust</span>
-    <span class="doccomment">/// # extern crate bytes;</span>
-    <span class="doccomment">/// # extern crate actix_web;</span>
-    <span class="doccomment">/// # extern crate futures;</span>
-    <span class="doccomment">/// #[macro_use] extern crate serde_derive;</span>
-    <span class="doccomment">/// use actix_web::{http, App, Error, Form};</span>
-    <span class="doccomment">/// use futures::Future;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// #[derive(Deserialize)]</span>
-    <span class="doccomment">/// struct Info {</span>
-    <span class="doccomment">///     username: String,</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// /// extract path info using serde</span>
-    <span class="doccomment">/// fn index(info: Form&lt;Info&gt;) -&gt; Box&lt;Future&lt;Item = &amp;&#39;static str, Error = Error&gt;&gt; {</span>
-    <span class="doccomment">///     unimplemented!()</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// fn main() {</span>
-    <span class="doccomment">///     let app = App::new().resource(</span>
-    <span class="doccomment">///         &quot;/{username}/index.html&quot;, // &lt;- define path parameters</span>
-    <span class="doccomment">///         |r| r.method(http::Method::GET)</span>
-    <span class="doccomment">///            .with_async_config(index, |cfg| {</span>
-    <span class="doccomment">///                cfg.0.limit(4096);</span>
-    <span class="doccomment">///            }),</span>
-    <span class="doccomment">///     ); // &lt;- use `with` extractor</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_async_config</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">R</span>, <span class="ident">I</span>, <span class="ident">E</span>, <span class="ident">C</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">F</span>, <span class="ident">cfg</span>: <span class="ident">C</span>)
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">WithAsyncFactory</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">S</span>, <span class="ident">R</span>, <span class="ident">I</span>, <span class="ident">E</span><span class="op">&gt;</span>,
-        <span class="ident">R</span>: <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">I</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">E</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">I</span>: <span class="ident">Responder</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">E</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Error</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">T</span>: <span class="ident">FromRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">C</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">T</span>::<span class="ident">Config</span>),
-    {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">extractor_cfg</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">T</span>::<span class="ident">Config</span> <span class="kw">as</span> <span class="ident">Default</span><span class="op">&gt;</span>::<span class="ident">default</span>();
-        <span class="ident">cfg</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">extractor_cfg</span>);
-        <span class="self">self</span>.<span class="ident">h</span>(<span class="ident">handler</span>.<span class="ident">create_with_config</span>(<span class="ident">extractor_cfg</span>));
-    }
-}
-
-<span class="doccomment">/// `RouteHandler` wrapper. This struct is required because it needs to be</span>
-<span class="doccomment">/// shared for resource level middlewares.</span>
-<span class="kw">struct</span> <span class="ident">InnerHandler</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">RouteHandler</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>);
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">InnerHandler</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">H</span>: <span class="ident">Handler</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;&gt;</span>(<span class="ident">h</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">InnerHandler</span>(<span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">WrapHandler</span>::<span class="ident">new</span>(<span class="ident">h</span>))))
-    }
-
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">async</span><span class="op">&lt;</span><span class="ident">H</span>, <span class="ident">R</span>, <span class="ident">F</span>, <span class="ident">E</span><span class="op">&gt;</span>(<span class="ident">h</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="self">Self</span>
-    <span class="kw">where</span>
-        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">F</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">F</span>: <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">R</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">E</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">R</span>: <span class="ident">Responder</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">E</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Error</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-    {
-        <span class="ident">InnerHandler</span>(<span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">AsyncHandler</span>::<span class="ident">new</span>(<span class="ident">h</span>))))
-    }
-
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">handle</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">req</span>: <span class="kw-2">&amp;</span><span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">AsyncResult</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">handle</span>(<span class="ident">req</span>)
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">InnerHandler</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">InnerHandler</span>(<span class="ident">Rc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>))
-    }
-}
-
-<span class="doccomment">/// Compose resource level middlewares with route handler.</span>
-<span class="kw">struct</span> <span class="ident">Compose</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
-    <span class="ident">info</span>: <span class="ident">ComposeInfo</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-    <span class="ident">state</span>: <span class="ident">ComposeState</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">struct</span> <span class="ident">ComposeInfo</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
-    <span class="ident">count</span>: <span class="ident">usize</span>,
-    <span class="ident">req</span>: <span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-    <span class="ident">mws</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Middleware</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;&gt;</span><span class="op">&gt;&gt;</span>,
-    <span class="ident">handler</span>: <span class="ident">InnerHandler</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">enum</span> <span class="ident">ComposeState</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
-    <span class="ident">Starting</span>(<span class="ident">StartMiddlewares</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>),
-    <span class="ident">Handler</span>(<span class="ident">WaitingResponse</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>),
-    <span class="ident">RunMiddlewares</span>(<span class="ident">RunMiddlewares</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>),
-    <span class="ident">Finishing</span>(<span class="ident">FinishingMiddlewares</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>),
-    <span class="ident">Completed</span>(<span class="ident">Response</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>),
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">ComposeState</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">poll</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">info</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ComposeInfo</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ComposeState</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;&gt;</span> {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">ComposeState</span>::<span class="ident">Starting</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">state</span>) <span class="op">=&gt;</span> <span class="ident">state</span>.<span class="ident">poll</span>(<span class="ident">info</span>),
-            <span class="ident">ComposeState</span>::<span class="ident">Handler</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">state</span>) <span class="op">=&gt;</span> <span class="ident">state</span>.<span class="ident">poll</span>(<span class="ident">info</span>),
-            <span class="ident">ComposeState</span>::<span class="ident">RunMiddlewares</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">state</span>) <span class="op">=&gt;</span> <span class="ident">state</span>.<span class="ident">poll</span>(<span class="ident">info</span>),
-            <span class="ident">ComposeState</span>::<span class="ident">Finishing</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">state</span>) <span class="op">=&gt;</span> <span class="ident">state</span>.<span class="ident">poll</span>(<span class="ident">info</span>),
-            <span class="ident">ComposeState</span>::<span class="ident">Completed</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-        }
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">Compose</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">new</span>(
-        <span class="ident">req</span>: <span class="ident">HttpRequest</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>, <span class="ident">mws</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Middleware</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;&gt;</span><span class="op">&gt;&gt;</span>, <span class="ident">handler</span>: <span class="ident">InnerHandler</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-    ) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">info</span> <span class="op">=</span> <span class="ident">ComposeInfo</span> {
-            <span class="ident">count</span>: <span class="number">0</span>,
-            <span class="ident">req</span>,
-            <span class="ident">mws</span>,
+        <span class="self">self</span>.<span class="ident">service</span> <span class="op">=</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">RouteNewService</span>::<span class="ident">new</span>(<span class="ident">Extract</span>::<span class="ident">new</span>(<span class="ident">AsyncHandler</span>::<span class="ident">new</span>(
             <span class="ident">handler</span>,
-        };
-        <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">StartMiddlewares</span>::<span class="ident">init</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">info</span>);
-
-        <span class="ident">Compose</span> { <span class="ident">state</span>, <span class="ident">info</span> }
+        ))));
+        <span class="self">self</span>
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> <span class="ident">Future</span> <span class="kw">for</span> <span class="ident">Compose</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">HttpResponse</span>;
+<span class="kw">struct</span> <span class="ident">RouteNewService</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">NewService</span><span class="op">&lt;</span><span class="ident">Request</span> <span class="op">=</span> <span class="ident">ServiceRequest</span>, <span class="ident">Error</span> <span class="op">=</span> (<span class="ident">Error</span>, <span class="ident">ServiceRequest</span>)<span class="op">&gt;</span>,
+{
+    <span class="ident">service</span>: <span class="ident">T</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">RouteNewService</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">NewService</span><span class="op">&lt;</span>
+        <span class="ident">Config</span> <span class="op">=</span> (),
+        <span class="ident">Request</span> <span class="op">=</span> <span class="ident">ServiceRequest</span>,
+        <span class="ident">Response</span> <span class="op">=</span> <span class="ident">ServiceResponse</span>,
+        <span class="ident">Error</span> <span class="op">=</span> (<span class="ident">Error</span>, <span class="ident">ServiceRequest</span>),
+    <span class="op">&gt;</span>,
+    <span class="ident">T</span>::<span class="ident">Future</span>: <span class="lifetime">&#39;static</span>,
+    <span class="ident">T</span>::<span class="ident">Service</span>: <span class="lifetime">&#39;static</span>,
+    <span class="op">&lt;</span><span class="ident">T</span>::<span class="ident">Service</span> <span class="kw">as</span> <span class="ident">Service</span><span class="op">&gt;</span>::<span class="ident">Future</span>: <span class="lifetime">&#39;static</span>,
+{
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">service</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">RouteNewService</span> { <span class="ident">service</span> }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">NewService</span> <span class="kw">for</span> <span class="ident">RouteNewService</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>: <span class="ident">NewService</span><span class="op">&lt;</span>
+        <span class="ident">Config</span> <span class="op">=</span> (),
+        <span class="ident">Request</span> <span class="op">=</span> <span class="ident">ServiceRequest</span>,
+        <span class="ident">Response</span> <span class="op">=</span> <span class="ident">ServiceResponse</span>,
+        <span class="ident">Error</span> <span class="op">=</span> (<span class="ident">Error</span>, <span class="ident">ServiceRequest</span>),
+    <span class="op">&gt;</span>,
+    <span class="ident">T</span>::<span class="ident">Future</span>: <span class="lifetime">&#39;static</span>,
+    <span class="ident">T</span>::<span class="ident">Service</span>: <span class="lifetime">&#39;static</span>,
+    <span class="op">&lt;</span><span class="ident">T</span>::<span class="ident">Service</span> <span class="kw">as</span> <span class="ident">Service</span><span class="op">&gt;</span>::<span class="ident">Future</span>: <span class="lifetime">&#39;static</span>,
+{
+    <span class="kw">type</span> <span class="ident">Config</span> <span class="op">=</span> ();
+    <span class="kw">type</span> <span class="ident">Request</span> <span class="op">=</span> <span class="ident">ServiceRequest</span>;
+    <span class="kw">type</span> <span class="ident">Response</span> <span class="op">=</span> <span class="ident">ServiceResponse</span>;
     <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type</span> <span class="ident">InitError</span> <span class="op">=</span> ();
+    <span class="kw">type</span> <span class="ident">Service</span> <span class="op">=</span> <span class="ident">BoxedRouteService</span><span class="op">&lt;</span><span class="ident">ServiceRequest</span>, <span class="self">Self</span>::<span class="ident">Response</span><span class="op">&gt;</span>;
+    <span class="kw">type</span> <span class="ident">Future</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">Service</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">InitError</span><span class="op">&gt;&gt;</span>;
 
-    <span class="kw">fn</span> <span class="ident">poll</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="kw">loop</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ComposeState</span>::<span class="ident">Completed</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">resp</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">state</span> {
-                <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">resp</span>.<span class="ident">resp</span>.<span class="ident">take</span>().<span class="ident">unwrap</span>();
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">resp</span>));
-            }
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">state</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">poll</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">info</span>) {
-                <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">state</span>;
-            } <span class="kw">else</span> {
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>);
-            }
+    <span class="kw">fn</span> <span class="ident">new_service</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>()) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Future</span> {
+        <span class="ident">Box</span>::<span class="ident">new</span>(
+            <span class="self">self</span>.<span class="ident">service</span>
+                .<span class="ident">new_service</span>(<span class="kw-2">&amp;</span>())
+                .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> ())
+                .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">service</span><span class="op">|</span> {
+                    <span class="kw">let</span> <span class="ident">service</span>: <span class="ident">BoxedRouteService</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span>
+                        <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">RouteServiceWrapper</span> { <span class="ident">service</span> });
+                    <span class="prelude-val">Ok</span>(<span class="ident">service</span>)
+                }),
+        )
+    }
+}
+
+<span class="kw">struct</span> <span class="ident">RouteServiceWrapper</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Service</span><span class="op">&gt;</span> {
+    <span class="ident">service</span>: <span class="ident">T</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Service</span> <span class="kw">for</span> <span class="ident">RouteServiceWrapper</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">T</span>::<span class="ident">Future</span>: <span class="lifetime">&#39;static</span>,
+    <span class="ident">T</span>: <span class="ident">Service</span><span class="op">&lt;</span>
+        <span class="ident">Request</span> <span class="op">=</span> <span class="ident">ServiceRequest</span>,
+        <span class="ident">Response</span> <span class="op">=</span> <span class="ident">ServiceResponse</span>,
+        <span class="ident">Error</span> <span class="op">=</span> (<span class="ident">Error</span>, <span class="ident">ServiceRequest</span>),
+    <span class="op">&gt;</span>,
+{
+    <span class="kw">type</span> <span class="ident">Request</span> <span class="op">=</span> <span class="ident">ServiceRequest</span>;
+    <span class="kw">type</span> <span class="ident">Response</span> <span class="op">=</span> <span class="ident">ServiceResponse</span>;
+    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type</span> <span class="ident">Future</span> <span class="op">=</span> <span class="ident">Either</span><span class="op">&lt;</span>
+        <span class="ident">FutureResult</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Response</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span>,
+        <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">Response</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;&gt;</span>,
+    <span class="op">&gt;</span>;
+
+    <span class="kw">fn</span> <span class="ident">poll_ready</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span>(), <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">service</span>.<span class="ident">poll_ready</span>().<span class="ident">map_err</span>(<span class="op">|</span>(<span class="ident">e</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="ident">e</span>)
+    }
+
+    <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">req</span>: <span class="ident">ServiceRequest</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Future</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fut</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">service</span>.<span class="ident">call</span>(<span class="ident">req</span>);
+        <span class="kw">match</span> <span class="ident">fut</span>.<span class="ident">poll</span>() {
+            <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">res</span>)) <span class="op">=&gt;</span> <span class="ident">Either</span>::<span class="ident">A</span>(<span class="ident">ok</span>(<span class="ident">res</span>)),
+            <span class="prelude-val">Err</span>((<span class="ident">e</span>, <span class="ident">req</span>)) <span class="op">=&gt;</span> <span class="ident">Either</span>::<span class="ident">A</span>(<span class="ident">ok</span>(<span class="ident">req</span>.<span class="ident">error_response</span>(<span class="ident">e</span>))),
+            <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> <span class="ident">Either</span>::<span class="ident">B</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">fut</span>.<span class="ident">then</span>(<span class="op">|</span><span class="ident">res</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">res</span> {
+                <span class="prelude-val">Ok</span>(<span class="ident">res</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">res</span>),
+                <span class="prelude-val">Err</span>((<span class="ident">err</span>, <span class="ident">req</span>)) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">req</span>.<span class="ident">error_response</span>(<span class="ident">err</span>)),
+            }))),
         }
     }
 }
 
-<span class="doccomment">/// Middlewares start executor</span>
-<span class="kw">struct</span> <span class="ident">StartMiddlewares</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="ident">fut</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fut</span><span class="op">&gt;</span>,
-    <span class="ident">_s</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-}
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">tests</span> {
+    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::<span class="ident">Duration</span>;
 
-<span class="kw">type</span> <span class="ident">Fut</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span><span class="op">&gt;&gt;</span>;
+    <span class="kw">use</span> <span class="ident">bytes</span>::<span class="ident">Bytes</span>;
+    <span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">Future</span>;
+    <span class="kw">use</span> <span class="ident">serde_derive</span>::<span class="ident">Serialize</span>;
+    <span class="kw">use</span> <span class="ident">tokio_timer</span>::<span class="ident">sleep</span>;
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">StartMiddlewares</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">init</span>(<span class="ident">info</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ComposeInfo</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ComposeState</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">mws</span>.<span class="ident">len</span>();
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">http</span>::{<span class="ident">Method</span>, <span class="ident">StatusCode</span>};
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">test</span>::{<span class="ident">call_service</span>, <span class="ident">init_service</span>, <span class="ident">read_body</span>, <span class="ident">TestRequest</span>};
+    <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">error</span>, <span class="ident">web</span>, <span class="ident">App</span>, <span class="ident">HttpResponse</span>};
 
-        <span class="kw">loop</span> {
-            <span class="kw">if</span> <span class="ident">info</span>.<span class="ident">count</span> <span class="op">==</span> <span class="ident">len</span> {
-                <span class="kw">let</span> <span class="ident">reply</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">handler</span>.<span class="ident">handle</span>(<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">req</span>);
-                <span class="kw">return</span> <span class="ident">WaitingResponse</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">reply</span>);
-            } <span class="kw">else</span> {
-                <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">mws</span>[<span class="ident">info</span>.<span class="ident">count</span>].<span class="ident">start</span>(<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">req</span>);
-                <span class="kw">match</span> <span class="ident">result</span> {
-                    <span class="prelude-val">Ok</span>(<span class="ident">MiddlewareStarted</span>::<span class="ident">Done</span>) <span class="op">=&gt;</span> <span class="ident">info</span>.<span class="ident">count</span> <span class="op">+=</span> <span class="number">1</span>,
-                    <span class="prelude-val">Ok</span>(<span class="ident">MiddlewareStarted</span>::<span class="ident">Response</span>(<span class="ident">resp</span>)) <span class="op">=&gt;</span> {
-                        <span class="kw">return</span> <span class="ident">RunMiddlewares</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">resp</span>);
-                    }
-                    <span class="prelude-val">Ok</span>(<span class="ident">MiddlewareStarted</span>::<span class="ident">Future</span>(<span class="ident">fut</span>)) <span class="op">=&gt;</span> {
-                        <span class="kw">return</span> <span class="ident">ComposeState</span>::<span class="ident">Starting</span>(<span class="ident">StartMiddlewares</span> {
-                            <span class="ident">fut</span>: <span class="prelude-val">Some</span>(<span class="ident">fut</span>),
-                            <span class="ident">_s</span>: <span class="ident">PhantomData</span>,
-                        });
-                    }
-                    <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
-                        <span class="kw">return</span> <span class="ident">RunMiddlewares</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">err</span>.<span class="ident">into</span>());
-                    }
-                }
-            }
-        }
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+    <span class="kw">struct</span> <span class="ident">MyObject</span> {
+        <span class="ident">name</span>: <span class="ident">String</span>,
     }
 
-    <span class="kw">fn</span> <span class="ident">poll</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">info</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ComposeInfo</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ComposeState</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;&gt;</span> {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">mws</span>.<span class="ident">len</span>();
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_route</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">srv</span> <span class="op">=</span> <span class="ident">init_service</span>(
+            <span class="ident">App</span>::<span class="ident">new</span>()
+                .<span class="ident">service</span>(
+                    <span class="ident">web</span>::<span class="ident">resource</span>(<span class="string">&quot;/test&quot;</span>)
+                        .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">get</span>().<span class="ident">to</span>(<span class="op">||</span> <span class="ident">HttpResponse</span>::<span class="prelude-val">Ok</span>()))
+                        .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">put</span>().<span class="ident">to</span>(<span class="op">||</span> {
+                            <span class="prelude-val">Err</span>::<span class="op">&lt;</span><span class="ident">HttpResponse</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="ident">error</span>::<span class="ident">ErrorBadRequest</span>(<span class="string">&quot;err&quot;</span>))
+                        }))
+                        .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">post</span>().<span class="ident">to_async</span>(<span class="op">||</span> {
+                            <span class="ident">sleep</span>(<span class="ident">Duration</span>::<span class="ident">from_millis</span>(<span class="number">100</span>))
+                                .<span class="ident">then</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">HttpResponse</span>::<span class="ident">Created</span>())
+                        }))
+                        .<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">delete</span>().<span class="ident">to_async</span>(<span class="op">||</span> {
+                            <span class="ident">sleep</span>(<span class="ident">Duration</span>::<span class="ident">from_millis</span>(<span class="number">100</span>)).<span class="ident">then</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
+                                <span class="prelude-val">Err</span>::<span class="op">&lt;</span><span class="ident">HttpResponse</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="ident">error</span>::<span class="ident">ErrorBadRequest</span>(<span class="string">&quot;err&quot;</span>))
+                            })
+                        })),
+                )
+                .<span class="ident">service</span>(<span class="ident">web</span>::<span class="ident">resource</span>(<span class="string">&quot;/json&quot;</span>).<span class="ident">route</span>(<span class="ident">web</span>::<span class="ident">get</span>().<span class="ident">to_async</span>(<span class="op">||</span> {
+                    <span class="ident">sleep</span>(<span class="ident">Duration</span>::<span class="ident">from_millis</span>(<span class="number">25</span>)).<span class="ident">then</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
+                        <span class="prelude-val">Ok</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="kw">crate</span>::<span class="ident">Error</span><span class="op">&gt;</span>(<span class="ident">web</span>::<span class="ident">Json</span>(<span class="ident">MyObject</span> {
+                            <span class="ident">name</span>: <span class="string">&quot;test&quot;</span>.<span class="ident">to_string</span>(),
+                        }))
+                    })
+                }))),
+        );
 
-        <span class="lifetime">&#39;outer</span>: <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">fut</span>.<span class="ident">as_mut</span>().<span class="ident">unwrap</span>().<span class="ident">poll</span>() {
-                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> {
-                    <span class="kw">return</span> <span class="prelude-val">None</span>;
-                }
-                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">resp</span>)) <span class="op">=&gt;</span> {
-                    <span class="ident">info</span>.<span class="ident">count</span> <span class="op">+=</span> <span class="number">1</span>;
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">resp</span>) <span class="op">=</span> <span class="ident">resp</span> {
-                        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">RunMiddlewares</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">resp</span>));
-                    }
-                    <span class="kw">loop</span> {
-                        <span class="kw">if</span> <span class="ident">info</span>.<span class="ident">count</span> <span class="op">==</span> <span class="ident">len</span> {
-                            <span class="kw">let</span> <span class="ident">reply</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">handler</span>.<span class="ident">handle</span>(<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">req</span>);
-                            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">WaitingResponse</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">reply</span>));
-                        } <span class="kw">else</span> {
-                            <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">mws</span>[<span class="ident">info</span>.<span class="ident">count</span>].<span class="ident">start</span>(<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">req</span>);
-                            <span class="kw">match</span> <span class="ident">result</span> {
-                                <span class="prelude-val">Ok</span>(<span class="ident">MiddlewareStarted</span>::<span class="ident">Done</span>) <span class="op">=&gt;</span> <span class="ident">info</span>.<span class="ident">count</span> <span class="op">+=</span> <span class="number">1</span>,
-                                <span class="prelude-val">Ok</span>(<span class="ident">MiddlewareStarted</span>::<span class="ident">Response</span>(<span class="ident">resp</span>)) <span class="op">=&gt;</span> {
-                                    <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">RunMiddlewares</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">resp</span>));
-                                }
-                                <span class="prelude-val">Ok</span>(<span class="ident">MiddlewareStarted</span>::<span class="ident">Future</span>(<span class="ident">fut</span>)) <span class="op">=&gt;</span> {
-                                    <span class="self">self</span>.<span class="ident">fut</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">fut</span>);
-                                    <span class="kw">continue</span> <span class="lifetime">&#39;outer</span>;
-                                }
-                                <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
-                                    <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">RunMiddlewares</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">err</span>.<span class="ident">into</span>()));
-                                }
-                            }
-                        }
-                    }
-                }
-                <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
-                    <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">RunMiddlewares</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">err</span>.<span class="ident">into</span>()));
-                }
-            }
-        }
-    }
-}
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">with_uri</span>(<span class="string">&quot;/test&quot;</span>)
+            .<span class="ident">method</span>(<span class="ident">Method</span>::<span class="ident">GET</span>)
+            .<span class="ident">to_request</span>();
+        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">call_service</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">srv</span>, <span class="ident">req</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">OK</span>);
 
-<span class="kw">type</span> <span class="ident">HandlerFuture</span> <span class="op">=</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">HttpResponse</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span><span class="op">&gt;</span>;
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">with_uri</span>(<span class="string">&quot;/test&quot;</span>)
+            .<span class="ident">method</span>(<span class="ident">Method</span>::<span class="ident">POST</span>)
+            .<span class="ident">to_request</span>();
+        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">call_service</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">srv</span>, <span class="ident">req</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">CREATED</span>);
 
-<span class="comment">// waiting for response</span>
-<span class="kw">struct</span> <span class="ident">WaitingResponse</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="ident">fut</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">HandlerFuture</span><span class="op">&gt;</span>,
-    <span class="ident">_s</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-}
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">with_uri</span>(<span class="string">&quot;/test&quot;</span>)
+            .<span class="ident">method</span>(<span class="ident">Method</span>::<span class="ident">PUT</span>)
+            .<span class="ident">to_request</span>();
+        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">call_service</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">srv</span>, <span class="ident">req</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">BAD_REQUEST</span>);
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">WaitingResponse</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">init</span>(
-        <span class="ident">info</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ComposeInfo</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>, <span class="ident">reply</span>: <span class="ident">AsyncResult</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span>,
-    ) <span class="op">-&gt;</span> <span class="ident">ComposeState</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="ident">reply</span>.<span class="ident">into</span>() {
-            <span class="ident">AsyncResultItem</span>::<span class="prelude-val">Ok</span>(<span class="ident">resp</span>) <span class="op">=&gt;</span> <span class="ident">RunMiddlewares</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">resp</span>),
-            <span class="ident">AsyncResultItem</span>::<span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> <span class="ident">RunMiddlewares</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">err</span>.<span class="ident">into</span>()),
-            <span class="ident">AsyncResultItem</span>::<span class="ident">Future</span>(<span class="ident">fut</span>) <span class="op">=&gt;</span> <span class="ident">ComposeState</span>::<span class="ident">Handler</span>(<span class="ident">WaitingResponse</span> {
-                <span class="ident">fut</span>,
-                <span class="ident">_s</span>: <span class="ident">PhantomData</span>,
-            }),
-        }
-    }
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">with_uri</span>(<span class="string">&quot;/test&quot;</span>)
+            .<span class="ident">method</span>(<span class="ident">Method</span>::<span class="ident">DELETE</span>)
+            .<span class="ident">to_request</span>();
+        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">call_service</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">srv</span>, <span class="ident">req</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">BAD_REQUEST</span>);
 
-    <span class="kw">fn</span> <span class="ident">poll</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">info</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ComposeInfo</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ComposeState</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">fut</span>.<span class="ident">poll</span>() {
-            <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-            <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">resp</span>)) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">RunMiddlewares</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">resp</span>)),
-            <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">RunMiddlewares</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">err</span>.<span class="ident">into</span>())),
-        }
-    }
-}
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">with_uri</span>(<span class="string">&quot;/test&quot;</span>)
+            .<span class="ident">method</span>(<span class="ident">Method</span>::<span class="ident">HEAD</span>)
+            .<span class="ident">to_request</span>();
+        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">call_service</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">srv</span>, <span class="ident">req</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">METHOD_NOT_ALLOWED</span>);
 
-<span class="doccomment">/// Middlewares response executor</span>
-<span class="kw">struct</span> <span class="ident">RunMiddlewares</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="ident">curr</span>: <span class="ident">usize</span>,
-    <span class="ident">fut</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">HttpResponse</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">_s</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-}
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">TestRequest</span>::<span class="ident">with_uri</span>(<span class="string">&quot;/json&quot;</span>).<span class="ident">to_request</span>();
+        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">call_service</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">srv</span>, <span class="ident">req</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode</span>::<span class="ident">OK</span>);
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">RunMiddlewares</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">init</span>(<span class="ident">info</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ComposeInfo</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>, <span class="kw-2">mut</span> <span class="ident">resp</span>: <span class="ident">HttpResponse</span>) <span class="op">-&gt;</span> <span class="ident">ComposeState</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">curr</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">mws</span>.<span class="ident">len</span>();
-
-        <span class="kw">loop</span> {
-            <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">mws</span>[<span class="ident">curr</span>].<span class="ident">response</span>(<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">req</span>, <span class="ident">resp</span>);
-            <span class="ident">resp</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">state</span> {
-                <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
-                    <span class="ident">info</span>.<span class="ident">count</span> <span class="op">=</span> <span class="ident">curr</span> <span class="op">+</span> <span class="number">1</span>;
-                    <span class="kw">return</span> <span class="ident">FinishingMiddlewares</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">err</span>.<span class="ident">into</span>());
-                }
-                <span class="prelude-val">Ok</span>(<span class="ident">MiddlewareResponse</span>::<span class="ident">Done</span>(<span class="ident">r</span>)) <span class="op">=&gt;</span> {
-                    <span class="ident">curr</span> <span class="op">+=</span> <span class="number">1</span>;
-                    <span class="kw">if</span> <span class="ident">curr</span> <span class="op">==</span> <span class="ident">len</span> {
-                        <span class="kw">return</span> <span class="ident">FinishingMiddlewares</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">r</span>);
-                    } <span class="kw">else</span> {
-                        <span class="ident">r</span>
-                    }
-                }
-                <span class="prelude-val">Ok</span>(<span class="ident">MiddlewareResponse</span>::<span class="ident">Future</span>(<span class="ident">fut</span>)) <span class="op">=&gt;</span> {
-                    <span class="kw">return</span> <span class="ident">ComposeState</span>::<span class="ident">RunMiddlewares</span>(<span class="ident">RunMiddlewares</span> {
-                        <span class="ident">curr</span>,
-                        <span class="ident">fut</span>: <span class="prelude-val">Some</span>(<span class="ident">fut</span>),
-                        <span class="ident">_s</span>: <span class="ident">PhantomData</span>,
-                    });
-                }
-            };
-        }
-    }
-
-    <span class="kw">fn</span> <span class="ident">poll</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">info</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ComposeInfo</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ComposeState</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;&gt;</span> {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">mws</span>.<span class="ident">len</span>();
-
-        <span class="kw">loop</span> {
-            <span class="comment">// poll latest fut</span>
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">resp</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">fut</span>.<span class="ident">as_mut</span>().<span class="ident">unwrap</span>().<span class="ident">poll</span>() {
-                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
-                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">resp</span>)) <span class="op">=&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">curr</span> <span class="op">+=</span> <span class="number">1</span>;
-                    <span class="ident">resp</span>
-                }
-                <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">FinishingMiddlewares</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">err</span>.<span class="ident">into</span>())),
-            };
-
-            <span class="kw">loop</span> {
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">curr</span> <span class="op">==</span> <span class="ident">len</span> {
-                    <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">FinishingMiddlewares</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">resp</span>));
-                } <span class="kw">else</span> {
-                    <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">mws</span>[<span class="self">self</span>.<span class="ident">curr</span>].<span class="ident">response</span>(<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">req</span>, <span class="ident">resp</span>);
-                    <span class="kw">match</span> <span class="ident">state</span> {
-                        <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
-                            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">FinishingMiddlewares</span>::<span class="ident">init</span>(<span class="ident">info</span>, <span class="ident">err</span>.<span class="ident">into</span>()))
-                        }
-                        <span class="prelude-val">Ok</span>(<span class="ident">MiddlewareResponse</span>::<span class="ident">Done</span>(<span class="ident">r</span>)) <span class="op">=&gt;</span> {
-                            <span class="self">self</span>.<span class="ident">curr</span> <span class="op">+=</span> <span class="number">1</span>;
-                            <span class="ident">resp</span> <span class="op">=</span> <span class="ident">r</span>
-                        }
-                        <span class="prelude-val">Ok</span>(<span class="ident">MiddlewareResponse</span>::<span class="ident">Future</span>(<span class="ident">fut</span>)) <span class="op">=&gt;</span> {
-                            <span class="self">self</span>.<span class="ident">fut</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">fut</span>);
-                            <span class="kw">break</span>;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-<span class="doccomment">/// Middlewares start executor</span>
-<span class="kw">struct</span> <span class="ident">FinishingMiddlewares</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="ident">resp</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span>,
-    <span class="ident">fut</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (), <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">_s</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">FinishingMiddlewares</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">init</span>(<span class="ident">info</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ComposeInfo</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>, <span class="ident">resp</span>: <span class="ident">HttpResponse</span>) <span class="op">-&gt;</span> <span class="ident">ComposeState</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">info</span>.<span class="ident">count</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="ident">Response</span>::<span class="ident">init</span>(<span class="ident">resp</span>)
-        } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">FinishingMiddlewares</span> {
-                <span class="ident">resp</span>: <span class="prelude-val">Some</span>(<span class="ident">resp</span>),
-                <span class="ident">fut</span>: <span class="prelude-val">None</span>,
-                <span class="ident">_s</span>: <span class="ident">PhantomData</span>,
-            };
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">st</span>) <span class="op">=</span> <span class="ident">state</span>.<span class="ident">poll</span>(<span class="ident">info</span>) {
-                <span class="ident">st</span>
-            } <span class="kw">else</span> {
-                <span class="ident">ComposeState</span>::<span class="ident">Finishing</span>(<span class="ident">state</span>)
-            }
-        }
-    }
-
-    <span class="kw">fn</span> <span class="ident">poll</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">info</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ComposeInfo</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ComposeState</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;&gt;</span> {
-        <span class="kw">loop</span> {
-            <span class="comment">// poll latest fut</span>
-            <span class="kw">let</span> <span class="ident">not_ready</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">fut</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">fut</span> {
-                <span class="kw">match</span> <span class="ident">fut</span>.<span class="ident">poll</span>() {
-                    <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">NotReady</span>) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-                    <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(())) <span class="op">=&gt;</span> <span class="bool-val">false</span>,
-                    <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
-                        <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Middleware finish error: {}&quot;</span>, <span class="ident">err</span>);
-                        <span class="bool-val">false</span>
-                    }
-                }
-            } <span class="kw">else</span> {
-                <span class="bool-val">false</span>
-            };
-            <span class="kw">if</span> <span class="ident">not_ready</span> {
-                <span class="kw">return</span> <span class="prelude-val">None</span>;
-            }
-            <span class="self">self</span>.<span class="ident">fut</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-            <span class="kw">if</span> <span class="ident">info</span>.<span class="ident">count</span> <span class="op">==</span> <span class="number">0</span> {
-                <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">Response</span>::<span class="ident">init</span>(<span class="self">self</span>.<span class="ident">resp</span>.<span class="ident">take</span>().<span class="ident">unwrap</span>()));
-            }
-
-            <span class="ident">info</span>.<span class="ident">count</span> <span class="op">-=</span> <span class="number">1</span>;
-
-            <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">mws</span>[<span class="ident">info</span>.<span class="ident">count</span> <span class="kw">as</span> <span class="ident">usize</span>]
-                .<span class="ident">finish</span>(<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">req</span>, <span class="self">self</span>.<span class="ident">resp</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>());
-            <span class="kw">match</span> <span class="ident">state</span> {
-                <span class="ident">MiddlewareFinished</span>::<span class="ident">Done</span> <span class="op">=&gt;</span> {
-                    <span class="kw">if</span> <span class="ident">info</span>.<span class="ident">count</span> <span class="op">==</span> <span class="number">0</span> {
-                        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">Response</span>::<span class="ident">init</span>(<span class="self">self</span>.<span class="ident">resp</span>.<span class="ident">take</span>().<span class="ident">unwrap</span>()));
-                    }
-                }
-                <span class="ident">MiddlewareFinished</span>::<span class="ident">Future</span>(<span class="ident">fut</span>) <span class="op">=&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">fut</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">fut</span>);
-                }
-            }
-        }
-    }
-}
-
-<span class="kw">struct</span> <span class="ident">Response</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="ident">resp</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HttpResponse</span><span class="op">&gt;</span>,
-    <span class="ident">_s</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">Response</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">init</span>(<span class="ident">resp</span>: <span class="ident">HttpResponse</span>) <span class="op">-&gt;</span> <span class="ident">ComposeState</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-        <span class="ident">ComposeState</span>::<span class="ident">Completed</span>(<span class="ident">Response</span> {
-            <span class="ident">resp</span>: <span class="prelude-val">Some</span>(<span class="ident">resp</span>),
-            <span class="ident">_s</span>: <span class="ident">PhantomData</span>,
-        })
+        <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">read_body</span>(<span class="ident">resp</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">body</span>, <span class="ident">Bytes</span>::<span class="ident">from_static</span>(<span class="string">b&quot;{\&quot;name\&quot;:\&quot;test\&quot;}&quot;</span>));
     }
 }
 </pre></div>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-resolver-0.10.3/src/dns_lru.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>dns_lru.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../trust_dns_resolver/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-resolver-0.11.1/src/dns_lru.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>dns_lru.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../trust_dns_resolver/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -540,6 +540,45 @@
 <span id="540">540</span>
 <span id="541">541</span>
 <span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2015-2017 Benjamin Fry &lt;benjaminfry@me.com&gt;</span>
 <span class="comment">//</span>
@@ -554,7 +593,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::{<span class="ident">Duration</span>, <span class="ident">Instant</span>};
 
 <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">op</span>::<span class="ident">Query</span>;
-<span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">rr</span>::<span class="ident">RData</span>;
+<span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">rr</span>::<span class="ident">Record</span>;
 
 <span class="kw">use</span> <span class="ident">config</span>;
 <span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
@@ -618,11 +657,10 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`MAX_TTL`]: const.MAX_TTL.html</span>
     <span class="ident">negative_max_ttl</span>: <span class="ident">Duration</span>,
-
 }
 
 <span class="doccomment">/// The time-to-live, TTL, configuration for use by the cache.</span>
-<span class="doccomment">/// </span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// It should be understood that the TTL in DNS is expressed with a u32.</span>
 <span class="doccomment">///   We use Duration here for tracking this which can express larger values</span>
 <span class="doccomment">///   than the DNS standard. Generally a Duration greater than u32::MAX_VALUE</span>
@@ -677,27 +715,27 @@
             <span class="ident">positive_min_ttl</span>: <span class="ident">positive_min_ttl</span>.<span class="ident">unwrap_or_else</span>(<span class="op">||</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">0</span>)),
             <span class="ident">negative_min_ttl</span>: <span class="ident">negative_min_ttl</span>.<span class="ident">unwrap_or_else</span>(<span class="op">||</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">0</span>)),
             <span class="ident">positive_max_ttl</span>: <span class="ident">positive_max_ttl</span>
-                .<span class="ident">unwrap_or_else</span>(<span class="op">||</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="ident">MAX_TTL</span> <span class="kw">as</span> <span class="ident">u64</span>)),
+                .<span class="ident">unwrap_or_else</span>(<span class="op">||</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="ident">u64</span>::<span class="ident">from</span>(<span class="ident">MAX_TTL</span>))),
             <span class="ident">negative_max_ttl</span>: <span class="ident">negative_max_ttl</span>
-                .<span class="ident">unwrap_or_else</span>(<span class="op">||</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="ident">MAX_TTL</span> <span class="kw">as</span> <span class="ident">u64</span>)),
+                .<span class="ident">unwrap_or_else</span>(<span class="op">||</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="ident">u64</span>::<span class="ident">from</span>(<span class="ident">MAX_TTL</span>))),
         }
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">insert</span>(
         <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
         <span class="ident">query</span>: <span class="ident">Query</span>,
-        <span class="ident">rdatas_and_ttl</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">RData</span>, <span class="ident">u32</span>)<span class="op">&gt;</span>,
+        <span class="ident">records_and_ttl</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Record</span>, <span class="ident">u32</span>)<span class="op">&gt;</span>,
         <span class="ident">now</span>: <span class="ident">Instant</span>,
     ) <span class="op">-&gt;</span> <span class="ident">Lookup</span> {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">rdatas_and_ttl</span>.<span class="ident">len</span>();
+        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">records_and_ttl</span>.<span class="ident">len</span>();
         <span class="comment">// collapse the values, we&#39;re going to take the Minimum TTL as the correct one</span>
-        <span class="kw">let</span> (<span class="ident">rdatas</span>, <span class="ident">ttl</span>): (<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RData</span><span class="op">&gt;</span>, <span class="ident">Duration</span>) <span class="op">=</span> <span class="ident">rdatas_and_ttl</span>.<span class="ident">into_iter</span>().<span class="ident">fold</span>(
+        <span class="kw">let</span> (<span class="ident">records</span>, <span class="ident">ttl</span>): (<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Record</span><span class="op">&gt;</span>, <span class="ident">Duration</span>) <span class="op">=</span> <span class="ident">records_and_ttl</span>.<span class="ident">into_iter</span>().<span class="ident">fold</span>(
             (<span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="ident">len</span>), <span class="self">self</span>.<span class="ident">positive_max_ttl</span>),
-            <span class="op">|</span>(<span class="kw-2">mut</span> <span class="ident">rdatas</span>, <span class="kw-2">mut</span> <span class="ident">min_ttl</span>), (<span class="ident">rdata</span>, <span class="ident">ttl</span>)<span class="op">|</span> {
-                <span class="ident">rdatas</span>.<span class="ident">push</span>(<span class="ident">rdata</span>);
-                <span class="kw">let</span> <span class="ident">ttl</span> <span class="op">=</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="ident">ttl</span> <span class="kw">as</span> <span class="ident">u64</span>);
+            <span class="op">|</span>(<span class="kw-2">mut</span> <span class="ident">records</span>, <span class="kw-2">mut</span> <span class="ident">min_ttl</span>), (<span class="ident">record</span>, <span class="ident">ttl</span>)<span class="op">|</span> {
+                <span class="ident">records</span>.<span class="ident">push</span>(<span class="ident">record</span>);
+                <span class="kw">let</span> <span class="ident">ttl</span> <span class="op">=</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="ident">u64</span>::<span class="ident">from</span>(<span class="ident">ttl</span>));
                 <span class="ident">min_ttl</span> <span class="op">=</span> <span class="ident">min_ttl</span>.<span class="ident">min</span>(<span class="ident">ttl</span>);
-                (<span class="ident">rdatas</span>, <span class="ident">min_ttl</span>)
+                (<span class="ident">records</span>, <span class="ident">min_ttl</span>)
             },
         );
 
@@ -707,7 +745,7 @@
         <span class="kw">let</span> <span class="ident">valid_until</span> <span class="op">=</span> <span class="ident">now</span> <span class="op">+</span> <span class="ident">ttl</span>;
 
         <span class="comment">// insert into the LRU</span>
-        <span class="kw">let</span> <span class="ident">lookup</span> <span class="op">=</span> <span class="ident">Lookup</span>::<span class="ident">new_with_deadline</span>(<span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">rdatas</span>), <span class="ident">valid_until</span>);
+        <span class="kw">let</span> <span class="ident">lookup</span> <span class="op">=</span> <span class="ident">Lookup</span>::<span class="ident">new_with_deadline</span>(<span class="ident">query</span>.<span class="ident">clone</span>(), <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">records</span>), <span class="ident">valid_until</span>);
         <span class="self">self</span>.<span class="ident">cache</span>.<span class="ident">insert</span>(
             <span class="ident">query</span>,
             <span class="ident">LruValue</span> {
@@ -727,7 +765,7 @@
         <span class="ident">ttl</span>: <span class="ident">u32</span>,
         <span class="ident">now</span>: <span class="ident">Instant</span>,
     ) <span class="op">-&gt;</span> <span class="ident">Lookup</span> {
-        <span class="kw">let</span> <span class="ident">ttl</span> <span class="op">=</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="ident">ttl</span> <span class="kw">as</span> <span class="ident">u64</span>);
+        <span class="kw">let</span> <span class="ident">ttl</span> <span class="op">=</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="ident">u64</span>::<span class="ident">from</span>(<span class="ident">ttl</span>));
         <span class="kw">let</span> <span class="ident">valid_until</span> <span class="op">=</span> <span class="ident">now</span> <span class="op">+</span> <span class="ident">ttl</span>;
 
         <span class="self">self</span>.<span class="ident">cache</span>.<span class="ident">insert</span>(
@@ -749,7 +787,7 @@
         <span class="comment">// TODO: if we are getting a negative response, should we instead fallback to cache?</span>
         <span class="comment">//   this would cache indefinitely, probably not correct</span>
 
-        <span class="kw">let</span> <span class="ident">ttl</span> <span class="op">=</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="ident">ttl</span> <span class="kw">as</span> <span class="ident">u64</span>)
+        <span class="kw">let</span> <span class="ident">ttl</span> <span class="op">=</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="ident">u64</span>::<span class="ident">from</span>(<span class="ident">ttl</span>))
             <span class="comment">// Clamp the TTL so that it&#39;s between the cache&#39;s configured</span>
             <span class="comment">// minimum and maximum TTLs for negative responses.</span>
             .<span class="ident">max</span>(<span class="self">self</span>.<span class="ident">negative_min_ttl</span>)
@@ -799,7 +837,7 @@
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::<span class="kw-2">*</span>;
 
     <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">op</span>::<span class="ident">Query</span>;
-    <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">rr</span>::{<span class="ident">Name</span>, <span class="ident">RecordType</span>};
+    <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">rr</span>::{<span class="ident">Name</span>, <span class="ident">RData</span>, <span class="ident">RecordType</span>};
 
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
@@ -825,9 +863,13 @@
     <span class="kw">fn</span> <span class="ident">test_lookup_uses_positive_min_ttl</span>() {
         <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">Instant</span>::<span class="ident">now</span>();
 
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>(), <span class="ident">RecordType</span>::<span class="ident">A</span>);
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">query</span> <span class="op">=</span> <span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">RecordType</span>::<span class="ident">A</span>);
         <span class="comment">// record should have TTL of 1 second.</span>
-        <span class="kw">let</span> <span class="ident">ips_ttl</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(<span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)), <span class="number">1</span>)];
+        <span class="kw">let</span> <span class="ident">ips_ttl</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(
+            <span class="ident">Record</span>::<span class="ident">from_rdata</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="number">1</span>, <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))),
+            <span class="number">1</span>,
+        )];
         <span class="kw">let</span> <span class="ident">ips</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))];
 
         <span class="comment">// configure the cache with a minimum TTL of 2 seconds.</span>
@@ -837,16 +879,19 @@
         };
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lru</span> <span class="op">=</span> <span class="ident">DnsLru</span>::<span class="ident">new</span>(<span class="number">1</span>, <span class="ident">ttls</span>);
 
-        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
+        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">query</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw-2">*</span><span class="ident">rc_ips</span>.<span class="ident">iter</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="ident">ips</span>[<span class="number">0</span>]);
         <span class="comment">// the returned lookup should use the cache&#39;s min TTL, since the</span>
         <span class="comment">// query&#39;s TTL was below the minimum.</span>
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rc_ips</span>.<span class="ident">valid_until</span>(), <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">2</span>));
 
         <span class="comment">// record should have TTL of 3 seconds.</span>
-        <span class="kw">let</span> <span class="ident">ips_ttl</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(<span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)), <span class="number">3</span>)];
+        <span class="kw">let</span> <span class="ident">ips_ttl</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(
+            <span class="ident">Record</span>::<span class="ident">from_rdata</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="number">3</span>, <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))),
+            <span class="number">3</span>,
+        )];
 
-        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
+        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">query</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw-2">*</span><span class="ident">rc_ips</span>.<span class="ident">iter</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="ident">ips</span>[<span class="number">0</span>]);
         <span class="comment">// the returned lookup should use the record&#39;s TTL, since it&#39;s</span>
         <span class="comment">// greater than the cache&#39;s minimum.</span>
@@ -873,7 +918,7 @@
                 <span class="kw">let</span> <span class="ident">valid_until</span> <span class="op">=</span> <span class="ident">valid_until</span>.<span class="ident">expect</span>(<span class="string">&quot;resolve error should have a deadline&quot;</span>);
                 <span class="comment">// the error&#39;s `valid_until` field should have been limited to 2 seconds.</span>
                 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">valid_until</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">2</span>));
-            },
+            }
             <span class="ident">other</span> <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;expected ResolveErrorKind::NoRecordsFound, got {:?}&quot;</span>, <span class="ident">other</span>),
         }
 
@@ -885,7 +930,7 @@
                 <span class="comment">// the error&#39;s `valid_until` field should not have been limited, as it was</span>
                 <span class="comment">// over the min TTL.</span>
                 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">valid_until</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">3</span>));
-            },
+            }
             <span class="ident">other</span> <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;expected ResolveErrorKind::NoRecordsFound, got {:?}&quot;</span>, <span class="ident">other</span>),
         }
     }
@@ -894,9 +939,13 @@
     <span class="kw">fn</span> <span class="ident">test_lookup_uses_positive_max_ttl</span>() {
         <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">Instant</span>::<span class="ident">now</span>();
 
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>(), <span class="ident">RecordType</span>::<span class="ident">A</span>);
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">query</span> <span class="op">=</span> <span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">RecordType</span>::<span class="ident">A</span>);
         <span class="comment">// record should have TTL of 62 seconds.</span>
-        <span class="kw">let</span> <span class="ident">ips_ttl</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(<span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)), <span class="number">62</span>)];
+        <span class="kw">let</span> <span class="ident">ips_ttl</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(
+            <span class="ident">Record</span>::<span class="ident">from_rdata</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="number">62</span>, <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))),
+            <span class="number">62</span>,
+        )];
         <span class="kw">let</span> <span class="ident">ips</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))];
 
         <span class="comment">// configure the cache with a maximum TTL of 60 seconds.</span>
@@ -906,16 +955,19 @@
         };
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lru</span> <span class="op">=</span> <span class="ident">DnsLru</span>::<span class="ident">new</span>(<span class="number">1</span>, <span class="ident">ttls</span>);
 
-        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
+        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">query</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw-2">*</span><span class="ident">rc_ips</span>.<span class="ident">iter</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="ident">ips</span>[<span class="number">0</span>]);
         <span class="comment">// the returned lookup should use the cache&#39;s min TTL, since the</span>
         <span class="comment">// query&#39;s TTL was above the maximum.</span>
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rc_ips</span>.<span class="ident">valid_until</span>(), <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">60</span>));
 
         <span class="comment">// record should have TTL of 59 seconds.</span>
-        <span class="kw">let</span> <span class="ident">ips_ttl</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(<span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)), <span class="number">59</span>)];
+        <span class="kw">let</span> <span class="ident">ips_ttl</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(
+            <span class="ident">Record</span>::<span class="ident">from_rdata</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="number">59</span>, <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))),
+            <span class="number">59</span>,
+        )];
 
-        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
+        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">query</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw-2">*</span><span class="ident">rc_ips</span>.<span class="ident">iter</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="ident">ips</span>[<span class="number">0</span>]);
         <span class="comment">// the returned lookup should use the record&#39;s TTL, since it&#39;s</span>
         <span class="comment">// below than the cache&#39;s maximum.</span>
@@ -942,7 +994,7 @@
                 <span class="kw">let</span> <span class="ident">valid_until</span> <span class="op">=</span> <span class="ident">valid_until</span>.<span class="ident">expect</span>(<span class="string">&quot;resolve error should have a deadline&quot;</span>);
                 <span class="comment">// the error&#39;s `valid_until` field should have been limited to 60 seconds.</span>
                 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">valid_until</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">60</span>));
-            },
+            }
             <span class="ident">other</span> <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;expected ResolveErrorKind::NoRecordsFound, got {:?}&quot;</span>, <span class="ident">other</span>),
         }
 
@@ -962,26 +1014,38 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_insert</span>() {
         <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">Instant</span>::<span class="ident">now</span>();
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>(), <span class="ident">RecordType</span>::<span class="ident">A</span>);
-        <span class="kw">let</span> <span class="ident">ips_ttl</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(<span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)), <span class="number">1</span>)];
+
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">query</span> <span class="op">=</span> <span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">RecordType</span>::<span class="ident">A</span>);
+        <span class="kw">let</span> <span class="ident">ips_ttl</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(
+            <span class="ident">Record</span>::<span class="ident">from_rdata</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="number">1</span>, <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))),
+            <span class="number">1</span>,
+        )];
         <span class="kw">let</span> <span class="ident">ips</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))];
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lru</span> <span class="op">=</span> <span class="ident">DnsLru</span>::<span class="ident">new</span>(<span class="number">1</span>, <span class="ident">TtlConfig</span>::<span class="ident">default</span>());
 
-        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
+        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">query</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw-2">*</span><span class="ident">rc_ips</span>.<span class="ident">iter</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="ident">ips</span>[<span class="number">0</span>]);
 
-        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">now</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">query</span>, <span class="ident">now</span>).<span class="ident">unwrap</span>();
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw-2">*</span><span class="ident">rc_ips</span>.<span class="ident">iter</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="ident">ips</span>[<span class="number">0</span>]);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_insert_ttl</span>() {
         <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">Instant</span>::<span class="ident">now</span>();
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>(), <span class="ident">RecordType</span>::<span class="ident">A</span>);
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">query</span> <span class="op">=</span> <span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">RecordType</span>::<span class="ident">A</span>);
         <span class="comment">// TTL should be 1</span>
         <span class="kw">let</span> <span class="ident">ips_ttl</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
-            (<span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)), <span class="number">1</span>),
-            (<span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>)), <span class="number">2</span>),
+            (
+                <span class="ident">Record</span>::<span class="ident">from_rdata</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="number">1</span>, <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))),
+                <span class="number">1</span>,
+            ),
+            (
+                <span class="ident">Record</span>::<span class="ident">from_rdata</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="number">2</span>, <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>))),
+                <span class="number">2</span>,
+            ),
         ];
         <span class="kw">let</span> <span class="ident">ips</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
             <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)),
@@ -989,25 +1053,32 @@
         ];
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lru</span> <span class="op">=</span> <span class="ident">DnsLru</span>::<span class="ident">new</span>(<span class="number">1</span>, <span class="ident">TtlConfig</span>::<span class="ident">default</span>());
 
-        <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
+        <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">query</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
 
         <span class="comment">// still valid</span>
-        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1</span>)).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">query</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1</span>)).<span class="ident">unwrap</span>();
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw-2">*</span><span class="ident">rc_ips</span>.<span class="ident">iter</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="ident">ips</span>[<span class="number">0</span>]);
 
         <span class="comment">// 2 should be one too far</span>
-        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">2</span>));
+        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">query</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">2</span>));
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rc_ips</span>.<span class="ident">is_none</span>());
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_insert_positive_min_ttl</span>() {
         <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">Instant</span>::<span class="ident">now</span>();
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>(), <span class="ident">RecordType</span>::<span class="ident">A</span>);
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">query</span> <span class="op">=</span> <span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">RecordType</span>::<span class="ident">A</span>);
         <span class="comment">// TTL should be 1</span>
         <span class="kw">let</span> <span class="ident">ips_ttl</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
-            (<span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)), <span class="number">1</span>),
-            (<span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>)), <span class="number">2</span>),
+            (
+                <span class="ident">Record</span>::<span class="ident">from_rdata</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="number">1</span>, <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))),
+                <span class="number">1</span>,
+            ),
+            (
+                <span class="ident">Record</span>::<span class="ident">from_rdata</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="number">2</span>, <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>))),
+                <span class="number">2</span>,
+            ),
         ];
         <span class="kw">let</span> <span class="ident">ips</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
             <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)),
@@ -1021,37 +1092,44 @@
             ..<span class="ident">Default</span>::<span class="ident">default</span>()
         };
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lru</span> <span class="op">=</span> <span class="ident">DnsLru</span>::<span class="ident">new</span>(<span class="number">1</span>, <span class="ident">ttls</span>);
-        <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
+        <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">query</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
 
         <span class="comment">// still valid</span>
-        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1</span>)).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">query</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1</span>)).<span class="ident">unwrap</span>();
         <span class="kw">for</span> (<span class="ident">rc_ip</span>, <span class="ident">ip</span>) <span class="kw">in</span> <span class="ident">rc_ips</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">ips</span>.<span class="ident">iter</span>()) {
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rc_ip</span>, <span class="ident">ip</span>, <span class="string">&quot;after 1 second&quot;</span>);
         }
 
-        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">2</span>)).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">query</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">2</span>)).<span class="ident">unwrap</span>();
         <span class="kw">for</span> (<span class="ident">rc_ip</span>, <span class="ident">ip</span>) <span class="kw">in</span> <span class="ident">rc_ips</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">ips</span>.<span class="ident">iter</span>()) {
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rc_ip</span>, <span class="ident">ip</span>, <span class="string">&quot;after 2 seconds&quot;</span>);
         }
 
-        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">3</span>)).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">query</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">3</span>)).<span class="ident">unwrap</span>();
         <span class="kw">for</span> (<span class="ident">rc_ip</span>, <span class="ident">ip</span>) <span class="kw">in</span> <span class="ident">rc_ips</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">ips</span>.<span class="ident">iter</span>()) {
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rc_ip</span>, <span class="ident">ip</span>, <span class="string">&quot;after 3 seconds&quot;</span>);
         }
 
         <span class="comment">// after 4 seconds, the records should be invalid.</span>
-        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">4</span>));
+        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">query</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">4</span>));
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rc_ips</span>.<span class="ident">is_none</span>());
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_insert_positive_max_ttl</span>() {
         <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">Instant</span>::<span class="ident">now</span>();
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>(), <span class="ident">RecordType</span>::<span class="ident">A</span>);
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">query</span> <span class="op">=</span> <span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">RecordType</span>::<span class="ident">A</span>);
         <span class="comment">// TTL should be 500</span>
         <span class="kw">let</span> <span class="ident">ips_ttl</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
-            (<span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)), <span class="number">400</span>),
-            (<span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>)), <span class="number">500</span>),
+            (
+                <span class="ident">Record</span>::<span class="ident">from_rdata</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="number">400</span>, <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))),
+                <span class="number">400</span>,
+            ),
+            (
+                <span class="ident">Record</span>::<span class="ident">from_rdata</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="number">500</span>, <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>))),
+                <span class="number">500</span>,
+            ),
         ];
         <span class="kw">let</span> <span class="ident">ips</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
             <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)),
@@ -1065,21 +1143,21 @@
             ..<span class="ident">Default</span>::<span class="ident">default</span>()
         };
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lru</span> <span class="op">=</span> <span class="ident">DnsLru</span>::<span class="ident">new</span>(<span class="number">1</span>, <span class="ident">ttls</span>);
-        <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
+        <span class="ident">lru</span>.<span class="ident">insert</span>(<span class="ident">query</span>.<span class="ident">clone</span>(), <span class="ident">ips_ttl</span>, <span class="ident">now</span>);
 
         <span class="comment">// still valid</span>
-        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1</span>)).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">query</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1</span>)).<span class="ident">unwrap</span>();
         <span class="kw">for</span> (<span class="ident">rc_ip</span>, <span class="ident">ip</span>) <span class="kw">in</span> <span class="ident">rc_ips</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">ips</span>.<span class="ident">iter</span>()) {
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rc_ip</span>, <span class="ident">ip</span>, <span class="string">&quot;after 1 second&quot;</span>);
         }
 
-        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">2</span>)).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">query</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">2</span>)).<span class="ident">unwrap</span>();
         <span class="kw">for</span> (<span class="ident">rc_ip</span>, <span class="ident">ip</span>) <span class="kw">in</span> <span class="ident">rc_ips</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">ips</span>.<span class="ident">iter</span>()) {
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rc_ip</span>, <span class="ident">ip</span>, <span class="string">&quot;after 2 seconds&quot;</span>);
         }
 
         <span class="comment">// after 3 seconds, the records should be invalid.</span>
-        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">3</span>));
+        <span class="kw">let</span> <span class="ident">rc_ips</span> <span class="op">=</span> <span class="ident">lru</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">query</span>, <span class="ident">now</span> <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">3</span>));
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">rc_ips</span>.<span class="ident">is_none</span>());
     }
 }

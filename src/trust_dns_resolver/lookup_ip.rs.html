@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-resolver-0.10.3/src/lookup_ip.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lookup_ip.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../trust_dns_resolver/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-resolver-0.11.1/src/lookup_ip.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lookup_ip.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../trust_dns_resolver/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -654,6 +654,54 @@
 <span id="654">654</span>
 <span id="655">655</span>
 <span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
+<span id="674">674</span>
+<span id="675">675</span>
+<span id="676">676</span>
+<span id="677">677</span>
+<span id="678">678</span>
+<span id="679">679</span>
+<span id="680">680</span>
+<span id="681">681</span>
+<span id="682">682</span>
+<span id="683">683</span>
+<span id="684">684</span>
+<span id="685">685</span>
+<span id="686">686</span>
+<span id="687">687</span>
+<span id="688">688</span>
+<span id="689">689</span>
+<span id="690">690</span>
+<span id="691">691</span>
+<span id="692">692</span>
+<span id="693">693</span>
+<span id="694">694</span>
+<span id="695">695</span>
+<span id="696">696</span>
+<span id="697">697</span>
+<span id="698">698</span>
+<span id="699">699</span>
+<span id="700">700</span>
+<span id="701">701</span>
+<span id="702">702</span>
+<span id="703">703</span>
+<span id="704">704</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2015-2017 Benjamin Fry &lt;benjaminfry@me.com&gt;</span>
 <span class="comment">//</span>
@@ -675,15 +723,16 @@
 <span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">future</span>, <span class="ident">Async</span>, <span class="ident">Future</span>, <span class="ident">Poll</span>};
 
 <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">op</span>::<span class="ident">Query</span>;
-<span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">rr</span>::{<span class="ident">Name</span>, <span class="ident">RData</span>, <span class="ident">RecordType</span>};
+<span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">rr</span>::{<span class="ident">Name</span>, <span class="ident">RData</span>, <span class="ident">Record</span>, <span class="ident">RecordType</span>};
 <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">xfer</span>::{<span class="ident">DnsHandle</span>, <span class="ident">DnsRequestOptions</span>};
 
 <span class="kw">use</span> <span class="ident">config</span>::<span class="ident">LookupIpStrategy</span>;
+<span class="kw">use</span> <span class="ident">dns_lru</span>::<span class="ident">MAX_TTL</span>;
 <span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">hosts</span>::<span class="ident">Hosts</span>;
-<span class="kw">use</span> <span class="ident">lookup</span>::{<span class="ident">Lookup</span>, <span class="ident">LookupEither</span>, <span class="ident">LookupIter</span>};
+<span class="kw">use</span> <span class="ident">lookup</span>::{<span class="ident">Lookup</span>, <span class="ident">LookupEither</span>, <span class="ident">LookupIntoIter</span>, <span class="ident">LookupIter</span>};
 <span class="kw">use</span> <span class="ident">lookup_state</span>::<span class="ident">CachingClient</span>;
-<span class="kw">use</span> <span class="ident">name_server_pool</span>::{<span class="ident">ConnectionHandle</span>, <span class="ident">StandardConnection</span>};
+<span class="kw">use</span> <span class="ident">name_server</span>::{<span class="ident">ConnectionHandle</span>, <span class="ident">StandardConnection</span>};
 
 <span class="doccomment">/// Result of a DNS query when querying for A or AAAA records.</span>
 <span class="doccomment">///</span>
@@ -695,6 +744,11 @@
     <span class="doccomment">/// Returns a borrowed iterator of the returned IPs</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">LookupIpIter</span> {
         <span class="ident">LookupIpIter</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">iter</span>())
+    }
+
+    <span class="doccomment">/// Returns a reference to the Query that was used to produce this result.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">query</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">Query</span> {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">query</span>()
     }
 
     <span class="doccomment">/// Returns the `Instant` at which this lookup is no longer valid.</span>
@@ -721,7 +775,36 @@
             <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">ip</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">IpAddr</span>::<span class="ident">from</span>(<span class="ident">ip</span>)),
             <span class="ident">RData</span>::<span class="ident">AAAA</span>(<span class="ident">ip</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">IpAddr</span>::<span class="ident">from</span>(<span class="ident">ip</span>)),
             <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-        }).<span class="ident">next</span>()
+        })
+        .<span class="ident">next</span>()
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">LookupIp</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">IpAddr</span>;
+    <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">LookupIpIntoIter</span>;
+
+    <span class="doccomment">/// This is most likely not a free conversion, the RDatas will be cloned if data is</span>
+    <span class="doccomment">///  held behind an Arc with more than one reference (which is most likely the case coming from cache)</span>
+    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">IntoIter</span> {
+        <span class="ident">LookupIpIntoIter</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">into_iter</span>())
+    }
+}
+
+<span class="doccomment">/// Borrowed view of set of RDatas returned from a Lookup</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LookupIpIntoIter</span>(<span class="ident">LookupIntoIter</span>);
+
+<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">LookupIpIntoIter</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">IpAddr</span>;
+
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">iter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw">_</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="number">0</span>;
+        <span class="ident">iter</span>.<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">rdata</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">rdata</span> {
+            <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">ip</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">IpAddr</span>::<span class="ident">from</span>(<span class="ident">ip</span>)),
+            <span class="ident">RData</span>::<span class="ident">AAAA</span>(<span class="ident">ip</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">IpAddr</span>::<span class="ident">from</span>(<span class="ident">ip</span>)),
+            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+        })
+        .<span class="ident">next</span>()
     }
 }
 
@@ -779,9 +862,9 @@
                 } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ip_addr</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">finally_ip_addr</span>.<span class="ident">take</span>() {
                     <span class="comment">// Otherwise, if there&#39;s an IP address to fall back to,</span>
                     <span class="comment">// we&#39;ll return it.</span>
-                    <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(
-                        <span class="ident">Lookup</span>::<span class="ident">new_with_max_ttl</span>(<span class="ident">Arc</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ip_addr</span>])).<span class="ident">into</span>(),
-                    ));
+                    <span class="kw">let</span> <span class="ident">record</span> <span class="op">=</span> <span class="ident">Record</span>::<span class="ident">from_rdata</span>(<span class="ident">Name</span>::<span class="ident">new</span>(), <span class="ident">MAX_TTL</span>, <span class="ident">ip_addr</span>);
+                    <span class="kw">let</span> <span class="ident">lookup</span> <span class="op">=</span> <span class="ident">Lookup</span>::<span class="ident">new_with_max_ttl</span>(<span class="ident">Query</span>::<span class="ident">new</span>(), <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">record</span>]));
+                    <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">lookup</span>.<span class="ident">into</span>()));
                 }
             };
 
@@ -832,7 +915,7 @@
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">error</span><span class="op">&lt;</span><span class="ident">E</span>: <span class="ident">Fail</span><span class="op">&gt;</span>(<span class="ident">client_cache</span>: <span class="ident">CachingClient</span><span class="op">&lt;</span><span class="ident">C</span><span class="op">&gt;</span>, <span class="ident">error</span>: <span class="ident">E</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">return</span> <span class="ident">LookupIpFuture</span> {
+        <span class="ident">LookupIpFuture</span> {
             <span class="comment">// errors on names don&#39;t need to be cheap... i.e. this clone is unfortunate in this case.</span>
             <span class="ident">client_cache</span>,
             <span class="ident">names</span>: <span class="macro">vec</span><span class="macro">!</span>[],
@@ -843,11 +926,11 @@
             )),
             <span class="ident">hosts</span>: <span class="prelude-val">None</span>,
             <span class="ident">finally_ip_addr</span>: <span class="prelude-val">None</span>,
-        };
+        }
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">ok</span>(<span class="ident">client_cache</span>: <span class="ident">CachingClient</span><span class="op">&lt;</span><span class="ident">C</span><span class="op">&gt;</span>, <span class="ident">lp</span>: <span class="ident">Lookup</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">return</span> <span class="ident">LookupIpFuture</span> {
+        <span class="ident">LookupIpFuture</span> {
             <span class="ident">client_cache</span>,
             <span class="ident">names</span>: <span class="macro">vec</span><span class="macro">!</span>[],
             <span class="ident">strategy</span>: <span class="ident">LookupIpStrategy</span>::<span class="ident">default</span>(),
@@ -855,7 +938,7 @@
             <span class="ident">query</span>: <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">future</span>::<span class="ident">ok</span>(<span class="ident">lp</span>)),
             <span class="ident">hosts</span>: <span class="prelude-val">None</span>,
             <span class="ident">finally_ip_addr</span>: <span class="prelude-val">None</span>,
-        };
+        }
     }
 }
 <span class="doccomment">/// returns a new future for lookup</span>
@@ -925,17 +1008,18 @@
             <span class="ident">client</span>.<span class="ident">clone</span>(),
             <span class="ident">options</span>.<span class="ident">clone</span>(),
             <span class="ident">hosts</span>.<span class="ident">clone</span>(),
-        ).<span class="ident">select</span>(<span class="ident">hosts_lookup</span>(
+        )
+        .<span class="ident">select</span>(<span class="ident">hosts_lookup</span>(
             <span class="ident">Query</span>::<span class="ident">query</span>(<span class="ident">name</span>, <span class="ident">RecordType</span>::<span class="ident">AAAA</span>),
             <span class="ident">client</span>,
             <span class="ident">options</span>,
             <span class="ident">hosts</span>,
         ))
-            .<span class="ident">then</span>(<span class="op">|</span><span class="ident">sel_res</span><span class="op">|</span> {
-                <span class="kw">match</span> <span class="ident">sel_res</span> {
-                    <span class="comment">// Some ips returned, get the other record result, or else just return record</span>
-                    <span class="prelude-val">Ok</span>((<span class="ident">ips</span>, <span class="ident">remaining_query</span>)) <span class="op">=&gt;</span> {
-                        <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">remaining_query</span>.<span class="ident">then</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">query_res</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">query_res</span> {
+        .<span class="ident">then</span>(<span class="op">|</span><span class="ident">sel_res</span><span class="op">|</span> {
+            <span class="kw">match</span> <span class="ident">sel_res</span> {
+                <span class="comment">// Some ips returned, get the other record result, or else just return record</span>
+                <span class="prelude-val">Ok</span>((<span class="ident">ips</span>, <span class="ident">remaining_query</span>)) <span class="op">=&gt;</span> {
+                    <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">remaining_query</span>.<span class="ident">then</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">query_res</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">query_res</span> {
                             <span class="comment">// join AAAA and A results</span>
                             <span class="prelude-val">Ok</span>(<span class="ident">rem_ips</span>) <span class="op">=&gt;</span> {
                                 <span class="comment">// TODO: create a LookupIp enum with the ability to chain these together</span>
@@ -947,12 +1031,12 @@
                         })) <span class="kw">as</span>
                             <span class="comment">// This cast is to resolve a comilation error, not sure of it&#39;s necessity</span>
                             <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">Lookup</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">ResolveError</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span>
-                    }
-
-                    <span class="comment">// One failed, just return the other</span>
-                    <span class="prelude-val">Err</span>((<span class="kw">_</span>, <span class="ident">remaining_query</span>)) <span class="op">=&gt;</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">remaining_query</span>),
                 }
-            }),
+
+                <span class="comment">// One failed, just return the other</span>
+                <span class="prelude-val">Err</span>((<span class="kw">_</span>, <span class="ident">remaining_query</span>)) <span class="op">=&gt;</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">remaining_query</span>),
+            }
+        }),
     )
 }
 
@@ -1006,7 +1090,8 @@
             <span class="ident">client</span>,
             <span class="ident">options</span>.<span class="ident">clone</span>(),
             <span class="ident">hosts</span>.<span class="ident">clone</span>(),
-        ).<span class="ident">then</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">res</span><span class="op">|</span> {
+        )
+        .<span class="ident">then</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">res</span><span class="op">|</span> {
             <span class="kw">match</span> <span class="ident">res</span> {
                 <span class="prelude-val">Ok</span>(<span class="ident">ips</span>) <span class="op">=&gt;</span> {
                     <span class="kw">if</span> <span class="ident">ips</span>.<span class="ident">is_empty</span>() {
@@ -1043,7 +1128,7 @@
 
     <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">error</span>::{<span class="ident">ProtoError</span>, <span class="ident">ProtoResult</span>};
     <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">op</span>::<span class="ident">Message</span>;
-    <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">rr</span>::{<span class="ident">Name</span>, <span class="ident">RData</span>, <span class="ident">Record</span>, <span class="ident">RecordType</span>};
+    <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">rr</span>::{<span class="ident">Name</span>, <span class="ident">RData</span>, <span class="ident">Record</span>};
     <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">xfer</span>::{<span class="ident">DnsHandle</span>, <span class="ident">DnsRequest</span>, <span class="ident">DnsResponse</span>};
 
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
@@ -1058,7 +1143,7 @@
 
         <span class="kw">fn</span> <span class="ident">send</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">DnsRequest</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw">_</span>: <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Response</span> {
             <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">future</span>::<span class="ident">result</span>(
-                <span class="self">self</span>.<span class="ident">messages</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">pop</span>().<span class="ident">unwrap_or</span>(<span class="ident">empty</span>()),
+                <span class="self">self</span>.<span class="ident">messages</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">pop</span>().<span class="ident">unwrap_or_else</span>(<span class="ident">empty</span>),
             ))
         }
     }
@@ -1068,7 +1153,6 @@
         <span class="ident">message</span>.<span class="ident">insert_answers</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Record</span>::<span class="ident">from_rdata</span>(
             <span class="ident">Name</span>::<span class="ident">root</span>(),
             <span class="number">86400</span>,
-            <span class="ident">RecordType</span>::<span class="ident">A</span>,
             <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)),
         )]);
         <span class="prelude-val">Ok</span>(<span class="ident">message</span>.<span class="ident">into</span>())
@@ -1079,7 +1163,6 @@
         <span class="ident">message</span>.<span class="ident">insert_answers</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Record</span>::<span class="ident">from_rdata</span>(
             <span class="ident">Name</span>::<span class="ident">root</span>(),
             <span class="number">86400</span>,
-            <span class="ident">RecordType</span>::<span class="ident">AAAA</span>,
             <span class="ident">RData</span>::<span class="ident">AAAA</span>(<span class="ident">Ipv6Addr</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)),
         )]);
         <span class="prelude-val">Ok</span>(<span class="ident">message</span>.<span class="ident">into</span>())
@@ -1107,11 +1190,12 @@
                 <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">v4_message</span>()])),
                 <span class="ident">Default</span>::<span class="ident">default</span>(),
                 <span class="prelude-val">None</span>,
-            ).<span class="ident">wait</span>()
-                .<span class="ident">unwrap</span>()
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)]
         );
     }
@@ -1124,11 +1208,12 @@
                 <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">v6_message</span>()])),
                 <span class="ident">Default</span>::<span class="ident">default</span>(),
                 <span class="prelude-val">None</span>,
-            ).<span class="ident">wait</span>()
-                .<span class="ident">unwrap</span>()
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Ipv6Addr</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)]
         );
     }
@@ -1143,11 +1228,12 @@
                 <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">v6_message</span>(), <span class="ident">v4_message</span>()])),
                 <span class="ident">Default</span>::<span class="ident">default</span>(),
                 <span class="prelude-val">None</span>,
-            ).<span class="ident">wait</span>()
-                .<span class="ident">unwrap</span>()
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
             <span class="macro">vec</span><span class="macro">!</span>[
                 <span class="ident">IpAddr</span>::<span class="ident">V4</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)),
                 <span class="ident">IpAddr</span>::<span class="ident">V6</span>(<span class="ident">Ipv6Addr</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)),
@@ -1161,11 +1247,12 @@
                 <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">empty</span>(), <span class="ident">v4_message</span>()])),
                 <span class="ident">Default</span>::<span class="ident">default</span>(),
                 <span class="prelude-val">None</span>,
-            ).<span class="ident">wait</span>()
-                .<span class="ident">unwrap</span>()
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">IpAddr</span>::<span class="ident">V4</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))]
         );
 
@@ -1176,11 +1263,12 @@
                 <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">error</span>(), <span class="ident">v4_message</span>()])),
                 <span class="ident">Default</span>::<span class="ident">default</span>(),
                 <span class="prelude-val">None</span>,
-            ).<span class="ident">wait</span>()
-                .<span class="ident">unwrap</span>()
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">IpAddr</span>::<span class="ident">V4</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))]
         );
 
@@ -1191,11 +1279,12 @@
                 <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">v6_message</span>(), <span class="ident">empty</span>()])),
                 <span class="ident">Default</span>::<span class="ident">default</span>(),
                 <span class="prelude-val">None</span>,
-            ).<span class="ident">wait</span>()
-                .<span class="ident">unwrap</span>()
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">IpAddr</span>::<span class="ident">V6</span>(<span class="ident">Ipv6Addr</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))]
         );
 
@@ -1206,11 +1295,12 @@
                 <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">v6_message</span>(), <span class="ident">error</span>()])),
                 <span class="ident">Default</span>::<span class="ident">default</span>(),
                 <span class="prelude-val">None</span>,
-            ).<span class="ident">wait</span>()
-                .<span class="ident">unwrap</span>()
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">IpAddr</span>::<span class="ident">V6</span>(<span class="ident">Ipv6Addr</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))]
         );
     }
@@ -1224,11 +1314,12 @@
                 <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">v6_message</span>()])),
                 <span class="ident">Default</span>::<span class="ident">default</span>(),
                 <span class="prelude-val">None</span>,
-            ).<span class="ident">wait</span>()
-                .<span class="ident">unwrap</span>()
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Ipv6Addr</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)]
         );
 
@@ -1239,11 +1330,12 @@
                 <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">v4_message</span>(), <span class="ident">empty</span>()])),
                 <span class="ident">Default</span>::<span class="ident">default</span>(),
                 <span class="prelude-val">None</span>,
-            ).<span class="ident">wait</span>()
-                .<span class="ident">unwrap</span>()
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)]
         );
 
@@ -1254,11 +1346,12 @@
                 <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">v4_message</span>(), <span class="ident">error</span>()])),
                 <span class="ident">Default</span>::<span class="ident">default</span>(),
                 <span class="prelude-val">None</span>,
-            ).<span class="ident">wait</span>()
-                .<span class="ident">unwrap</span>()
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)]
         );
     }
@@ -1272,11 +1365,12 @@
                 <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">v4_message</span>()])),
                 <span class="ident">Default</span>::<span class="ident">default</span>(),
                 <span class="prelude-val">None</span>,
-            ).<span class="ident">wait</span>()
-                .<span class="ident">unwrap</span>()
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)]
         );
 
@@ -1287,11 +1381,12 @@
                 <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">v6_message</span>(), <span class="ident">empty</span>()])),
                 <span class="ident">Default</span>::<span class="ident">default</span>(),
                 <span class="prelude-val">None</span>,
-            ).<span class="ident">wait</span>()
-                .<span class="ident">unwrap</span>()
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Ipv6Addr</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)]
         );
 
@@ -1302,11 +1397,12 @@
                 <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">v6_message</span>(), <span class="ident">error</span>()])),
                 <span class="ident">Default</span>::<span class="ident">default</span>(),
                 <span class="prelude-val">None</span>,
-            ).<span class="ident">wait</span>()
-                .<span class="ident">unwrap</span>()
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Ipv6Addr</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)]
         );
     }

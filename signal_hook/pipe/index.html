@@ -10,7 +10,7 @@ pipe ‒ anything that can be <code>sent</code> to is fine ‒ sockets too, ther
 good candidate).</p>
 <p>If you want to integrate with some asynchronous library, plugging streams from <code>mio-uds</code> or
 <code>tokio-uds</code> libraries should work.</p>
-<p>If it looks too low-level for your needs, the <a href="iterator/"><code>iterator</code></a> module contains some
+<p>If it looks too low-level for your needs, the <a href="../iterator/"><code>iterator</code></a> module contains some
 higher-lever interface that also uses a self-pipe pattern under the hood.</p>
 <h1 id="correct-order-of-handling" class="section-header"><a href="#correct-order-of-handling">Correct order of handling</a></h1>
 <p>A care needs to be taken to avoid race conditions, especially when handling the same signal in

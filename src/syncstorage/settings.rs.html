@@ -282,7 +282,7 @@
 }
 
 <span class="doccomment">/// Server-enforced limits for request payloads.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ServerLimits</span> {
     <span class="doccomment">/// Maximum combined size of BSO payloads for a single request, in bytes.</span>
     <span class="kw">pub</span> <span class="ident">max_post_bytes</span>: <span class="ident">u32</span>,

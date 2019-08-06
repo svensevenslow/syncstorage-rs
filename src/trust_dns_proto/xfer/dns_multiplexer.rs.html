@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.5.0/src/xfer/dns_multiplexer.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>dns_multiplexer.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../trust_dns_proto/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.7.4/src/xfer/dns_multiplexer.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>dns_multiplexer.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../trust_dns_proto/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -524,7 +524,6 @@
 <span id="524">524</span>
 <span id="525">525</span>
 <span id="526">526</span>
-<span id="527">527</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2015-2018 Benjamin Fry &lt;benjaminfry@me.com&gt;</span>
 <span class="comment">//</span>
@@ -550,13 +549,13 @@
 <span class="kw">use</span> <span class="ident">smallvec</span>::<span class="ident">SmallVec</span>;
 <span class="kw">use</span> <span class="ident">tokio_timer</span>::<span class="ident">Delay</span>;
 
-<span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">op</span>::{<span class="ident">Message</span>, <span class="ident">MessageFinalizer</span>, <span class="ident">OpCode</span>};
-<span class="kw">use</span> <span class="ident">xfer</span>::{
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">error</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">op</span>::{<span class="ident">Message</span>, <span class="ident">MessageFinalizer</span>, <span class="ident">OpCode</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">xfer</span>::{
     <span class="ident">ignore_send</span>, <span class="ident">DnsClientStream</span>, <span class="ident">DnsRequest</span>, <span class="ident">DnsRequestOptions</span>, <span class="ident">DnsRequestSender</span>, <span class="ident">DnsResponse</span>,
     <span class="ident">SerialMessage</span>,
 };
-<span class="kw">use</span> <span class="ident">DnsStreamHandle</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">DnsStreamHandle</span>;
 
 <span class="kw">const</span> <span class="ident">QOS_MAX_RECEIVE_MSGS</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">100</span>; <span class="comment">// max number of messages to receive from the UDP socket</span>
 
@@ -656,7 +655,7 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">MF</span><span class="op">&gt;</span> <span class="ident">DnsMultiplexer</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">MF</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">DnsStreamHandle</span><span class="op">&gt;&gt;</span>
 <span class="kw">where</span>
     <span class="ident">S</span>: <span class="ident">DnsClientStream</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-    <span class="ident">MF</span>: <span class="ident">MessageFinalizer</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+    <span class="ident">MF</span>: <span class="ident">MessageFinalizer</span>,
 {
     <span class="doccomment">/// Spawns a new DnsMultiplexer Stream. This uses a default timeout of 5 seconds for all requests.</span>
     <span class="doccomment">///</span>
@@ -666,6 +665,7 @@
     <span class="doccomment">///              (see TcpClientStream or UdpClientStream)</span>
     <span class="doccomment">/// * `stream_handle` - The handle for the `stream` on which bytes can be sent/received.</span>
     <span class="doccomment">/// * `signer` - An optional signer for requests, needed for Updates with Sig0, otherwise not needed</span>
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">new_ret_no_self</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(
         <span class="ident">stream</span>: <span class="ident">F</span>,
         <span class="ident">stream_handle</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">DnsStreamHandle</span><span class="op">&gt;</span>,
@@ -700,7 +700,7 @@
             <span class="ident">stream</span>,
             <span class="ident">stream_handle</span>: <span class="prelude-val">Some</span>(<span class="ident">stream_handle</span>),
             <span class="ident">timeout_duration</span>,
-            <span class="ident">signer</span>: <span class="ident">signer</span>,
+            <span class="ident">signer</span>,
         }
     }
 
@@ -769,7 +769,7 @@
 
         <span class="kw">let</span> <span class="ident">error</span> <span class="op">=</span> <span class="ident">ProtoError</span>::<span class="ident">from</span>(<span class="string">&quot;stream closed before response received&quot;</span>);
 
-        <span class="kw">for</span> (<span class="kw">_</span>, <span class="kw-2">mut</span> <span class="ident">active_request</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">active_requests</span>.<span class="ident">drain</span>() {
+        <span class="kw">for</span> (<span class="kw">_</span>, <span class="ident">active_request</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">active_requests</span>.<span class="ident">drain</span>() {
             <span class="kw">if</span> <span class="ident">active_request</span>.<span class="ident">responses</span>.<span class="ident">is_empty</span>() {
                 <span class="comment">// complete the request, it&#39;s failed...</span>
                 <span class="ident">active_request</span>.<span class="ident">complete_with_error</span>(<span class="ident">error</span>.<span class="ident">clone</span>());
@@ -849,8 +849,7 @@
             <span class="ident">Async</span>::<span class="ident">NotReady</span> <span class="op">=&gt;</span> {
                 <span class="kw">return</span> <span class="ident">DnsMultiplexerSerialResponseInner</span>::<span class="prelude-val">Err</span>(<span class="prelude-val">Some</span>(<span class="ident">ProtoError</span>::<span class="ident">from</span>(
                     <span class="string">&quot;id space exhausted, consider filing an issue&quot;</span>,
-                )))
-                .<span class="ident">into</span>()
+                ))).<span class="ident">into</span>()
             }
         };
 
@@ -873,7 +872,7 @@
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">signer</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">signer</span> {
                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="ident">request</span>.<span class="ident">finalize</span>::<span class="op">&lt;</span><span class="ident">MF</span><span class="op">&gt;</span>(<span class="ident">signer</span>.<span class="ident">borrow</span>(), <span class="ident">now</span>) {
                     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;could not sign message: {}&quot;</span>, <span class="ident">e</span>);
-                    <span class="kw">return</span> <span class="ident">DnsMultiplexerSerialResponseInner</span>::<span class="prelude-val">Err</span>(<span class="prelude-val">Some</span>(<span class="ident">e</span>.<span class="ident">into</span>())).<span class="ident">into</span>();
+                    <span class="kw">return</span> <span class="ident">DnsMultiplexerSerialResponseInner</span>::<span class="prelude-val">Err</span>(<span class="prelude-val">Some</span>(<span class="ident">e</span>)).<span class="ident">into</span>();
                 }
             }
         }
@@ -897,9 +896,7 @@
                     <span class="prelude-val">Ok</span>(()) <span class="op">=&gt;</span> <span class="self">self</span>
                         .<span class="ident">active_requests</span>
                         .<span class="ident">insert</span>(<span class="ident">active_request</span>.<span class="ident">request_id</span>(), <span class="ident">active_request</span>),
-                    <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
-                        <span class="kw">return</span> <span class="ident">DnsMultiplexerSerialResponseInner</span>::<span class="prelude-val">Err</span>(<span class="prelude-val">Some</span>(<span class="ident">err</span>.<span class="ident">into</span>())).<span class="ident">into</span>()
-                    }
+                    <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">DnsMultiplexerSerialResponseInner</span>::<span class="prelude-val">Err</span>(<span class="prelude-val">Some</span>(<span class="ident">err</span>)).<span class="ident">into</span>(),
                 };
             }
             <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> {
@@ -961,7 +958,7 @@
                             <span class="ident">Entry</span>::<span class="ident">Occupied</span>(<span class="kw-2">mut</span> <span class="ident">request_entry</span>) <span class="op">=&gt;</span> {
                                 <span class="comment">// first add the response to the active_requests responses</span>
                                 <span class="kw">let</span> <span class="ident">complete</span> <span class="op">=</span> {
-                                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">active_request</span> <span class="op">=</span> <span class="ident">request_entry</span>.<span class="ident">get_mut</span>();
+                                    <span class="kw">let</span> <span class="ident">active_request</span> <span class="op">=</span> <span class="ident">request_entry</span>.<span class="ident">get_mut</span>();
                                     <span class="ident">active_request</span>.<span class="ident">add_response</span>(<span class="ident">message</span>);
 
                                     <span class="comment">// determine if this is complete</span>
@@ -970,7 +967,7 @@
 
                                 <span class="comment">// now check if the request is complete</span>
                                 <span class="kw">if</span> <span class="ident">complete</span> {
-                                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">active_request</span> <span class="op">=</span> <span class="ident">request_entry</span>.<span class="ident">remove</span>();
+                                    <span class="kw">let</span> <span class="ident">active_request</span> <span class="op">=</span> <span class="ident">request_entry</span>.<span class="ident">remove</span>();
                                     <span class="ident">active_request</span>.<span class="ident">complete</span>();
                                 }
                             }
@@ -1040,10 +1037,11 @@
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="comment">// The inner type of the completion might have been an error</span>
             <span class="comment">//   we need to unwrap that, and translate to be the Future&#39;s error</span>
-            <span class="ident">DnsMultiplexerSerialResponseInner</span>::<span class="ident">Completion</span>(<span class="ident">complete</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="macro">try_ready</span><span class="macro">!</span>(<span class="ident">complete</span>
-                .<span class="ident">poll</span>()
-                .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ProtoError</span>::<span class="ident">from</span>(<span class="string">&quot;the completion was canceled&quot;</span>)))
-            {
+            <span class="ident">DnsMultiplexerSerialResponseInner</span>::<span class="ident">Completion</span>(<span class="ident">complete</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="macro">try_ready</span><span class="macro">!</span>(
+                <span class="ident">complete</span>
+                    .<span class="ident">poll</span>()
+                    .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ProtoError</span>::<span class="ident">from</span>(<span class="string">&quot;the completion was canceled&quot;</span>))
+            ) {
                 <span class="prelude-val">Ok</span>(<span class="ident">response</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="ident">response</span>)),
                 <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>),
             },

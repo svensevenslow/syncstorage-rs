@@ -36,9 +36,6 @@ into a vector.</p>
 </td></tr><tr class='module-item'><td><a class="struct" href="struct.ReadUntil.html" title='tokio::io::ReadUntil struct'>ReadUntil</a></td><td class='docblock-short'><p>A future which can be used to easily read the contents of a stream into a
 vector until the delimiter is reached.</p>
 </td></tr><tr class='module-item'><td><a class="struct" href="struct.Shutdown.html" title='tokio::io::Shutdown struct'>Shutdown</a></td><td class='docblock-short'><p>A future used to fully shutdown an I/O object.</p>
-</td></tr><tr class='module-item'><td><a class="struct" href="struct.Stderr.html" title='tokio::io::Stderr struct'>Stderr</a></td><td class='docblock-short'><p>A handle to the standard error stream of a process.</p>
-</td></tr><tr class='module-item'><td><a class="struct" href="struct.Stdin.html" title='tokio::io::Stdin struct'>Stdin</a></td><td class='docblock-short'><p>A handle to the standard input stream of a process.</p>
-</td></tr><tr class='module-item'><td><a class="struct" href="struct.Stdout.html" title='tokio::io::Stdout struct'>Stdout</a></td><td class='docblock-short'><p>A handle to the standard output stream of a process.</p>
 </td></tr><tr class='module-item'><td><a class="struct" href="struct.WriteAll.html" title='tokio::io::WriteAll struct'>WriteAll</a></td><td class='docblock-short'><p>A future used to write the entire contents of some data to a stream.</p>
 </td></tr><tr class='module-item'><td><a class="struct" href="struct.WriteHalf.html" title='tokio::io::WriteHalf struct'>WriteHalf</a></td><td class='docblock-short'><p>The writable half of an object returned from <code>AsyncRead::split</code>.</p>
 </td></tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
@@ -66,9 +63,6 @@ object <code>A</code> into the buffer provided until the delimiter <code>byte</c
 This method is the async equivalent to <a href="https://doc.rust-lang.org/std/io/trait.BufRead.html#method.read_until"><code>BufRead::read_until</code></a>.</p>
 </td></tr><tr class='module-item'><td><a class="fn" href="fn.shutdown.html" title='tokio::io::shutdown fn'>shutdown</a></td><td class='docblock-short'><p>Creates a future which will entirely shutdown an I/O object and then yield
 the object itself.</p>
-</td></tr><tr class='module-item'><td><a class="fn" href="fn.stderr.html" title='tokio::io::stderr fn'>stderr</a></td><td class='docblock-short'><p>Constructs a new handle to the standard error of the current process.</p>
-</td></tr><tr class='module-item'><td><a class="fn" href="fn.stdin.html" title='tokio::io::stdin fn'>stdin</a></td><td class='docblock-short'><p>Constructs a new handle to the standard input of the current process.</p>
-</td></tr><tr class='module-item'><td><a class="fn" href="fn.stdout.html" title='tokio::io::stdout fn'>stdout</a></td><td class='docblock-short'><p>Constructs a new handle to the standard output of the current process.</p>
 </td></tr><tr class='module-item'><td><a class="fn" href="fn.write_all.html" title='tokio::io::write_all fn'>write_all</a></td><td class='docblock-short'><p>Creates a future that will write the entire contents of the buffer <code>buf</code> to
 the stream <code>a</code> provided.</p>
 </td></tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>

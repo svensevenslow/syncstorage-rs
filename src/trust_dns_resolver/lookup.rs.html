@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-resolver-0.10.3/src/lookup.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lookup.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../trust_dns_resolver/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-resolver-0.11.1/src/lookup.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lookup.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../trust_dns_resolver/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -483,6 +483,232 @@
 <span id="483">483</span>
 <span id="484">484</span>
 <span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
+<span id="614">614</span>
+<span id="615">615</span>
+<span id="616">616</span>
+<span id="617">617</span>
+<span id="618">618</span>
+<span id="619">619</span>
+<span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+<span id="624">624</span>
+<span id="625">625</span>
+<span id="626">626</span>
+<span id="627">627</span>
+<span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
+<span id="639">639</span>
+<span id="640">640</span>
+<span id="641">641</span>
+<span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
+<span id="674">674</span>
+<span id="675">675</span>
+<span id="676">676</span>
+<span id="677">677</span>
+<span id="678">678</span>
+<span id="679">679</span>
+<span id="680">680</span>
+<span id="681">681</span>
+<span id="682">682</span>
+<span id="683">683</span>
+<span id="684">684</span>
+<span id="685">685</span>
+<span id="686">686</span>
+<span id="687">687</span>
+<span id="688">688</span>
+<span id="689">689</span>
+<span id="690">690</span>
+<span id="691">691</span>
+<span id="692">692</span>
+<span id="693">693</span>
+<span id="694">694</span>
+<span id="695">695</span>
+<span id="696">696</span>
+<span id="697">697</span>
+<span id="698">698</span>
+<span id="699">699</span>
+<span id="700">700</span>
+<span id="701">701</span>
+<span id="702">702</span>
+<span id="703">703</span>
+<span id="704">704</span>
+<span id="705">705</span>
+<span id="706">706</span>
+<span id="707">707</span>
+<span id="708">708</span>
+<span id="709">709</span>
+<span id="710">710</span>
+<span id="711">711</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2015-2017 Benjamin Fry &lt;benjaminfry@me.com&gt;</span>
 <span class="comment">//</span>
@@ -498,13 +724,14 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">Iter</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::{<span class="ident">Duration</span>, <span class="ident">Instant</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">vec</span>::<span class="ident">IntoIter</span>;
 
 <span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">future</span>, <span class="ident">Async</span>, <span class="ident">Future</span>, <span class="ident">Poll</span>};
 
 <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">error</span>::<span class="ident">ProtoError</span>;
 <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">op</span>::<span class="ident">Query</span>;
 <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">rr</span>::<span class="ident">rdata</span>;
-<span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">rr</span>::{<span class="ident">Name</span>, <span class="ident">RData</span>, <span class="ident">RecordType</span>};
+<span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">rr</span>::{<span class="ident">Name</span>, <span class="ident">RData</span>, <span class="ident">Record</span>, <span class="ident">RecordType</span>};
 <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">xfer</span>::{<span class="ident">DnsRequest</span>, <span class="ident">DnsRequestOptions</span>, <span class="ident">DnsResponse</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dnssec&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">proto</span>::<span class="ident">SecureDnsHandle</span>;
@@ -514,38 +741,61 @@
 <span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">lookup_ip</span>::<span class="ident">LookupIpIter</span>;
 <span class="kw">use</span> <span class="ident">lookup_state</span>::<span class="ident">CachingClient</span>;
-<span class="kw">use</span> <span class="ident">name_server_pool</span>::{<span class="ident">ConnectionHandle</span>, <span class="ident">ConnectionProvider</span>, <span class="ident">NameServerPool</span>, <span class="ident">StandardConnection</span>};
+<span class="kw">use</span> <span class="ident">name_server</span>::{<span class="ident">ConnectionHandle</span>, <span class="ident">ConnectionProvider</span>, <span class="ident">NameServerPool</span>, <span class="ident">StandardConnection</span>};
 
-<span class="doccomment">/// Result of a DNS query when querying for any record type supported by the TRust-DNS Proto library.</span>
+<span class="doccomment">/// Result of a DNS query when querying for any record type supported by the Trust-DNS Proto library.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// For IP resolution see LookupIp, as it has more features for A and AAAA lookups.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Lookup</span> {
-    <span class="ident">rdatas</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RData</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">query</span>: <span class="ident">Query</span>,
+    <span class="ident">records</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Record</span><span class="op">&gt;&gt;</span>,
     <span class="ident">valid_until</span>: <span class="ident">Instant</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Lookup</span> {
-    <span class="doccomment">/// Return new instance with given rdatas and the maximum TTL.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_with_max_ttl</span>(<span class="ident">rdatas</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RData</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">valid_until</span> <span class="op">=</span> <span class="ident">Instant</span>::<span class="ident">now</span>() <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="ident">MAX_TTL</span> <span class="kw">as</span> <span class="ident">u64</span>);
+    <span class="doccomment">/// Return new instance with given rdata and the maximum TTL.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_rdata</span>(<span class="ident">query</span>: <span class="ident">Query</span>, <span class="ident">rdata</span>: <span class="ident">RData</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">record</span> <span class="op">=</span> <span class="ident">Record</span>::<span class="ident">from_rdata</span>(<span class="ident">query</span>.<span class="ident">name</span>().<span class="ident">clone</span>(), <span class="ident">MAX_TTL</span>, <span class="ident">rdata</span>);
+        <span class="self">Self</span>::<span class="ident">new_with_max_ttl</span>(<span class="ident">query</span>, <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">record</span>]))
+    }
+
+    <span class="doccomment">/// Return new instance with given records and the maximum TTL.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_with_max_ttl</span>(<span class="ident">query</span>: <span class="ident">Query</span>, <span class="ident">records</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Record</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">valid_until</span> <span class="op">=</span> <span class="ident">Instant</span>::<span class="ident">now</span>() <span class="op">+</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="ident">u64</span>::<span class="ident">from</span>(<span class="ident">MAX_TTL</span>));
         <span class="ident">Lookup</span> {
-            <span class="ident">rdatas</span>,
+            <span class="ident">query</span>,
+            <span class="ident">records</span>,
             <span class="ident">valid_until</span>,
         }
     }
 
-    <span class="doccomment">/// Return a new instance with the given rdatas and deadline.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_with_deadline</span>(<span class="ident">rdatas</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RData</span><span class="op">&gt;&gt;</span>, <span class="ident">valid_until</span>: <span class="ident">Instant</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+    <span class="doccomment">/// Return a new instance with the given records and deadline.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_with_deadline</span>(
+        <span class="ident">query</span>: <span class="ident">Query</span>,
+        <span class="ident">records</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Record</span><span class="op">&gt;&gt;</span>,
+        <span class="ident">valid_until</span>: <span class="ident">Instant</span>,
+    ) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="ident">Lookup</span> {
-            <span class="ident">rdatas</span>,
+            <span class="ident">query</span>,
+            <span class="ident">records</span>,
             <span class="ident">valid_until</span>,
         }
+    }
+
+    <span class="doccomment">/// Returns a reference to the Query that was used to produce this result.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">query</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">Query</span> {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">query</span>
     }
 
     <span class="doccomment">/// Returns a borrowed iterator of the returned IPs</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">LookupIter</span> {
-        <span class="ident">LookupIter</span>(<span class="self">self</span>.<span class="ident">rdatas</span>.<span class="ident">iter</span>())
+        <span class="ident">LookupIter</span>(<span class="self">self</span>.<span class="ident">records</span>.<span class="ident">iter</span>())
+    }
+
+    <span class="doccomment">/// Returns a borrowed iterator of the returned IPs</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">record_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">LookupRecordIter</span> {
+        <span class="ident">LookupRecordIter</span>(<span class="self">self</span>.<span class="ident">records</span>.<span class="ident">iter</span>())
     }
 
     <span class="doccomment">/// Returns the `Instant` at which this `Lookup` is no longer valid.</span>
@@ -553,40 +803,90 @@
         <span class="self">self</span>.<span class="ident">valid_until</span>
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">rdatas</span>.<span class="ident">is_empty</span>()
+    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">records</span>.<span class="ident">is_empty</span>()
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">rdatas</span>.<span class="ident">len</span>()
+        <span class="self">self</span>.<span class="ident">records</span>.<span class="ident">len</span>()
+    }
+
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">records</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">Record</span>] {
+        <span class="self">self</span>.<span class="ident">records</span>.<span class="ident">as_ref</span>()
     }
 
     <span class="doccomment">/// Clones the inner vec, appends the other vec</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">append</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="ident">Lookup</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rdatas</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="self">self</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">other</span>.<span class="ident">len</span>());
-        <span class="ident">rdatas</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>.<span class="ident">rdatas</span>);
-        <span class="ident">rdatas</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">other</span>.<span class="ident">rdatas</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">records</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="self">self</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">other</span>.<span class="ident">len</span>());
+        <span class="ident">records</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>.<span class="ident">records</span>);
+        <span class="ident">records</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">other</span>.<span class="ident">records</span>);
 
         <span class="comment">// Choose the sooner deadline of the two lookups.</span>
         <span class="kw">let</span> <span class="ident">valid_until</span> <span class="op">=</span> <span class="ident">min</span>(<span class="self">self</span>.<span class="ident">valid_until</span>(), <span class="ident">other</span>.<span class="ident">valid_until</span>());
-        <span class="self">Self</span>::<span class="ident">new_with_deadline</span>(<span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">rdatas</span>), <span class="ident">valid_until</span>)
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">RData</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Lookup</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">data</span>: <span class="ident">RData</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">Lookup</span>::<span class="ident">new_with_max_ttl</span>(<span class="ident">Arc</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">data</span>]))
+        <span class="self">Self</span>::<span class="ident">new_with_deadline</span>(<span class="self">self</span>.<span class="ident">query</span>.<span class="ident">clone</span>(), <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">records</span>), <span class="ident">valid_until</span>)
     }
 }
 
 <span class="doccomment">/// Borrowed view of set of RDatas returned from a Lookup</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LookupIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">RData</span><span class="op">&gt;</span>);
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LookupIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">Record</span><span class="op">&gt;</span>);
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">LookupIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">RData</span>;
 
     <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="ident">Record</span>::<span class="ident">rdata</span>)
+    }
+}
+
+<span class="doccomment">/// Borrowed view of set of RDatas returned from a Lookup</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LookupRecordIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">Record</span><span class="op">&gt;</span>);
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">LookupRecordIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Record</span>;
+
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="number">0</span>.<span class="ident">next</span>()
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">Lookup</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">RData</span>;
+    <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">LookupIntoIter</span>;
+
+    <span class="doccomment">/// This is most likely not a free conversion, the RDatas will be cloned if data is</span>
+    <span class="doccomment">///  held behind an Arc with more than one reference (which is most likely the case coming from cache)</span>
+    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">IntoIter</span> {
+        <span class="ident">LookupIntoIter</span> {
+            <span class="ident">records</span>: <span class="ident">Arc</span>::<span class="ident">try_unwrap</span>(<span class="self">self</span>.<span class="ident">records</span>).<span class="ident">map</span>(<span class="ident">IntoIterator</span>::<span class="ident">into_iter</span>),
+            <span class="ident">index</span>: <span class="number">0</span>,
+        }
+    }
+}
+
+<span class="doccomment">/// Borrowed view of set of RDatas returned from a Lookup</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This is not usually a zero overhead Iterator, it may result in clones of the RData</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LookupIntoIter</span> {
+    <span class="comment">// the result of the try_unwrap on Arc</span>
+    <span class="ident">records</span>: <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">IntoIter</span><span class="op">&lt;</span><span class="ident">Record</span><span class="op">&gt;</span>, <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Record</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
+    <span class="ident">index</span>: <span class="ident">usize</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">LookupIntoIter</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">RData</span>;
+
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">records</span> {
+            <span class="comment">// a zero overhead unwrap</span>
+            <span class="prelude-val">Ok</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">iter</span>) <span class="op">=&gt;</span> <span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="ident">Record</span>::<span class="ident">unwrap_rdata</span>),
+            <span class="prelude-val">Err</span>(<span class="kw-2">ref</span> <span class="ident">records</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">rdata</span> <span class="op">=</span> <span class="ident">records</span>.<span class="ident">get</span>(<span class="self">self</span>.<span class="ident">index</span>).<span class="ident">map</span>(<span class="ident">Record</span>::<span class="ident">rdata</span>);
+                <span class="self">self</span>.<span class="ident">index</span> <span class="op">+=</span> <span class="number">1</span>;
+                <span class="ident">rdata</span>.<span class="ident">cloned</span>()
+            }
+        }
     }
 }
 
@@ -659,7 +959,7 @@
         };
 
         <span class="ident">LookupFuture</span> {
-            <span class="ident">client_cache</span>: <span class="ident">client_cache</span>,
+            <span class="ident">client_cache</span>,
             <span class="ident">names</span>,
             <span class="ident">record_type</span>,
             <span class="ident">options</span>,
@@ -684,7 +984,7 @@
                 <span class="comment">// If the query returned a successful lookup, we will attempt</span>
                 <span class="comment">// to retry if the lookup is empty. Otherwise, we will return</span>
                 <span class="comment">// that lookup.</span>
-                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="kw-2">ref</span> <span class="ident">lookup</span>)) <span class="op">=&gt;</span> <span class="ident">lookup</span>.<span class="ident">rdatas</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span>,
+                <span class="prelude-val">Ok</span>(<span class="ident">Async</span>::<span class="ident">Ready</span>(<span class="kw-2">ref</span> <span class="ident">lookup</span>)) <span class="op">=&gt;</span> <span class="ident">lookup</span>.<span class="ident">records</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span>,
                 <span class="comment">// If the query failed, we will attempt to retry.</span>
                 <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
             };
@@ -723,6 +1023,11 @@
         <span class="ident">SrvLookupIter</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">iter</span>())
     }
 
+    <span class="doccomment">/// Returns a reference to the Query that was used to produce this result.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">query</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">Query</span> {
+        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">query</span>()
+    }
+
     <span class="doccomment">/// Returns the list of IPs associated with the SRV record.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// *Note*: the lack of any IPs does not necessarily meant that there are no IPs available for the service, only that they were not included in the original request. A subsequent query for the IPs via the `srv.target()` should resolve to the IPs.</span>
@@ -753,6 +1058,33 @@
     }
 }
 
+<span class="kw">impl</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">SrvLookup</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">rdata</span>::<span class="ident">SRV</span>;
+    <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">SrvLookupIntoIter</span>;
+
+    <span class="doccomment">/// This is most likely not a free conversion, the RDatas will be cloned if data is</span>
+    <span class="doccomment">///  held behind an Arc with more than one reference (which is most likely the case coming from cache)</span>
+    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">IntoIter</span> {
+        <span class="ident">SrvLookupIntoIter</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">into_iter</span>())
+    }
+}
+
+<span class="doccomment">/// Borrowed view of set of RDatas returned from a Lookup</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SrvLookupIntoIter</span>(<span class="ident">LookupIntoIter</span>);
+
+<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">SrvLookupIntoIter</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">rdata</span>::<span class="ident">SRV</span>;
+
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">iter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw">_</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="number">0</span>;
+        <span class="ident">iter</span>.<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">rdata</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">rdata</span> {
+            <span class="ident">RData</span>::<span class="ident">SRV</span>(<span class="ident">data</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">data</span>),
+            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+        })
+        .<span class="ident">next</span>()
+    }
+}
+
 <span class="doccomment">/// A Future while resolves to the Lookup type</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SrvLookupFuture</span>(<span class="ident">LookupFuture</span>);
 
@@ -777,7 +1109,7 @@
 
 <span class="doccomment">/// Creates a Lookup result type from the specified components</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">lookup_type</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">l</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">f</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>:<span class="ident">path</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">path</span>) <span class="op">=&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">l</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ii</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">f</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>:<span class="ident">path</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">path</span>) <span class="op">=&gt;</span> {
         <span class="doccomment">/// Contains the results of a lookup for the associated RecordType</span>
         <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
         <span class="kw">pub</span> <span class="kw">struct</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">l</span>(<span class="ident">Lookup</span>);
@@ -786,6 +1118,11 @@
             <span class="doccomment">/// Returns an iterator over the RData</span>
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span> {
                 <span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">iter</span>())
+            }
+
+            <span class="doccomment">/// Returns a reference to the Query that was used to produce this result.</span>
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">query</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">Query</span> {
+                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">query</span>()
             }
         }
 
@@ -805,6 +1142,33 @@
                 <span class="kw">let</span> <span class="ident">iter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw">_</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="number">0</span>;
                 <span class="ident">iter</span>.<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">rdata</span><span class="op">|</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">rdata</span> {
                     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>(<span class="kw-2">ref</span> <span class="ident">data</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">data</span>),
+                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+                })
+                .<span class="ident">next</span>()
+            }
+        }
+
+        <span class="kw">impl</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">l</span> {
+            <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>;
+            <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ii</span>;
+
+            <span class="doccomment">/// This is most likely not a free conversion, the RDatas will be cloned if data is</span>
+            <span class="doccomment">///  held behind an Arc with more than one reference (which is most likely the case coming from cache)</span>
+            <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">IntoIter</span> {
+                <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ii</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">into_iter</span>())
+            }
+        }
+
+        <span class="doccomment">/// Borrowed view of set of RDatas returned from a Lookup</span>
+        <span class="kw">pub</span> <span class="kw">struct</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ii</span>(<span class="ident">LookupIntoIter</span>);
+
+        <span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ii</span> {
+            <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>;
+
+            <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+                <span class="kw">let</span> <span class="ident">iter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw">_</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="number">0</span>;
+                <span class="ident">iter</span>.<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">rdata</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">rdata</span> {
+                    <span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>(<span class="ident">data</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">data</span>),
                     <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
                 })
                 .<span class="ident">next</span>()
@@ -839,6 +1203,7 @@
 <span class="macro">lookup_type</span><span class="macro">!</span>(
     <span class="ident">ReverseLookup</span>,
     <span class="ident">ReverseLookupIter</span>,
+    <span class="ident">ReverseLookupIntoIter</span>,
     <span class="ident">ReverseLookupFuture</span>,
     <span class="ident">RData</span>::<span class="ident">PTR</span>,
     <span class="ident">Name</span>
@@ -846,6 +1211,7 @@
 <span class="macro">lookup_type</span><span class="macro">!</span>(
     <span class="ident">Ipv4Lookup</span>,
     <span class="ident">Ipv4LookupIter</span>,
+    <span class="ident">Ipv4LookupIntoIter</span>,
     <span class="ident">Ipv4LookupFuture</span>,
     <span class="ident">RData</span>::<span class="ident">A</span>,
     <span class="ident">Ipv4Addr</span>
@@ -853,14 +1219,23 @@
 <span class="macro">lookup_type</span><span class="macro">!</span>(
     <span class="ident">Ipv6Lookup</span>,
     <span class="ident">Ipv6LookupIter</span>,
+    <span class="ident">Ipv6LookupIntoIter</span>,
     <span class="ident">Ipv6LookupFuture</span>,
     <span class="ident">RData</span>::<span class="ident">AAAA</span>,
     <span class="ident">Ipv6Addr</span>
 );
-<span class="macro">lookup_type</span><span class="macro">!</span>(<span class="ident">MxLookup</span>, <span class="ident">MxLookupIter</span>, <span class="ident">MxLookupFuture</span>, <span class="ident">RData</span>::<span class="ident">MX</span>, <span class="ident">rdata</span>::<span class="ident">MX</span>);
+<span class="macro">lookup_type</span><span class="macro">!</span>(
+    <span class="ident">MxLookup</span>,
+    <span class="ident">MxLookupIter</span>,
+    <span class="ident">MxLookupIntoIter</span>,
+    <span class="ident">MxLookupFuture</span>,
+    <span class="ident">RData</span>::<span class="ident">MX</span>,
+    <span class="ident">rdata</span>::<span class="ident">MX</span>
+);
 <span class="macro">lookup_type</span><span class="macro">!</span>(
     <span class="ident">TxtLookup</span>,
     <span class="ident">TxtLookupIter</span>,
+    <span class="ident">TxtLookupIntoIter</span>,
     <span class="ident">TxtLookupFuture</span>,
     <span class="ident">RData</span>::<span class="ident">TXT</span>,
     <span class="ident">rdata</span>::<span class="ident">TXT</span>
@@ -869,6 +1244,7 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">tests</span> {
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">net</span>::{<span class="ident">IpAddr</span>, <span class="ident">Ipv4Addr</span>};
+    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>::<span class="ident">FromStr</span>;
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
 
     <span class="kw">use</span> <span class="ident">futures</span>::{<span class="ident">future</span>, <span class="ident">Future</span>};
@@ -890,7 +1266,7 @@
 
         <span class="kw">fn</span> <span class="ident">send</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">DnsRequest</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw">_</span>: <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Response</span> {
             <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">future</span>::<span class="ident">result</span>(
-                <span class="self">self</span>.<span class="ident">messages</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">pop</span>().<span class="ident">unwrap_or</span>(<span class="ident">empty</span>()),
+                <span class="self">self</span>.<span class="ident">messages</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">pop</span>().<span class="ident">unwrap_or_else</span>(<span class="ident">empty</span>),
             ))
         }
     }
@@ -900,7 +1276,6 @@
         <span class="ident">message</span>.<span class="ident">insert_answers</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Record</span>::<span class="ident">from_rdata</span>(
             <span class="ident">Name</span>::<span class="ident">root</span>(),
             <span class="number">86400</span>,
-            <span class="ident">RecordType</span>::<span class="ident">A</span>,
             <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)),
         )]);
         <span class="prelude-val">Ok</span>(<span class="ident">message</span>.<span class="ident">into</span>())
@@ -939,6 +1314,24 @@
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_lookup_into_iter</span>() {
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">LookupFuture</span>::<span class="ident">lookup</span>(
+                <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Name</span>::<span class="ident">root</span>()],
+                <span class="ident">RecordType</span>::<span class="ident">A</span>,
+                <span class="ident">DnsRequestOptions</span>::<span class="ident">default</span>(),
+                <span class="ident">CachingClient</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">mock</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">v4_message</span>()])),
+            )
+            .<span class="ident">wait</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">into_iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_ip_addr</span>().<span class="ident">unwrap</span>())
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IpAddr</span><span class="op">&gt;&gt;</span>(),
+            <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)]
+        );
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_error</span>() {
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">LookupFuture</span>::<span class="ident">lookup</span>(
             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Name</span>::<span class="ident">root</span>()],
@@ -967,6 +1360,65 @@
                 <span class="ident">valid_until</span>: <span class="prelude-val">None</span>,
             }
         );
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_lookup_into_iter_arc</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lookup</span> <span class="op">=</span> <span class="ident">LookupIntoIter</span> {
+            <span class="ident">records</span>: <span class="prelude-val">Err</span>(<span class="ident">Arc</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[
+                <span class="ident">Record</span>::<span class="ident">from_rdata</span>(
+                    <span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>(),
+                    <span class="number">80</span>,
+                    <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)),
+                ),
+                <span class="ident">Record</span>::<span class="ident">from_rdata</span>(
+                    <span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>(),
+                    <span class="number">80</span>,
+                    <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>)),
+                ),
+            ])),
+            <span class="ident">index</span>: <span class="number">0</span>,
+        };
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">lookup</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(),
+            <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))
+        );
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">lookup</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(),
+            <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>))
+        );
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">lookup</span>.<span class="ident">next</span>(), <span class="prelude-val">None</span>);
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_lookup_into_iter_vec</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lookup</span> <span class="op">=</span> <span class="ident">LookupIntoIter</span> {
+            <span class="ident">records</span>: <span class="prelude-val">Ok</span>(<span class="macro">vec</span><span class="macro">!</span>[
+                <span class="ident">Record</span>::<span class="ident">from_rdata</span>(
+                    <span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>(),
+                    <span class="number">80</span>,
+                    <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)),
+                ),
+                <span class="ident">Record</span>::<span class="ident">from_rdata</span>(
+                    <span class="ident">Name</span>::<span class="ident">from_str</span>(<span class="string">&quot;www.example.com.&quot;</span>).<span class="ident">unwrap</span>(),
+                    <span class="number">80</span>,
+                    <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>)),
+                ),
+            ]
+            .<span class="ident">into_iter</span>()),
+            <span class="ident">index</span>: <span class="number">0</span>,
+        };
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">lookup</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(),
+            <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))
+        );
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">lookup</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(),
+            <span class="ident">RData</span>::<span class="ident">A</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>))
+        );
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">lookup</span>.<span class="ident">next</span>(), <span class="prelude-val">None</span>);
     }
 }
 </pre></div>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/crossbeam-channel-0.3.8/src/flavors/zero.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>zero.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../crossbeam_channel/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/crossbeam-channel-0.3.9/src/flavors/zero.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>zero.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../crossbeam_channel/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -459,6 +459,11 @@
 <span id="459">459</span>
 <span id="460">460</span>
 <span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Zero-capacity channel.</span>
 <span class="doccomment">//!</span>
@@ -474,7 +479,7 @@
 <span class="kw">use</span> <span class="ident">context</span>::<span class="ident">Context</span>;
 <span class="kw">use</span> <span class="ident">err</span>::{<span class="ident">RecvTimeoutError</span>, <span class="ident">SendTimeoutError</span>, <span class="ident">TryRecvError</span>, <span class="ident">TrySendError</span>};
 <span class="kw">use</span> <span class="ident">select</span>::{<span class="ident">Operation</span>, <span class="ident">SelectHandle</span>, <span class="ident">Selected</span>, <span class="ident">Token</span>};
-<span class="kw">use</span> <span class="ident">utils</span>::<span class="ident">Mutex</span>;
+<span class="kw">use</span> <span class="ident">utils</span>::<span class="ident">Spinlock</span>;
 <span class="kw">use</span> <span class="ident">waker</span>::<span class="ident">Waker</span>;
 
 <span class="doccomment">/// A pointer to a packet.</span>
@@ -544,7 +549,7 @@
 <span class="doccomment">/// Zero-capacity channel.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Channel</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Inner representation of the channel.</span>
-    <span class="ident">inner</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Inner</span><span class="op">&gt;</span>,
+    <span class="ident">inner</span>: <span class="ident">Spinlock</span><span class="op">&lt;</span><span class="ident">Inner</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Indicates that dropping a `Channel&lt;T&gt;` may drop values of type `T`.</span>
     <span class="ident">_marker</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
@@ -554,7 +559,7 @@
     <span class="doccomment">/// Constructs a new zero-capacity channel.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="ident">Channel</span> {
-            <span class="ident">inner</span>: <span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="ident">Inner</span> {
+            <span class="ident">inner</span>: <span class="ident">Spinlock</span>::<span class="ident">new</span>(<span class="ident">Inner</span> {
                 <span class="ident">senders</span>: <span class="ident">Waker</span>::<span class="ident">new</span>(),
                 <span class="ident">receivers</span>: <span class="ident">Waker</span>::<span class="ident">new</span>(),
                 <span class="ident">is_disconnected</span>: <span class="bool-val">false</span>,
@@ -784,14 +789,19 @@
         })
     }
 
-    <span class="doccomment">/// Disconnects the channel and wakes up all blocked receivers.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">disconnect</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+    <span class="doccomment">/// Disconnects the channel and wakes up all blocked senders and receivers.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns `true` if this call disconnected the channel.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">disconnect</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">lock</span>();
 
         <span class="kw">if</span> <span class="op">!</span><span class="ident">inner</span>.<span class="ident">is_disconnected</span> {
             <span class="ident">inner</span>.<span class="ident">is_disconnected</span> <span class="op">=</span> <span class="bool-val">true</span>;
             <span class="ident">inner</span>.<span class="ident">senders</span>.<span class="ident">disconnect</span>();
             <span class="ident">inner</span>.<span class="ident">receivers</span>.<span class="ident">disconnect</span>();
+            <span class="bool-val">true</span>
+        } <span class="kw">else</span> {
+            <span class="bool-val">false</span>
         }
     }
 

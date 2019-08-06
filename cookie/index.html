@@ -7,7 +7,7 @@ signing of cookies for session management.</p>
 <p>Add the following to the <code>[dependencies]</code> section of your <code>Cargo.toml</code>:</p>
 
 <div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
-<span class="ident">cookie</span> <span class="op">=</span> <span class="string">&quot;0.11&quot;</span></pre></div>
+<span class="ident">cookie</span> <span class="op">=</span> <span class="string">&quot;0.12&quot;</span></pre></div>
 <p>Then add the following line to your crate root:</p>
 
 <div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
@@ -54,9 +54,6 @@ value of a <code>Cookie</code> during parsing. When this feature is disabled, th
 </td></tr><tr class='module-item'><td><a class="struct" href="struct.EncodedCookie.html" title='cookie::EncodedCookie struct'>EncodedCookie</a></td><td class='docblock-short'><p>Wrapper around <code>Cookie</code> whose <code>Display</code> implementation percent-encodes the
 cookie's name and value.</p>
 </td></tr><tr class='module-item'><td><a class="struct" href="struct.Iter.html" title='cookie::Iter struct'>Iter</a></td><td class='docblock-short'><p>Iterator over all of the cookies in a jar.</p>
-</td></tr><tr class='module-item'><td><a class="struct" href="struct.Key.html" title='cookie::Key struct'>Key</a></td><td class='docblock-short'><p>A cryptographic master key for use with <code>Signed</code> and/or <code>Private</code> jars.</p>
-</td></tr><tr class='module-item'><td><a class="struct" href="struct.PrivateJar.html" title='cookie::PrivateJar struct'>PrivateJar</a></td><td class='docblock-short'><p>A child cookie jar that provides authenticated encryption for its cookies.</p>
-</td></tr><tr class='module-item'><td><a class="struct" href="struct.SignedJar.html" title='cookie::SignedJar struct'>SignedJar</a></td><td class='docblock-short'><p>A child cookie jar that authenticates its cookies.</p>
 </td></tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table><tr class='module-item'><td><a class="enum" href="enum.ParseError.html" title='cookie::ParseError enum'>ParseError</a></td><td class='docblock-short'><p>Enum corresponding to a parsing error.</p>
 </td></tr><tr class='module-item'><td><a class="enum" href="enum.SameSite.html" title='cookie::SameSite enum'>SameSite</a></td><td class='docblock-short'><p>The <code>SameSite</code> cookie attribute.</p>

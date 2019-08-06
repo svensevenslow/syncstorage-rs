@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.5.0/src/rr/resource.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>resource.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../trust_dns_proto/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/trust-dns-proto-0.7.4/src/rr/resource.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>resource.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../trust_dns_proto/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -480,6 +480,10 @@
 <span id="480">480</span>
 <span id="481">481</span>
 <span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">/*
  * Copyright (C) 2015 Benjamin Fry &lt;benjaminfry@me.com&gt;
@@ -501,15 +505,16 @@
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">Ordering</span>;
 
-<span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">dns_class</span>::<span class="ident">DNSClass</span>;
-<span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">rdata</span>::<span class="ident">NULL</span>;
-<span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">IntoRecordSet</span>;
-<span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">Name</span>;
-<span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">RData</span>;
-<span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">RecordSet</span>;
-<span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">RecordType</span>;
-<span class="kw">use</span> <span class="ident">serialize</span>::<span class="ident">binary</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">error</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">rr</span>::<span class="ident">dns_class</span>::<span class="ident">DNSClass</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">rr</span>::<span class="ident">rdata</span>::<span class="ident">NULL</span>;
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">deprecated</span>)]</span>
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">rr</span>::<span class="ident">IntoRecordSet</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">rr</span>::<span class="ident">Name</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">rr</span>::<span class="ident">RData</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">rr</span>::<span class="ident">RecordSet</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">rr</span>::<span class="ident">RecordType</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">serialize</span>::<span class="ident">binary</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Resource records are storage value in DNS, into which all key/value pair data is stored.</span>
 <span class="doccomment">///</span>
@@ -585,9 +590,9 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with</span>(<span class="ident">name</span>: <span class="ident">Name</span>, <span class="ident">rr_type</span>: <span class="ident">RecordType</span>, <span class="ident">ttl</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="ident">Record</span> {
         <span class="ident">Record</span> {
             <span class="ident">name_labels</span>: <span class="ident">name</span>,
-            <span class="ident">rr_type</span>: <span class="ident">rr_type</span>,
+            <span class="ident">rr_type</span>,
             <span class="ident">dns_class</span>: <span class="ident">DNSClass</span>::<span class="ident">IN</span>,
-            <span class="ident">ttl</span>: <span class="ident">ttl</span>,
+            <span class="ident">ttl</span>,
             <span class="ident">rdata</span>: <span class="ident">RData</span>::<span class="ident">NULL</span>(<span class="ident">NULL</span>::<span class="ident">new</span>()),
         }
     }
@@ -597,16 +602,15 @@
     <span class="doccomment">/// # Arguments</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// * `name` - name of the resource records</span>
-    <span class="doccomment">/// * `rr_type` - the record type</span>
     <span class="doccomment">/// * `ttl` - time-to-live is the amount of time this record should be cached before refreshing</span>
     <span class="doccomment">/// * `rdata` - record data to associate with the Record</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_rdata</span>(<span class="ident">name</span>: <span class="ident">Name</span>, <span class="ident">ttl</span>: <span class="ident">u32</span>, <span class="ident">record_type</span>: <span class="ident">RecordType</span>, <span class="ident">rdata</span>: <span class="ident">RData</span>) <span class="op">-&gt;</span> <span class="ident">Record</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_rdata</span>(<span class="ident">name</span>: <span class="ident">Name</span>, <span class="ident">ttl</span>: <span class="ident">u32</span>, <span class="ident">rdata</span>: <span class="ident">RData</span>) <span class="op">-&gt;</span> <span class="ident">Record</span> {
         <span class="ident">Record</span> {
             <span class="ident">name_labels</span>: <span class="ident">name</span>,
-            <span class="ident">rr_type</span>: <span class="ident">record_type</span>,
+            <span class="ident">rr_type</span>: <span class="ident">rdata</span>.<span class="ident">to_record_type</span>(),
             <span class="ident">dns_class</span>: <span class="ident">DNSClass</span>::<span class="ident">IN</span>,
-            <span class="ident">ttl</span>: <span class="ident">ttl</span>,
-            <span class="ident">rdata</span>: <span class="ident">rdata</span>,
+            <span class="ident">ttl</span>,
+            <span class="ident">rdata</span>,
         }
     }
 
@@ -714,6 +718,7 @@
     }
 }
 
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">deprecated</span>)]</span>
 <span class="kw">impl</span> <span class="ident">IntoRecordSet</span> <span class="kw">for</span> <span class="ident">Record</span> {
     <span class="kw">fn</span> <span class="ident">into_record_set</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">RecordSet</span> {
         <span class="ident">RecordSet</span>::<span class="ident">from</span>(<span class="self">self</span>)
@@ -763,7 +768,9 @@
             }
 
             <span class="comment">//  DNS Class is overloaded for OPT records in EDNS - RFC 6891</span>
-            <span class="ident">DNSClass</span>::<span class="ident">for_opt</span>(<span class="ident">decoder</span>.<span class="ident">read_u16</span>()<span class="question-mark">?</span>.<span class="ident">unverified</span>(<span class="comment">/*restricted to a min of 512 in for_opt*/</span>))
+            <span class="ident">DNSClass</span>::<span class="ident">for_opt</span>(
+                <span class="ident">decoder</span>.<span class="ident">read_u16</span>()<span class="question-mark">?</span>.<span class="ident">unverified</span>(<span class="comment">/*restricted to a min of 512 in for_opt*/</span>),
+            )
         } <span class="kw">else</span> {
             <span class="ident">DNSClass</span>::<span class="ident">read</span>(<span class="ident">decoder</span>)<span class="question-mark">?</span>
         };
@@ -802,11 +809,11 @@
         };
 
         <span class="prelude-val">Ok</span>(<span class="ident">Record</span> {
-            <span class="ident">name_labels</span>: <span class="ident">name_labels</span>,
+            <span class="ident">name_labels</span>,
             <span class="ident">rr_type</span>: <span class="ident">record_type</span>,
             <span class="ident">dns_class</span>: <span class="ident">class</span>,
-            <span class="ident">ttl</span>: <span class="ident">ttl</span>,
-            <span class="ident">rdata</span>: <span class="ident">rdata</span>,
+            <span class="ident">ttl</span>,
+            <span class="ident">rdata</span>,
         })
     }
 }
@@ -897,12 +904,13 @@
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>::<span class="ident">FromStr</span>;
 
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">dns_class</span>::<span class="ident">DNSClass</span>;
-    <span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">record_data</span>::<span class="ident">RData</span>;
-    <span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">record_type</span>::<span class="ident">RecordType</span>;
-    <span class="kw">use</span> <span class="ident">rr</span>::<span class="ident">Name</span>;
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">rr</span>::<span class="ident">dns_class</span>::<span class="ident">DNSClass</span>;
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">rr</span>::<span class="ident">record_data</span>::<span class="ident">RData</span>;
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">rr</span>::<span class="ident">record_type</span>::<span class="ident">RecordType</span>;
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">rr</span>::<span class="ident">Name</span>;
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">useless_attribute</span>)]</span>
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused</span>)]</span>
-    <span class="kw">use</span> <span class="ident">serialize</span>::<span class="ident">binary</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">serialize</span>::<span class="ident">binary</span>::<span class="kw-2">*</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_emit_and_read</span>() {

@@ -252,12 +252,39 @@
 <span id="252">252</span>
 <span id="253">253</span>
 <span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Error types and macros.</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">single_match</span>)]</span>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 
-<span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">error</span>::<span class="ident">ResponseError</span>, <span class="ident">http</span>::<span class="ident">StatusCode</span>, <span class="ident">HttpResponse</span>};
+<span class="kw">use</span> <span class="ident">actix_web</span>::{
+    <span class="ident">dev</span>::{<span class="ident">HttpResponseBuilder</span>, <span class="ident">ServiceResponse</span>},
+    <span class="ident">error</span>::<span class="ident">ResponseError</span>,
+    <span class="ident">http</span>::<span class="ident">StatusCode</span>,
+    <span class="ident">middleware</span>::<span class="ident">errhandlers</span>::<span class="ident">ErrorHandlerResponse</span>,
+    <span class="ident">HttpResponse</span>, <span class="prelude-ty">Result</span>,
+};
 <span class="kw">use</span> <span class="ident">failure</span>::{<span class="ident">Backtrace</span>, <span class="ident">Context</span>, <span class="ident">Fail</span>};
 <span class="kw">use</span> <span class="ident">serde</span>::{
     <span class="ident">ser</span>::{<span class="ident">SerializeMap</span>, <span class="ident">SerializeSeq</span>, <span class="ident">Serializer</span>},
@@ -380,6 +407,16 @@
             <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">WeaveError</span>::<span class="ident">UnknownError</span>,
         }
     }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">render_404</span><span class="op">&lt;</span><span class="ident">B</span><span class="op">&gt;</span>(<span class="ident">res</span>: <span class="ident">ServiceResponse</span><span class="op">&lt;</span><span class="ident">B</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ErrorHandlerResponse</span><span class="op">&lt;</span><span class="ident">B</span><span class="op">&gt;&gt;</span> {
+        <span class="comment">// Replace the outbound error message with our own.</span>
+        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span>
+            <span class="ident">HttpResponseBuilder</span>::<span class="ident">new</span>(<span class="ident">StatusCode</span>::<span class="ident">NOT_FOUND</span>).<span class="ident">json</span>(<span class="ident">WeaveError</span>::<span class="ident">UnknownError</span> <span class="kw">as</span> <span class="ident">u32</span>);
+        <span class="prelude-val">Ok</span>(<span class="ident">ErrorHandlerResponse</span>::<span class="ident">Response</span>(<span class="ident">ServiceResponse</span>::<span class="ident">new</span>(
+            <span class="ident">res</span>.<span class="ident">request</span>().<span class="ident">clone</span>(),
+            <span class="ident">resp</span>.<span class="ident">into_body</span>(),
+        )))
+    }
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ApiError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">HttpResponse</span> {
@@ -402,6 +439,11 @@
 }
 
 <span class="kw">impl</span> <span class="ident">ResponseError</span> <span class="kw">for</span> <span class="ident">ApiError</span> {
+    <span class="comment">// Override the default which will force &quot;text/plain&quot; and use the error message.</span>
+    <span class="kw">fn</span> <span class="ident">render_response</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">HttpResponse</span> {
+        <span class="self">self</span>.<span class="ident">error_response</span>()
+    }
+
     <span class="kw">fn</span> <span class="ident">error_response</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">HttpResponse</span> {
         <span class="comment">// To return a descriptive error response, this would work. We do not</span>
         <span class="comment">// unfortunately do that so that we can retain Sync 1.1 backwards compatibility</span>

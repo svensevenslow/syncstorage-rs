@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/miniz_oxide-0.2.2/src/inflate/core.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>core.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../miniz_oxide/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/miniz_oxide-0.3.0/src/inflate/core.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>core.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../miniz_oxide/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
 <span id="2">   2</span>
 <span id="3">   3</span>
 <span id="4">   4</span>
@@ -1889,30 +1889,14 @@
 <span id="1889">1889</span>
 <span id="1890">1890</span>
 <span id="1891">1891</span>
-<span id="1892">1892</span>
-<span id="1893">1893</span>
-<span id="1894">1894</span>
-<span id="1895">1895</span>
-<span id="1896">1896</span>
-<span id="1897">1897</span>
-<span id="1898">1898</span>
-<span id="1899">1899</span>
-<span id="1900">1900</span>
-<span id="1901">1901</span>
-<span id="1902">1902</span>
-<span id="1903">1903</span>
-<span id="1904">1904</span>
-<span id="1905">1905</span>
-<span id="1906">1906</span>
-<span id="1907">1907</span>
-<span id="1908">1908</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Streaming decompression functionality.</span>
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">shared</span>::{<span class="ident">HUFFMAN_LENGTH_ORDER</span>, <span class="ident">update_adler32</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">shared</span>::{<span class="ident">HUFFMAN_LENGTH_ORDER</span>, <span class="ident">update_adler32</span>};
 
-<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">cmp</span>, <span class="ident">ptr</span>, <span class="ident">slice</span>};
+<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">cmp</span>, <span class="ident">slice</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">convert</span>::<span class="ident">TryInto</span>;
 
 <span class="kw">use</span> <span class="self">self</span>::<span class="ident">output_buffer</span>::<span class="ident">OutputBuffer</span>;
 
@@ -1949,7 +1933,7 @@
     <span class="doccomment">/// fast lookup table and the full tree has to be traversed to find the code.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">fast_lookup</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">bit_buf</span>: <span class="ident">BitBuffer</span>) <span class="op">-&gt;</span> <span class="ident">i16</span> {
-        <span class="self">self</span>.<span class="ident">look_up</span>[(<span class="ident">bit_buf</span> <span class="op">&amp;</span> (<span class="ident">FAST_LOOKUP_SIZE</span> <span class="op">-</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">BitBuffer</span>) <span class="kw">as</span> <span class="ident">usize</span>]
+        <span class="self">self</span>.<span class="ident">look_up</span>[(<span class="ident">bit_buf</span> <span class="op">&amp;</span> <span class="ident">BitBuffer</span>::<span class="ident">from</span>(<span class="ident">FAST_LOOKUP_SIZE</span> <span class="op">-</span> <span class="number">1</span>)) <span class="kw">as</span> <span class="ident">usize</span>]
     }
 
     <span class="doccomment">/// Get the symbol and the code length from the huffman tree.</span>
@@ -1961,7 +1945,7 @@
         <span class="kw">loop</span> {
             <span class="comment">// symbol here indicates the position of the left (0) node, if the next bit is 1</span>
             <span class="comment">// we add 1 to the lookup position to get the right node.</span>
-            <span class="ident">symbol</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tree</span>[(<span class="op">!</span><span class="ident">symbol</span> <span class="op">+</span> ((<span class="ident">bit_buf</span> <span class="op">&gt;&gt;</span> <span class="ident">code_len</span>) <span class="op">&amp;</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">i32</span>) <span class="kw">as</span> <span class="ident">usize</span>] <span class="kw">as</span> <span class="ident">i32</span>;
+            <span class="ident">symbol</span> <span class="op">=</span> <span class="ident">i32</span>::<span class="ident">from</span>(<span class="self">self</span>.<span class="ident">tree</span>[(<span class="op">!</span><span class="ident">symbol</span> <span class="op">+</span> ((<span class="ident">bit_buf</span> <span class="op">&gt;&gt;</span> <span class="ident">code_len</span>) <span class="op">&amp;</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">i32</span>) <span class="kw">as</span> <span class="ident">usize</span>]);
             <span class="ident">code_len</span> <span class="op">+=</span> <span class="number">1</span>;
             <span class="kw">if</span> <span class="ident">symbol</span> <span class="op">&gt;=</span> <span class="number">0</span> {
                 <span class="kw">break</span>;
@@ -1989,7 +1973,7 @@
             }
         } <span class="kw">else</span> {
             <span class="comment">// We didn&#39;t get a symbol from the fast lookup table, so check the tree instead.</span>
-            <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">tree_lookup</span>(<span class="ident">symbol</span>.<span class="ident">into</span>(), <span class="ident">bit_buf</span>, <span class="ident">FAST_LOOKUP_BITS</span>.<span class="ident">into</span>()))
+            <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">tree_lookup</span>(<span class="ident">symbol</span>, <span class="ident">bit_buf</span>, <span class="ident">FAST_LOOKUP_BITS</span>.<span class="ident">into</span>()))
         }
     }
 }
@@ -2087,19 +2071,6 @@
         <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">core</span>::<span class="ident">State</span>::<span class="ident">Start</span>;
     }
 
-    <span class="doccomment">/// Create a new decompressor with only the state field initialized.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This is how it&#39;s created in miniz. Unsafe due to uninitialized values.</span>
-    <span class="doccomment">/// Usage is not recommended.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">deprecated</span>(<span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;0.2.2&quot;</span>,
-                 <span class="ident">note</span><span class="op">=</span><span class="string">&quot;Will be removed as the safety of using this is hard to verify.&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">with_init_state_only</span>() <span class="op">-&gt;</span> <span class="ident">DecompressorOxide</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decomp</span>: <span class="ident">DecompressorOxide</span> <span class="op">=</span> <span class="ident">mem</span>::<span class="ident">uninitialized</span>();
-        <span class="ident">decomp</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">core</span>::<span class="ident">State</span>::<span class="ident">Start</span>;
-        <span class="ident">decomp</span>
-    }
-
     <span class="doccomment">/// Returns the adler32 checksum of the currently decompressed data.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">adler32</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
@@ -2182,8 +2153,8 @@
 }
 
 <span class="kw">impl</span> <span class="ident">State</span> {
-    <span class="kw">fn</span> <span class="ident">is_failure</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+    <span class="kw">fn</span> <span class="ident">is_failure</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">BlockTypeUnexpected</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
             <span class="ident">BadCodeSizeSum</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
             <span class="ident">BadTotalSymbols</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
@@ -2215,21 +2186,21 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// The base is used together with the value of the extra bits to decode the actual</span>
 <span class="doccomment">/// length/distance values in a match.</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">rustfmt</span>, <span class="ident">rustfmt_skip</span>)]</span>
+<span class="attribute">#[<span class="ident">rustfmt</span>::<span class="ident">skip</span>]</span>
 <span class="kw">const</span> <span class="ident">LENGTH_BASE</span>: [<span class="ident">u16</span>; <span class="number">32</span>] <span class="op">=</span> [
     <span class="number">3</span>,  <span class="number">4</span>,  <span class="number">5</span>,  <span class="number">6</span>,  <span class="number">7</span>,  <span class="number">8</span>,  <span class="number">9</span>,  <span class="number">10</span>,  <span class="number">11</span>,  <span class="number">13</span>,  <span class="number">15</span>,  <span class="number">17</span>,  <span class="number">19</span>,  <span class="number">23</span>,  <span class="number">27</span>,  <span class="number">31</span>,
     <span class="number">35</span>, <span class="number">43</span>, <span class="number">51</span>, <span class="number">59</span>, <span class="number">67</span>, <span class="number">83</span>, <span class="number">99</span>, <span class="number">115</span>, <span class="number">131</span>, <span class="number">163</span>, <span class="number">195</span>, <span class="number">227</span>, <span class="number">258</span>, <span class="number">512</span>, <span class="number">512</span>, <span class="number">512</span>
 ];
 
 <span class="doccomment">/// Number of extra bits for each length code.</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">rustfmt</span>, <span class="ident">rustfmt_skip</span>)]</span>
+<span class="attribute">#[<span class="ident">rustfmt</span>::<span class="ident">skip</span>]</span>
 <span class="kw">const</span> <span class="ident">LENGTH_EXTRA</span>: [<span class="ident">u8</span>; <span class="number">32</span>] <span class="op">=</span> [
     <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>,
     <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>
 ];
 
 <span class="doccomment">/// Base length for each distance code.</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">rustfmt</span>, <span class="ident">rustfmt_skip</span>)]</span>
+<span class="attribute">#[<span class="ident">rustfmt</span>::<span class="ident">skip</span>]</span>
 <span class="kw">const</span> <span class="ident">DIST_BASE</span>: [<span class="ident">u16</span>; <span class="number">32</span>] <span class="op">=</span> [
     <span class="number">1</span>,    <span class="number">2</span>,    <span class="number">3</span>,    <span class="number">4</span>,    <span class="number">5</span>,    <span class="number">7</span>,      <span class="number">9</span>,      <span class="number">13</span>,     <span class="number">17</span>,     <span class="number">25</span>,    <span class="number">33</span>,
     <span class="number">49</span>,   <span class="number">65</span>,   <span class="number">97</span>,   <span class="number">129</span>,  <span class="number">193</span>,  <span class="number">257</span>,    <span class="number">385</span>,    <span class="number">513</span>,    <span class="number">769</span>,    <span class="number">1025</span>,  <span class="number">1537</span>,
@@ -2237,7 +2208,7 @@
 ];
 
 <span class="doccomment">/// Number of extra bits for each distance code.</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">rustfmt</span>, <span class="ident">rustfmt_skip</span>)]</span>
+<span class="attribute">#[<span class="ident">rustfmt</span>::<span class="ident">skip</span>]</span>
 <span class="kw">const</span> <span class="ident">DIST_EXTRA</span>: [<span class="ident">u8</span>; <span class="number">32</span>] <span class="op">=</span> [
     <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>,  <span class="number">2</span>,  <span class="number">3</span>,  <span class="number">3</span>,  <span class="number">4</span>,  <span class="number">4</span>,  <span class="number">5</span>,  <span class="number">5</span>,  <span class="number">6</span>,  <span class="number">6</span>,
     <span class="number">7</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">11</span>, <span class="number">11</span>, <span class="number">12</span>, <span class="number">12</span>, <span class="number">13</span>, <span class="number">13</span>, <span class="number">13</span>, <span class="number">13</span>
@@ -2261,14 +2232,11 @@
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">fn</span> <span class="ident">read_u16_le</span>(<span class="ident">iter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">slice</span>::<span class="ident">Iter</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">u16</span> {
     <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> {
-        <span class="kw">let</span> <span class="ident">two_bytes</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">iter</span>.<span class="ident">as_ref</span>()[<span class="number">0</span>..<span class="number">2</span>];
-        <span class="comment">// # Unsafe</span>
-        <span class="comment">//</span>
-        <span class="comment">// The slice was just bounds checked to be 2 bytes long.</span>
-        <span class="kw">unsafe</span> { <span class="ident">ptr</span>::<span class="ident">read_unaligned</span>(<span class="ident">two_bytes</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u16</span>) }
+        <span class="kw">let</span> <span class="ident">two_bytes</span> <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">as_ref</span>()[..<span class="number">2</span>].<span class="ident">try_into</span>().<span class="ident">unwrap</span>();
+        <span class="ident">u16</span>::<span class="ident">from_le_bytes</span>(<span class="ident">two_bytes</span>)
     };
     <span class="ident">iter</span>.<span class="ident">nth</span>(<span class="number">1</span>);
-    <span class="ident">u16</span>::<span class="ident">from_le</span>(<span class="ident">ret</span>)
+    <span class="ident">ret</span>
 }
 
 <span class="doccomment">/// Read an le u32 value from the slice iterator.</span>
@@ -2279,14 +2247,11 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;64&quot;</span>)]</span>
 <span class="kw">fn</span> <span class="ident">read_u32_le</span>(<span class="ident">iter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">slice</span>::<span class="ident">Iter</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
     <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> {
-        <span class="kw">let</span> <span class="ident">four_bytes</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">iter</span>.<span class="ident">as_ref</span>()[..<span class="number">4</span>];
-        <span class="comment">// # Unsafe</span>
-        <span class="comment">//</span>
-        <span class="comment">// The slice was just bounds checked to be 4 bytes long.</span>
-        <span class="kw">unsafe</span> { <span class="ident">ptr</span>::<span class="ident">read_unaligned</span>(<span class="ident">four_bytes</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u32</span>) }
+        <span class="kw">let</span> <span class="ident">four_bytes</span>: [<span class="ident">u8</span>; <span class="number">4</span>] <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">as_ref</span>()[..<span class="number">4</span>].<span class="ident">try_into</span>().<span class="ident">unwrap</span>();
+        <span class="ident">u32</span>::<span class="ident">from_le_bytes</span>(<span class="ident">four_bytes</span>)
     };
     <span class="ident">iter</span>.<span class="ident">nth</span>(<span class="number">3</span>);
-    <span class="ident">u32</span>::<span class="ident">from_le</span>(<span class="ident">ret</span>)
+    <span class="ident">ret</span>
 }
 
 <span class="doccomment">/// Ensure that there is data in the bit buffer.</span>
@@ -2299,7 +2264,7 @@
 <span class="kw">fn</span> <span class="ident">fill_bit_buffer</span>(<span class="ident">l</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">LocalVars</span>, <span class="ident">in_iter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">slice</span>::<span class="ident">Iter</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
     <span class="comment">// Read four bytes into the buffer at once.</span>
     <span class="kw">if</span> <span class="ident">l</span>.<span class="ident">num_bits</span> <span class="op">&lt;</span> <span class="number">30</span> {
-        <span class="ident">l</span>.<span class="ident">bit_buf</span> <span class="op">|=</span> (<span class="ident">read_u32_le</span>(<span class="ident">in_iter</span>) <span class="kw">as</span> <span class="ident">BitBuffer</span>) <span class="op">&lt;&lt;</span> <span class="ident">l</span>.<span class="ident">num_bits</span>;
+        <span class="ident">l</span>.<span class="ident">bit_buf</span> <span class="op">|=</span> <span class="ident">BitBuffer</span>::<span class="ident">from</span>(<span class="ident">read_u32_le</span>(<span class="ident">in_iter</span>)) <span class="op">&lt;&lt;</span> <span class="ident">l</span>.<span class="ident">num_bits</span>;
         <span class="ident">l</span>.<span class="ident">num_bits</span> <span class="op">+=</span> <span class="number">32</span>;
     }
 }
@@ -2311,20 +2276,9 @@
 <span class="kw">fn</span> <span class="ident">fill_bit_buffer</span>(<span class="ident">l</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">LocalVars</span>, <span class="ident">in_iter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">slice</span>::<span class="ident">Iter</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
     <span class="comment">// If the buffer is 32-bit wide, read 2 bytes instead.</span>
     <span class="kw">if</span> <span class="ident">l</span>.<span class="ident">num_bits</span> <span class="op">&lt;</span> <span class="number">15</span> {
-        <span class="ident">l</span>.<span class="ident">bit_buf</span> <span class="op">|=</span> (<span class="ident">read_u16_le</span>(<span class="ident">in_iter</span>) <span class="kw">as</span> <span class="ident">BitBuffer</span>) <span class="op">&lt;&lt;</span> <span class="ident">l</span>.<span class="ident">num_bits</span>;
+        <span class="ident">l</span>.<span class="ident">bit_buf</span> <span class="op">|=</span> <span class="ident">BitBuffer</span>::<span class="ident">from</span>(<span class="ident">read_u16_le</span>(<span class="ident">in_iter</span>)) <span class="op">&lt;&lt;</span> <span class="ident">l</span>.<span class="ident">num_bits</span>;
         <span class="ident">l</span>.<span class="ident">num_bits</span> <span class="op">+=</span> <span class="number">16</span>;
     }
-}
-
-<span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">fn</span> <span class="ident">_transfer_unaligned_u64</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>], <span class="ident">from</span>: <span class="ident">isize</span>, <span class="ident">to</span>: <span class="ident">isize</span>) {
-    <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">ptr</span>::<span class="ident">read_unaligned</span>((<span class="kw-2">*</span><span class="ident">buf</span>).<span class="ident">as_ptr</span>().<span class="ident">offset</span>(<span class="ident">from</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u32</span>);
-        <span class="ident">ptr</span>::<span class="ident">write_unaligned</span>((<span class="kw-2">*</span><span class="ident">buf</span>).<span class="ident">as_mut_ptr</span>().<span class="ident">offset</span>(<span class="ident">to</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u32</span>, <span class="ident">data</span>);
-
-        <span class="ident">data</span> <span class="op">=</span> <span class="ident">ptr</span>::<span class="ident">read_unaligned</span>((<span class="kw-2">*</span><span class="ident">buf</span>).<span class="ident">as_ptr</span>().<span class="ident">offset</span>(<span class="ident">from</span> <span class="op">+</span> <span class="number">4</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u32</span>);
-        <span class="ident">ptr</span>::<span class="ident">write_unaligned</span>((<span class="kw-2">*</span><span class="ident">buf</span>).<span class="ident">as_mut_ptr</span>().<span class="ident">offset</span>(<span class="ident">to</span> <span class="op">+</span> <span class="number">4</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u32</span>, <span class="ident">data</span>);
-    };
 }
 
 <span class="doccomment">/// Check that the zlib header is correct and that there is enough space in the buffer</span>
@@ -2400,7 +2354,7 @@
             <span class="comment">//  * until the */</span>
             <span class="comment">// /* bit buffer contains &gt;=15 bits (deflate&#39;s max. Huffman code size). */</span>
             <span class="kw">loop</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">temp</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">tables</span>[<span class="ident">table</span>].<span class="ident">fast_lookup</span>(<span class="ident">l</span>.<span class="ident">bit_buf</span>) <span class="kw">as</span> <span class="ident">i32</span>;
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">temp</span> <span class="op">=</span> <span class="ident">i32</span>::<span class="ident">from</span>(<span class="ident">r</span>.<span class="ident">tables</span>[<span class="ident">table</span>].<span class="ident">fast_lookup</span>(<span class="ident">l</span>.<span class="ident">bit_buf</span>));
 
                 <span class="kw">if</span> <span class="ident">temp</span> <span class="op">&gt;=</span> <span class="number">0</span> {
                     <span class="kw">let</span> <span class="ident">code_len</span> <span class="op">=</span> (<span class="ident">temp</span> <span class="op">&gt;&gt;</span> <span class="number">9</span>) <span class="kw">as</span> <span class="ident">u32</span>;
@@ -2408,10 +2362,10 @@
                         <span class="kw">break</span>;
                     }
                 } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">l</span>.<span class="ident">num_bits</span> <span class="op">&gt;</span> <span class="ident">FAST_LOOKUP_BITS</span>.<span class="ident">into</span>() {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">code_len</span> <span class="op">=</span> <span class="ident">FAST_LOOKUP_BITS</span> <span class="kw">as</span> <span class="ident">u32</span>;
+                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">code_len</span> <span class="op">=</span> <span class="ident">u32</span>::<span class="ident">from</span>(<span class="ident">FAST_LOOKUP_BITS</span>);
                     <span class="kw">loop</span> {
-                        <span class="ident">temp</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">tables</span>[<span class="ident">table</span>]
-                            .<span class="ident">tree</span>[(<span class="op">!</span><span class="ident">temp</span> <span class="op">+</span> ((<span class="ident">l</span>.<span class="ident">bit_buf</span> <span class="op">&gt;&gt;</span> <span class="ident">code_len</span>) <span class="op">&amp;</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">i32</span>) <span class="kw">as</span> <span class="ident">usize</span>] <span class="kw">as</span> <span class="ident">i32</span>;
+                        <span class="ident">temp</span> <span class="op">=</span> <span class="ident">i32</span>::<span class="ident">from</span>(<span class="ident">r</span>.<span class="ident">tables</span>[<span class="ident">table</span>]
+                            .<span class="ident">tree</span>[(<span class="op">!</span><span class="ident">temp</span> <span class="op">+</span> ((<span class="ident">l</span>.<span class="ident">bit_buf</span> <span class="op">&gt;&gt;</span> <span class="ident">code_len</span>) <span class="op">&amp;</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">i32</span>) <span class="kw">as</span> <span class="ident">usize</span>]);
                         <span class="ident">code_len</span> <span class="op">+=</span> <span class="number">1</span>;
                         <span class="kw">if</span> <span class="ident">temp</span> <span class="op">&gt;=</span> <span class="number">0</span> <span class="op">||</span> <span class="ident">l</span>.<span class="ident">num_bits</span> <span class="op">&lt;</span> <span class="ident">code_len</span> <span class="op">+</span> <span class="number">1</span> {
                             <span class="kw">break</span>;
@@ -2437,7 +2391,7 @@
                 };
 
                 <span class="comment">// Do this outside closure for now to avoid borrowing r.</span>
-                <span class="ident">l</span>.<span class="ident">bit_buf</span> <span class="op">|=</span> (<span class="ident">byte</span> <span class="kw">as</span> <span class="ident">BitBuffer</span>) <span class="op">&lt;&lt;</span> <span class="ident">l</span>.<span class="ident">num_bits</span>;
+                <span class="ident">l</span>.<span class="ident">bit_buf</span> <span class="op">|=</span> <span class="ident">BitBuffer</span>::<span class="ident">from</span>(<span class="ident">byte</span>) <span class="op">&lt;&lt;</span> <span class="ident">l</span>.<span class="ident">num_bits</span>;
                 <span class="ident">l</span>.<span class="ident">num_bits</span> <span class="op">+=</span> <span class="number">8</span>;
 
                 <span class="kw">if</span> <span class="ident">l</span>.<span class="ident">num_bits</span> <span class="op">&gt;=</span> <span class="number">15</span> {
@@ -2449,13 +2403,13 @@
             <span class="comment">// and add them to the bit buffer.</span>
             <span class="comment">// Unwrapping here is fine since we just checked that there are at least two</span>
             <span class="comment">// bytes left.</span>
-            <span class="ident">l</span>.<span class="ident">bit_buf</span> <span class="op">|=</span> (<span class="ident">read_u16_le</span>(<span class="ident">in_iter</span>) <span class="kw">as</span> <span class="ident">BitBuffer</span>) <span class="op">&lt;&lt;</span> <span class="ident">l</span>.<span class="ident">num_bits</span>;
+            <span class="ident">l</span>.<span class="ident">bit_buf</span> <span class="op">|=</span> <span class="ident">BitBuffer</span>::<span class="ident">from</span>(<span class="ident">read_u16_le</span>(<span class="ident">in_iter</span>)) <span class="op">&lt;&lt;</span> <span class="ident">l</span>.<span class="ident">num_bits</span>;
             <span class="ident">l</span>.<span class="ident">num_bits</span> <span class="op">+=</span> <span class="number">16</span>;
         }
     }
 
     <span class="comment">// We now have at least 15 bits in the input buffer.</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">symbol</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">tables</span>[<span class="ident">table</span>].<span class="ident">fast_lookup</span>(<span class="ident">l</span>.<span class="ident">bit_buf</span>) <span class="kw">as</span> <span class="ident">i32</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">symbol</span> <span class="op">=</span> <span class="ident">i32</span>::<span class="ident">from</span>(<span class="ident">r</span>.<span class="ident">tables</span>[<span class="ident">table</span>].<span class="ident">fast_lookup</span>(<span class="ident">l</span>.<span class="ident">bit_buf</span>));
     <span class="kw">let</span> <span class="ident">code_len</span>;
     <span class="comment">// If the symbol was found in the fast lookup table.</span>
     <span class="kw">if</span> <span class="ident">symbol</span> <span class="op">&gt;=</span> <span class="number">0</span> {
@@ -2466,7 +2420,7 @@
         <span class="comment">// Mask out the length value.</span>
         <span class="ident">symbol</span> <span class="op">&amp;=</span> <span class="number">511</span>;
     } <span class="kw">else</span> {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">tables</span>[<span class="ident">table</span>].<span class="ident">tree_lookup</span>(<span class="ident">symbol</span>, <span class="ident">l</span>.<span class="ident">bit_buf</span>, <span class="ident">FAST_LOOKUP_BITS</span> <span class="kw">as</span> <span class="ident">u32</span>);
+        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">tables</span>[<span class="ident">table</span>].<span class="ident">tree_lookup</span>(<span class="ident">symbol</span>, <span class="ident">l</span>.<span class="ident">bit_buf</span>, <span class="ident">u32</span>::<span class="ident">from</span>(<span class="ident">FAST_LOOKUP_BITS</span>));
         <span class="ident">symbol</span> <span class="op">=</span> <span class="ident">res</span>.<span class="number">0</span>;
         <span class="ident">code_len</span> <span class="op">=</span> <span class="ident">res</span>.<span class="number">1</span> <span class="kw">as</span> <span class="ident">u32</span>;
     };
@@ -2480,6 +2434,9 @@
     <span class="ident">f</span>(<span class="ident">r</span>, <span class="ident">l</span>, <span class="ident">symbol</span>)
 }
 
+<span class="doccomment">/// Try to read one byte from `in_iter` and call `f` with the read byte as an argument,</span>
+<span class="doccomment">/// returning the result.</span>
+<span class="doccomment">/// If reading fails, `Action::End is returned`</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">fn</span> <span class="ident">read_byte</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">in_iter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">slice</span>::<span class="ident">Iter</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">flags</span>: <span class="ident">u32</span>, <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">Action</span>
 <span class="kw">where</span>
@@ -2492,7 +2449,11 @@
 }
 
 <span class="comment">// TODO: `l: &amp;mut LocalVars` may be slow similar to decompress_fast (even with inline(always))</span>
+<span class="doccomment">/// Try to read `amount` number of bits from `in_iter` and call the function `f` with the bits as an</span>
+<span class="doccomment">/// an argument after reading, returning the result of that function, or `Action::End` if there are</span>
+<span class="doccomment">/// not enough bytes left.</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">while_immutable_condition</span>)]</span>
 <span class="kw">fn</span> <span class="ident">read_bits</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(
     <span class="ident">l</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">LocalVars</span>,
     <span class="ident">amount</span>: <span class="ident">u32</span>,
@@ -2503,13 +2464,17 @@
 <span class="kw">where</span>
     <span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">LocalVars</span>, <span class="ident">BitBuffer</span>) <span class="op">-&gt;</span> <span class="ident">Action</span>,
 {
+    <span class="comment">// Clippy gives a false positive warning here due to the closure.</span>
+    <span class="comment">// Read enough bytes from the input iterator to cover the number of bits we want.</span>
     <span class="kw">while</span> <span class="ident">l</span>.<span class="ident">num_bits</span> <span class="op">&lt;</span> <span class="ident">amount</span> {
         <span class="kw">match</span> <span class="ident">read_byte</span>(<span class="ident">in_iter</span>, <span class="ident">flags</span>, <span class="op">|</span><span class="ident">byte</span><span class="op">|</span> {
-            <span class="ident">l</span>.<span class="ident">bit_buf</span> <span class="op">|=</span> (<span class="ident">byte</span> <span class="kw">as</span> <span class="ident">BitBuffer</span>) <span class="op">&lt;&lt;</span> <span class="ident">l</span>.<span class="ident">num_bits</span>;
+            <span class="ident">l</span>.<span class="ident">bit_buf</span> <span class="op">|=</span> <span class="ident">BitBuffer</span>::<span class="ident">from</span>(<span class="ident">byte</span>) <span class="op">&lt;&lt;</span> <span class="ident">l</span>.<span class="ident">num_bits</span>;
             <span class="ident">l</span>.<span class="ident">num_bits</span> <span class="op">+=</span> <span class="number">8</span>;
             <span class="ident">Action</span>::<span class="prelude-val">None</span>
         }) {
             <span class="ident">Action</span>::<span class="prelude-val">None</span> <span class="op">=&gt;</span> (),
+            <span class="comment">// If there are not enough bytes in the input iterator, return and signal that we need</span>
+            <span class="comment">// more.</span>
             <span class="ident">action</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">action</span>,
         }
     }
@@ -2598,7 +2563,7 @@
             }
 
             <span class="kw">if</span> <span class="ident">code_size</span> <span class="op">&lt;=</span> <span class="ident">FAST_LOOKUP_BITS</span> {
-                <span class="kw">let</span> <span class="ident">k</span> <span class="op">=</span> ((<span class="ident">code_size</span> <span class="kw">as</span> <span class="ident">i16</span>) <span class="op">&lt;&lt;</span> <span class="number">9</span>) <span class="op">|</span> <span class="ident">symbol_index</span> <span class="kw">as</span> <span class="ident">i16</span>;
+                <span class="kw">let</span> <span class="ident">k</span> <span class="op">=</span> (<span class="ident">i16</span>::<span class="ident">from</span>(<span class="ident">code_size</span>) <span class="op">&lt;&lt;</span> <span class="number">9</span>) <span class="op">|</span> <span class="ident">symbol_index</span> <span class="kw">as</span> <span class="ident">i16</span>;
                 <span class="kw">while</span> <span class="ident">rev_code</span> <span class="op">&lt;</span> <span class="ident">FAST_LOOKUP_SIZE</span> {
                     <span class="ident">table</span>.<span class="ident">look_up</span>[<span class="ident">rev_code</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">=</span> <span class="ident">k</span>;
                     <span class="ident">rev_code</span> <span class="op">+=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="ident">code_size</span>;
@@ -2778,7 +2743,7 @@
 
     <span class="kw">let</span> <span class="ident">status</span>: <span class="ident">TINFLStatus</span> <span class="op">=</span> <span class="lifetime">&#39;o</span>: <span class="kw">loop</span> {
         <span class="ident">state</span> <span class="op">=</span> <span class="ident">State</span>::<span class="ident">DecodeLitlen</span>;
-        <span class="lifetime">&#39;litlen</span>: <span class="kw">loop</span> {
+        <span class="kw">loop</span> {
             <span class="comment">// This function assumes that there is at least 259 bytes left in the output buffer,</span>
             <span class="comment">// and that there is at least 14 bytes left in the input buffer. 14 input bytes:</span>
             <span class="comment">// 15 (prev lit) + 15 (length) + 5 (length extra) + 15 (dist)</span>
@@ -2849,8 +2814,8 @@
             <span class="comment">// Mask the value to avoid bounds checks</span>
             <span class="comment">// We could use get_unchecked later if can statically verify that</span>
             <span class="comment">// this will never go out of bounds.</span>
-            <span class="ident">l</span>.<span class="ident">num_extra</span> <span class="op">=</span> <span class="ident">LENGTH_EXTRA</span>[(<span class="ident">l</span>.<span class="ident">counter</span> <span class="op">-</span> <span class="number">257</span>) <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="ident">BASE_EXTRA_MASK</span>] <span class="kw">as</span> <span class="ident">u32</span>;
-            <span class="ident">l</span>.<span class="ident">counter</span> <span class="op">=</span> <span class="ident">LENGTH_BASE</span>[(<span class="ident">l</span>.<span class="ident">counter</span> <span class="op">-</span> <span class="number">257</span>) <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="ident">BASE_EXTRA_MASK</span>] <span class="kw">as</span> <span class="ident">u32</span>;
+            <span class="ident">l</span>.<span class="ident">num_extra</span> <span class="op">=</span> <span class="ident">u32</span>::<span class="ident">from</span>(<span class="ident">LENGTH_EXTRA</span>[(<span class="ident">l</span>.<span class="ident">counter</span> <span class="op">-</span> <span class="number">257</span>) <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="ident">BASE_EXTRA_MASK</span>]);
+            <span class="ident">l</span>.<span class="ident">counter</span> <span class="op">=</span> <span class="ident">u32</span>::<span class="ident">from</span>(<span class="ident">LENGTH_BASE</span>[(<span class="ident">l</span>.<span class="ident">counter</span> <span class="op">-</span> <span class="number">257</span>) <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="ident">BASE_EXTRA_MASK</span>]);
             <span class="comment">// Length and distance codes have a number of extra bits depending on</span>
             <span class="comment">// the base, which together with the base gives us the exact value.</span>
 
@@ -2877,8 +2842,8 @@
                     <span class="kw">break</span> <span class="lifetime">&#39;o</span> <span class="ident">TINFLStatus</span>::<span class="ident">Failed</span>;
                 }
 
-                <span class="ident">l</span>.<span class="ident">num_extra</span> <span class="op">=</span> <span class="ident">DIST_EXTRA</span>[<span class="ident">symbol</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="kw">as</span> <span class="ident">u32</span>;
-                <span class="ident">l</span>.<span class="ident">dist</span> <span class="op">=</span> <span class="ident">DIST_BASE</span>[<span class="ident">symbol</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="kw">as</span> <span class="ident">u32</span>;
+                <span class="ident">l</span>.<span class="ident">num_extra</span> <span class="op">=</span> <span class="ident">u32</span>::<span class="ident">from</span>(<span class="ident">DIST_EXTRA</span>[<span class="ident">symbol</span> <span class="kw">as</span> <span class="ident">usize</span>]);
+                <span class="ident">l</span>.<span class="ident">dist</span> <span class="op">=</span> <span class="ident">u32</span>::<span class="ident">from</span>(<span class="ident">DIST_BASE</span>[<span class="ident">symbol</span> <span class="kw">as</span> <span class="ident">usize</span>]);
             } <span class="kw">else</span> {
                 <span class="ident">state</span>.<span class="ident">begin</span>(<span class="ident">InvalidCodeLen</span>);
                 <span class="kw">break</span> <span class="lifetime">&#39;o</span> <span class="ident">TINFLStatus</span>::<span class="ident">Failed</span>;
@@ -3027,14 +2992,14 @@
 
             <span class="ident">ReadZlibCmf</span> <span class="op">=&gt;</span> <span class="macro">generate_state</span><span class="macro">!</span>(<span class="ident">state</span>, <span class="lifetime">&#39;state_machine</span>, {
                 <span class="ident">read_byte</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">in_iter</span>, <span class="ident">flags</span>, <span class="op">|</span><span class="ident">cmf</span><span class="op">|</span> {
-                    <span class="ident">r</span>.<span class="ident">z_header0</span> <span class="op">=</span> <span class="ident">cmf</span> <span class="kw">as</span> <span class="ident">u32</span>;
+                    <span class="ident">r</span>.<span class="ident">z_header0</span> <span class="op">=</span> <span class="ident">u32</span>::<span class="ident">from</span>(<span class="ident">cmf</span>);
                     <span class="ident">Action</span>::<span class="ident">Jump</span>(<span class="ident">State</span>::<span class="ident">ReadZlibFlg</span>)
                 })
             }),
 
             <span class="ident">ReadZlibFlg</span> <span class="op">=&gt;</span> <span class="macro">generate_state</span><span class="macro">!</span>(<span class="ident">state</span>, <span class="lifetime">&#39;state_machine</span>, {
                 <span class="ident">read_byte</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">in_iter</span>, <span class="ident">flags</span>, <span class="op">|</span><span class="ident">flg</span><span class="op">|</span> {
-                    <span class="ident">r</span>.<span class="ident">z_header1</span> <span class="op">=</span> <span class="ident">flg</span> <span class="kw">as</span> <span class="ident">u32</span>;
+                    <span class="ident">r</span>.<span class="ident">z_header1</span> <span class="op">=</span> <span class="ident">u32</span>::<span class="ident">from</span>(<span class="ident">flg</span>);
                     <span class="ident">validate_zlib_header</span>(<span class="ident">r</span>.<span class="ident">z_header0</span>, <span class="ident">r</span>.<span class="ident">z_header1</span>, <span class="ident">flags</span>, <span class="ident">out_buf_size_mask</span>)
                 })
             }),
@@ -3089,8 +3054,8 @@
                     <span class="comment">// Check if the length value of a raw block is correct.</span>
                     <span class="comment">// The 2 first (2-byte) words in a raw header are the length and the</span>
                     <span class="comment">// ones complement of the length.</span>
-                    <span class="kw">let</span> <span class="ident">length</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">raw_header</span>[<span class="number">0</span>] <span class="kw">as</span> <span class="ident">u16</span> <span class="op">|</span> ((<span class="ident">r</span>.<span class="ident">raw_header</span>[<span class="number">1</span>] <span class="kw">as</span> <span class="ident">u16</span>) <span class="op">&lt;&lt;</span> <span class="number">8</span>);
-                    <span class="kw">let</span> <span class="ident">check</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">raw_header</span>[<span class="number">2</span>] <span class="kw">as</span> <span class="ident">u16</span> <span class="op">|</span> ((<span class="ident">r</span>.<span class="ident">raw_header</span>[<span class="number">3</span>] <span class="kw">as</span> <span class="ident">u16</span>) <span class="op">&lt;&lt;</span> <span class="number">8</span>);
+                    <span class="kw">let</span> <span class="ident">length</span> <span class="op">=</span> <span class="ident">u16</span>::<span class="ident">from</span>(<span class="ident">r</span>.<span class="ident">raw_header</span>[<span class="number">0</span>]) <span class="op">|</span> (<span class="ident">u16</span>::<span class="ident">from</span>(<span class="ident">r</span>.<span class="ident">raw_header</span>[<span class="number">1</span>]) <span class="op">&lt;&lt;</span> <span class="number">8</span>);
+                    <span class="kw">let</span> <span class="ident">check</span> <span class="op">=</span> <span class="ident">u16</span>::<span class="ident">from</span>(<span class="ident">r</span>.<span class="ident">raw_header</span>[<span class="number">2</span>]) <span class="op">|</span> (<span class="ident">u16</span>::<span class="ident">from</span>(<span class="ident">r</span>.<span class="ident">raw_header</span>[<span class="number">3</span>]) <span class="op">&lt;&lt;</span> <span class="number">8</span>);
                     <span class="kw">let</span> <span class="ident">valid</span> <span class="op">=</span> <span class="ident">length</span> <span class="op">==</span> <span class="op">!</span><span class="ident">check</span>;
                     <span class="ident">l</span>.<span class="ident">counter</span> <span class="op">=</span> <span class="ident">length</span>.<span class="ident">into</span>();
 
@@ -3175,7 +3140,7 @@
                     <span class="kw">let</span> <span class="ident">num_bits</span> <span class="op">=</span> [<span class="number">5</span>, <span class="number">5</span>, <span class="number">4</span>][<span class="ident">l</span>.<span class="ident">counter</span> <span class="kw">as</span> <span class="ident">usize</span>];
                     <span class="ident">read_bits</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">l</span>, <span class="ident">num_bits</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">in_iter</span>, <span class="ident">flags</span>, <span class="op">|</span><span class="ident">l</span>, <span class="ident">bits</span><span class="op">|</span> {
                         <span class="ident">r</span>.<span class="ident">table_sizes</span>[<span class="ident">l</span>.<span class="ident">counter</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">=</span>
-                            <span class="ident">bits</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">+</span> <span class="ident">MIN_TABLE_SIZES</span>[<span class="ident">l</span>.<span class="ident">counter</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="kw">as</span> <span class="ident">u32</span>;
+                            <span class="ident">bits</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">+</span> <span class="ident">u32</span>::<span class="ident">from</span>(<span class="ident">MIN_TABLE_SIZES</span>[<span class="ident">l</span>.<span class="ident">counter</span> <span class="kw">as</span> <span class="ident">usize</span>]);
                         <span class="ident">l</span>.<span class="ident">counter</span> <span class="op">+=</span> <span class="number">1</span>;
                         <span class="ident">Action</span>::<span class="prelude-val">None</span>
                     })
@@ -3371,8 +3336,9 @@
                     <span class="comment">// Mask the value to avoid bounds checks</span>
                     <span class="comment">// We could use get_unchecked later if can statically verify that</span>
                     <span class="comment">// this will never go out of bounds.</span>
-                    <span class="ident">l</span>.<span class="ident">num_extra</span> <span class="op">=</span> <span class="ident">LENGTH_EXTRA</span>[(<span class="ident">l</span>.<span class="ident">counter</span> <span class="op">-</span> <span class="number">257</span>) <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="ident">BASE_EXTRA_MASK</span>] <span class="kw">as</span> <span class="ident">u32</span>;
-                    <span class="ident">l</span>.<span class="ident">counter</span> <span class="op">=</span> <span class="ident">LENGTH_BASE</span>[(<span class="ident">l</span>.<span class="ident">counter</span> <span class="op">-</span> <span class="number">257</span>) <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="ident">BASE_EXTRA_MASK</span>] <span class="kw">as</span> <span class="ident">u32</span>;
+                    <span class="ident">l</span>.<span class="ident">num_extra</span> <span class="op">=</span>
+                        <span class="ident">u32</span>::<span class="ident">from</span>(<span class="ident">LENGTH_EXTRA</span>[(<span class="ident">l</span>.<span class="ident">counter</span> <span class="op">-</span> <span class="number">257</span>) <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="ident">BASE_EXTRA_MASK</span>]);
+                    <span class="ident">l</span>.<span class="ident">counter</span> <span class="op">=</span> <span class="ident">u32</span>::<span class="ident">from</span>(<span class="ident">LENGTH_BASE</span>[(<span class="ident">l</span>.<span class="ident">counter</span> <span class="op">-</span> <span class="number">257</span>) <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="ident">BASE_EXTRA_MASK</span>]);
                     <span class="comment">// Length and distance codes have a number of extra bits depending on</span>
                     <span class="comment">// the base, which together with the base gives us the exact value.</span>
                     <span class="kw">if</span> <span class="ident">l</span>.<span class="ident">num_extra</span> <span class="op">!=</span> <span class="number">0</span> {
@@ -3403,8 +3369,8 @@
                     <span class="comment">// Mask the value to avoid bounds checks</span>
                     <span class="comment">// We could use get_unchecked later if can statically verify that</span>
                     <span class="comment">// this will never go out of bounds.</span>
-                    <span class="ident">l</span>.<span class="ident">num_extra</span> <span class="op">=</span> <span class="ident">DIST_EXTRA</span>[<span class="ident">symbol</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="ident">BASE_EXTRA_MASK</span>] <span class="kw">as</span> <span class="ident">u32</span>;
-                    <span class="ident">l</span>.<span class="ident">dist</span> <span class="op">=</span> <span class="ident">DIST_BASE</span>[<span class="ident">symbol</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="ident">BASE_EXTRA_MASK</span>] <span class="kw">as</span> <span class="ident">u32</span>;
+                    <span class="ident">l</span>.<span class="ident">num_extra</span> <span class="op">=</span> <span class="ident">u32</span>::<span class="ident">from</span>(<span class="ident">DIST_EXTRA</span>[<span class="ident">symbol</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="ident">BASE_EXTRA_MASK</span>]);
+                    <span class="ident">l</span>.<span class="ident">dist</span> <span class="op">=</span> <span class="ident">u32</span>::<span class="ident">from</span>(<span class="ident">DIST_BASE</span>[<span class="ident">symbol</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="ident">BASE_EXTRA_MASK</span>]);
                     <span class="kw">if</span> <span class="ident">l</span>.<span class="ident">num_extra</span> <span class="op">!=</span> <span class="number">0</span> {
                         <span class="comment">// ReadEXTRA_BITS_DISTACNE</span>
                         <span class="ident">Action</span>::<span class="ident">Jump</span>(<span class="ident">ReadExtraBitsDistance</span>)
@@ -3431,8 +3397,8 @@
                     <span class="comment">// the start of the decoded data, so we can&#39;t continue.</span>
                     <span class="ident">Action</span>::<span class="ident">Jump</span>(<span class="ident">DistanceOutOfBounds</span>)
                 } <span class="kw">else</span> {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out_pos</span> <span class="op">=</span> <span class="ident">out_buf</span>.<span class="ident">position</span>();
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">source_pos</span> <span class="op">=</span> <span class="ident">l</span>.<span class="ident">dist_from_out_buf_start</span>
+                    <span class="kw">let</span> <span class="ident">out_pos</span> <span class="op">=</span> <span class="ident">out_buf</span>.<span class="ident">position</span>();
+                    <span class="kw">let</span> <span class="ident">source_pos</span> <span class="op">=</span> <span class="ident">l</span>.<span class="ident">dist_from_out_buf_start</span>
                         .<span class="ident">wrapping_sub</span>(<span class="ident">l</span>.<span class="ident">dist</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">&amp;</span> <span class="ident">out_buf_size_mask</span>;
 
                     <span class="kw">let</span> <span class="ident">out_len</span> <span class="op">=</span> <span class="ident">out_buf</span>.<span class="ident">get_ref</span>().<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">usize</span>;
@@ -3495,7 +3461,7 @@
                     <span class="kw">let</span> <span class="ident">undo</span> <span class="op">=</span> <span class="ident">undo_bytes</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">l</span>, <span class="ident">in_consumed</span> <span class="kw">as</span> <span class="ident">u32</span>) <span class="kw">as</span> <span class="ident">usize</span>;
                     <span class="ident">in_iter</span> <span class="op">=</span> <span class="ident">in_buf</span>[<span class="ident">in_consumed</span> <span class="op">-</span> <span class="ident">undo</span>..].<span class="ident">iter</span>();
 
-                    <span class="ident">l</span>.<span class="ident">bit_buf</span> <span class="op">&amp;=</span> (((<span class="number">1</span> <span class="kw">as</span> <span class="ident">BitBuffer</span>) <span class="op">&lt;&lt;</span> <span class="ident">l</span>.<span class="ident">num_bits</span>) <span class="op">-</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">BitBuffer</span>;
+                    <span class="ident">l</span>.<span class="ident">bit_buf</span> <span class="op">&amp;=</span> ((<span class="number">1</span> <span class="kw">as</span> <span class="ident">BitBuffer</span>) <span class="op">&lt;&lt;</span> <span class="ident">l</span>.<span class="ident">num_bits</span>) <span class="op">-</span> <span class="number">1</span>;
                     <span class="macro">debug_assert_eq</span><span class="macro">!</span>(<span class="ident">l</span>.<span class="ident">num_bits</span>, <span class="number">0</span>);
 
                     <span class="kw">if</span> <span class="ident">flags</span> <span class="op">&amp;</span> <span class="ident">TINFL_FLAG_PARSE_ZLIB_HEADER</span> <span class="op">!=</span> <span class="number">0</span> {
@@ -3521,7 +3487,7 @@
                     } <span class="kw">else</span> {
                         <span class="ident">read_byte</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">in_iter</span>, <span class="ident">flags</span>, <span class="op">|</span><span class="ident">byte</span><span class="op">|</span> {
                             <span class="ident">r</span>.<span class="ident">z_adler32</span> <span class="op">&lt;&lt;=</span> <span class="number">8</span>;
-                            <span class="ident">r</span>.<span class="ident">z_adler32</span> <span class="op">|=</span> <span class="ident">byte</span> <span class="kw">as</span> <span class="ident">u32</span>;
+                            <span class="ident">r</span>.<span class="ident">z_adler32</span> <span class="op">|=</span> <span class="ident">u32</span>::<span class="ident">from</span>(<span class="ident">byte</span>);
                             <span class="ident">l</span>.<span class="ident">counter</span> <span class="op">+=</span> <span class="number">1</span>;
                             <span class="ident">Action</span>::<span class="prelude-val">None</span>
                         })
@@ -3550,7 +3516,7 @@
         <span class="number">0</span>
     };
 
-    <span class="ident">r</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">state</span>.<span class="ident">into</span>();
+    <span class="ident">r</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">state</span>;
     <span class="ident">r</span>.<span class="ident">bit_buf</span> <span class="op">=</span> <span class="ident">l</span>.<span class="ident">bit_buf</span>;
     <span class="ident">r</span>.<span class="ident">num_bits</span> <span class="op">=</span> <span class="ident">l</span>.<span class="ident">num_bits</span>;
     <span class="ident">r</span>.<span class="ident">dist</span> <span class="op">=</span> <span class="ident">l</span>.<span class="ident">dist</span>;
@@ -3558,7 +3524,7 @@
     <span class="ident">r</span>.<span class="ident">num_extra</span> <span class="op">=</span> <span class="ident">l</span>.<span class="ident">num_extra</span>;
     <span class="ident">r</span>.<span class="ident">dist_from_out_buf_start</span> <span class="op">=</span> <span class="ident">l</span>.<span class="ident">dist_from_out_buf_start</span>;
 
-    <span class="ident">r</span>.<span class="ident">bit_buf</span> <span class="op">&amp;=</span> (((<span class="number">1</span> <span class="kw">as</span> <span class="ident">BitBuffer</span>) <span class="op">&lt;&lt;</span> <span class="ident">r</span>.<span class="ident">num_bits</span>) <span class="op">-</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">BitBuffer</span>;
+    <span class="ident">r</span>.<span class="ident">bit_buf</span> <span class="op">&amp;=</span> ((<span class="number">1</span> <span class="kw">as</span> <span class="ident">BitBuffer</span>) <span class="op">&lt;&lt;</span> <span class="ident">r</span>.<span class="ident">num_bits</span>) <span class="op">-</span> <span class="number">1</span>;
 
     <span class="comment">// If this is a zlib stream, and update the adler32 checksum with the decompressed bytes if</span>
     <span class="comment">// requested.</span>
