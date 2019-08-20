@@ -205,3 +205,23 @@ impl SyncResultSet {
         }
     }
 }
+
+impl Iterator for SyncResultSet {
+    type Item = Vec<Value>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if let Some(rows) = self.result.rows.as_mut() {
+            rows.pop().map(|row| {
+                row.into_iter()
+                    .map(|s| {
+                        let mut value = Value::new();
+                        value.set_string_value(s);
+                        value
+                    })
+                    .collect()
+            })
+        } else {
+            None
+        }
+    }
+}

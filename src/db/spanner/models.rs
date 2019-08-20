@@ -124,8 +124,8 @@ impl SpannerDb {
             .sql("SELECT collectionid FROM collections WHERE name = @name")?
             .params(params! {"name" => name.to_string()})
             .execute(&self.conn)?
-        .one_or_none()?
-        .ok_or(DbErrorKind::CollectionNotFound)?;
+            .one_or_none()?
+            .ok_or(DbErrorKind::CollectionNotFound)?;
         //let rows = result.1.rows.ok_or(DbErrorKind::CollectionNotFound)?;
         //let id = rows[0][0]
         let id = result[0]
@@ -430,6 +430,7 @@ impl SpannerDb {
     ) -> Result<results::GetCollectionTimestamps> {
         let user_id = user_id.legacy_id as u32;
 
+        /*
         let spanner = &self.conn;
         let session = spanner.session.name.as_ref().unwrap();
         let mut sql = self.sql_request(
@@ -459,6 +460,22 @@ impl SpannerDb {
             // TODO Return the correct error
             Err(_e) => Err(DbErrorKind::CollectionNotFound.into()),
         }
+         */
+        let modifieds = self
+            .sql("SELECT collection, last_modified FROM user_collections WHERE userid=@userid")?
+            .params(params! {"userid" => user_id.to_string()})
+            .execute(&self.conn)?
+            .into_iter()
+            .map(|row| {
+                let collection_id = row[0]
+                    .get_string_value()
+                    .parse::<i32>()
+                    .map_err(|e| DbErrorKind::Integrity(e.to_string()))?;
+                let ts = SyncTimestamp::from_rfc3339(&row[1].get_string_value())?;
+                Ok((collection_id, ts))
+            })
+            .collect::<Result<HashMap<_, _>>>()?;
+        self.map_collection_names(modifieds)
     }
 
     fn map_collection_names<T>(&self, by_id: HashMap<i32, T>) -> Result<HashMap<String, T>> {
@@ -1030,12 +1047,18 @@ impl SpannerDb {
         //Ok(if let Some(rows) = result.1.rows {
         Ok(if let Some(row) = result {
             let modified = SyncTimestamp::from_rfc3339(&row[1].get_string_value())?;
-            let expiry_dt = DateTime::parse_from_rfc3339(&row[4].get_string_value()).map_err(|e| {
-                DbErrorKind::Integrity(format!("Invalid TIMESTAMP {}", e.to_string()))
-            })?;
+            let expiry_dt =
+                DateTime::parse_from_rfc3339(&row[4].get_string_value()).map_err(|e| {
+                    DbErrorKind::Integrity(format!("Invalid TIMESTAMP {}", e.to_string()))
+                })?;
             // XXX: expiry is i64?
             let expiry = expiry_dt.timestamp_millis();
-            dbg!("!!!! GET expiry", &row[4].get_string_value(), expiry_dt, expiry);
+            dbg!(
+                "!!!! GET expiry",
+                &row[4].get_string_value(),
+                expiry_dt,
+                expiry
+            );
             Some(results::GetBso {
                 id: row[0].get_string_value().to_owned(),
                 modified,
