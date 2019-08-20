@@ -177,7 +177,7 @@ impl SyncResultSet {
 impl SyncResultSet {
     // XXX: also needs iteration!
 
-    pub fn one(&self) -> Result<Vec<Value>> {
+    pub fn one(&mut self) -> Result<Vec<Value>> {
         if let Some(result) = self.one_or_none()? {
             Ok(result)
         } else {
@@ -185,7 +185,18 @@ impl SyncResultSet {
         }
     }
 
-    pub fn one_or_none(&self) -> Result<Option<Vec<Value>>> {
+    pub fn one_or_none(&mut self) -> Result<Option<Vec<Value>>> {
+        let result = self.next();
+        if result.is_none() {
+            Ok(None)
+        } else {
+            if self.next().is_some() {
+                Err(DbError::internal("Execpted one result; got more."))?
+            } else {
+                Ok(result)
+            }
+        }
+        /*
         // XXX: maybe we should consume self (self.result) + into_iter below
         if let Some(rows) = &self.result.rows {
             if rows.len() > 1 {
@@ -203,6 +214,7 @@ impl SyncResultSet {
         } else {
             Ok(None)
         }
+        */
     }
 }
 
