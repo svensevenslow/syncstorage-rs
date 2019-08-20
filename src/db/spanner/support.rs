@@ -160,9 +160,10 @@ pub struct SyncResultSet {
     result: ResultSet,
 }
 
+/*
 #[cfg(google_grpc)]
 impl SyncResultSet {
-    pub fn one(&self) -> Result<Vec<Value>> {
+    pub fn one(&mut self) -> Result<Vec<Value>> {
         if let Some(result) = self.one_or_none()? {
             Ok(result)
         } else {
@@ -170,13 +171,12 @@ impl SyncResultSet {
         }
     }
 
-    pub fn one_or_none(&self) -> Result<Option<Vec<Value>>> {}
+    pub fn one_or_none(&mut self) -> Result<Option<Vec<Value>>> {}
 }
 
 #[cfg(not(google_grpc))]
+*/
 impl SyncResultSet {
-    // XXX: also needs iteration!
-
     pub fn one(&mut self) -> Result<Vec<Value>> {
         if let Some(result) = self.one_or_none()? {
             Ok(result)
@@ -196,28 +196,10 @@ impl SyncResultSet {
                 Ok(result)
             }
         }
-        /*
-        // XXX: maybe we should consume self (self.result) + into_iter below
-        if let Some(rows) = &self.result.rows {
-            if rows.len() > 1 {
-                Err(DbError::internal("Execpted one result; got more."))?;
-            }
-            let result = rows[0]
-                .iter()
-                .map(|s| {
-                    let mut value = Value::new();
-                    value.set_string_value(s.to_owned());
-                    value
-                })
-                .collect();
-            Ok(Some(result))
-        } else {
-            Ok(None)
-        }
-        */
     }
 }
 
+#[cfg(not(google_grpc))]
 impl Iterator for SyncResultSet {
     type Item = Vec<Value>;
 
