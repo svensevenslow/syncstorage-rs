@@ -26,7 +26,10 @@ use crate::db::{
 
 use crate::web::extractors::BsoQueryParams;
 
-use super::{batch, support::as_value};
+use super::{
+    batch,
+    support::{as_value, ExecuteSqlRequestBuilder},
+};
 
 use google_spanner1::{
     BeginTransactionRequest, CommitRequest, ExecuteSqlRequest, ReadOnly, ReadWrite, ResultSet,
@@ -39,7 +42,7 @@ pub enum CollectionLock {
     Write,
 }
 
-type Conn = PooledConnection<SpannerConnectionManager>;
+pub(super) type Conn = PooledConnection<SpannerConnectionManager>;
 pub type Result<T> = std::result::Result<T, DbError>;
 
 /// The ttl to use for rows that are never supposed to expire (in seconds)
@@ -116,19 +119,11 @@ impl SpannerDb {
         if let Some(id) = self.coll_cache.get_id(name)? {
             return Ok(id);
         }
-        let spanner = &self.conn;
 
-        let mut sql =
-            self.sql_request("SELECT collectionid FROM collections WHERE name = @name")?;
-        let params = params! {"name" => name.to_string()};
-        sql.params = Some(params);
-
-        let session = spanner.session.name.as_ref().unwrap();
-        let result = spanner
-            .hub
-            .projects()
-            .instances_databases_sessions_execute_sql(sql, session)
-            .doit()?;
+        let result = self
+            .sql("SELECT collectionid FROM collections WHERE name = @name")?
+            .params(params! {"name" => name.to_string()})
+            .execute(&self.conn)?;
         let rows = result.1.rows.ok_or(DbErrorKind::CollectionNotFound)?;
         let id = rows[0][0]
             .parse::<i32>()
@@ -328,6 +323,10 @@ impl SpannerDb {
         sqlr.seqno = Some(session.execute_sql_count.to_string());
         session.execute_sql_count += 1;
         Ok(sqlr)
+    }
+
+    fn sql(&self, sql: &str) -> Result<ExecuteSqlRequestBuilder> {
+        Ok(ExecuteSqlRequestBuilder::new(self.sql_request(sql)?))
     }
 
     pub fn commit_sync(&self) -> Result<()> {
@@ -646,24 +645,12 @@ impl SpannerDb {
     }
 
     pub fn delete_storage_sync(&self, user_id: params::DeleteStorage) -> Result<()> {
+        // XXX: should delete from bso table too
         let user_id = user_id.legacy_id as u32;
-
-        let spanner = &self.conn;
-        let session = spanner.session.name.as_ref().unwrap();
-        let mut sql = self.sql_request("DELETE FROM user_collections WHERE userid=@userid")?;
-        let params = params! {"userid" => user_id.to_string()};
-        sql.params = Some(params);
-
-        let results = spanner
-            .hub
-            .projects()
-            .instances_databases_sessions_execute_sql(sql, session)
-            .doit();
-        match results {
-            Ok(_results) => Ok(()),
-            // TODO Return the correct error
-            Err(_e) => Err(DbErrorKind::CollectionNotFound.into()),
-        }
+        self.sql("DELETE FROM user_collections WHERE userid=@userid")?
+            .params(params! {"userid" => user_id.to_string()})
+            .execute(&self.conn)?;
+        Ok(())
     }
 
     pub fn timestamp(&self) -> SyncTimestamp {
@@ -1021,28 +1008,18 @@ impl SpannerDb {
         let user_id = params.user_id.legacy_id;
         let collection_id = self.get_collection_id(&params.collection)?;
 
-        let spanner = &self.conn;
-        let session = spanner.session.name.as_ref().unwrap();
-        let mut sql = self.sql_request("SELECT id, modified, payload, coalesce(sortindex, 0), ttl FROM bso WHERE userid=@userid AND collection=@collectionid AND id=@bsoid AND ttl > @timestamp")?;
-        let timestamp = self.timestamp().as_i64();
-        let modifiedstring = to_rfc3339(timestamp)?;
-        let sqlparams = params! {
-            "userid" => user_id.to_string(),
-            "collectionid" => collection_id.to_string(),
-            "bsoid" => params.id.to_string(),
-            "timestamp" => modifiedstring,
-        };
-        let sqltypes = param_types! {
-            "timestamp" => SpannerType::Timestamp,
-        };
-        sql.params = Some(sqlparams);
-        sql.param_types = Some(sqltypes);
-
-        let result = spanner
-            .hub
-            .projects()
-            .instances_databases_sessions_execute_sql(sql, session)
-            .doit()?;
+        let result = self.
+            sql("SELECT id, modified, payload, coalesce(sortindex, 0), ttl FROM bso WHERE userid=@userid AND collection=@collectionid AND id=@bsoid AND ttl > @timestamp")?
+            .params(params! {
+                "userid" => user_id.to_string(),
+                "collectionid" => collection_id.to_string(),
+                "bsoid" => params.id.to_string(),
+                "timestamp" => to_rfc3339(self.timestamp().as_i64())?
+            })
+            .param_types(param_types! {
+                "timestamp" => SpannerType::Timestamp,
+            })
+            .execute(&self.conn)?;
         dbg!("RRRRRRRRRR", &result);
         Ok(if let Some(rows) = result.1.rows {
             let modified = SyncTimestamp::from_rfc3339(&rows[0][1])?;
