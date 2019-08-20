@@ -123,9 +123,13 @@ impl SpannerDb {
         let result = self
             .sql("SELECT collectionid FROM collections WHERE name = @name")?
             .params(params! {"name" => name.to_string()})
-            .execute(&self.conn)?;
-        let rows = result.1.rows.ok_or(DbErrorKind::CollectionNotFound)?;
-        let id = rows[0][0]
+            .execute(&self.conn)?
+        .one_or_none()?
+        .ok_or(DbErrorKind::CollectionNotFound)?;
+        //let rows = result.1.rows.ok_or(DbErrorKind::CollectionNotFound)?;
+        //let id = rows[0][0]
+        let id = result[0]
+            .get_string_value()
             .parse::<i32>()
             .map_err(|e| DbErrorKind::Integrity(e.to_string()))?;
         self.coll_cache.put(id, name.to_owned())?;
@@ -1019,21 +1023,24 @@ impl SpannerDb {
             .param_types(param_types! {
                 "timestamp" => SpannerType::Timestamp,
             })
-            .execute(&self.conn)?;
+            .execute(&self.conn)?
+        .one_or_none()?;
         dbg!("RRRRRRRRRR", &result);
-        Ok(if let Some(rows) = result.1.rows {
-            let modified = SyncTimestamp::from_rfc3339(&rows[0][1])?;
-            let expiry_dt = DateTime::parse_from_rfc3339(&rows[0][4]).map_err(|e| {
+        // XXX: map() now
+        //Ok(if let Some(rows) = result.1.rows {
+        Ok(if let Some(row) = result {
+            let modified = SyncTimestamp::from_rfc3339(&row[1].get_string_value())?;
+            let expiry_dt = DateTime::parse_from_rfc3339(&row[4].get_string_value()).map_err(|e| {
                 DbErrorKind::Integrity(format!("Invalid TIMESTAMP {}", e.to_string()))
             })?;
             // XXX: expiry is i64?
             let expiry = expiry_dt.timestamp_millis();
-            dbg!("!!!! GET expiry", &rows[0][4], expiry_dt, expiry);
+            dbg!("!!!! GET expiry", &row[4].get_string_value(), expiry_dt, expiry);
             Some(results::GetBso {
-                id: rows[0][0].clone(),
+                id: row[0].get_string_value().to_owned(),
                 modified,
-                payload: rows[0][2].clone(),
-                sortindex: Some(rows[0][3].parse().unwrap()),
+                payload: row[2].get_string_value().to_owned(),
+                sortindex: Some(row[3].get_string_value().parse().unwrap()),
                 expiry,
             })
         } else {

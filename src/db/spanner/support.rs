@@ -1,5 +1,10 @@
 use std::collections::HashMap;
 
+use protobuf::well_known_types::Value;
+
+use super::models::Result;
+use crate::db::DbError;
+
 #[cfg(google_grpc)]
 type ParamValue = protobuf::well_known_types::Value;
 #[cfg(not(google_grpc))]
@@ -24,7 +29,6 @@ type ExecuteResult = google_spanner1::Result<(hyper::client::Response, google_sp
 type ResultSet = googleapis_raw::spanner::v1::result_set::ResultSet;
 #[cfg(not(google_grpc))]
 type ResultSet = google_spanner1::ResultSet;
-
 
 // XXX: or Into<protobuf Value>?
 #[cfg(google_grpc)]
@@ -123,7 +127,8 @@ impl ExecuteSqlRequestBuilder {
     }
 
     #[cfg(not(google_grpc))]
-    pub fn execute(self, spanner: &super::models::Conn) -> ExecuteResult {
+    //pub fn execute(self, spanner: &super::models::Conn) -> ExecuteResult {
+    pub fn execute(self, spanner: &super::models::Conn) -> Result<SyncResultSet> {
         /*
         let session = spanner
             .session
@@ -135,22 +140,29 @@ impl ExecuteSqlRequestBuilder {
         let mut request = self.execute_sql;
         request.params = self.params;
         request.param_types = self.param_types;
+        /*
         spanner
             .hub
             .projects()
             .instances_databases_sessions_execute_sql(request, session)
             .doit()
+        */
+        let (_, result) = spanner
+            .hub
+            .projects()
+            .instances_databases_sessions_execute_sql(request, session)
+            .doit()?;
+        Ok(SyncResultSet { result })
     }
 }
 
-/*
-struct SyncResultSet {
+pub struct SyncResultSet {
     result: ResultSet,
 }
 
 #[cfg(google_grpc)]
 impl SyncResultSet {
-    fn one(&self) -> Result<> {
+    pub fn one(&self) -> Result<Vec<Value>> {
         if let Some(result) = self.one_or_none()? {
             Ok(result)
         } else {
@@ -158,15 +170,14 @@ impl SyncResultSet {
         }
     }
 
-    fn one_or_none(&self) -> Result<Option<>> {
-    }
+    pub fn one_or_none(&self) -> Result<Option<Vec<Value>>> {}
 }
 
 #[cfg(not(google_grpc))]
 impl SyncResultSet {
     // XXX: also needs iteration!
 
-    fn one(&self) -> Result<> {
+    pub fn one(&self) -> Result<Vec<Value>> {
         if let Some(result) = self.one_or_none()? {
             Ok(result)
         } else {
@@ -174,16 +185,23 @@ impl SyncResultSet {
         }
     }
 
-    fn one_or_none(&self) -> Result<Option<>> {
-        if let Some(rows) = self.result.rows {
+    pub fn one_or_none(&self) -> Result<Option<Vec<Value>>> {
+        // XXX: maybe we should consume self (self.result) + into_iter below
+        if let Some(rows) = &self.result.rows {
             if rows.len() > 1 {
                 Err(DbError::internal("Execpted one result; got more."))?;
             }
-            // XXX: convert to something, Values?
-            Ok(rows[0]);
+            let result = rows[0]
+                .iter()
+                .map(|s| {
+                    let mut value = Value::new();
+                    value.set_string_value(s.to_owned());
+                    value
+                })
+                .collect();
+            Ok(Some(result))
         } else {
             Ok(None)
         }
     }
 }
-*/
