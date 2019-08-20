@@ -5,40 +5,50 @@ use protobuf::well_known_types::Value;
 use super::models::Result;
 use crate::db::DbError;
 
-#[cfg(google_grpc)]
+#[cfg(feature = "google_grpc")]
 type ParamValue = protobuf::well_known_types::Value;
-#[cfg(not(google_grpc))]
+#[cfg(not(feature = "google_grpc"))]
 type ParamValue = String;
 
-#[cfg(google_grpc)]
+#[cfg(feature = "google_grpc")]
 type ParamType = googleapis_raw::spanner::v1::type_pb::Type;
-#[cfg(not(google_grpc))]
+#[cfg(not(feature = "google_grpc"))]
 type ParamType = google_spanner1::Type;
 
-#[cfg(google_grpc)]
-type ExecuteSqlRequest = googleapis_raw::spanner::v1::ExecuteSqlRequest;
-#[cfg(not(google_grpc))]
+#[cfg(feature = "google_grpc")]
+type ExecuteSqlRequest = googleapis_raw::spanner::v1::spanner::ExecuteSqlRequest;
+#[cfg(not(feature = "google_grpc"))]
 type ExecuteSqlRequest = google_spanner1::ExecuteSqlRequest;
 
-#[cfg(google_grpc)]
+#[cfg(feature = "google_grpc")]
 type ExecuteResult = ::grpcio::Result<googleapis_raw::spanner::v1::result_set::ResultSet>;
-#[cfg(not(google_grpc))]
+#[cfg(not(feature = "google_grpc"))]
 type ExecuteResult = google_spanner1::Result<(hyper::client::Response, google_spanner1::ResultSet)>;
 
-#[cfg(google_grpc)]
+#[cfg(feature = "google_grpc")]
 type ResultSet = googleapis_raw::spanner::v1::result_set::ResultSet;
-#[cfg(not(google_grpc))]
+#[cfg(not(feature = "google_grpc"))]
 type ResultSet = google_spanner1::ResultSet;
 
+#[cfg(feature = "google_grpc")]
+type ResultSetMetadata = googleapis_raw::spanner::v1::result_set::ResultSetMetadata;
+#[cfg(not(feature = "google_grpc"))]
+type ResultSetMetadata = google_spanner1::ResultSetMetadata;
+
+#[cfg(feature = "google_grpc")]
+type ResultSetStats = googleapis_raw::spanner::v1::result_set::ResultSetStats;
+#[cfg(not(feature = "google_grpc"))]
+type ResultSetStats = google_spanner1::ResultSetStats;
+
 // XXX: or Into<protobuf Value>?
-#[cfg(google_grpc)]
+#[cfg(feature = "google_grpc")]
 pub fn as_value(string_value: String) -> protobuf::well_known_types::Value {
     let mut value = Value::new();
     value.set_string_value(string_value);
     value
 }
 
-#[cfg(not(google_grpc))]
+#[cfg(not(feature = "google_grpc"))]
 pub fn as_value(string_value: String) -> String {
     string_value
 }
@@ -58,7 +68,7 @@ pub enum SpannerType {
     Struct,
 }
 
-#[cfg(google_grpc)]
+#[cfg(feature = "google_grpc")]
 impl Into<googleapis_raw::spanner::v1::type_pb::Type> for SpannerType {
     fn into(self) -> googleapis_raw::spanner::v1::type_pb::Type {
         let mut t = googleapis_raw::spanner::v1::type_pb::Type::new();
@@ -126,7 +136,33 @@ impl ExecuteSqlRequestBuilder {
         self
     }
 
-    #[cfg(not(google_grpc))]
+    #[cfg(feature = "google_grpc")]
+    pub fn execute(self, spanner: &super::models::Conn) -> Result<SyncResultSet> {
+        /*
+        let session = spanner
+            .session
+            .name
+            .as_ref()
+            .ok_or_else(|| DbError::internal("No spanner session"))?;
+         */
+        // XXX:
+        //let session = spanner.session.name.as_ref().unwrap();
+        use protobuf::{well_known_types::Struct, SingularPtrField};
+        let mut request = self.execute_sql;
+        request.session = "XXX".to_owned();
+        if let Some(params) = self.params {
+            let paramss = Struct::new();
+            paramss.set_fields(params);
+            request.params = SingularPtrField::some(paramss);
+        }
+        if let Some(param_types) = self.param_types {
+            request.param_types = param_types;
+        }
+        let result = spanner.execute_sql(&request)?;
+        Ok(SyncResultSet { result })
+    }
+
+    #[cfg(not(feature = "google_grpc"))]
     //pub fn execute(self, spanner: &super::models::Conn) -> ExecuteResult {
     pub fn execute(self, spanner: &super::models::Conn) -> Result<SyncResultSet> {
         /*
@@ -161,7 +197,7 @@ pub struct SyncResultSet {
 }
 
 /*
-#[cfg(google_grpc)]
+#[cfg(feature = "google_grpc")]
 impl SyncResultSet {
     pub fn one(&mut self) -> Result<Vec<Value>> {
         if let Some(result) = self.one_or_none()? {
@@ -174,9 +210,17 @@ impl SyncResultSet {
     pub fn one_or_none(&mut self) -> Result<Option<Vec<Value>>> {}
 }
 
-#[cfg(not(google_grpc))]
+#[cfg(not(feature = "google_grpc"))]
 */
 impl SyncResultSet {
+    pub fn metadata(&self) -> Option<&ResultSetMetadata> {
+        self.result.metadata.as_ref()
+    }
+
+    pub fn stats(&self) -> Option<&ResultSetStats> {
+        self.result.stats.as_ref()
+    }
+
     pub fn one(&mut self) -> Result<Vec<Value>> {
         if let Some(result) = self.one_or_none()? {
             Ok(result)
@@ -199,21 +243,61 @@ impl SyncResultSet {
     }
 }
 
-#[cfg(not(google_grpc))]
+#[cfg(feature = "google_grpc")]
+impl Iterator for SyncResultSet {
+    type Item = Vec<Value>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let rows = self.result.rows;
+        if rows.is_empty() {
+            None
+        } else {
+            let row = rows.remove(0);
+            Some(row.get_values().to_vec())
+            /*
+            Some(row.into_iter()
+                 .map(|s| {
+                     let mut value = Value::new();
+                     value.set_string_value(s);
+                     value
+                 })
+                 .collect())
+                */
+        }
+    }
+}
+
+#[cfg(not(feature = "google_grpc"))]
 impl Iterator for SyncResultSet {
     type Item = Vec<Value>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if let Some(rows) = self.result.rows.as_mut() {
-            rows.pop().map(|row| {
-                row.into_iter()
-                    .map(|s| {
-                        let mut value = Value::new();
-                        value.set_string_value(s);
-                        value
-                    })
-                    .collect()
-            })
+            if rows.is_empty() {
+                None
+            } else {
+                let row = rows.remove(0);
+                Some(
+                    row.into_iter()
+                        .map(|s| {
+                            let mut value = Value::new();
+                            value.set_string_value(s);
+                            value
+                        })
+                        .collect(),
+                )
+            }
+        /*
+        rows.pop().map(|row| {
+            row.into_iter()
+                .map(|s| {
+                    let mut value = Value::new();
+                    value.set_string_value(s);
+                    value
+                })
+                .collect()
+        })
+        */
         } else {
             None
         }
