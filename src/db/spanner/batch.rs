@@ -42,21 +42,26 @@ pub fn create(db: &SpannerDb, params: params::CreateBatch) -> Result<results::Cr
     let user_id = params.user_id.legacy_id as i32;
     let collection_id = db.get_collection_id(&params.collection)?;
     let timestamp = db.timestamp().as_i64();
-    let bsos = bsos_to_batch_string(&params.bsos)?;
+    let mut i = 0;
+    //let bsos = bsos_to_batch_string(&params.bsos)?;
+    for bso in &params.bsos {
+        db.sql("INSERT INTO batches (userid, collection, id, bsos, expiry, timestamp) VALUES (@userid, @collectionid, @bsoid, @bsos, @expiry, @timestamp)")?
+            .params(params! {
+                "userid" => user_id.to_string(),
+                "collectionid" => collection_id.to_string(),
+                "bsoid" => to_rfc3339(timestamp + i)?,
+                "timestamp" => to_rfc3339(timestamp)?,
+                "bsos" => bso.payload.unwrap(),
+                "expiry" => to_rfc3339(timestamp + BATCH_LIFETIME)?,
+            })
+            .param_types(param_types! {
+                "bsoid" => SpannerType::Timestamp,
+                "expiry" => SpannerType::Timestamp,
+            })
+            .execute(&db.conn)?;
+            i += 1;
+    }
 
-    db.sql("INSERT INTO batches (userid, collection, id, bsos, expiry) VALUES (@userid, @collectionid, @bsoid, @bsos, @expiry)")?
-        .params(params! {
-            "userid" => user_id.to_string(),
-            "collectionid" => collection_id.to_string(),
-            "bsoid" => to_rfc3339(timestamp)?,
-            "bsos" => bsos,
-            "expiry" => to_rfc3339(timestamp + BATCH_LIFETIME)?,
-        })
-        .param_types(param_types! {
-            "bsoid" => SpannerType::Timestamp,
-            "expiry" => SpannerType::Timestamp,
-        })
-        .execute(&db.conn)?;
     Ok(timestamp)
 }
 
@@ -65,15 +70,15 @@ pub fn validate(db: &SpannerDb, params: params::ValidateBatch) -> Result<bool> {
     let collection_id = db.get_collection_id(&params.collection)?;
     let timestamp = db.timestamp().as_i64();
 
-    let exists = db.sql("SELECT 1 FROM batches WHERE userid = @userid AND collection = @collectionid AND id = @bsoid AND expiry > @expiry")?
+    let exists = db.sql("SELECT 1 FROM batches WHERE userid = @userid AND collection = @collectionid AND timestamp = @timestamp AND expiry > @expiry")?
         .params(params! {
             "userid" => user_id.to_string(),
             "collectionid" => collection_id.to_string(),
-            "bsoid" => to_rfc3339(params.id)?,
+            "timestamp" => to_rfc3339(params.id)?,
             "expiry" => to_rfc3339(timestamp)?,
         })
         .param_types(param_types! {
-            "bsoid" => SpannerType::Timestamp,
+            "timestamp" => SpannerType::Timestamp,
             "expiry" => SpannerType::Timestamp,
         })
         .execute(&db.conn)?
@@ -88,20 +93,26 @@ pub fn append(db: &SpannerDb, params: params::AppendToBatch) -> Result<()> {
     let bsos = bsos_to_batch_string(&params.bsos)?;
     let timestamp = db.timestamp().as_i64();
 
-    let result = db.sql("UPDATE batches SET bsos = CONCAT(bsos, @bsos) WHERE userid = @userid AND collection = @collectionid AND id = @bsoid AND expiry > @expiry")?
-        .params(params! {
-            "userid" => user_id.to_string(),
-            "collectionid" => collection_id.to_string(),
-            "bsoid" => to_rfc3339(params.id)?,
-            "expiry" => to_rfc3339(timestamp)?,
-            "bsos" => bsos,
-        })
-        .param_types(param_types! {
-            "bsoid" => SpannerType::Timestamp,
-            "expiry" => SpannerType::Timestamp,
-        })
-        .execute(&db.conn)?;
-    if result.affected_rows()? == 1 {
+    if let Ok(_) = validate(db, params::ValidateBatch { id: timestamp, user_id: params.user_id.clone(), collection: params.collection.clone() }) {
+        let mut i = 0;
+        for bso in &params.bsos {
+        db.sql("INSERT INTO batches (userid, collection, id, bsos, expiry, timestamp) VALUES (@userid, @collectionid, @bsoid, @bsos, @expiry, @timestamp)")?
+            .params(params! {
+                "userid" => user_id.to_string(),
+                "collectionid" => collection_id.to_string(),
+                "bsoid" => to_rfc3339(params.id + i)?,
+                "timestamp" => to_rfc3339(params.id)?,
+                "expiry" => to_rfc3339(timestamp)?,
+                "bsos" => bso.payload.unwrap(),
+            })
+            .param_types(param_types! {
+                "bsoid" => SpannerType::Timestamp,
+                "timestamp" => SpannerType::Timestamp,
+                "expiry" => SpannerType::Timestamp,
+            })
+            .execute(&db.conn)?;
+            i += 1;
+        }
         Ok(())
     } else {
         Err(DbErrorKind::BatchNotFound.into())
@@ -113,7 +124,7 @@ pub fn get(db: &SpannerDb, params: params::GetBatch) -> Result<Option<results::G
     let collection_id = db.get_collection_id(&params.collection)?;
     let timestamp = db.timestamp().as_i64();
 
-    let result = db.sql("SELECT id, bsos, expiry FROM batches WHERE userid = @userid AND collection = @collectionid AND id = @bsoid AND expiry > @expiry")?
+    let result = db.sql("SELECT id, bsos, expiry FROM batches WHERE userid = @userid AND collection = @collectionid AND timestamp = @bsoid AND expiry > @expiry")?
         .params(params! {
             "userid" => user_id.to_string(),
             "collectionid" => collection_id.to_string(),
@@ -124,12 +135,15 @@ pub fn get(db: &SpannerDb, params: params::GetBatch) -> Result<Option<results::G
             "bsoid" => SpannerType::Timestamp,
             "expiry" => SpannerType::Timestamp,
         })
-        .execute(&db.conn)?
-        .one_or_none()?;
+        .execute(&db.conn)?.all_or_none();
     if let Some(result) = result {
         Ok(Some(params::Batch {
             id: params.id,
-            bsos: result[1].get_string_value().to_owned(),
+            bsos: bsos_to_batch_string(
+                result
+                    .iter()
+                    .map(|row| { row[1] })
+                    .collect::<Vec<_>>())?,
             // XXX: we don't really use expiry (but it's probably needed for
             // mysql/diesel compat). converting it back to i64 is maybe
             // suspicious
@@ -145,7 +159,7 @@ pub fn delete(db: &SpannerDb, params: params::DeleteBatch) -> Result<()> {
     let collection_id = db.get_collection_id(&params.collection)?;
 
     db.sql(
-        "DELETE FROM batches WHERE userid = @userid AND collection = @collectionid AND id = @bsoid",
+        "DELETE FROM batches WHERE userid = @userid AND collection = @collectionid AND timestamp = @bsoid",
     )?
     .params(params! {
         "userid" => user_id.to_string(),

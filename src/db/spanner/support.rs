@@ -201,6 +201,17 @@ impl SyncResultSet {
         }
     }
 
+    pub fn all_or_none(&mut self) -> Option<Vec<Value>> {
+        if let Some(rows) = self.result.rows {
+            if rows.is_empty() {
+                return None;
+            } else {
+                return Some(rows);
+            }
+        }
+        None
+    }
+
     pub fn affected_rows(self: &SyncResultSet) -> Result<i64> {
         let stats = self
             .stats()
