@@ -41,6 +41,21 @@ commands:
       - run:
           name: cargo build
           command: cargo build
+  checkout-gcp-grpc:
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "2f:0b:a1:51:75:6a:3f:ac:fb:af:ef:7c:ca:62:21:2f"
+      - run:
+          name: Checkout gcp-grpc
+          command: git clone git@github.com:pjenvey/mozilla-rust-sdk.git
+      - run:
+          name: Adjust gcp-grpc dep path
+          # Switch it into the working dir so it's sent to Docker
+          command: sed -i "s/..\/mozilla-rust-sdk/mozilla-rust-sdk/" Cargo.toml
+      - run:
+          name: Install grpcio dependencies
+          command: sudo apt-get update && sudo apt-get install -y cmake golang-go
 
   write-version:
     steps:
@@ -121,6 +136,7 @@ jobs:
       - image: circleci/rust:latest
     steps:
       - checkout
+      - checkout-gcp-grpc
       - setup-rust
       - setup-rust-check
       - rust-check
@@ -142,6 +158,7 @@ jobs:
             MYSQL_DATABASE: syncstorage
     steps:
       - checkout
+      - checkout-gcp-grpc
       - setup-rust
       # XXX: currently the time needed to setup-sccache negates its savings
       #- setup-sccache
@@ -220,6 +237,31 @@ jobs:
               echo "Not pushing to dockerhub for tag=${CIRCLE_TAG} branch=${CIRCLE_BRANCH}"
             fi
 
+  rust-changelog:
+    docker:
+      - image: python:3.7-buster
+    steps:
+      - setup_remote_docker:
+          version: 18.02.0-ce
+      - run:
+          name: Install Docker client
+          command: |
+            set -x
+            VER="18.06.3-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            mv /tmp/docker/* /usr/bin
+      - run:
+          name: pull find-package-rugaru image
+          command: |
+            docker pull mozilla/dependencyscan:latest
+      - run:
+          name: Check Rust Dependencies
+          command: |
+            printf "{\"org\": \"mozilla-services\", \"repo\": \"syncstorage-rs\", \"ref\": {\"value\": \"master\", \"kind\": \"branch\"}, \"repo_url\": \"https://github.com/mozilla-services/syncstorage-rs.git\"}\n{\"org\": \"mozilla-services\", \"repo\": \"syncstorage-rs\", \"ref\": {\"value\": \"$CIRCLE_SHA1\", \"kind\": \"commit\"}, \"repo_url\": \"https://github.com/mozilla-services/syncstorage-rs.git\"}\n"  | \
+                docker run --rm -i -v /var/run/docker.sock:/var/run/docker.sock --name fpr-cargo_metadata mozilla/dependencyscan:latest python fpr/run_pipeline.py cargo_metadata | \
+                docker run --rm -i -v /var/run/docker.sock:/var/run/docker.sock --name fpr-rust_changelog mozilla/dependencyscan:latest python fpr/run_pipeline.py rust_changelog -m Cargo.toml
+
 workflows:
   version: 2
   build-deploy:
@@ -238,6 +280,11 @@ workflows:
           filters:
             tags:
               only: /.*/
+      - rust-changelog:
+        # email dependency-observatory@mozilla.com with feedback
+          filters:
+            tags:
+              only: /.*/
 
       # Need to update https://circleci.com/gh/mozilla-services/syncstorage-rs/edit#env-vars
       # with docker hub credentials. before enabling this.
@@ -247,4 +294,3 @@ workflows:
       #    filters:
       #      tags:
       #        only: /.*/
-
