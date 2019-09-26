@@ -215,15 +215,12 @@ impl SyncResultSet {
         }
     }
 
-    pub fn all_or_none(&mut self) -> Option<Vec<Value>> {
-        if let Some(rows) = self.result.rows {
-            if rows.is_empty() {
-                return None;
-            } else {
-                return Some(rows);
-            }
+    pub fn all_or_none(&mut self) -> Option<Vec<ListValue>> {
+        if self.result.rows.is_empty() {
+            return None;
+        } else {
+            return Some(self.result.rows.clone().into_vec());
         }
-        None
     }
 
     #[cfg(feature = "google_grpc")]
@@ -232,12 +229,8 @@ impl SyncResultSet {
             .stats()
             .ok_or_else(|| DbError::internal("Expected result_set stats"))?;
         let row_count_exact = stats
-            .row_count_exact
-            .as_ref()
-            .ok_or_else(|| DbError::internal("Expected result_set stats row_count_exact"))?;
-        Ok(row_count_exact
-            .parse()
-            .map_err(|e| DbError::internal(&format!("Invalid row_count_exact i64 value {}", e)))?)
+            .get_row_count_exact();
+        Ok(row_count_exact)
     }
 }
 

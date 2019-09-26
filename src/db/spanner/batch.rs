@@ -4,27 +4,21 @@ use super::{
 };
 use crate::db::{
     params, results,
-    util::{to_rfc3339, SyncTimestamp},
+    util::to_rfc3339,
     DbError, DbErrorKind, BATCH_LIFETIME,
 };
+use protobuf::well_known_types::ListValue;
 
-/// Serialize bsos into strings separated by newlines
-fn bsos_to_batch_string(bsos: &[params::PostCollectionBso]) -> Result<String> {
-    let batch_strings: Result<Vec<String>> = bsos
-        .iter()
-        .map(|bso| {
-            serde_json::to_string(bso).map_err(|e| {
-                DbError::internal(&format!("Couldn't serialize batch::create bso: {}", e))
-            })
-        })
-        .collect();
-    batch_strings.map(|bs| {
-        format!(
-            "{}{}",
-            bs.join("\n"),
-            if bsos.is_empty() { "" } else { "\n" }
-        )
-    })
+/// Serialize results into strings separated by newlines
+fn results_to_batch_string(results: Vec<ListValue>) -> String {
+    if results.is_empty() {
+        "".to_string()
+    } else {
+        let batch_strings: Vec<String> = results.iter().map(|result| {
+            result.get_values().to_vec()[1].get_string_value().to_string()
+        }).collect();
+        format!("{}{}", batch_strings.join("\n"), "\n")
+    }
 }
 
 /// Deserialize a batch string into bsos
@@ -43,7 +37,6 @@ pub fn create(db: &SpannerDb, params: params::CreateBatch) -> Result<results::Cr
     let collection_id = db.get_collection_id(&params.collection)?;
     let timestamp = db.timestamp().as_i64();
     let mut i = 0;
-    //let bsos = bsos_to_batch_string(&params.bsos)?;
     for bso in &params.bsos {
         db.sql("INSERT INTO batches (userid, collection, id, bsos, expiry, timestamp) VALUES (@userid, @collectionid, @bsoid, @bsos, @expiry, @timestamp)")?
             .params(params! {
@@ -51,7 +44,7 @@ pub fn create(db: &SpannerDb, params: params::CreateBatch) -> Result<results::Cr
                 "collectionid" => collection_id.to_string(),
                 "bsoid" => to_rfc3339(timestamp + i)?,
                 "timestamp" => to_rfc3339(timestamp)?,
-                "bsos" => bso.payload.unwrap(),
+                "bsos" => bso.payload.as_ref().unwrap().to_string(),
                 "expiry" => to_rfc3339(timestamp + BATCH_LIFETIME)?,
             })
             .param_types(param_types! {
@@ -89,7 +82,6 @@ pub fn validate(db: &SpannerDb, params: params::ValidateBatch) -> Result<bool> {
 pub fn append(db: &SpannerDb, params: params::AppendToBatch) -> Result<()> {
     let user_id = params.user_id.legacy_id as i32;
     let collection_id = db.get_collection_id(&params.collection)?;
-    let bsos = bsos_to_batch_string(&params.bsos)?;
     let timestamp = db.timestamp().as_i64();
 
     if let Ok(_) = validate(db, params::ValidateBatch { id: timestamp, user_id: params.user_id.clone(), collection: params.collection.clone() }) {
@@ -102,7 +94,7 @@ pub fn append(db: &SpannerDb, params: params::AppendToBatch) -> Result<()> {
                 "bsoid" => to_rfc3339(params.id + i)?,
                 "timestamp" => to_rfc3339(params.id)?,
                 "expiry" => to_rfc3339(timestamp)?,
-                "bsos" => bso.payload.unwrap(),
+                "bsos" => bso.payload.as_ref().unwrap().to_string(),
             })
             .param_types(param_types! {
                 "bsoid" => SpannerType::Timestamp,
@@ -138,15 +130,11 @@ pub fn get(db: &SpannerDb, params: params::GetBatch) -> Result<Option<results::G
     if let Some(result) = result {
         Ok(Some(params::Batch {
             id: params.id,
-            bsos: bsos_to_batch_string(
-                result
-                    .iter()
-                    .map(|row| { row[1] })
-                    .collect::<Vec<_>>())?,
+            bsos: results_to_batch_string(result),
             // XXX: we don't really use expiry (but it's probably needed for
             // mysql/diesel compat). converting it back to i64 is maybe
             // suspicious
-            expiry: SyncTimestamp::from_rfc3339(result[2].get_string_value())?.as_i64(),
+            expiry: 0,
         }))
     } else {
         Ok(None)
