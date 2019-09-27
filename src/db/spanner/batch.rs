@@ -19,7 +19,6 @@ fn results_to_batch_string(results: Vec<ListValue>) -> String {
         let batch_strings: Vec<String> = results.iter().map(|result| {
             result.get_values().to_vec()[1].get_string_value().to_string()
         }).collect();
-        println!("BATCH STRINGS {:?}", batch_strings);
         let joined = batch_strings.join("\n");
         format!("{}{}", joined, if joined == "" { "" } else { "\n" })
     }
@@ -27,7 +26,6 @@ fn results_to_batch_string(results: Vec<ListValue>) -> String {
 
 /// Deserialize a batch string into bsos
 fn batch_string_to_bsos(bsos: &str) -> Result<Vec<params::PostCollectionBso>> {
-    println!("BATCH STRING {}", bsos);
     bsos.lines()
         .map(|line| {
             serde_json::from_str(line).map_err(|e| {
@@ -66,7 +64,6 @@ pub fn create(db: &SpannerDb, params: params::CreateBatch) -> Result<results::Cr
             "payload": bso.payload,
             "ttl": bso.ttl,
         }).to_string();
-        println!("BSO {:?}", bsos);
 
         db.sql("INSERT INTO batches (userid, collection, id, bsos, expiry, timestamp) VALUES (@userid, @collectionid, @bsoid, @bsos, @expiry, @timestamp)")?
             .params(params! {
@@ -93,8 +90,7 @@ pub fn validate(db: &SpannerDb, params: params::ValidateBatch) -> Result<bool> {
     let user_id = params.user_id.legacy_id as i32;
     let collection_id = db.get_collection_id(&params.collection)?;
     let timestamp = params.id;
-    println!("VALIDATE!");
-    let exists = db.sql("SELECT 1 FROM batches WHERE userid = @userid AND collection = @collectionid AND timestamp = @timestamp AND expiry > @expiry")?
+    let exists = db.sql("SELECT expiry FROM batches WHERE userid = @userid AND collection = @collectionid AND timestamp = @timestamp AND expiry > @expiry")?
         .params(params! {
             "userid" => user_id.to_string(),
             "collectionid" => collection_id.to_string(),
@@ -107,7 +103,7 @@ pub fn validate(db: &SpannerDb, params: params::ValidateBatch) -> Result<bool> {
         })
         .execute(&db.conn)?
         .all_or_none();
-    println!("EXISTS? {:?}", exists);
+    println!("EXISTS {:?} {:?}", exists, to_rfc3339(timestamp));
     Ok(exists.is_some())
 }
 
@@ -115,7 +111,6 @@ pub fn select_max_id(db: &SpannerDb, params: params::ValidateBatch) -> Result<i6
     let user_id = params.user_id.legacy_id as i32;
     let collection_id = db.get_collection_id(&params.collection)?;
     let timestamp = params.id;
-    println!("VALIDATE!");
     let exists = db.sql("SELECT UNIX_MILLIS(id) FROM batches WHERE userid = @userid AND collection = @collectionid AND timestamp = @timestamp AND expiry > @expiry ORDER BY id DESC")?
         .params(params! {
             "userid" => user_id.to_string(),
@@ -129,7 +124,6 @@ pub fn select_max_id(db: &SpannerDb, params: params::ValidateBatch) -> Result<i6
         })
         .execute(&db.conn)?
         .all_or_none();
-    println!("EXISTS? {:?}", exists);
     if let Some(exists) = exists {
         return Ok(exists[0].get_values().to_vec()[0].get_string_value().to_string().parse::<i64>().unwrap());
     }
@@ -140,7 +134,6 @@ pub fn append(db: &SpannerDb, params: params::AppendToBatch) -> Result<()> {
     let user_id = params.user_id.legacy_id as i32;
     let collection_id = db.get_collection_id(&params.collection)?;
     let timestamp = params.id;
-    println!("ABOUT TO VALIDATE!");
     if let Ok(max_id) = select_max_id(db, params::ValidateBatch { id: timestamp, user_id: params.user_id.clone(), collection: params.collection.clone() }) {
         let mut i = max_id + 1;
         for bso in &params.bsos {
@@ -150,7 +143,6 @@ pub fn append(db: &SpannerDb, params: params::AppendToBatch) -> Result<()> {
                 "payload": bso.payload,
                 "ttl": bso.ttl,
             }).to_string();
-            println!("APPEND BSO {:?}", bsos);
             db.sql("INSERT INTO batches (userid, collection, id, bsos, expiry, timestamp) VALUES (@userid, @collectionid, @bsoid, @bsos, @expiry, @timestamp)")?
                 .params(params! {
                     "userid" => user_id.to_string(),
