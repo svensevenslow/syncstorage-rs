@@ -217,9 +217,9 @@ impl SyncResultSet {
 
     pub fn all_or_none(&mut self) -> Option<Vec<ListValue>> {
         if self.result.rows.is_empty() {
-            return None;
+            None
         } else {
-            return Some(self.result.rows.clone().into_vec());
+            Some(self.result.rows.clone().into_vec())
         }
     }
 
