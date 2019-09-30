@@ -228,8 +228,7 @@ impl SyncResultSet {
         let stats = self
             .stats()
             .ok_or_else(|| DbError::internal("Expected result_set stats"))?;
-        let row_count_exact = stats
-            .get_row_count_exact();
+        let row_count_exact = stats.get_row_count_exact();
         Ok(row_count_exact)
     }
 }

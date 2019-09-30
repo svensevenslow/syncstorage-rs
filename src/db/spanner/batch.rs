@@ -2,23 +2,23 @@ use super::{
     models::{Result, SpannerDb},
     support::{as_value, SpannerType},
 };
-use crate::db::{
-    params, results,
-    util::to_rfc3339,
-    DbError, DbErrorKind, BATCH_LIFETIME,
-};
+use crate::db::{params, results, util::to_rfc3339, DbError, DbErrorKind, BATCH_LIFETIME};
 use protobuf::well_known_types::ListValue;
 use serde_json::json;
-
 
 /// Serialize results into strings separated by newlines
 fn results_to_batch_string(results: Vec<ListValue>) -> String {
     if results.is_empty() {
         "".to_string()
     } else {
-        let batch_strings: Vec<String> = results.iter().map(|result| {
-            result.get_values().to_vec()[1].get_string_value().to_string()
-        }).collect();
+        let batch_strings: Vec<String> = results
+            .iter()
+            .map(|result| {
+                result.get_values().to_vec()[1]
+                    .get_string_value()
+                    .to_string()
+            })
+            .collect();
         let joined = batch_strings.join("\n");
         format!("{}{}", joined, if joined == "" { "" } else { "\n" })
     }
@@ -63,7 +63,8 @@ pub fn create(db: &SpannerDb, params: params::CreateBatch) -> Result<results::Cr
             "sortindex": bso.sortindex,
             "payload": bso.payload,
             "ttl": bso.ttl,
-        }).to_string();
+        })
+        .to_string();
 
         db.sql("INSERT INTO batches (userid, collection, id, bsos, expiry, timestamp) VALUES (@userid, @collectionid, @bsoid, @bsos, @expiry, @timestamp)")?
             .params(params! {
@@ -80,7 +81,7 @@ pub fn create(db: &SpannerDb, params: params::CreateBatch) -> Result<results::Cr
                 "timestamp" => SpannerType::Timestamp,
             })
             .execute(&db.conn)?;
-            i += 1;
+        i += 1;
     }
 
     Ok(timestamp)
@@ -122,7 +123,11 @@ pub fn select_max_id(db: &SpannerDb, params: params::ValidateBatch) -> Result<i6
         .execute(&db.conn)?
         .all_or_none();
     if let Some(exists) = exists {
-        return Ok(exists[0].get_values().to_vec()[0].get_string_value().to_string().parse::<i64>().unwrap());
+        return Ok(exists[0].get_values().to_vec()[0]
+            .get_string_value()
+            .to_string()
+            .parse::<i64>()
+            .unwrap());
     }
     Err(DbError::internal("No rows matched the given query."))
 }
@@ -131,7 +136,14 @@ pub fn append(db: &SpannerDb, params: params::AppendToBatch) -> Result<()> {
     let user_id = params.user_id.legacy_id as i32;
     let collection_id = db.get_collection_id(&params.collection)?;
     let timestamp = params.id;
-    if let Ok(max_id) = select_max_id(db, params::ValidateBatch { id: timestamp, user_id: params.user_id.clone(), collection: params.collection.clone() }) {
+    if let Ok(max_id) = select_max_id(
+        db,
+        params::ValidateBatch {
+            id: timestamp,
+            user_id: params.user_id.clone(),
+            collection: params.collection.clone(),
+        },
+    ) {
         let mut i = max_id + 1;
         for bso in &params.bsos {
             let bsos = json!({
@@ -139,7 +151,8 @@ pub fn append(db: &SpannerDb, params: params::AppendToBatch) -> Result<()> {
                 "sortindex": bso.sortindex,
                 "payload": bso.payload,
                 "ttl": bso.ttl,
-            }).to_string();
+            })
+            .to_string();
             db.sql("INSERT INTO batches (userid, collection, id, bsos, expiry, timestamp) VALUES (@userid, @collectionid, @bsoid, @bsos, @expiry, @timestamp)")?
                 .params(params! {
                     "userid" => user_id.to_string(),
