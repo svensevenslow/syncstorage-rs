@@ -38,7 +38,7 @@ fn batch_string_to_bsos(bsos: &str) -> Result<Vec<params::PostCollectionBso>> {
 pub fn create(db: &SpannerDb, params: params::CreateBatch) -> Result<results::CreateBatch> {
     let user_id = params.user_id.legacy_id as i32;
     let collection_id = db.get_collection_id(&params.collection)?;
-    let timestamp = db.timestamp().as_i64();
+    let timestamp = db.timestamp()?.as_i64();
     if params.bsos.len() == 0 {
         db.sql("INSERT INTO batches (userid, collection, id, bsos, expiry, timestamp) VALUES (@userid, @collectionid, @bsoid, @bsos, @expiry, @timestamp)")?
             .params(params! {
@@ -94,7 +94,7 @@ pub fn validate(db: &SpannerDb, params: params::ValidateBatch) -> Result<bool> {
             "userid" => user_id.to_string(),
             "collectionid" => collection_id.to_string(),
             "timestamp" => to_rfc3339(params.id)?,
-            "expiry" => to_rfc3339(db.timestamp().as_i64())?,
+            "expiry" => to_rfc3339(db.timestamp()?.as_i64())?,
         })
         .param_types(param_types! {
             "timestamp" => SpannerType::Timestamp,
@@ -113,7 +113,7 @@ pub fn select_max_id(db: &SpannerDb, params: params::ValidateBatch) -> Result<i6
             "userid" => user_id.to_string(),
             "collectionid" => collection_id.to_string(),
             "timestamp" => to_rfc3339(params.id)?,
-            "expiry" => to_rfc3339(db.timestamp().as_i64())?,
+            "expiry" => to_rfc3339(db.timestamp()?.as_i64())?,
         })
         .param_types(param_types! {
             "timestamp" => SpannerType::Timestamp,
@@ -166,7 +166,7 @@ pub fn append(db: &SpannerDb, params: params::AppendToBatch) -> Result<()> {
 pub fn get(db: &SpannerDb, params: params::GetBatch) -> Result<Option<results::GetBatch>> {
     let user_id = params.user_id.legacy_id as i32;
     let collection_id = db.get_collection_id(&params.collection)?;
-    let timestamp = db.timestamp().as_i64();
+    let timestamp = db.timestamp()?.as_i64();
 
     let result = db.sql("SELECT id, bsos, expiry FROM batches WHERE userid = @userid AND collection = @collectionid AND timestamp = @bsoid AND expiry > @expiry")?
         .params(params! {

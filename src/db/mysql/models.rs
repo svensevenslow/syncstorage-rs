@@ -37,6 +37,7 @@ type Conn = PooledConnection<ConnectionManager<MysqlConnection>>;
 /// The ttl to use for rows that are never supposed to expire (in seconds)
 pub const DEFAULT_BSO_TTL: u32 = 2_100_000_000;
 
+pub const TOMBSTONE: i32 = 0;
 /// SQL Variable remapping
 /// These names are the legacy values mapped to the new names.
 pub const COLLECTION_ID: &str = "collection";
@@ -249,17 +250,40 @@ impl MysqlDb {
         Ok(())
     }
 
+    fn erect_tombstone(&self, user_id: i32) -> Result<()> {
+        sql_query(format!(
+            r#"INSERT INTO user_collections ({user_id}, {collection_id}, {modified})
+               VALUES (?, ?, ?)
+                   ON DUPLICATE KEY UPDATE
+                      {modified} = VALUES({modified})"#,
+            user_id = USER_ID,
+            collection_id = COLLECTION_ID,
+            modified = LAST_MODIFIED
+        ))
+        .bind::<Integer, _>(user_id)
+        .bind::<Integer, _>(TOMBSTONE)
+        .bind::<BigInt, _>(self.timestamp().as_i64())
+        .execute(&self.conn)?;
+        Ok(())
+    }
+
     pub fn delete_storage_sync(&self, user_id: HawkIdentifier) -> Result<()> {
-        let user_id = user_id.legacy_id;
+        let user_id = user_id.legacy_id as i32;
+        self.begin()?;
+        // Delete user data.
         delete(bso::table)
-            .filter(bso::user_id.eq(user_id as i32))
+            .filter(bso::user_id.eq(user_id))
             .execute(&self.conn)?;
+        // Delete user collections.
         delete(user_collections::table)
-            .filter(user_collections::user_id.eq(user_id as i32))
+            .filter(user_collections::user_id.eq(user_id))
             .execute(&self.conn)?;
         Ok(())
     }
 
+    // Deleting the collection should result in:
+    //  - collection does not appear in /info/collections
+    //  - X-Last-Modified timestamp at the storage level changing
     pub fn delete_collection_sync(
         &self,
         params: params::DeleteCollection,
@@ -276,6 +300,8 @@ impl MysqlDb {
             .execute(&self.conn)?;
         if count == 0 {
             Err(DbErrorKind::CollectionNotFound)?
+        } else {
+            self.erect_tombstone(user_id as i32)?;
         }
         self.get_storage_timestamp_sync(params.user_id)
     }
@@ -283,9 +309,12 @@ impl MysqlDb {
     pub(super) fn create_collection(&self, name: &str) -> Result<i32> {
         // XXX: handle concurrent attempts at inserts
         let id = self.conn.transaction(|| {
-            sql_query("INSERT INTO collections (name) VALUES (?)")
-                .bind::<Text, _>(name)
-                .execute(&self.conn)?;
+            sql_query(
+                "INSERT INTO collections (name)
+                 VALUES (?)",
+            )
+            .bind::<Text, _>(name)
+            .execute(&self.conn)?;
             collections::table.select(last_insert_id).first(&self.conn)
         })?;
         self.coll_cache.put(id, name.to_owned())?;
@@ -304,12 +333,16 @@ impl MysqlDb {
             return Ok(id);
         }
 
-        let id = sql_query("SELECT id FROM collections WHERE name = ?")
-            .bind::<Text, _>(name)
-            .get_result::<IdResult>(&self.conn)
-            .optional()?
-            .ok_or(DbErrorKind::CollectionNotFound)?
-            .id;
+        let id = sql_query(
+            "SELECT id
+               FROM collections
+              WHERE name = ?",
+        )
+        .bind::<Text, _>(name)
+        .get_result::<IdResult>(&self.conn)
+        .optional()?
+        .ok_or(DbErrorKind::CollectionNotFound)?
+        .id;
         self.coll_cache.put(id, name.to_owned())?;
         Ok(id)
     }
@@ -318,12 +351,16 @@ impl MysqlDb {
         let name = if let Some(name) = self.coll_cache.get_name(id)? {
             name
         } else {
-            sql_query("SELECT name FROM collections where id = ?")
-                .bind::<Integer, _>(&id)
-                .get_result::<NameResult>(&self.conn)
-                .optional()?
-                .ok_or(DbErrorKind::CollectionNotFound)?
-                .name
+            sql_query(
+                "SELECT name
+                   FROM collections
+                  WHERE id = ?",
+            )
+            .bind::<Integer, _>(&id)
+            .get_result::<NameResult>(&self.conn)
+            .optional()?
+            .ok_or(DbErrorKind::CollectionNotFound)?
+            .name
         };
         Ok(name)
     }
@@ -347,11 +384,11 @@ impl MysqlDb {
             let ttl = bso.ttl.map_or(DEFAULT_BSO_TTL, |ttl| ttl);
             let q = format!(r#"
             INSERT INTO bso ({user_id}, {collection_id}, id, sortindex, payload, {modified}, {expiry})
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
-                    {user_id} = VALUES({user_id}),
-                    {collection_id} = VALUES({collection_id}),
-                    id = VALUES(id)
+                   {user_id} = VALUES({user_id}),
+                   {collection_id} = VALUES({collection_id}),
+                   id = VALUES(id)
             "#, user_id=USER_ID, modified=MODIFIED, collection_id=COLLECTION_ID, expiry=EXPIRY);
             let q = format!(
                 "{}{}",
@@ -618,7 +655,9 @@ impl MysqlDb {
         user_id: HawkIdentifier,
     ) -> Result<results::GetCollectionTimestamps> {
         let modifieds = sql_query(format!(
-            "SELECT {collection_id}, {modified} FROM user_collections WHERE {user_id} = ?",
+            "SELECT {collection_id}, {modified}
+               FROM user_collections
+              WHERE {user_id} = ?",
             collection_id = COLLECTION_ID,
             user_id = USER_ID,
             modified = LAST_MODIFIED
@@ -635,11 +674,12 @@ impl MysqlDb {
         let mut names = self.load_collection_names(by_id.keys())?;
         by_id
             .into_iter()
+            .filter(|id| id.0 > 0) // ignore any tombstones (they're alive again)
             .map(|(id, value)| {
                 names
                     .remove(&id)
                     .map(|name| (name, value))
-                    .ok_or_else(|| DbError::internal("load_collection_names get"))
+                    .ok_or_else(|| DbError::internal("load_collection_names unknown collection id"))
             })
             .collect()
     }
@@ -682,7 +722,8 @@ impl MysqlDb {
             r#"
                 INSERT INTO user_collections ({user_id}, {collection_id}, {modified})
                 VALUES (?, ?, ?)
-                ON DUPLICATE KEY UPDATE {modified} = ?
+                    ON DUPLICATE KEY UPDATE
+                       {modified} = ?
         "#,
             user_id = USER_ID,
             collection_id = COLLECTION_ID,
