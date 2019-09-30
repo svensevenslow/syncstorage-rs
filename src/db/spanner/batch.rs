@@ -89,13 +89,12 @@ pub fn create(db: &SpannerDb, params: params::CreateBatch) -> Result<results::Cr
 pub fn validate(db: &SpannerDb, params: params::ValidateBatch) -> Result<bool> {
     let user_id = params.user_id.legacy_id as i32;
     let collection_id = db.get_collection_id(&params.collection)?;
-    let timestamp = params.id;
     let exists = db.sql("SELECT expiry FROM batches WHERE userid = @userid AND collection = @collectionid AND timestamp = @timestamp AND expiry > @expiry")?
         .params(params! {
             "userid" => user_id.to_string(),
             "collectionid" => collection_id.to_string(),
             "timestamp" => to_rfc3339(params.id)?,
-            "expiry" => to_rfc3339(timestamp)?,
+            "expiry" => to_rfc3339(db.timestamp().as_i64())?,
         })
         .param_types(param_types! {
             "timestamp" => SpannerType::Timestamp,
@@ -103,20 +102,18 @@ pub fn validate(db: &SpannerDb, params: params::ValidateBatch) -> Result<bool> {
         })
         .execute(&db.conn)?
         .all_or_none();
-    println!("EXISTS {:?} {:?}", exists, to_rfc3339(timestamp));
     Ok(exists.is_some())
 }
 
 pub fn select_max_id(db: &SpannerDb, params: params::ValidateBatch) -> Result<i64> {
     let user_id = params.user_id.legacy_id as i32;
     let collection_id = db.get_collection_id(&params.collection)?;
-    let timestamp = params.id;
     let exists = db.sql("SELECT UNIX_MILLIS(id) FROM batches WHERE userid = @userid AND collection = @collectionid AND timestamp = @timestamp AND expiry > @expiry ORDER BY id DESC")?
         .params(params! {
             "userid" => user_id.to_string(),
             "collectionid" => collection_id.to_string(),
             "timestamp" => to_rfc3339(params.id)?,
-            "expiry" => to_rfc3339(timestamp)?,
+            "expiry" => to_rfc3339(db.timestamp().as_i64())?,
         })
         .param_types(param_types! {
             "timestamp" => SpannerType::Timestamp,
