@@ -39,7 +39,7 @@ pub fn create(db: &SpannerDb, params: params::CreateBatch) -> Result<results::Cr
     let user_id = params.user_id.legacy_id as i32;
     let collection_id = db.get_collection_id(&params.collection)?;
     let timestamp = db.timestamp()?.as_i64();
-    if params.bsos.len() == 0 {
+    if params.bsos.is_empty() {
         db.sql("INSERT INTO batches (userid, collection, id, bsos, expiry, timestamp) VALUES (@userid, @collectionid, @bsoid, @bsos, @expiry, @timestamp)")?
             .params(params! {
                 "userid" => user_id.to_string(),
@@ -56,8 +56,7 @@ pub fn create(db: &SpannerDb, params: params::CreateBatch) -> Result<results::Cr
             })
             .execute(&db.conn)?;
     }
-    let mut i = 0;
-    for bso in &params.bsos {
+    for (i, bso) in (&params.bsos).iter().enumerate() {
         let bsos = json!({
             "id": bso.id,
             "sortindex": bso.sortindex,
@@ -70,7 +69,7 @@ pub fn create(db: &SpannerDb, params: params::CreateBatch) -> Result<results::Cr
             .params(params! {
                 "userid" => user_id.to_string(),
                 "collectionid" => collection_id.to_string(),
-                "bsoid" => to_rfc3339(timestamp + i)?,
+                "bsoid" => to_rfc3339(timestamp + i as i64)?,
                 "timestamp" => to_rfc3339(timestamp)?,
                 "bsos" => bsos,
                 "expiry" => to_rfc3339(timestamp + BATCH_LIFETIME)?,
@@ -81,7 +80,6 @@ pub fn create(db: &SpannerDb, params: params::CreateBatch) -> Result<results::Cr
                 "timestamp" => SpannerType::Timestamp,
             })
             .execute(&db.conn)?;
-        i += 1;
     }
 
     Ok(timestamp)
