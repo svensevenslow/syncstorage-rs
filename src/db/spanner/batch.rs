@@ -27,7 +27,8 @@ fn results_to_batch_string(results: Vec<ListValue>) -> String {
                     "sortindex": sortindex,
                     "payload": payload,
                     "ttl": expires
-                }).to_string()
+                })
+                .to_string()
             })
             .collect();
         let joined = batch_strings.join("\n");
