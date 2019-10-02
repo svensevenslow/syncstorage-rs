@@ -14,9 +14,20 @@ fn results_to_batch_string(results: Vec<ListValue>) -> String {
         let batch_strings: Vec<String> = results
             .iter()
             .map(|result| {
-                result.get_values().to_vec()[1]
-                    .get_string_value()
-                    .to_string()
+                // bso_id, batch_id, sortindex, payload, ttl
+                let vals = result.get_values().to_vec();
+                let id = vals[0].get_string_value().to_string();
+                let modified = vals[1].get_number_value();
+                let sortindex = vals[2].get_number_value();
+                let payload = vals[3].get_string_value().to_string();
+                let expires = vals[4].get_string_value().to_string();
+                json!({
+                    "id": id,
+                    "modified": modified,
+                    "sortindex": sortindex,
+                    "payload": payload,
+                    "ttl": expires
+                }).to_string()
             })
             .collect();
         let joined = batch_strings.join("\n");
@@ -40,42 +51,38 @@ pub fn create(db: &SpannerDb, params: params::CreateBatch) -> Result<results::Cr
     let collection_id = db.get_collection_id(&params.collection)?;
     let timestamp = db.timestamp()?.as_i64();
     if params.bsos.is_empty() {
-        db.sql("INSERT INTO batches (userid, collection, id, bsos, expiry, timestamp) VALUES (@userid, @collectionid, @bsoid, @bsos, @expiry, @timestamp)")?
+        db.sql("INSERT INTO batches (userid, collection, id, payload, expiry, batch_id, sortindex) VALUES (@userid, @collectionid, @id, @payload, @expiry, @batch_id, @sortindex)")?
             .params(params! {
                 "userid" => user_id.to_string(),
                 "collectionid" => collection_id.to_string(),
-                "bsoid" => to_rfc3339(timestamp)?,
-                "timestamp" => to_rfc3339(timestamp)?,
-                "bsos" => "".to_string(),
+                "id" => to_rfc3339(timestamp)?,
+                "batch_id" => to_rfc3339(timestamp)?,
+                "payload" => "".to_string(),
                 "expiry" => to_rfc3339(timestamp + BATCH_LIFETIME)?,
+                "sortindex" => "".to_string(),
+                "bso_id" => "".to_string(),
             })
             .param_types(param_types! {
-                "bsoid" => SpannerType::Timestamp,
+                "id" => SpannerType::Timestamp,
                 "expiry" => SpannerType::Timestamp,
-                "timestamp" => SpannerType::Timestamp,
+                "batch_id" => SpannerType::Timestamp,
             })
             .execute(&db.conn)?;
     }
     for (i, bso) in (&params.bsos).iter().enumerate() {
-        let bsos = json!({
-            "id": bso.id,
-            "sortindex": bso.sortindex,
-            "payload": bso.payload,
-            "ttl": bso.ttl,
-        })
-        .to_string();
-
-        db.sql("INSERT INTO batches (userid, collection, id, bsos, expiry, timestamp) VALUES (@userid, @collectionid, @bsoid, @bsos, @expiry, @timestamp)")?
+        db.sql("INSERT INTO batches (userid, collection, id, payload, expiry, batch_id, sortindex, bso_id) VALUES (@userid, @collectionid, @id, @payload, @expiry, @batch_id, @sortindex, @bso_id)")?
             .params(params! {
                 "userid" => user_id.to_string(),
                 "collectionid" => collection_id.to_string(),
-                "bsoid" => to_rfc3339(timestamp + i as i64)?,
-                "timestamp" => to_rfc3339(timestamp)?,
-                "bsos" => bsos,
+                "id" => to_rfc3339(timestamp + i as i64)?,
+                "payload" => bso.payload.as_ref().unwrap().to_string(),
                 "expiry" => to_rfc3339(timestamp + BATCH_LIFETIME)?,
+                "batch_id" => to_rfc3339(timestamp)?,
+                "sortindex" => bso.sortindex.unwrap().to_string(),
+                "bso_id" => bso.id.to_string(),
             })
             .param_types(param_types! {
-                "bsoid" => SpannerType::Timestamp,
+                "id" => SpannerType::Timestamp,
                 "expiry" => SpannerType::Timestamp,
                 "timestamp" => SpannerType::Timestamp,
             })
@@ -88,15 +95,15 @@ pub fn create(db: &SpannerDb, params: params::CreateBatch) -> Result<results::Cr
 pub fn validate(db: &SpannerDb, params: params::ValidateBatch) -> Result<bool> {
     let user_id = params.user_id.legacy_id as i32;
     let collection_id = db.get_collection_id(&params.collection)?;
-    let exists = db.sql("SELECT expiry FROM batches WHERE userid = @userid AND collection = @collectionid AND timestamp = @timestamp AND expiry > @expiry")?
+    let exists = db.sql("SELECT expiry FROM batches WHERE userid = @userid AND collection = @collectionid AND batch_id = @batch_id AND expiry > @expiry")?
         .params(params! {
             "userid" => user_id.to_string(),
             "collectionid" => collection_id.to_string(),
-            "timestamp" => to_rfc3339(params.id)?,
+            "batch_id" => to_rfc3339(params.id)?,
             "expiry" => to_rfc3339(db.timestamp()?.as_i64())?,
         })
         .param_types(param_types! {
-            "timestamp" => SpannerType::Timestamp,
+            "batch_id" => SpannerType::Timestamp,
             "expiry" => SpannerType::Timestamp,
         })
         .execute(&db.conn)?
@@ -144,24 +151,19 @@ pub fn append(db: &SpannerDb, params: params::AppendToBatch) -> Result<()> {
     ) {
         let mut i = max_id + 1;
         for bso in &params.bsos {
-            let bsos = json!({
-                "id": bso.id,
-                "sortindex": bso.sortindex,
-                "payload": bso.payload,
-                "ttl": bso.ttl,
-            })
-            .to_string();
-            db.sql("INSERT INTO batches (userid, collection, id, bsos, expiry, timestamp) VALUES (@userid, @collectionid, @bsoid, @bsos, @expiry, @timestamp)")?
+            db.sql("INSERT INTO batches (userid, collection, id, payload, expiry, batch_id, sortindex, bso_id) VALUES (@userid, @collectionid, @id, @payload, @expiry, @batch_id)")?
                 .params(params! {
                     "userid" => user_id.to_string(),
                     "collectionid" => collection_id.to_string(),
-                    "bsoid" => to_rfc3339(params.id + i)?,
-                    "timestamp" => to_rfc3339(params.id)?,
+                    "id" => to_rfc3339(params.id + i)?,
+                    "payload" => bso.payload.as_ref().unwrap().to_string(),
                     "expiry" => to_rfc3339(timestamp + BATCH_LIFETIME)?,
-                    "bsos" => bsos,
+                    "batch_id" => to_rfc3339(params.id)?,
+                    "sortindex" => bso.sortindex.unwrap().to_string(),
+                    "bso_id" => bso.id.clone(),
                 })
                 .param_types(param_types! {
-                    "bsoid" => SpannerType::Timestamp,
+                    "batch_id" => SpannerType::Timestamp,
                     "timestamp" => SpannerType::Timestamp,
                     "expiry" => SpannerType::Timestamp,
                 })
@@ -179,15 +181,15 @@ pub fn get(db: &SpannerDb, params: params::GetBatch) -> Result<Option<results::G
     let collection_id = db.get_collection_id(&params.collection)?;
     let timestamp = db.timestamp()?.as_i64();
 
-    let result = db.sql("SELECT id, bsos, expiry FROM batches WHERE userid = @userid AND collection = @collectionid AND timestamp = @bsoid AND expiry > @expiry")?
+    let result = db.sql("SELECT bso_id, batch_id, sortindex, payload, expires FROM batches WHERE userid = @userid AND collection = @collectionid AND batch_id = @batch_id AND expiry > @expiry")?
         .params(params! {
             "userid" => user_id.to_string(),
             "collectionid" => collection_id.to_string(),
-            "bsoid" => to_rfc3339(params.id)?,
+            "batch_id" => to_rfc3339(params.id)?,
             "expiry" => to_rfc3339(timestamp)?,
         })
         .param_types(param_types! {
-            "bsoid" => SpannerType::Timestamp,
+            "batch_id" => SpannerType::Timestamp,
             "expiry" => SpannerType::Timestamp,
         })
         .execute(&db.conn)?.all_or_none();
