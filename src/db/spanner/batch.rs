@@ -206,6 +206,66 @@ pub fn commit(db: &SpannerDb, params: params::CommitBatch) -> Result<results::Co
     })
 }
 
+#[cfg(not(any(test, feature = "db_test")))]
+pub fn do_append(
+    db: &SpannerDb,
+    user_id: HawkIdentifier,
+    collection_id: i32,
+    batch_id: String,
+    bsos: Vec<params::PostCollectionBso>,
+) -> Result<()> {
+    use protobuf::{well_known_types::ListValue, RepeatedField};
+
+    let inserts: Vec<_> = bsos
+        .into_iter()
+        .map(|bso| {
+            let sortindex = bso
+                .sortindex
+                .map(|sortindex| as_value(sortindex.to_string()))
+                .unwrap_or_else(null_value);
+            let payload = bso.payload.map(as_value).unwrap_or_else(null_value);
+            let ttl = bso
+                .ttl
+                .map(|ttl| as_value(ttl.to_string()))
+                .unwrap_or_else(null_value);
+
+            let mut row = ListValue::new();
+            row.set_values(RepeatedField::from_vec(vec![
+                as_value(user_id.fxa_uid.clone()),
+                as_value(user_id.fxa_kid.clone()),
+                as_value(collection_id.to_string()),
+                as_value(batch_id.clone()),
+                as_value(bso.id),
+                sortindex,
+                payload,
+                ttl,
+            ]));
+            row
+        })
+        .collect();
+
+    if !inserts.is_empty() {
+        db.insert(
+            "batch_bsos",
+            &[
+                "fxa_uid",
+                "fxa_kid",
+                "collection_id",
+                "batch_id",
+                "batch_bso_id",
+                "sortindex",
+                "payload",
+                "ttl",
+            ],
+            inserts,
+        );
+    }
+    Ok(())
+}
+
+// NOTE: Currently this do_append impl. is only used during db_tests, see above
+// for the non-tests version
+#[cfg(any(test, feature = "db_test"))]
 pub fn do_append(
     db: &SpannerDb,
     user_id: HawkIdentifier,
