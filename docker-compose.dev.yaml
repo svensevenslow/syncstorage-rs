@@ -6,7 +6,7 @@ services:
             - db_data:/var/lib/mysql
         restart: always
         ports:
-            - "3306:3306"
+            - '3306:3306'
         environment:
             MYSQL_ROOT_PASSWORD: random
             MYSQL_DATABASE: syncstorage_rs
@@ -17,15 +17,14 @@ services:
         build:
           context: .
         ports:
-          - "8000:8000"
+          - '8000:8000'
         depends_on:
           - mysqldb
         environment:
-          RUST_LOG: debug
           RUST_BACKTRACE: full
+          RUST_LOG: debug
+          SYNC_DATABASE_URL: mysql://root:random@mysqldb/syncstorage_rs
           SYNC_HOST: 0.0.0.0
           SYNC_MASTER_SECRET: INSERT_SECRET_KEY_HERE
-          SYNC_DATABASE_URL: mysql://root:random@mysqldb/syncstorage_rs
-
 volumes:
     db_data:

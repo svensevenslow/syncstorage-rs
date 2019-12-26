@@ -3,13 +3,14 @@ WORKDIR /app
 ADD . /app
 ENV PATH=$PATH:/root/.cargo/bin
 RUN apt-get -q update && \
-    apt-get -q install -y default-libmysqlclient-dev cmake golang-go && \
+    apt-get -q install -y default-libmysqlclient-dev python3.7 cmake golang-go && \
     cd /app && \
     mkdir -m 755 bin
 
 RUN \
     cargo --version && \
     rustc --version && \
+    python3 --version && \
     cargo install --path . --locked --root /app
 
 FROM debian:buster-slim
