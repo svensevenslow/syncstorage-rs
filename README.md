@@ -39,8 +39,8 @@ Depending on your OS, you may also need to install `libgrpcdev`, and `protobuf-c
 ## Local Setup
 
 1. Follow the instructions below to use either MySQL or Spanner as your DB.
-2. Now `cp config/local.example.toml config/local.toml`. Open `config/local.toml` and make sure you have the desired settings configured. For a complete list of available configuration options, check out [docs/config.md](docs/config.md).
-3. `make run_local` starts the server in debug mode, using your new `local.toml` file for config options. Or, simply `cargo run` with your own config options provided as env vars.
+2. Now `cp config/dev.example.toml config/dev.toml`. Open `config/dev.toml` and make sure you have the desired settings configured. For a complete list of available configuration options, check out [docs/config.md](docs/config.md).
+3. `make run` starts the server in debug mode, using your new `dev.toml` file for config options. Or, simply `cargo run` with your own config options provided as env vars.
 4. Visit `http://localhost:8000/__heartbeat__` to make sure the server is running.
 
 ### MySQL
@@ -97,6 +97,16 @@ RUST_LOG=warn GOOGLE_APPLICATION_CREDENTIALS=`pwd`/keys/sync-spanner.json` cargo
 ```
 
 Note, that unlike MySQL, there is no automatic migrations facility. Currently Spanner schema must be hand edited and modified.
+
+
+### Running via Docker
+This currently requires access to the [mozilla-rust-sdk](https://github.com/mozilla-services/mozilla-rust-sdk) repo. If you don't have it, this will be made public soon; we'll update the README here when that happens.
+
+1. Make sure you have [Docker installed](https://docs.docker.com/install/) locally.
+2. Copy the contents of mozilla-rust-sdk into top level root dir here.
+3. Change cargo.toml mozilla-rust-sdk entry to point to `"path = "mozilla-rust-sdk/googleapis-raw"` instead of the parent dir.
+4. `make start_docker` - Start docker; points to local docker-compose file. You can verify it's working by visiting [localhost:8000/__heartbeat__](http://localhost:8000/__heartbeat__)
+5. `make stop_docker` - Shut down docker.
 
 ### Connecting to Firefox
 

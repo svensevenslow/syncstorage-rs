@@ -1,0 +1,14 @@
+.git
+
+CHANGELOG.md
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+PULL_REQUEST_TEMPLATE.md
+README.md
+
+Makefile
+config/*.example.toml
+
+docs/
+target/
+tools/examples

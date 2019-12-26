@@ -1,0 +1,6 @@
+database_url = "mysql://sample_user:sample_password@localhost/syncstorage_rs"
+master_secret = "INSERT_SECRET_KEY_HERE"
+# human_logs = 1
+
+
+# SENTRY_DSN=https://a3f6fca135204d308da5e5652cb92a8e@sentry.prod.mozaws.net/468

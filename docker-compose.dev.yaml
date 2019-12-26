@@ -1,0 +1,31 @@
+version: '3'
+services:
+    mysqldb:
+        image: mysql:5.7
+        volumes:
+            - db_data:/var/lib/mysql
+        restart: always
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: random
+            MYSQL_DATABASE: syncstorage_rs
+            MYSQL_USER: sample_user
+            MYSQL_PASSWORD: sample_password
+
+    syncstorage-rs:
+        build:
+          context: .
+        ports:
+          - "8000:8000"
+        depends_on:
+          - mysqldb
+        environment:
+          RUST_LOG: debug
+          RUST_BACKTRACE: full
+          SYNC_HOST: 0.0.0.0
+          SYNC_MASTER_SECRET: INSERT_SECRET_KEY_HERE
+          SYNC_DATABASE_URL: mysql://root:random@mysqldb/syncstorage_rs
+
+volumes:
+    db_data:

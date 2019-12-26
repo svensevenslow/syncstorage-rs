@@ -8,4 +8,4 @@ e.g.
 ```bash
 GOOGLE_APPLICATION_CREDENTIALS=`pwd`/keys/project-id-service-cred.json venv/bin/python purge_ttl.py
 ```
-See each script for details about funciton and use.
+See each script for details about function and use.
