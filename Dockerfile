@@ -3,24 +3,28 @@ WORKDIR /app
 ADD . /app
 ENV PATH=$PATH:/root/.cargo/bin
 RUN apt-get -q update && \
-    apt-get -q install -y default-libmysqlclient-dev python3.7 cmake golang-go && \
-    cd /app && \
-    mkdir -m 755 bin
+  apt-get -q install -y --no-install-recommends default-libmysqlclient-dev python3.7 python3-pip cmake golang-go && \
+  rm -rf /var/lib/apt/lists/* && \
+  cd /app && \
+  mkdir -m 755 bin
 
 RUN \
-    cargo --version && \
-    rustc --version && \
-    python3 --version && \
-    cargo install --path . --locked --root /app
+  cargo --version && \
+  rustc --version && \
+  python3 --version && \
+  cargo install --path . --locked --root /app
+
+ARG HELPER_SCRIPT
+RUN chmod +x /app/tools/helpers.sh && /app/tools/helpers.sh ${HELPER_SCRIPT}
 
 FROM debian:buster-slim
 WORKDIR /app
 RUN \
-    groupadd --gid 10001 app && \
-    useradd --uid 10001 --gid 10001 --home /app --create-home app && \
-    apt-get -q update && \
-    apt-get -q install -y default-libmysqlclient-dev libssl-dev ca-certificates libcurl4 && \
-    rm -rf /var/lib/apt/lists
+  groupadd --gid 10001 app && \
+  useradd --uid 10001 --gid 10001 --home /app --create-home app && \
+  apt-get -q update && \
+  apt-get -q install -y --no-install-recommends default-libmysqlclient-dev libssl-dev ca-certificates libcurl4 && \
+  rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/bin /app/bin
 COPY --from=builder /app/version.json /app

@@ -2,7 +2,7 @@
 # Collection of helper scripts used for local dev.
 ##
 
-DOCKER_COMPOSE_FILE = docker-compose.dev.yaml
+DOCKER_COMPOSE_FILE = docker-compose.yaml
 
 run:
 	RUST_LOG=debug RUST_BACKTRACE=full cargo run -- --config config/dev.toml

@@ -8,13 +8,17 @@ services:
         ports:
             - "3306"
         environment:
-            #MYSQL_RANDOM_ROOT_PASSWORD: yes
+            # MYSQL_RANDOM_ROOT_PASSWORD: yes
             MYSQL_ROOT_PASSWORD: random
             MYSQL_DATABASE: syncstorage
             MYSQL_USER: test
             MYSQL_PASSWORD: test
 
     syncstorage-rs:
+        # build:
+        #   context: .
+        #   args: 
+        #     HELPER_SCRIPT: 'purge_ttl'
         image: ${SYNCSTORAGE_RS_IMAGE:-syncstorage-rs:latest}
         restart: always
         ports:
@@ -22,9 +26,11 @@ services:
         depends_on:
           - db
         environment:
-          SYNC_DATABASE_URL: mysql://test:test@db:3306/syncstorage
+          # RUST_BACKTRACE: full
+          # RUST_LOG: debug
+          SYNC_DATABASE_URL: mysql://root:random@db/syncstorage_rs
           SYNC_HOST: 0.0.0.0
-          SYNC_MASTER_SECRET: secret0
+          SYNC_MASTER_SECRET: INSERT_SECRET_KEY_HERE
 
 volumes:
     db_data:

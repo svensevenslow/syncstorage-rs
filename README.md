@@ -105,8 +105,12 @@ This currently requires access to the [mozilla-rust-sdk](https://github.com/mozi
 1. Make sure you have [Docker installed](https://docs.docker.com/install/) locally.
 2. Copy the contents of mozilla-rust-sdk into top level root dir here.
 3. Change cargo.toml mozilla-rust-sdk entry to point to `"path = "mozilla-rust-sdk/googleapis-raw"` instead of the parent dir.
-4. `make start_docker` - Start docker; points to local docker-compose file. You can verify it's working by visiting [localhost:8000/__heartbeat__](http://localhost:8000/__heartbeat__)
-5. `make stop_docker` - Shut down docker.
+4. Comment out the `image` value under `syncstorage-rs` in docker-compose.yml, and add this instead: 
+    ```
+      build:
+        context: .
+    ```
+5. `make start_docker` - Start docker; points to local docker-compose file. You can verify it's working by visiting [localhost:8000/__heartbeat__](http://localhost:8000/__heartbeat__)
 
 ### Connecting to Firefox
 
