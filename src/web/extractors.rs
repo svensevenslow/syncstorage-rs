@@ -2098,7 +2098,6 @@ mod tests {
     }
 
     #[actix_rt::test]
-//    #[test]
     async fn test_valid_collection_batch_post_request() {
         // If the "batch" parameter is has no value or has a value of "true"
         // then a new batch will be created.
