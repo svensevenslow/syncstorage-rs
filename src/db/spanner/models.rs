@@ -1606,22 +1606,22 @@ macro_rules! sync_db_method {
 impl Db for SpannerDb {
     fn commit(&self) -> DbFuture<()> {
         let db = self.clone();
-        Box::pin(async move { self.commit_async().map_err(Into::into).await })
+        Box::pin(async move { db.commit_async().map_err(Into::into).await })
     }
 
     fn rollback(&self) -> DbFuture<()> {
         let db = self.clone();
-        Box::pin(self.rollback_async().map_err(Into::into))
+        Box::pin(async move { db.rollback_async().map_err(Into::into).await })
     }
 
     fn lock_for_read(&self, param: params::LockCollection) -> DbFuture<()> {
         let db = self.clone();
-        Box::pin(self.lock_for_read_async(param).map_err(Into::into))
+        Box::pin(async move { db.lock_for_read_async(param).map_err(Into::into).await })
     }
 
     fn lock_for_write(&self, param: params::LockCollection) -> DbFuture<()> {
         let db = self.clone();
-        Box::pin(self.lock_for_write_async(param).map_err(Into::into))
+        Box::pin(async move { db.lock_for_write_async(param).map_err(Into::into).await })
     }
 
     fn get_collection_timestamp(
@@ -1629,10 +1629,11 @@ impl Db for SpannerDb {
         param: params::GetCollectionTimestamp,
     ) -> DbFuture<results::GetCollectionTimestamp> {
         let db = self.clone();
-        Box::pin(
-            self.get_collection_timestamp_async(param)
-                .map_err(Into::into),
-        )
+        Box::pin(async move {
+            db.get_collection_timestamp_async(param)
+                .map_err(Into::into)
+                .await
+        })
     }
 
     fn box_clone(&self) -> Box<dyn Db> {

@@ -368,9 +368,11 @@ impl StreamedResultSetAsync {
     ///
     /// Returns false when the stream is finished
     async fn consume_next(&mut self) -> Result<bool> {
-        let (result, stream) = self.stream
+        let (result, stream) = self
+            .stream
             .take()
-            .expect("Could not get next stream element").await;
+            .expect("Could not get next stream element")
+            .await;
 
         self.stream = Some(stream.into_future());
         let mut partial_rs = if let Some(result) = result {
@@ -440,7 +442,6 @@ impl StreamedResultSetAsync {
         }
         Ok(self.rows.pop_front()).transpose()
     }
-
 }
 
 fn merge_by_type(lhs: Value, rhs: &Value, field_type: &Type) -> Result<Value> {
