@@ -1,4 +1,6 @@
 use actix_web::web::block;
+use failure::ResultExt;
+use futures::compat::Future01CompatExt;
 use futures::future::TryFutureExt;
 
 use diesel::r2d2::PooledConnection;
@@ -139,6 +141,31 @@ impl SpannerDb {
         }
     }
 
+    pub(super) async fn get_collection_id_async(&self, name: &str) -> Result<i32> {
+        if let Some(id) = self.coll_cache.get_id(name)? {
+            return Ok(id);
+        }
+        let result = self
+            .sql(
+                "SELECT collection_id
+                   FROM collections
+                  WHERE name = @name",
+            )?
+            .params(params! {"name" => name.to_string()})
+            .execute_async(&self.conn)?
+            .one_or_none()
+            .await?
+            .ok_or(DbErrorKind::CollectionNotFound)?;
+        let id = result[0]
+            .get_string_value()
+            .parse::<i32>()
+            .map_err(|e| DbErrorKind::Integrity(e.to_string()))?;
+        if !self.in_write_transaction() {
+            self.coll_cache.put(id, name.to_owned())?;
+        }
+        Ok(id)
+    }
+
     pub(super) fn get_collection_id(&self, name: &str) -> Result<i32> {
         if let Some(id) = self.coll_cache.get_id(name)? {
             return Ok(id);
@@ -202,18 +229,19 @@ impl SpannerDb {
         })
     }
 
-    pub fn lock_for_read_sync(&self, params: params::LockCollection) -> Result<()> {
+    pub async fn lock_for_read_async(&self, params: params::LockCollection) -> Result<()> {
         // Begin a transaction
-        self.begin(false)?;
+        self.begin_async(false).await?;
 
-        let collection_id =
-            self.get_collection_id(&params.collection)
-                .or_else(|e| match e.kind() {
-                    // If the collection doesn't exist, we still want to start a
-                    // transaction so it will continue to not exist.
-                    DbErrorKind::CollectionNotFound => Ok(0),
-                    _ => Err(e),
-                })?;
+        let collection_id = self
+            .get_collection_id_async(&params.collection)
+            .await
+            .or_else(|e| match e.kind() {
+                // If the collection doesn't exist, we still want to start a
+                // transaction so it will continue to not exist.
+                DbErrorKind::CollectionNotFound => Ok(0),
+                _ => Err(e),
+            })?;
         // If we already have a read or write lock then it's safe to
         // use it as-is.
         if self
@@ -235,9 +263,9 @@ impl SpannerDb {
         Ok(())
     }
 
-    pub fn lock_for_write_sync(&self, params: params::LockCollection) -> Result<()> {
+    pub async fn lock_for_write_async(&self, params: params::LockCollection) -> Result<()> {
         // Begin a transaction
-        self.begin(true)?;
+        self.begin_async(true).await?;
         let collection_id = self.get_or_create_collection_id(&params.collection)?;
         if let Some(CollectionLock::Read) = self
             .inner
@@ -324,12 +352,45 @@ impl SpannerDb {
         Ok(())
     }
 
+    pub(super) async fn begin_async(&self, for_write: bool) -> Result<()> {
+        let spanner = &self.conn;
+        let mut options = TransactionOptions::new();
+        if for_write {
+            options.set_read_write(TransactionOptions_ReadWrite::new());
+            self.session.borrow_mut().in_write_transaction = true;
+        } else {
+            options.set_read_only(TransactionOptions_ReadOnly::new());
+        }
+        let mut req = BeginTransactionRequest::new();
+        req.set_session(spanner.session.get_name().to_owned());
+        req.set_options(options);
+        let mut transaction = spanner
+            .client
+            .begin_transaction_async(&req)?
+            .compat()
+            .await?;
+
+        let mut ts = TransactionSelector::new();
+        ts.set_id(transaction.take_id());
+        self.session.borrow_mut().transaction = Some(ts);
+        Ok(())
+    }
+
     /// Return the current transaction metadata (TransactionSelector) if one is active.
     fn get_transaction(&self) -> Result<Option<TransactionSelector>> {
         Ok(if self.session.borrow().transaction.is_some() {
             self.session.borrow().transaction.clone()
         } else {
             self.begin(true)?;
+            self.session.borrow().transaction.clone()
+        })
+    }
+    /// Return the current transaction metadata (TransactionSelector) if one is active.
+    async fn get_transaction_async(&self) -> Result<Option<TransactionSelector>> {
+        Ok(if self.session.borrow().transaction.is_some() {
+            self.session.borrow().transaction.clone()
+        } else {
+            self.begin_async(true).await?;
             self.session.borrow().transaction.clone()
         })
     }
@@ -405,7 +466,7 @@ impl SpannerDb {
         self.session.borrow().in_write_transaction
     }
 
-    pub fn commit_sync(&self) -> Result<()> {
+    pub fn commit(&self) -> Result<()> {
         if !self.in_write_transaction() {
             // read-only
             return Ok(());
@@ -432,7 +493,34 @@ impl SpannerDb {
         }
     }
 
-    pub fn rollback_sync(&self) -> Result<()> {
+    pub async fn commit_async(&self) -> Result<()> {
+        if !self.in_write_transaction() {
+            // read-only
+            return Ok(());
+        }
+
+        let spanner = &self.conn;
+
+        if cfg!(any(test, feature = "db_test")) && spanner.use_test_transactions {
+            // don't commit test transactions
+            return Ok(());
+        }
+
+        if let Some(transaction) = self.get_transaction_async().await? {
+            let mut req = CommitRequest::new();
+            req.set_session(spanner.session.get_name().to_owned());
+            req.set_transaction_id(transaction.get_id().to_vec());
+            if let Some(mutations) = self.session.borrow_mut().mutations.take() {
+                req.set_mutations(RepeatedField::from_vec(mutations));
+            }
+            spanner.client.commit(&req)?;
+            Ok(())
+        } else {
+            Err(DbError::internal("No transaction to commit"))?
+        }
+    }
+
+    pub fn rollback(&self) -> Result<()> {
         if !self.in_write_transaction() {
             // read-only
             return Ok(());
@@ -450,14 +538,29 @@ impl SpannerDb {
         }
     }
 
-    pub fn get_collection_timestamp_sync(
+    pub async fn rollback_async(&self) -> Result<()> {
+        if !self.in_write_transaction() {
+            // read-only
+            return Ok(());
+        }
+
+        if let Some(transaction) = self.get_transaction_async().await? {
+            let spanner = &self.conn;
+            let mut req = RollbackRequest::new();
+            req.set_session(spanner.session.get_name().to_owned());
+            req.set_transaction_id(transaction.get_id().to_vec());
+            spanner.client.rollback(&req)?;
+            Ok(())
+        } else {
+            Err(DbError::internal("No transaction to rollback"))?
+        }
+    }
+
+    pub async fn get_collection_timestamp_async(
         &self,
         params: params::GetCollectionTimestamp,
     ) -> Result<SyncTimestamp> {
-        debug!(
-            "!!QQQ get_collection_timestamp_sync {:?}",
-            &params.collection
-        );
+        debug!("!!QQQ get_collection_timestamp {:?}", &params.collection);
 
         let collection_id = self.get_collection_id(&params.collection)?;
         if let Some(modified) = self
@@ -1503,12 +1606,33 @@ macro_rules! sync_db_method {
 impl Db for SpannerDb {
     fn commit(&self) -> DbFuture<()> {
         let db = self.clone();
-        Box::pin(block(move || db.commit_sync().map_err(Into::into)).map_err(Into::into))
+        Box::pin(async move { self.commit_async().map_err(Into::into).await })
     }
 
     fn rollback(&self) -> DbFuture<()> {
         let db = self.clone();
-        Box::pin(block(move || db.rollback_sync().map_err(Into::into)).map_err(Into::into))
+        Box::pin(self.rollback_async().map_err(Into::into))
+    }
+
+    fn lock_for_read(&self, param: params::LockCollection) -> DbFuture<()> {
+        let db = self.clone();
+        Box::pin(self.lock_for_read_async(param).map_err(Into::into))
+    }
+
+    fn lock_for_write(&self, param: params::LockCollection) -> DbFuture<()> {
+        let db = self.clone();
+        Box::pin(self.lock_for_write_async(param).map_err(Into::into))
+    }
+
+    fn get_collection_timestamp(
+        &self,
+        param: params::GetCollectionTimestamp,
+    ) -> DbFuture<results::GetCollectionTimestamp> {
+        let db = self.clone();
+        Box::pin(
+            self.get_collection_timestamp_async(param)
+                .map_err(Into::into),
+        )
     }
 
     fn box_clone(&self) -> Box<dyn Db> {
@@ -1520,13 +1644,6 @@ impl Db for SpannerDb {
         Box::pin(block(move || db.check_sync().map_err(Into::into)).map_err(Into::into))
     }
 
-    sync_db_method!(lock_for_read, lock_for_read_sync, LockCollection);
-    sync_db_method!(lock_for_write, lock_for_write_sync, LockCollection);
-    sync_db_method!(
-        get_collection_timestamp,
-        get_collection_timestamp_sync,
-        GetCollectionTimestamp
-    );
     sync_db_method!(
         get_collection_timestamps,
         get_collection_timestamps_sync,
