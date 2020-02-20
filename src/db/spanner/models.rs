@@ -949,15 +949,15 @@ impl SpannerDb {
             sqlparams.insert("ids".to_owned(), as_list_value(ids.into_iter()));
         }
 
-        if let Some(timestamp) = offset.clone().unwrap_or_default().timestamp {
+        if let Some(bound) = offset.clone().unwrap_or_default().bound {
             query = match sort {
                 Sorting::Newest => {
-                    sqlparams.insert("older_eq".to_string(), as_value(timestamp.as_rfc3339()?));
+                    sqlparams.insert("older_eq".to_string(), as_value(bound.as_rfc3339()?));
                     sqltypes.insert("older_eq".to_string(), as_type(TypeCode::TIMESTAMP));
                     format!("{} AND modified <= @older_eq", query)
                 }
                 Sorting::Oldest => {
-                    sqlparams.insert("newer_eq".to_string(), as_value(timestamp.as_rfc3339()?));
+                    sqlparams.insert("newer_eq".to_string(), as_value(bound.as_rfc3339()?));
                     sqltypes.insert("newer_eq".to_string(), as_type(TypeCode::TIMESTAMP));
                     format!("{} AND modified >= @newer_eq", query)
                 }
@@ -1009,20 +1009,14 @@ impl SpannerDb {
         offset: i64,
         timestamp: Option<i64>,
         modifieds: Vec<i64>,
-    ) -> Option<String> {
+    ) -> String {
         let mut calc_offset = 1;
         let mut i = (modifieds.len() as i64) - 2;
 
         let prev_bound = match sort {
             Sorting::Index => {
                 // Use a simple numeric offset for sortindex ordering.
-                return Some(
-                    Offset {
-                        offset: offset + modifieds.len() as i64,
-                        timestamp: None,
-                    }
-                    .to_string(),
-                );
+                return (offset + modifieds.len() as i64).to_string();
             }
             Sorting::None => timestamp,
             Sorting::Newest => timestamp,
@@ -1041,7 +1035,7 @@ impl SpannerDb {
             calc_offset += offset;
         }
 
-        Some(format!("{}:{}", bound, calc_offset))
+        format!("{}:{}", bound, calc_offset)
     }
 
     pub fn get_bsos_sync(&self, params: params::GetBsos) -> Result<results::GetBsos> {
@@ -1053,7 +1047,7 @@ impl SpannerDb {
                AND collection_id = @collection_id
                AND expiry > CURRENT_TIMESTAMP()";
         let limit = params.params.limit.map(i64::from).unwrap_or(-1);
-        let Offset { offset, timestamp } = params.params.offset.clone().unwrap_or_default();
+        let Offset { bound, offset } = params.params.offset.clone().unwrap_or_default();
         let sort = params.params.sort;
 
         let mut bsos = self
@@ -1071,7 +1065,7 @@ impl SpannerDb {
         let next_offset = if limit >= 0 && bsos.len() > limit as usize {
             bsos.pop();
             let modifieds: Vec<i64> = bsos.iter().map(|r| r.modified.as_i64()).collect();
-            self.encode_next_offset(sort, offset, timestamp.map(|t| t.as_i64()), modifieds)
+            Some(self.encode_next_offset(sort, offset, bound.map(|t| t.as_i64()), modifieds))
         } else {
             None
         };
@@ -1084,7 +1078,7 @@ impl SpannerDb {
 
     pub fn get_bso_ids_sync(&self, params: params::GetBsos) -> Result<results::GetBsoIds> {
         let limit = params.params.limit.map(i64::from).unwrap_or(-1);
-        let Offset { offset, timestamp } = params.params.offset.clone().unwrap_or_default();
+        let Offset { bound, offset } = params.params.offset.clone().unwrap_or_default();
         let sort = params.params.sort;
 
         let query = "\
@@ -1113,7 +1107,7 @@ impl SpannerDb {
         let next_offset = if limit >= 0 && ids.len() > limit as usize {
             ids.pop();
             modifieds.pop();
-            self.encode_next_offset(sort, offset, timestamp.map(|t| t.as_i64()), modifieds)
+            Some(self.encode_next_offset(sort, offset, bound.map(|t| t.as_i64()), modifieds))
         } else {
             None
         };

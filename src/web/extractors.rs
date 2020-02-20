@@ -1201,13 +1201,13 @@ impl FromRequest for Box<dyn Db> {
 #[derive(Debug, Default, Clone, Deserialize, Validate)]
 #[serde(default)]
 pub struct Offset {
-    pub timestamp: Option<SyncTimestamp>,
+    pub bound: Option<SyncTimestamp>,
     pub offset: i64,
 }
 
 impl ToString for Offset {
     fn to_string(&self) -> String {
-        match self.timestamp {
+        match self.bound {
             None => format!("{}", self.offset),
             Some(ts) => format!("{}:{}", ts.as_i64(), self.offset),
         }
@@ -1219,16 +1219,16 @@ impl FromStr for Offset {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let result = match s.chars().position(|c| c == ':') {
             None => Offset {
-                timestamp: None,
+                bound: None,
                 offset: s.parse::<i64>()?,
             },
             Some(_colon_position) => {
                 let mut parts = s.split(':');
-                let timestamp_string = parts.next().unwrap_or("0");
-                let timestamp = SyncTimestamp::from_milliseconds(timestamp_string.parse::<u64>()?);
+                let bound_string = parts.next().unwrap_or("0");
+                let bound = SyncTimestamp::from_milliseconds(bound_string.parse::<u64>()?);
                 let offset = parts.next().unwrap_or("0").parse::<i64>()?;
                 Offset {
-                    timestamp: Some(timestamp),
+                    bound: Some(bound),
                     offset,
                 }
             }
@@ -1300,8 +1300,8 @@ impl FromRequest for BsoQueryParams {
             )
         })?;
         if params.sort != Sorting::Index {
-            if let Some(timestamp) = params.offset.as_ref().and_then(|offset| offset.timestamp) {
-                let bound = timestamp.as_i64();
+            if let Some(bound_ts) = params.offset.as_ref().and_then(|offset| offset.bound) {
+                let bound = bound_ts.as_i64();
                 if let Some(newer) = params.newer {
                     if bound < newer.as_i64() {
                         return Err(ValidationErrorKind::FromDetails(
