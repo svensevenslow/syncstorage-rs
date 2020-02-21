@@ -776,7 +776,8 @@ impl SpannerDb {
                 "pretouch_ts" => TypeCode::TIMESTAMP,
             })
             .execute_async(&self.conn)?
-            .one().await?;
+            .one()
+            .await?;
         if row[0].has_null_value() {
             SyncTimestamp::from_i64(0)
         } else {
@@ -894,7 +895,8 @@ impl SpannerDb {
             .param_types(param_types! {
                 "pretouch_ts" => TypeCode::TIMESTAMP,
             })
-            .execute_dml_async(&self.conn).await?;
+            .execute_dml_async(&self.conn)
+            .await?;
         if affected_rows > 0 {
             self.erect_tombstone(&params.user_id)
         } else {
@@ -1635,12 +1637,18 @@ impl Db for SpannerDb {
         })
     }
 
-    fn get_storage_timestamp(&self, param: params::GetStorageTimestamp) -> DbFuture<results::GetStorageTimestamp> {
+    fn get_storage_timestamp(
+        &self,
+        param: params::GetStorageTimestamp,
+    ) -> DbFuture<results::GetStorageTimestamp> {
         let db = self.clone();
         Box::pin(async move { db.get_storage_timestamp(param).map_err(Into::into).await })
     }
 
-    fn delete_collection(&self, param: params::DeleteCollection) -> DbFuture<results::DeleteCollection> {
+    fn delete_collection(
+        &self,
+        param: params::DeleteCollection,
+    ) -> DbFuture<results::DeleteCollection> {
         let db = self.clone();
         Box::pin(async move { db.delete_collection(param).map_err(Into::into).await })
     }
