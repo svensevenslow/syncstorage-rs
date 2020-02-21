@@ -154,7 +154,7 @@ pub struct StreamedResultSet {
 
 thread_local! {
     static SYSTEM: RefCell<SystemRunner> = {
-        RefCell::new(System::new(""))
+        RefCell::new(System::new("syncstorage"))
     };
 }
 
