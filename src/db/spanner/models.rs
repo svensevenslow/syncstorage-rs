@@ -1,5 +1,4 @@
 use actix_web::web::block;
-use failure::ResultExt;
 use futures::compat::Future01CompatExt;
 use futures::future::TryFutureExt;
 
