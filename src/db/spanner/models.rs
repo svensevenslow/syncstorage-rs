@@ -756,7 +756,7 @@ impl SpannerDb {
         self.map_collection_names(usages)
     }
 
-    pub fn get_storage_timestamp_sync(
+    pub async fn get_storage_timestamp(
         &self,
         user_id: params::GetStorageTimestamp,
     ) -> Result<SyncTimestamp> {
@@ -776,8 +776,8 @@ impl SpannerDb {
             .param_types(param_types! {
                 "pretouch_ts" => TypeCode::TIMESTAMP,
             })
-            .execute(&self.conn)?
-            .one()?;
+            .execute_async(&self.conn)?
+            .one().await?;
         if row[0].has_null_value() {
             SyncTimestamp::from_i64(0)
         } else {
@@ -872,7 +872,7 @@ impl SpannerDb {
             .ok_or_else(|| DbError::internal("CURRENT_TIMESTAMP() not read yet"))
     }
 
-    pub fn delete_collection_sync(
+    pub async fn delete_collection(
         &self,
         params: params::DeleteCollection,
     ) -> Result<results::DeleteCollection> {
@@ -895,11 +895,11 @@ impl SpannerDb {
             .param_types(param_types! {
                 "pretouch_ts" => TypeCode::TIMESTAMP,
             })
-            .execute_dml(&self.conn)?;
+            .execute_dml_async(&self.conn).await?;
         if affected_rows > 0 {
             self.erect_tombstone(&params.user_id)
         } else {
-            self.get_storage_timestamp_sync(params.user_id)
+            self.get_storage_timestamp(params.user_id).await
         }
     }
 
@@ -1636,6 +1636,16 @@ impl Db for SpannerDb {
         })
     }
 
+    fn get_storage_timestamp(&self, param: params::GetStorageTimestamp) -> DbFuture<results::GetStorageTimestamp> {
+        let db = self.clone();
+        Box::pin(async move { db.get_storage_timestamp(param).map_err(Into::into).await })
+    }
+
+    fn delete_collection(&self, param: params::DeleteCollection) -> DbFuture<results::DeleteCollection> {
+        let db = self.clone();
+        Box::pin(async move { db.delete_collection(param).map_err(Into::into).await })
+    }
+
     fn box_clone(&self) -> Box<dyn Db> {
         Box::new(self.clone())
     }
@@ -1660,14 +1670,8 @@ impl Db for SpannerDb {
         get_collection_usage_sync,
         GetCollectionUsage
     );
-    sync_db_method!(
-        get_storage_timestamp,
-        get_storage_timestamp_sync,
-        GetStorageTimestamp
-    );
     sync_db_method!(get_storage_usage, get_storage_usage_sync, GetStorageUsage);
     sync_db_method!(delete_storage, delete_storage_sync, DeleteStorage);
-    sync_db_method!(delete_collection, delete_collection_sync, DeleteCollection);
     sync_db_method!(delete_bso, delete_bso_sync, DeleteBso);
     sync_db_method!(delete_bsos, delete_bsos_sync, DeleteBsos);
     sync_db_method!(get_bsos, get_bsos_sync, GetBsos);
