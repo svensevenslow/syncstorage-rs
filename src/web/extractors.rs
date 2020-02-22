@@ -1300,12 +1300,14 @@ impl FromRequest for BsoQueryParams {
             )
         })?;
         if params.sort != Sorting::Index {
-            if let Some(bound_ts) = params.offset.as_ref().and_then(|offset| offset.bound) {
-                let bound = bound_ts.as_i64();
+            //if let Some(bound_ts) = params.offset.as_ref().and_then(|offset| offset.bound) {
+            if let Some(bound) = params.offset.as_ref().and_then(|offset| offset.bound) {
+                //let bound = bound_ts.as_i64();
                 if let Some(newer) = params.newer {
-                    if bound < newer.as_i64() {
+                    if bound < newer {
                         return Err(ValidationErrorKind::FromDetails(
-                            format!("Invalid Offset {} {}", bound, newer.as_i64()),
+                            // XXX: Offset to_string or whatever
+                            format!("Invalid Offset {} {}", bound.as_i64(), newer.as_i64()),
                             RequestErrorLocation::QueryString,
                             Some("newer".to_owned()),
                             None,
@@ -1313,7 +1315,7 @@ impl FromRequest for BsoQueryParams {
                         .into());
                     }
                 } else if let Some(older) = params.older {
-                    if bound > older.as_i64() {
+                    if bound > older {
                         return Err(ValidationErrorKind::FromDetails(
                             "Invalid Offset".to_owned(),
                             RequestErrorLocation::QueryString,
