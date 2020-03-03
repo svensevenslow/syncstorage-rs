@@ -409,8 +409,26 @@ def move_user(databases, user, collections, fxa, bso_num, args):
             user, fxa_uid, fxa_kid))
         cursor.execute(sql, (user,))
         data = []
+        abort_col = None
+        abort_count = None
+        col_count = 0
+
+        if args.abort:
+            (abort_col, abort_count) = args.abort.split(":")
+            abort_count = int(abort_count)
         for row in cursor:
+            logging.debug("col: {}".format(row[0]))
+            if row[0] == abort_col:
+                col_count += 1
+                if col_count > abort_count:
+                    logging.debug("Skipping col: {}: {} of {}".format(
+                        row[0], col_count, abort_count))
+                    continue
             data.append(row)
+        if args.abort:
+            logging.info("Skipped {} of {} rows for {}".format(
+                abort_count, col_count, abort_col
+            ))
         for bunch in divvy(data, args.readchunk or 1000):
             # Occasionally, there is a batch fail because a
             # user collection is not found before a bso is written.
@@ -561,6 +579,11 @@ def get_args():
         '--dryrun',
         action="store_true",
         help="Do not write user records to spanner."
+    )
+    parser.add_argument(
+        '--abort',
+        type=str,
+        help="abort data in col after #rows (e.g. history:10)"
     )
 
 
