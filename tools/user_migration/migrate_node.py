@@ -463,7 +463,7 @@ def move_database(databases, collections, bso_num, fxa, args):
     cursor = databases['mysql'].cursor()
     users = []
     if args.user:
-        users = [args.user]
+        users = args.user
     else:
         try:
             sql = """select distinct userid from bso{};""".format(bso_num)
@@ -551,7 +551,7 @@ def get_args():
     parser.add_argument(
         '--user',
         type=str,
-        help="BSO#:userId to move (EXPERIMENTAL)."
+        help="BSO#:userId[,userid,...] to move (EXPERIMENTAL)."
     )
     parser.add_argument(
         '--dryrun',
@@ -582,7 +582,10 @@ def main():
         (bso, userid) = args.user.split(':')
         args.start_bso = int(bso)
         args.end_bso = int(bso)
-        args.user = int(userid)
+        user_list = []
+        for id in userid.split(','):
+            user_list.append(int(id))
+        args.user = user_list
     for line in dsns:
         dsn = urlparse(line.strip())
         scheme = dsn.scheme
