@@ -58,7 +58,6 @@ class FXA_info:
                      keys_changed_at, client_state) in csv.reader(
                         csv_file, delimiter="\t"):
                     line += 1
-                    import pdb;pdb.set_trace()
                     if args.user:
                         if int(uid) not in args.user:
                             continue
