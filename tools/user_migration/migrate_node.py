@@ -417,7 +417,7 @@ def move_user(databases, user, collections, fxa, bso_num, args):
             abort_count = int(abort_count)
         for row in cursor:
             logging.debug("col: {}".format(row[0]))
-            if int(row[1]) == int(abort_col):
+            if abort_col and int(row[1]) == int(abort_col):
                 col_count += 1
                 if col_count > abort_count:
                     logging.debug("Skipping col: {}: {} of {}".format(
