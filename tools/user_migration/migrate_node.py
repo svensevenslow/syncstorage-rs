@@ -487,7 +487,10 @@ def move_database(databases, collections, bso_num, fxa, args):
         users = args.user
     else:
         try:
-            sql = """select distinct userid from bso{};""".format(bso_num)
+            sql = """select distinct userid from bso{} order by userid""".format(bso_num)
+            if args.user_range:
+                (offset, limit) = args.user_range.split(':')
+                sql = "{} limit {} offset {}".format(sql, limit, offset)
             cursor.execute(sql)
             users = [user for (user,) in cursor]
         except Exception as ex:
@@ -584,7 +587,10 @@ def get_args():
         type=str,
         help="abort data in col after #rows (e.g. history:10)"
     )
-
+    parser.add_argument(
+        '--user_range',
+        help="Range of users to extract (offset:limit)"
+    )
 
     return parser.parse_args()
 
