@@ -1,5 +1,3 @@
-#[cfg(any(test, feature = "db_test"))]
-use actix_web::web::block;
 use futures::compat::Future01CompatExt;
 use futures::future::TryFutureExt;
 
@@ -157,35 +155,11 @@ impl SpannerDb {
         Ok(id)
     }
 
-    pub(super) fn get_collection_id(&self, name: &str) -> Result<i32> {
-        if let Some(id) = self.coll_cache.get_id(name)? {
-            return Ok(id);
-        }
-        let result = self
-            .sql(
-                "SELECT collection_id
-                   FROM collections
-                  WHERE name = @name",
-            )?
-            .params(params! {"name" => name.to_string()})
-            .execute(&self.conn)?
-            .one_or_none()?
-            .ok_or(DbErrorKind::CollectionNotFound)?;
-        let id = result[0]
-            .get_string_value()
-            .parse::<i32>()
-            .map_err(|e| DbErrorKind::Integrity(e.to_string()))?;
-        if !self.in_write_transaction() {
-            self.coll_cache.put(id, name.to_owned())?;
-        }
-        Ok(id)
-    }
-
     pub(super) async fn create_collection_async(&self, name: &str) -> Result<i32> {
         // This should always run within a r/w transaction, so that: "If a
         // transaction successfully commits, then no other writer modified the
         // data that was read in the transaction after it was read."
-        if !cfg!(any(test, feature = "db_test")) && !self.in_write_transaction() {
+        if !cfg!(test) && !self.in_write_transaction() {
             Err(DbError::internal("Can't escalate read-lock to write-lock"))?
         }
         let result = self
@@ -213,47 +187,6 @@ impl SpannerDb {
         .execute_dml_async(&self.conn)
         .await?;
         Ok(id)
-    }
-
-    #[allow(dead_code)]
-    pub(super) fn create_collection(&self, name: &str) -> Result<i32> {
-        // This should always run within a r/w transaction, so that: "If a
-        // transaction successfully commits, then no other writer modified the
-        // data that was read in the transaction after it was read."
-        if !cfg!(any(test, feature = "db_test")) && !self.in_write_transaction() {
-            Err(DbError::internal("Can't escalate read-lock to write-lock"))?
-        }
-        let result = self
-            .sql(
-                "SELECT COALESCE(MAX(collection_id), 1)
-                   FROM collections",
-            )?
-            .execute(&self.conn)?
-            .one()?;
-        let max = result[0]
-            .get_string_value()
-            .parse::<i32>()
-            .map_err(|e| DbErrorKind::Integrity(e.to_string()))?;
-        let id = FIRST_CUSTOM_COLLECTION_ID.max(max + 1);
-
-        self.sql(
-            "INSERT INTO collections (collection_id, name)
-             VALUES (@collection_id, @name)",
-        )?
-        .params(params! {
-            "name" => name.to_string(),
-            "collection_id" => id.to_string(),
-        })
-        .execute_dml(&self.conn)?;
-        Ok(id)
-    }
-
-    #[allow(dead_code)]
-    fn get_or_create_collection_id(&self, name: &str) -> Result<i32> {
-        self.get_collection_id(name).or_else(|e| match e.kind() {
-            DbErrorKind::CollectionNotFound => self.create_collection(name),
-            _ => Err(e),
-        })
     }
 
     async fn get_or_create_collection_id_async(&self, name: &str) -> Result<i32> {
@@ -516,7 +449,7 @@ impl SpannerDb {
 
         let spanner = &self.conn;
 
-        if cfg!(any(test, feature = "db_test")) && spanner.use_test_transactions {
+        if cfg!(test) && spanner.use_test_transactions {
             // don't commit test transactions
             return Ok(());
         }
@@ -543,7 +476,7 @@ impl SpannerDb {
 
         let spanner = &self.conn;
 
-        if cfg!(any(test, feature = "db_test")) && spanner.use_test_transactions {
+        if cfg!(test) && spanner.use_test_transactions {
             // don't commit test transactions
             return Ok(());
         }
@@ -863,7 +796,7 @@ impl SpannerDb {
         }
     }
 
-    fn erect_tombstone(&self, user_id: &HawkIdentifier) -> Result<SyncTimestamp> {
+    async fn erect_tombstone(&self, user_id: &HawkIdentifier) -> Result<SyncTimestamp> {
         // Delete the old tombstone (if it exists)
         let params = params! {
             "fxa_uid" => user_id.fxa_uid.clone(),
@@ -883,7 +816,8 @@ impl SpannerDb {
         )?
         .params(params.clone())
         .param_types(types.clone())
-        .execute_dml(&self.conn)?;
+        .execute_dml_async(&self.conn)
+        .await?;
 
         self.sql(
             "INSERT INTO user_collections (fxa_uid, fxa_kid, collection_id, modified)
@@ -891,7 +825,8 @@ impl SpannerDb {
         )?
         .params(params)
         .param_types(types)
-        .execute_dml(&self.conn)?;
+        .execute_dml_async(&self.conn)
+        .await?;
         // Return timestamp, because sometimes there's a delay between writing and
         // reading the database.
         Ok(self.timestamp()?)
@@ -947,79 +882,10 @@ impl SpannerDb {
             .execute_dml_async(&self.conn)
             .await?;
         if affected_rows > 0 {
-            self.erect_tombstone(&params.user_id)
+            self.erect_tombstone(&params.user_id).await
         } else {
             self.get_storage_timestamp(params.user_id).await
         }
-    }
-
-    // I think we can remove this but I'm not 100% sure if the db tests use it or not.
-    #[allow(dead_code)]
-    pub(super) fn touch_collection(
-        &self,
-        user_id: &HawkIdentifier,
-        collection_id: i32,
-    ) -> Result<SyncTimestamp> {
-        // NOTE: Spanner supports upserts via its InsertOrUpdate mutation but
-        // lacks a SQL equivalent. This call could be 1 InsertOrUpdate instead
-        // of 2 queries but would require put/post_bsos to also use mutations.
-        // Due to case of when no parent row exists (in user_collections)
-        // before writing to bsos. Spanner requires a parent table row exist
-        // before child table rows are written.
-        // Mutations don't run in the same order as ExecuteSql calls, they are
-        // buffered on the client side and only issued to Spanner in the final
-        // transaction Commit.
-        let timestamp = self.timestamp()?;
-        if !cfg!(any(test, feature = "db_test")) && self.session.borrow().touched_collection {
-            // No need to touch it again (except during tests where we
-            // currently reuse Dbs for multiple requests)
-            return Ok(timestamp);
-        }
-
-        let sqlparams = params! {
-            "fxa_uid" => user_id.fxa_uid.clone(),
-            "fxa_kid" => user_id.fxa_kid.clone(),
-            "collection_id" => collection_id.to_string(),
-            "modified" => timestamp.as_rfc3339()?,
-        };
-        let sql_types = param_types! {
-            "modified" => TypeCode::TIMESTAMP,
-        };
-        let result = self
-            .sql(
-                "SELECT 1 AS count
-                   FROM user_collections
-                  WHERE fxa_uid = @fxa_uid
-                    AND fxa_kid = @fxa_kid
-                    AND collection_id = @collection_id",
-            )?
-            .params(sqlparams.clone())
-            .execute(&self.conn)?
-            .one_or_none()?;
-        let exists = result.is_some();
-
-        if exists {
-            self.sql(
-                "UPDATE user_collections
-                    SET modified = @modified
-                  WHERE fxa_uid = @fxa_uid
-                    AND fxa_kid = @fxa_kid
-                    AND collection_id = @collection_id",
-            )?
-            .params(sqlparams)
-            .param_types(sql_types)
-            .execute_dml(&self.conn)?;
-        } else {
-            self.sql(
-                "INSERT INTO user_collections (fxa_uid, fxa_kid, collection_id, modified)
-                 VALUES (@fxa_uid, @fxa_kid, @collection_id, @modified)",
-            )?
-            .params(sqlparams)
-            .param_types(sql_types)
-            .execute_dml(&self.conn)?;
-        }
-        self.session.borrow_mut().touched_collection = true;
-        Ok(timestamp)
     }
 
     pub(super) async fn touch_collection_async(
@@ -1037,7 +903,7 @@ impl SpannerDb {
         // buffered on the client side and only issued to Spanner in the final
         // transaction Commit.
         let timestamp = self.timestamp()?;
-        if !cfg!(any(test, feature = "db_test")) && self.session.borrow().touched_collection {
+        if !cfg!(test) && self.session.borrow().touched_collection {
             // No need to touch it again (except during tests where we
             // currently reuse Dbs for multiple requests)
             return Ok(timestamp);
@@ -1201,10 +1067,11 @@ impl SpannerDb {
             sqltypes.insert("newer".to_string(), as_type(TypeCode::TIMESTAMP));
         }
         query = match sort {
-            Sorting::Index => format!("{} ORDER BY sortindex DESC", query),
-            Sorting::Newest => format!("{} ORDER BY modified DESC", query),
-            Sorting::Oldest => format!("{} ORDER BY modified ASC", query),
-            _ => query,
+            Sorting::Index => format!("{} ORDER BY sortindex DESC, bso_id DESC", query),
+            Sorting::Newest | Sorting::None => {
+                format!("{} ORDER BY modified DESC, bso_id DESC", query)
+            }
+            Sorting::Oldest => format!("{} ORDER BY modified ASC, bso_id ASC", query),
         };
 
         if let Some(limit) = limit {
@@ -1524,12 +1391,14 @@ impl SpannerDb {
         Ok(result)
     }
 
-    // NOTE: Currently this put_bso_sync impl. is only used during db_tests,
+    // NOTE: Currently this put_bso_async_test impl. is only used during db tests,
     // see above for the non-tests version
-    #[cfg(any(test, feature = "db_test"))]
-    pub fn put_bso_sync(&self, bso: params::PutBso) -> Result<results::PutBso> {
+    #[cfg(test)]
+    pub async fn put_bso_async_test(&self, bso: params::PutBso) -> Result<results::PutBso> {
         use crate::db::util::to_rfc3339;
-        let collection_id = self.get_or_create_collection_id(&bso.collection)?;
+        let collection_id = self
+            .get_or_create_collection_id_async(&bso.collection)
+            .await?;
         let mut sqlparams = params! {
             "fxa_uid" => bso.user_id.fxa_uid.clone(),
             "fxa_kid" => bso.user_id.fxa_kid.clone(),
@@ -1537,7 +1406,9 @@ impl SpannerDb {
             "bso_id" => bso.id.to_string(),
         };
         let mut sqltypes = HashMap::new();
-        let touch = self.touch_collection(&bso.user_id, collection_id)?;
+        let touch = self
+            .touch_collection_async(&bso.user_id, collection_id)
+            .await?;
         let timestamp = self.timestamp()?;
 
         let result = self
@@ -1550,8 +1421,9 @@ impl SpannerDb {
                     AND bso_id = @bso_id",
             )?
             .params(sqlparams.clone())
-            .execute(&self.conn)?
-            .one_or_none()?;
+            .execute_async(&self.conn)?
+            .one_or_none()
+            .await?;
         let exists = result.is_some();
 
         let sql = if exists {
@@ -1656,7 +1528,7 @@ impl SpannerDb {
             let now_millis = timestamp.as_i64();
             let ttl = bso.ttl.map_or(i64::from(DEFAULT_BSO_TTL), |ttl| {
                 ttl.try_into()
-                    .expect("Could not get ttl in put_bso_sync (test)")
+                    .expect("Could not get ttl in put_bso_async_test")
             }) * 1000;
             let expirystring = to_rfc3339(now_millis + ttl)?;
             debug!(
@@ -1674,16 +1546,19 @@ impl SpannerDb {
         self.sql(&sql)?
             .params(sqlparams)
             .param_types(sqltypes)
-            .execute_dml(&self.conn)?;
+            .execute_dml_async(&self.conn)
+            .await?;
 
         Ok(touch)
     }
 
-    // NOTE: Currently this post_bso_sync impl. is only used during db_tests,
+    // NOTE: Currently this post_bso_async_test impl. is only used during db tests,
     // see above for the non-tests version
-    #[cfg(any(test, feature = "db_test"))]
-    pub fn post_bsos_sync(&self, input: params::PostBsos) -> Result<results::PostBsos> {
-        let collection_id = self.get_or_create_collection_id(&input.collection)?;
+    #[cfg(test)]
+    pub async fn post_bsos_async_test(&self, input: params::PostBsos) -> Result<results::PostBsos> {
+        let collection_id = self
+            .get_or_create_collection_id_async(&input.collection)
+            .await?;
         let mut result = results::PostBsos {
             modified: self.timestamp()?,
             success: Default::default(),
@@ -1692,17 +1567,19 @@ impl SpannerDb {
 
         for pbso in input.bsos {
             let id = pbso.id;
-            self.put_bso_sync(params::PutBso {
+            self.put_bso_async(params::PutBso {
                 user_id: input.user_id.clone(),
                 collection: input.collection.clone(),
                 id: id.clone(),
                 payload: pbso.payload,
                 sortindex: pbso.sortindex,
                 ttl: pbso.ttl,
-            })?;
+            })
+            .await?;
             result.success.push(id);
         }
-        self.touch_collection(&input.user_id, collection_id)?;
+        self.touch_collection_async(&input.user_id, collection_id)
+            .await?;
         Ok(result)
     }
 
@@ -1858,28 +1735,28 @@ impl Db for SpannerDb {
         Box::pin(async move { db.get_bso_timestamp_async(param).map_err(Into::into).await })
     }
 
-    #[cfg(not(any(test, feature = "db_test")))]
+    #[cfg(not(test))]
     fn put_bso(&self, param: params::PutBso) -> DbFuture<results::PutBso> {
         let db = self.clone();
         Box::pin(async move { db.put_bso_async(param).map_err(Into::into).await })
     }
 
-    #[cfg(any(test, feature = "db_test"))]
+    #[cfg(test)]
     fn put_bso(&self, param: params::PutBso) -> DbFuture<results::PutBso> {
         let db = self.clone();
-        Box::pin(block(move || db.put_bso_sync(param).map_err(Into::into)).map_err(Into::into))
+        Box::pin(async move { db.put_bso_async_test(param).map_err(Into::into).await })
     }
 
-    #[cfg(not(any(test, feature = "db_test")))]
+    #[cfg(not(test))]
     fn post_bsos(&self, param: params::PostBsos) -> DbFuture<results::PostBsos> {
         let db = self.clone();
         Box::pin(async move { db.post_bsos_async(param).map_err(Into::into).await })
     }
 
-    #[cfg(any(test, feature = "db_test"))]
+    #[cfg(test)]
     fn post_bsos(&self, param: params::PostBsos) -> DbFuture<results::PostBsos> {
         let db = self.clone();
-        Box::pin(block(move || db.post_bsos_sync(param).map_err(Into::into)).map_err(Into::into))
+        Box::pin(async move { db.post_bsos_async_test(param).map_err(Into::into).await })
     }
 
     fn validate_batch_id(&self, id: String) -> Result<()> {
@@ -1911,48 +1788,46 @@ impl Db for SpannerDb {
         Box::pin(async move { batch::commit_async(&db, param).map_err(Into::into).await })
     }
 
-    #[cfg(any(test, feature = "db_test"))]
+    #[cfg(test)]
     fn get_collection_id(&self, name: String) -> DbFuture<i32> {
         let db = self.clone();
-        Box::pin(block(move || db.get_collection_id(&name).map_err(Into::into)).map_err(Into::into))
+        Box::pin(async move { db.get_collection_id_async(&name).map_err(Into::into).await })
     }
 
-    #[cfg(any(test, feature = "db_test"))]
+    #[cfg(test)]
     fn create_collection(&self, name: String) -> DbFuture<i32> {
         let db = self.clone();
-        Box::pin(block(move || db.create_collection(&name).map_err(Into::into)).map_err(Into::into))
+        Box::pin(async move { db.create_collection_async(&name).map_err(Into::into).await })
     }
 
-    #[cfg(any(test, feature = "db_test"))]
+    #[cfg(test)]
     fn touch_collection(&self, param: params::TouchCollection) -> DbFuture<SyncTimestamp> {
         let db = self.clone();
-        Box::pin(
-            block(move || {
-                db.touch_collection(&param.user_id, param.collection_id)
-                    .map_err(Into::into)
-            })
-            .map_err(Into::into),
-        )
+        Box::pin(async move {
+            db.touch_collection_async(&param.user_id, param.collection_id)
+                .map_err(Into::into)
+                .await
+        })
     }
 
-    #[cfg(any(test, feature = "db_test"))]
+    #[cfg(test)]
     fn timestamp(&self) -> SyncTimestamp {
         self.timestamp()
             .expect("set_timestamp() not called yet for SpannerDb")
     }
 
-    #[cfg(any(test, feature = "db_test"))]
+    #[cfg(test)]
     fn set_timestamp(&self, timestamp: SyncTimestamp) {
         SpannerDb::set_timestamp(self, timestamp)
     }
 
-    #[cfg(any(test, feature = "db_test"))]
+    #[cfg(test)]
     fn delete_batch(&self, param: params::DeleteBatch) -> DbFuture<results::DeleteBatch> {
         let db = self.clone();
         Box::pin(async move { batch::delete_async(&db, param).map_err(Into::into).await })
     }
 
-    #[cfg(any(test, feature = "db_test"))]
+    #[cfg(test)]
     fn clear_coll_cache(&self) {
         self.coll_cache.clear();
     }

@@ -1,6 +1,6 @@
 [package]
 name = "syncstorage"
-version = "0.2.2"
+version = "0.2.5"
 license = "MPL-2.0"
 authors = [
   "Ben Bangert <ben@groovie.org>",
@@ -29,7 +29,7 @@ docopt = "1.1.0"
 env_logger = "0.7.1"
 failure = "0.1.6"
 futures = { version = "0.3", features = ["compat"] }
-googleapis-raw = { version = "0", path = "../mozilla-rust-sdk/googleapis-raw" }
+googleapis-raw = { version = "0", path = "vendor/mozilla-rust-sdk/googleapis-raw" }
 grpcio = { version = "0.5.0-alpha.5" }
 lazy_static = "1.4.0"
 hawk = "3.0.0"
@@ -67,6 +67,8 @@ validator = "0.10"
 validator_derive = "0.10"
 woothee = "0.10"
 
+[dev-dependencies]
+codegen = { version = "0.1.0", path = "codegen" }
+
 [features]
-db_test = []
 no_auth = []
