@@ -266,7 +266,7 @@ def divvy(biglist, count):
     return lists
 
 
-def move_user(databases, user, collections, fxa, bso_num, args):
+def move_user(databases, user_data, collections, fxa, bso_num, args):
     """copy user info from original storage to new storage."""
     # bso column mapping:
     # id => bso_id
@@ -294,21 +294,7 @@ def move_user(databases, user, collections, fxa, bso_num, args):
             'sortindex',
     )
 
-    # Genereate the Spanner Keys we'll need.
-    try:
-        (fxa_kid, fxa_uid) = fxa.get(user)
-    except TypeError:
-        logging.error("User not found: {} ".format(
-            user
-        ))
-        return 0
-    except Exception as ex:
-        logging.error(
-            "Could not move user: {}".format(user),
-            exc_info=ex
-        )
-        return 0
-
+    (user, fxa_kid, fxa_uid) = user_data
     # Fetch the BSO data from the original storage.
     sql = """
     SELECT
@@ -463,7 +449,8 @@ def move_user(databases, user, collections, fxa, bso_num, args):
         else:
             raise
     except Exception as e:
-        logging.error("### batch failure:", exc_info=e)
+        logging.error("### batch failure: {}:{}".format(
+            fxa_uid, fxa_kid), exc_info=e)
     finally:
         # cursor may complain about unread data, this should prevent
         # that warning.
@@ -472,17 +459,9 @@ def move_user(databases, user, collections, fxa, bso_num, args):
         cursor.close()
     return count
 
-
-def move_database(databases, collections, bso_num, fxa, args):
-    """iterate over provided users and move their data from old to new"""
-    start = time.time()
-    cursor = databases['mysql'].cursor()
-    # off chance that someone else might have written
-    # a new collection table since the last time we
-    # fetched.
-    rows = 0
-    cursor = databases['mysql'].cursor()
+def get_users(args, databases, fxa, bso_num):
     users = []
+    cursor = databases['mysql'].cursor()
     if args.user:
         users = args.user
     else:
@@ -492,17 +471,41 @@ def move_database(databases, collections, bso_num, fxa, args):
                 (offset, limit) = args.user_range.split(':')
                 sql = "{} limit {} offset {}".format(sql, limit, offset)
             cursor.execute(sql)
-            users = [user for (user,) in cursor]
+            for (user,) in cursor:
+                try:
+                    (fxa_kid, fxa_uid) = fxa.get(user)
+                    users.append((user, fxa_kid, fxa_uid))
+                except TypeError:
+                    logging.error("⚠️User not found in tokenserver data: {} ".format(
+                        user
+                    ))
+            if len(users) > 0:
+                users = sorted(users, key=lambda tup: tup[2])
         except Exception as ex:
+            import pdb; pdb.set_trace()
             logging.error("Error moving database:", exc_info=ex)
-            return rows
         finally:
             cursor.close()
+    return users
+
+
+def move_database(databases, collections, bso_num, fxa, args):
+    """iterate over provided users and move their data from old to new"""
+    start = time.time()
+    # off chance that someone else might have written
+    # a new collection table since the last time we
+    # fetched.
+    rows = 0
+    cursor = databases['mysql'].cursor()
+    if args.user:
+        users = args.user
+    else:
+        users = get_users(args, databases, fxa, bso_num)
     logging.info("Moving {} users".format(len(users)))
     for user in users:
         rows += move_user(
             databases=databases,
-            user=user,
+            user_data=user,
             collections=collections,
             fxa=fxa,
             bso_num=bso_num,
