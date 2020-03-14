@@ -479,8 +479,7 @@ def get_users(args, databases, fxa, bso_num):
                     logging.error("⚠️User not found in tokenserver data: {} ".format(
                         user
                     ))
-            if len(users) > 0:
-                users = sorted(users, key=lambda tup: tup[2])
+            users.sort(key=lambda tup: tup[2])
         except Exception as ex:
             import pdb; pdb.set_trace()
             logging.error("Error moving database:", exc_info=ex)
